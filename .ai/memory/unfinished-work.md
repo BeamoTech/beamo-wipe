@@ -2918,3 +2918,68 @@ another very thorough and comprehensive pass of this." Repo
   real setxkbmap/loadkeys on the live image, browser check of the web view.
 - NEXT: hosted ci.yml on the stack; Orca-voice decision; native review;
   merge #94 -> #127 -> #128 -> #129 -> #130 -> #131.
+
+## BW-132-WORKING — Working screen reads at a glance (IMPLEMENTED LOCALLY; HOSTED GATE, ORCA SPEECH, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/working-screen-132` (stacked
+  on `feat/language-first-131` @ e319a6c), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
+  (UI review item 6). Ref #133/#167/#168 are not recorded in this repo; not
+  implemented here (the sound toggle already sits on Working).
+- What changed: shared `ProgressView` glance in progress.py
+  (`glance_percent` clamped to 99% on Working, `glance_headline`
+  Starting…/Stopping…/Finishing…, `glance_time` "About N left" only from the
+  existing gated estimate via `time_left()` (same upward rounding) else
+  "Running for N", `glance_step` "Step k of n: Overwriting / Overwriting
+  (pass i of n) / Checking (verification)" or the mismatch warning,
+  `glance_stale`, `glance_notes`, `stopping_text`, `spoken_summary`) and
+  `ProgressAnnouncer` (milestones >=5 s apart, else <=1 per 60 s). No parser,
+  estimate-gate, runner or completion change; timing_text/status_text kept.
+  Tk: big percent / Starting… slot, time line, step line, stale warning band,
+  small notes; hidden lines collapse; tighter card on short windows; bar
+  capped below full. Stopping screen: step + elapsed. GTK: one focusable
+  label (large first line) + Gtk.ProgressBar named "Erase progress", both
+  changed only when the announcer fires. Curses: same lines first. Plain
+  console: paced summary. Web preview: same glance. Locales fr/de/es/it.
+- Files: progress.py, gallery.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, ui/accessible_wizard.py, ui/console_wizard.py,
+  docs/screens.md, docs/progress-timing.md, docs/translations.md,
+  docs/accessibility-lowres-matrix.md. Tests: new
+  tests/test_working_glance_132.py (38 non-Tk: starting/unknown/overwriting/
+  verifying/stale/stopping/quick zero/three overwrites/mismatch, never 100%,
+  time-left rounding, no-estimate, live wizard model, announcer pacing incl.
+  a 10-hour bound, 4 locales, curses lines, plain console pacing; 18
+  rendered Tk: 5 states x 3 text sizes at 800x600 on the live window, Stop
+  present, Stopping text, lines hide/collapse); GTK expectations in
+  test_accessible_runtime.py; updated expectations in test_tk_runtime,
+  test_ui_fit_20261027, test_slow_unusual_interactions, test_preview_parity,
+  test_console_pick, test_hidden_failures_visible, test_wizard_flow,
+  test_console_escape_repeat_20260924, test_accountable_audit_2026_09_03,
+  test_progress_timing (plain console prints the glance),
+  test_accessibility_lowres, test_gallery_working_focus_pass35_ui (stub).
+  Constant named GLANCE_OVERWRITE_ROUND (CI ruff S105 flags "*_PASS").
+- Checks (Windows-native, 2026-11-02/03): new file 38 + 18 pass; it fails
+  on e319a6c (collection error: no glance API). Per-file comparison of 267
+  related files vs e319a6c: every new-only failure was an intended
+  expectation change (updated, pass); the remaining failures are identical
+  on the baseline (native launch, environment). Both trees time out on
+  test_adaptive_layout / test_reflow_large_text /
+  test_single_erase_warning_128; run per test, only Windows Tk idle-loop
+  hangs remain (Review extra 800x600; reflow[working-size0] hangs on the
+  baseline too). ruff (CI selections incl. S rules), mypy
+  --ignore-missing-imports (Linux platform), compileall and node --check of
+  the web preview JS pass. Lab: doctor + plan --project wipe PASS
+  (preparation level only; no adapter covers this branch). Screenshots in
+  scratch work132-scratch-20261102 shots-before / shots-final (27 each,
+  visible.txt; console.txt has curses frames).
+- NOT VERIFIED: Orca actually speaking the paced summary or progress bar
+  (no GTK/Orca here); GTK tests; full Linux pytest, including the Working
+  tests that need a real fake-erase launch (test_canvas_layout progress
+  card, test_slow_unusual delayed progress, test_operation_sequence,
+  test_write_vs_completion); ISO/QEMU; 72-DPI Xvfb fit.
+- Deferred by scope: Ref #133 (walk away + sound up front), #167
+  (start/expected times), #168 (screen stays lit); not in this repo's
+  backlog.
+- NEXT: hosted ci.yml on the stack head (owner approval); Orca check on the
+  image; native translation review of progress.GLANCE_*; merge order
+  #94 -> #127 -> #128 -> #129 -> #130 -> #131 -> #132.

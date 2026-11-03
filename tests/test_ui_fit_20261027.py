@@ -227,7 +227,7 @@ def _progress_slot_texts(app):
 
 @pytest.mark.parametrize("size", SIZES, ids=lambda s: f"{s[0]}x{s[1]}")
 @pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
-def test_working_opens_with_not_reported_line_in_a_stable_slot(tk_app, code, size):
+def test_working_opens_with_a_calm_starting_line_in_a_stable_slot(tk_app, code, size):
     wiz, app = tk_app(size=size, code=code)
     wiz.screen = Screen.WORKING
     wiz.selected = wiz.selectable[0]
@@ -235,10 +235,11 @@ def test_working_opens_with_not_reported_line_in_a_stable_slot(tk_app, code, siz
     with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=waiting):
         app._draw()
         _settle(app, 50)
-        # Between "Erase progress" and the bar: the same honest state the
-        # screen-reader and console views speak, never an empty block or a number.
-        assert _progress_slot_texts(app) == [progress.PROGRESS_UNKNOWN]
-        assert not any(ch.isdigit() for ch in progress.PROGRESS_UNKNOWN)
+        # Between "Erase progress" and the bar: one calm word (#132), the
+        # same the screen-reader and console views use; never an empty
+        # block, a number, or a "not reported" placeholder.
+        assert _progress_slot_texts(app) == [progress.GLANCE_STARTING]
+        assert not any(ch.isdigit() for ch in progress.GLANCE_STARTING)
         bar_top = app._progress_bar.winfo_rooty()
     reported = ProgressView("Writing", 42, 60)
     with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=reported):

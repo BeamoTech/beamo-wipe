@@ -108,6 +108,19 @@ PROGRESS_UNKNOWN = "Progress not reported"
 LAST_REPORTED = "Last reported: {text} (old)"
 # Short form beside the bar, where "Last reported" is shown elsewhere.
 OLD_PERCENT = "{percent} (old)"
+# Working-screen glance (#132): big percentage, a cautious time line, and the
+# current step. Placeholders for missing data are never shown; until the
+# first percentage the screen says one calm word instead.
+GLANCE_STARTING = "Starting…"
+GLANCE_STOPPING = "Stopping…"
+GLANCE_FINISHING = "Finishing…"
+GLANCE_TIME_LEFT = "About {text} left"
+GLANCE_TIME_LEFT_SHORT = "Less than 1 minute left"
+GLANCE_RUNNING = "Running for {text}"
+GLANCE_OVERWRITE = "Overwriting"
+GLANCE_OVERWRITE_ROUND = "Overwriting (pass {i} of {n})"
+GLANCE_VERIFY = "Checking (verification)"
+GLANCE_TIME_LATER = "Time left appears during the last step."
 # Measured nwipe 0.42: the runner requests SIGUSR1 every 2.0s after the
 # handler exists. Five missed pulses mark telemetry stale, matching the
 # existing estimate-history expiry. The PRNG auto-bench is 8×1.0s before
@@ -339,12 +352,27 @@ def duration(seconds: float | None) -> str:
     return " ".join(parts)
 
 
-def estimate(seconds: float) -> str:
+def _estimate_rounded(seconds: float) -> float:
     # Round UP, using minutes, five-minute buckets, or whole hours. No seconds.
+    unit = 60 if seconds < 600 else 300 if seconds < 3600 else 3600
+    return math.ceil(seconds / unit) * unit
+
+
+def estimate(seconds: float) -> str:
     if seconds < 60:
         return LESS_THAN_MINUTE
-    unit = 60 if seconds < 600 else 300 if seconds < 3600 else 3600
-    return ABOUT_DURATION.format(text=duration(math.ceil(seconds / unit) * unit))
+    return ABOUT_DURATION.format(text=duration(_estimate_rounded(seconds)))
+
+
+def time_left(seconds: float) -> str:
+    """Glance form of a validated estimate: "About 40 minutes left".
+
+    Same upward rounding as estimate(); callers pass only an estimate that
+    already passed every ProgressTiming gate.
+    """
+    if seconds < 60:
+        return GLANCE_TIME_LEFT_SHORT
+    return GLANCE_TIME_LEFT.format(text=duration(_estimate_rounded(seconds)))
 
 
 # Method-screen time guide, shown before anything starts. Conservative
@@ -514,6 +542,162 @@ class ProgressView:
         else:
             pct = format_progress_percent(self.percent)
         return f"{pct}. {self.timing_text}"
+
+    # -- Working-screen glance (#132) ---------------------------------------
+    # timing_text/status_text above keep the full honest detail for tests and
+    # the preview payload. The glance below is what every interface puts on
+    # the Working screen: real data only, never a "not reported" placeholder.
+
+    @property
+    def glance_percent(self) -> str:
+        """Large percentage, or "" before the engine reports one.
+
+        The runner already caps live progress below 100 until its completion
+        checks pass. The Working screen never says 100% either way: the
+        result screen, not this number, reports completion.
+        """
+        if self.percent is None:
+            return ""
+        from beamo_wipe.wizard import format_progress_percent
+
+        text = format_progress_percent(min(self.percent, 99.9))
+        return OLD_PERCENT.format(percent=text) if self.percent_is_old else text
+
+    @property
+    def glance_headline(self) -> str:
+        """The large line: the percentage, else one calm word."""
+        if self.glance_percent:
+            return self.glance_percent
+        if self.phase == PHASE_STOPPING:
+            return GLANCE_STOPPING
+        if self.phase == PHASE_FINALIZING:
+            return GLANCE_FINISHING
+        return GLANCE_STARTING
+
+    @property
+    def glance_time(self) -> str:
+        """Validated time left, else how long it has run; "" if neither."""
+        if self.remaining is not None:
+            return time_left(self.remaining)
+        if self.elapsed is None:
+            return ""
+        return GLANCE_RUNNING.format(text=duration(self.elapsed))
+
+    @property
+    def glance_step(self) -> str:
+        """"Step 1 of 2: Overwriting", a disagreement warning, or ""."""
+        if self.mismatch:
+            return STAGE_MISMATCH
+        if self.position is None or not 0 <= self.position < len(self.stages):
+            return ""
+        stage = self.stages[self.position]
+        if stage.kind == "verify":
+            name = GLANCE_VERIFY
+        elif stage.total > 1:
+            name = GLANCE_OVERWRITE_ROUND.format(i=stage.index, n=stage.total)
+        else:
+            name = GLANCE_OVERWRITE
+        return STAGE_STEP.format(k=self.position + 1, total=len(self.stages), stage=name)
+
+    @property
+    def glance_stale(self) -> str:
+        """How long progress has been quiet, what it means, what to do."""
+        return stale_block(self.stale_for)
+
+    @property
+    def glance_notes(self) -> tuple[str, ...]:
+        """Small supporting lines under the glance. Real states only."""
+        notes = []
+        note = phase_note(self.phase, self.mismatch)
+        if note:
+            notes.append(note)
+        if (
+            self.remaining is None
+            and self.stale_for is None
+            and self.estimate_state == ESTIMATE_LAST_STEP
+        ):
+            notes.append(GLANCE_TIME_LATER)
+        if self.remaining is not None and self.elapsed is not None:
+            notes.append(ELAPSED_LABEL.format(text=duration(self.elapsed)))
+        return tuple(notes)
+
+    @property
+    def glance_lines(self) -> tuple[str, ...]:
+        """Headline, time and step: the three lines, empty ones dropped."""
+        return tuple(
+            line for line in (self.glance_headline, self.glance_time, self.glance_step) if line
+        )
+
+    @property
+    def stopping_text(self) -> str:
+        """Stopping screen: the last known step and elapsed time only."""
+        lines = [self.glance_step]
+        if self.elapsed is not None:
+            lines.append(ELAPSED_LABEL.format(text=duration(self.elapsed)))
+        return "\n".join(line for line in lines if line)
+
+    @property
+    def spoken_summary(self) -> str:
+        """One sentence run for a screen reader or a plain console."""
+        parts = [_sentence(line) for line in self.glance_lines]
+        if self.stale_for is not None:
+            parts.append(self.glance_stale.replace("\n", " "))
+        return " ".join(parts)
+
+
+def _sentence(text: str) -> str:
+    return text if text.endswith((".", "…", "!", "?")) else text + "."
+
+
+# Screen readers hear progress when something meaningful changes (a new
+# step, progress going quiet or resuming, stopping, finishing) and otherwise
+# at most once a minute. Milestones still wait a few seconds after the last
+# announcement so a flickering report cannot become a stream of speech.
+ANNOUNCE_INTERVAL_S = 60.0
+ANNOUNCE_MIN_GAP_S = 5.0
+
+
+class ProgressAnnouncer:
+    """Decide when the spoken progress summary should change.
+
+    Pure and clock-injected: callers pass the monotonic time. update()
+    returns the summary to present now, or None to stay quiet.
+    """
+
+    def __init__(
+        self,
+        interval: float = ANNOUNCE_INTERVAL_S,
+        min_gap: float = ANNOUNCE_MIN_GAP_S,
+    ) -> None:
+        self.interval = interval
+        self.min_gap = min_gap
+        self._milestone: tuple[object, ...] | None = None
+        self._text: str | None = None
+        self._at: float | None = None
+
+    @staticmethod
+    def milestone(view: ProgressView) -> tuple[object, ...]:
+        return (
+            view.glance_step,
+            view.percent is None,
+            view.stale_for is not None,
+            view.phase in {PHASE_STOPPING, PHASE_FINALIZING},
+        )
+
+    def update(self, view: ProgressView, now: float) -> str | None:
+        text = view.spoken_summary
+        milestone = self.milestone(view)
+        if self._at is not None and math.isfinite(now) and now >= self._at:
+            waited = now - self._at
+            if milestone != self._milestone:
+                if waited < self.min_gap:
+                    return None
+            elif text == self._text or waited < self.interval:
+                return None
+        elif self._at is not None and milestone == self._milestone and text == self._text:
+            return None
+        self._milestone, self._text, self._at = milestone, text, now
+        return text
 
 
 class ProgressTiming:

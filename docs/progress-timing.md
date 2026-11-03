@@ -63,6 +63,34 @@ rounded-up minutes, five-minute buckets, or whole hours, never seconds. This is
 an estimate of remaining engine work; final cleanup or report-saving time is
 unknown. Fast operations and slow quantized streams may never show an estimate.
 
+## Working-screen glance (#132)
+
+Every interface draws the Working screen from the same `ProgressView` glance:
+a large percentage, one time line, and the current step. Nothing here changes
+parsing, estimate gates or completion checks.
+
+- The percentage is clamped to 99% on this screen even after the runner
+  publishes a validated 100; completion is the result screen's job. Before
+  the first number the large line is *Starting…* (*Stopping…* or
+  *Finishing…* in those phases).
+- The time line is *About … left* only when the estimate above exists, using
+  the same upward rounding (`progress.time_left`). Otherwise it is *Running for
+  …* (elapsed). During earlier steps a note says time left appears during the
+  last step; the other estimate-gate reasons stay in the full status text
+  used by tests and the preview payload, not on the glance.
+- The step line is *Step k of n:* plus *Overwriting*, *Overwriting (pass i of
+  n)* or *Checking (verification)*. Unknown steps are hidden; a disagreement
+  with the plan shows the mismatch warning. Quick zero plans one step.
+- Stale telemetry marks the percentage old and adds the stale explainer as a
+  separate warning band. Phase notes and, with an estimate, the elapsed time
+  follow as small notes.
+
+`ProgressAnnouncer` paces spoken output: the GTK summary label and progress
+bar, and plain console lines, change at once for a new step, progress going
+quiet or resuming, or stopping/finishing (at least 5 seconds apart), and
+otherwise at most once every 60 seconds. Tk and curses redraw live; they are
+not spoken. Whether Orca speaks each change is not yet verified on the image.
+
 ## Method-screen time guide
 
 Before anything starts, each method shows a rough range for the selected disk,

@@ -119,12 +119,13 @@ def test_gallery_html_embeds_progress_and_cancel_copy():
 def test_tk_and_console_already_use_progress_view():
     tk_src = Path(tkui.__file__).read_text(encoding="utf-8")
     assert "progress_view" in tk_src
-    assert "timing_text" in tk_src
+    # Every view draws the shared glance (#132).
+    assert "glance_headline" in tk_src and "stopping_text" in tk_src
     from beamo_wipe.ui import console_wizard as cui
 
     con = Path(cui.__file__).read_text(encoding="utf-8")
     assert "progress_view" in con
-    assert "status_text" in con
+    assert "glance_lines" in con and "ProgressAnnouncer" in con
 
 
 def test_chrome_show_more_progress_and_cancel(tmp_path):

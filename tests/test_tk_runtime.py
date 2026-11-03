@@ -1814,14 +1814,15 @@ def test_timing_text_readable_and_working_controls_stable(ui, size):
     with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=view):
         app._draw()
         app.root.update_idletasks()
-        label = app._progress_label
-        assert label.cget("text") == view.timing_text
-        assert "Estimated time remaining: about 2 hours" in label.cget("text")
+        # Glance (#132): percentage, rounded time left, then the notes.
+        label = app._progress_time
+        assert label.cget("text") == view.glance_time == "About 2 hours left"
+        assert app._progress_label.cget("text") == "\n".join(view.glance_notes)
         assert label.winfo_height() >= label.winfo_reqheight()
         assert label.winfo_rooty() + label.winfo_height() < app.root.winfo_rooty() + app.root.winfo_height()
         for _ in range(10):
             app._refresh_working()
-        assert app._progress_label is label
+        assert app._progress_time is label
         assert app._progress_pct.cget("text") == "82%"
 
 
@@ -1839,10 +1840,11 @@ def test_stale_progress_is_marked_old_and_does_not_animate(ui, size):
         app._draw()
         app.root.update_idletasks()
         assert app._progress_pct.cget("text") == "42% (old)"
-        assert "No new progress update for less than 1 minute." in app._progress_label.cget("text")
-        assert STALE_MEANING in app._progress_label.cget("text")
-        assert STALE_NEXT in app._progress_label.cget("text")
-        label = app._progress_label
+        # Stale progress (#132) sits in its own warning band.
+        assert "No new progress update for less than 1 minute." in app._progress_stale.cget("text")
+        assert STALE_MEANING in app._progress_stale.cget("text")
+        assert STALE_NEXT in app._progress_stale.cget("text")
+        label = app._progress_stale
         assert label.winfo_height() >= label.winfo_reqheight()
         assert label.winfo_rooty() + label.winfo_height() < app.root.winfo_rooty() + app.root.winfo_height()
         before = [app._progress_bar.coords(item) for item in app._progress_bar.find_all()]
@@ -1876,18 +1878,26 @@ def test_preparing_animates_only_before_the_first_number(ui):
         for _ in range(8):
             app._refresh_working()
         assert [app._progress_bar.coords(item) for item in app._progress_bar.find_all()] == frozen
-        assert "No new progress update" in app._progress_label.cget("text")
+        assert "No new progress update" in app._progress_stale.cget("text")
         assert app._progress_pct.cget("text") == ""
 
 
 def test_stopping_shows_elapsed_without_estimate(ui):
+    from beamo_wipe import progress as P
+    from beamo_wipe.progress import ProgressView, plan_stages
+    from unittest.mock import PropertyMock, patch
+    from beamo_wipe.wizard import Wizard
+
     wiz, app = ui()
     wiz.screen = Screen.STOPPING
-    app._draw()
-    app.root.update_idletasks()
-    assert "Stopping" in app._progress_label.cget("text")
-    assert "Elapsed:" in app._progress_label.cget("text")
-    assert "remaining" not in app._progress_label.cget("text")
+    view = ProgressView(P.PHASE_STOPPING, 42.0, 3010, stages=plan_stages(1, True), position=0)
+    with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=view):
+        app._draw()
+        app.root.update_idletasks()
+        # Stopping (#132): last known step and elapsed time, no estimate.
+        assert app._progress_label.cget("text") == "Step 1 of 2: Overwriting\nElapsed: 50 minutes"
+        assert app._progress_label.cget("text") == view.stopping_text
+        assert "left" not in app._progress_label.cget("text")
 
 
 def test_working_redraw_keeps_receiver_for_held_enter_release(ui, tmp_path, monkeypatch):

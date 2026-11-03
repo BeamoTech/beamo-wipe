@@ -62,7 +62,7 @@ function summaryCard() { return '<div>Fake disk</div>'; }
 function moreLink() { return '<button id="more">More</button>'; }
 function bindMore() {}
 function powerText() { return 'Power'; }
-function currentProgress() { return {percent: 20, percentText:'20%', timingText:'Time', animate:false}; }
+function currentProgress() { return {percent: 20, percentText:'20%', timingText:'Time', animate:false, headline:'20%', timeLine:'Running for 1 minute', stepLine:'Step 1 of 2: Overwriting', staleBlock:'', notes:[]}; }
 function esc(value) { return value; }
 function btn(label, onclick) {
   return {textContent: label, disabled:false, onclick,

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 import re
@@ -211,6 +212,13 @@ def _serialize_progress(view: _progress.ProgressView) -> dict:
         ),
         "phaseNote": _progress.phase_note(view.phase, view.mismatch),
         "staleBlock": _progress.stale_block(view.stale_for),
+        # Working-screen glance (#132), shared with Tk, GTK and console.
+        "headline": percent_text or dataclasses.replace(view, percent=None).glance_headline,
+        "timeLine": view.glance_time,
+        "stepLine": view.glance_step,
+        "notes": list(view.glance_notes),
+        "stoppingText": view.stopping_text,
+        "spoken": view.spoken_summary,
     }
 
 
@@ -1044,6 +1052,10 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .progress-card { padding: 20px 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); }
   .progress-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; letter-spacing: .02em; }
   .progress-timing { white-space: pre-wrap; font-size: 16px; margin-top: 14px; color: var(--muted); }
+  .glance-time { font-size: 20px; font-weight: 700; margin: 12px 0 0; }
+  .glance-step { font-size: 18px; margin: 4px 0 0; }
+  .glance-stale { white-space: pre-wrap; font-size: 16px; margin: 10px 0 0; padding: 8px 12px; color: var(--warn); background: var(--warn-bg); border-radius: 12px; }
+  .glance-notes { white-space: pre-wrap; font-size: 14px; margin: 10px 0 0; color: var(--muted); }
   .bigstat { font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -.03em; min-height: 62px; }
   .bar { height: 8px; background: var(--track); border-radius: var(--pill); overflow: hidden; }
   .fill { height: 100%; background: var(--primary); width: 2%; border-radius: var(--pill); transition: width .2s ease; }
@@ -1882,9 +1894,12 @@ function draw() {
       ${moreLink("more-detail")}
       <div class="cz"><div class="czc">
       <div class="progress-card"><div class="progress-label">${P.eraseProgress}</div>
-      <div class="bigstat" id="pct" style="margin:0 0 12px">${esc(state.percentText)}</div>
+      <div class="bigstat" id="pct" style="margin:0 0 12px">${esc(state.headline)}</div>
       <div class="bar"><div class="fill${state.animate ? " indet" : ""}" id="fill" style="width:${fillPct}%"></div></div>
-      <p class="progress-timing" id="pulse">${esc(state.timingText)}</p>
+      ${state.timeLine ? `<p class="glance-time" id="time-line">${esc(state.timeLine)}</p>` : ""}
+      ${state.stepLine ? `<p class="glance-step" id="step-line">${esc(state.stepLine)}</p>` : ""}
+      ${state.staleBlock ? `<p class="glance-stale" id="stale" role="status">${esc(state.staleBlock)}</p>` : ""}
+      ${state.notes.length ? `<p class="glance-notes" id="notes">${esc(state.notes.join("\n"))}</p>` : ""}
       <div id="power-status" role="status" aria-live="polite" class="small muted">${powerText()}</div>
       <p class="small muted">${m.summary}</p>
       <p class="small muted" id="soundsNote" role="status"></p></div></div></div>`;
@@ -1913,7 +1928,7 @@ function draw() {
       ${recovery ? recoveryHtml(recovery) : `<p role="status" aria-live="polite">${detail}</p>`}
       <p>${esc(P.previewBanner)}</p>
       ${selected ? summaryCard(selected) : ""}
-      ${stopProgress ? `<p class="progress-timing" id="stop-timing">${esc(stopProgress.timingText)}</p>` : ""}
+      ${stopProgress ? `<p class="progress-timing" id="stop-timing">${esc(stopProgress.stoppingText)}</p>` : ""}
       ${stopSupport}
       <p class="small muted" id="stop-method">${P.methods[method].operation}</p>`;
     renderHint(P.stopKeepConnected);

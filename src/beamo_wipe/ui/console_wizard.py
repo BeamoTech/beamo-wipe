@@ -28,6 +28,7 @@ from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABE
 from beamo_wipe import identity as _identity
 from beamo_wipe.methods import METHODS, MethodId
 from beamo_wipe.models import Screen
+from beamo_wipe.progress import ProgressAnnouncer, ProgressView
 from beamo_wipe.safety import same_size_conflict
 from beamo_wipe.wizard import Wizard, error_needs_support
 
@@ -741,8 +742,22 @@ def _plain_loop(wizard: Wizard) -> int:
             raise
 
 
+def _working_glance_lines(view: ProgressView) -> list[str]:
+    """Working screen (#132): percentage, time line, step; then real
+    warnings and notes. Never a "not reported" placeholder."""
+    lines = list(view.glance_lines)
+    if view.glance_stale:
+        lines.append(view.glance_stale)
+    lines.extend(view.glance_notes)
+    return lines
+
+
 def _plain_loop_body(wizard: Wizard) -> int:
     last_working = None
+    # Plain console output is often read aloud: print progress at the same
+    # pace as the screen-reader view, not on every percentage change.
+    announcer = ProgressAnnouncer()
+    spoken = ""
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
         screen = wizard.screen
@@ -754,6 +769,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(stage)
             print(_screen_title(wizard))
             last_working = None
+            announcer = ProgressAnnouncer()
             if wizard.preview:
                 print(C.PREVIEW_BANNER)
             print("=" * 60)
@@ -1073,7 +1089,10 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 wizard.back()
             continue
         if screen == Screen.WORKING:
-            status = (wizard.progress_view.status_text, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message)
+            update = announcer.update(wizard.progress_view, time.monotonic())
+            if update is not None:
+                spoken = update
+            status = (spoken, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message)
             if status != last_working:
                 print(status[0])
                 _print_operation_identity(wizard)
@@ -1722,7 +1741,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(_error_recovery_text(wizard.error), w))
                 if error_needs_support(wizard.error):
                     lines.extend(_lines(C.support_text(), w))
-            lines.extend(_lines(wizard.progress_view.status_text, w))
+            for text in _working_glance_lines(wizard.progress_view):
+                lines.extend(_lines(text, w))
             disk = wizard.operation_disk
             if disk is not None:
                 lines.extend(_identity_field_lines(wizard.disk_view(disk), w))

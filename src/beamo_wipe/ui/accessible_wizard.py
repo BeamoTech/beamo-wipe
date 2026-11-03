@@ -8,6 +8,8 @@ import os
 import subprocess
 import sys
 import threading
+import time
+from xml.sax.saxutils import escape as _markup_escape
 
 import gi
 
@@ -33,6 +35,7 @@ from beamo_wipe.keyboard import LAYOUT_ORDER  # noqa: E402
 from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL  # noqa: E402
 from beamo_wipe.methods import METHODS  # noqa: E402
 from beamo_wipe.models import Screen  # noqa: E402
+from beamo_wipe.progress import ProgressAnnouncer  # noqa: E402
 from beamo_wipe.diagnostics import emit_serial_marker  # noqa: E402
 from beamo_wipe.safety import same_size_conflict  # noqa: E402
 from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
@@ -120,6 +123,8 @@ class AccessibleWizard:
             self._release_times: dict[int, int] = {}
             self.primary = None
             self.progress_label = None
+            self.progress_bar = None
+            self.progress_announcer = ProgressAnnouncer()
             self.countdown_label = None
             self.error_label = None
             self.shown = None
@@ -355,6 +360,8 @@ class AccessibleWizard:
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
+        self.progress_bar = None
+        self.progress_announcer = ProgressAnnouncer()
         self.power_label = None
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
@@ -707,7 +714,14 @@ class AccessibleWizard:
                              else C.WORKING_PULSE)
             self.identity()
             self.label(self.w.method_summary)
-            self.progress_label = self.label("")
+            # Glance (#132): percentage, time line, current step. Focusable
+            # so Tab reads it; its text changes at the announcer's pace, not
+            # on every poll. The bar's value moves at the same pace, so
+            # Orca's own progress-bar speech cannot run every tick either.
+            self.progress_label = self.label("", focusable=True)
+            self.progress_bar = Gtk.ProgressBar()
+            self.progress_bar.get_accessible().set_name(C.ERASE_PROGRESS_LABEL)
+            self.body.pack_start(self.progress_bar, False, False, 4)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -1016,17 +1030,45 @@ class AccessibleWizard:
                 self.countdown_label.set_text(text)
             self.primary.set_sensitive(self.w.erase_enabled)
         if self.progress_label:
-            text = self.w.progress_view.status_text
-            # Integer percentage, minute elapsed, coarse ETA; no 100 ms
-            # duplicate ATK text-change events or focus theft.
-            if self.progress_label.get_text() != text:
-                self.progress_label.set_text(text)
+            view = self.w.progress_view
+            if self.w.screen == Screen.STOPPING:
+                text = view.stopping_text
+                if self.progress_label.get_text() != text:
+                    self.progress_label.set_text(text)
+            else:
+                # Paced (#132): a new step, quiet or resumed progress,
+                # stopping or finishing speak promptly; otherwise at most
+                # once a minute. No focus theft, no duplicate ATK events.
+                spoken = self.progress_announcer.update(view, time.monotonic())
+                if spoken is not None:
+                    self._show_glance(view, spoken)
         if self.error_label:
             message = _error_text(self.w)
             changed = self.error_label.get_text() != message
             self.error_label.set_text(message)
             if changed and message:
                 self.error_label.grab_focus()
+
+    def _show_glance(self, view, spoken: str) -> None:
+        label = self.progress_label
+        if label is None:
+            return
+        lines = list(view.glance_lines)
+        if view.glance_stale:
+            lines.append(view.glance_stale)
+        lines.extend(view.glance_notes)
+        if lines:
+            head, rest = lines[0], lines[1:]
+            markup = f'<span size="xx-large" weight="bold">{_markup_escape(head)}</span>'
+            if rest:
+                markup += "\n" + _markup_escape("\n".join(rest))
+            label.set_markup(markup)
+        label.get_accessible().set_name(spoken)
+        if self.progress_bar is not None:
+            percent = view.percent
+            self.progress_bar.set_fraction(
+                0.0 if percent is None else max(0.0, min(percent, 99.9)) / 100.0
+            )
 
     def _begin_refresh_scan(self) -> bool:
         """Keep GTK and Orca responsive while inventory I/O runs."""

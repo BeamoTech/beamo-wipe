@@ -588,12 +588,16 @@ def test_working_uis_never_round_percent_with_point_zero_f():
     from beamo_wipe.ui.console_wizard import _loop
     from beamo_wipe.ui.tk_wizard import TkWizard
 
+    from beamo_wipe.progress import ProgressView
+
     tk_src = inspect.getsource(TkWizard._refresh_working)
-    assert "format_progress_percent" in tk_src
+    assert "glance_percent" in tk_src
+    assert "format_progress_percent" in inspect.getsource(ProgressView.glance_percent.fget)
     assert ":.0f" not in tk_src
     console_src = inspect.getsource(_loop)
-    assert "progress_view.status_text" in console_src
-    from beamo_wipe.progress import ProgressView
+    assert "_working_glance_lines(wizard.progress_view)" in console_src
+    for pct in (99.5, 99.9, 99.99, 100.0):
+        assert ProgressView("Writing", pct, 60).glance_percent == "99%"
     for pct in (99.5, 99.9, 99.99):
         assert ProgressView("Writing", pct, 60).status_text.startswith("99%.")
     assert ":.0f" not in console_src

@@ -966,7 +966,7 @@ def test_tk_delayed_progress_paints_old_and_keeps_ticking():
             app._draw()
             app.root.update_idletasks()
             assert app._progress_pct.cget("text") == "42% (old)"
-            assert "No new progress update" in app._progress_label.cget("text")
+            assert "No new progress update" in app._progress_stale.cget("text")
             before = [app._progress_bar.coords(item) for item in app._progress_bar.find_all()]
             scheduled = []
 

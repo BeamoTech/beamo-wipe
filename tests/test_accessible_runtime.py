@@ -1252,9 +1252,10 @@ def test_accessible_progress_has_shared_text_without_duplicate_announcements(ui)
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        assert label.get_text() == view.status_text
-        assert label.get_accessible().get_name() == view.status_text
-        assert "Estimated time remaining: about 2 hours" in text(app)
+        # Glance (#132): the big line first, the paced summary as its name.
+        assert label.get_text().splitlines()[:3] == list(view.glance_lines)
+        assert label.get_accessible().get_name() == view.spoken_summary
+        assert "About 2 hours left" in text(app)
 
 
 def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
@@ -1275,8 +1276,8 @@ def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        assert label.get_text() == view.status_text
-        assert label.get_accessible().get_name() == view.status_text
+        assert label.get_text().splitlines()[:3] == list(view.glance_lines)
+        assert label.get_accessible().get_name() == view.spoken_summary
         assert STALE_MEANING in text(app)
         assert STALE_NEXT in text(app)
 

@@ -265,3 +265,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   slots, which take the translated layout title and the language's own name.
   `lang.LANGUAGE_WORDS` (the picker label) is deliberately not translated: it
   is the word *Language* in every offered language.
+- `progress.GLANCE_*` (added 2026-11-02 for #132, not yet reviewed): the
+  Working screen's three lines and the calm *Starting…* word. `{text}` takes
+  `progress.duration()` output, so the sentence needs the plain case: DE uses
+  the label *Laufzeit: {text}* (not *seit*, which would need *Tagen*); FR/ES/IT
+  time-left lines avoid agreeing with the unit (*Encore environ…*, *Tiempo
+  restante: aproximadamente…*, *Tempo rimanente: circa…*). Keep `{i}` / `{n}`;
+  IT uses *passata* there because `STAGE_STEP` already says *Passaggio*.

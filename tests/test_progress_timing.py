@@ -390,8 +390,9 @@ def test_plain_console_deduplicates_and_remains_cancellable(monkeypatch, capsys)
     monkeypatch.setattr(console_wizard.sys, "stdin", io.StringIO("CANCEL\n"))
     assert console_wizard._plain_loop_body(w) == 0
     output = capsys.readouterr().out
-    assert output.count("Elapsed:") == 1
-    assert "Writing" in output and "25%" in output
+    # The paced glance summary (#132), printed once for an unchanged view.
+    assert output.count("25%. Running for 2 minutes.") == 1
+    assert "not reported" not in output
     assert len(calls) == 20
 
 

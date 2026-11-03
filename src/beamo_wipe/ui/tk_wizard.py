@@ -29,7 +29,6 @@ from beamo_wipe.diagnostics import emit_serial_marker
 from beamo_wipe.methods import DEFAULT_METHOD
 from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
-from beamo_wipe import progress as _progress
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
@@ -52,7 +51,6 @@ from beamo_wipe.wizard import (
     ReportView,
     Wizard,
     error_needs_support,
-    format_progress_percent,
 )
 
 # --- Design tokens ---------------------------------------------------------
@@ -1442,7 +1440,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1540,6 +1538,11 @@ class TkWizard:
             self._progress_pct: Optional[tk.Label] = None
             self._progress_wait: Optional[tk.Label] = None
             self._progress_bar: Optional[tk.Canvas] = None
+            self._progress_time: Optional[tk.Label] = None
+            self._progress_step: Optional[tk.Label] = None
+            self._progress_stale: Optional[tk.Label] = None
+            self._progress_stale_slot: Optional[tk.Frame] = None
+            self._progress_notes_slot: Optional[tk.Frame] = None
             self._indet = 0.0
             self._match_label: Optional[tk.Label] = None
             self._match_icon: Optional[tk.Canvas] = None
@@ -2398,6 +2401,11 @@ class TkWizard:
         self._progress_pct = None
         self._progress_wait = None
         self._progress_bar = None
+        self._progress_time = None
+        self._progress_step = None
+        self._progress_stale = None
+        self._progress_stale_slot = None
+        self._progress_notes_slot = None
         self._match_label = None
         self._match_icon = None
         self._match_pill = None
@@ -4265,7 +4273,8 @@ class TkWizard:
         if self.w.screen in {Screen.CHECKING, Screen.STOPPING}:
             self._power_notice(col)
         if self.w.screen == Screen.STOPPING:
-            self._progress_label = self._p(col, self.w.progress_view.timing_text, fg=MUTED)
+            # Last known step and elapsed time; no estimate while stopping.
+            self._progress_label = self._p(col, self.w.progress_view.stopping_text, fg=MUTED)
             self._progress_label.pack(fill=tk.X, pady=(12, 0))
             stopping_disk = self.w.operation_disk
             if stopping_disk is not None:
@@ -4978,36 +4987,60 @@ class TkWizard:
         elif self.w.operation_identity_text:
             self._p(col, self.w.operation_identity_text, font=self.font_b, fg=MUTED).pack(fill=tk.X)
         container = self._center_zone(col)
+        short = self.lay.short
+        # Short windows keep the three glance lines above the fold at every
+        # text size (#132), so the card spacing tightens there.
         progress_card = _Box(container, radius=RADIUS, fill=SURFACE,
-                             outline=BORDER, ow=1, padx=20, pady=16)
-        progress_card.pack(fill=tk.X, pady=(8 if self.lay.short else 12, 0))
+                             outline=BORDER, ow=1, padx=20, pady=10 if short else 16)
+        progress_card.pack(fill=tk.X, pady=(8 if short else 12, 0))
         zone = progress_card.inner
         tk.Label(zone, text=C.ERASE_PROGRESS_LABEL, font=self.font_s_bold,
-                 fg=MUTED, bg=SURFACE, anchor="w").pack(fill=tk.X, pady=(0, 8))
-        # One fixed-height slot: the large percentage once the engine reports
-        # one, and until then the same honest "not reported" state the
-        # screen-reader and console views speak. No empty block, no jump.
+                 fg=MUTED, bg=SURFACE, anchor="w").pack(fill=tk.X, pady=(0, 4 if short else 8))
+        # Glance (#132): the large percentage, then a cautious time line,
+        # then the current step. One fixed-height slot holds the percentage
+        # once the engine reports one and a calm "Starting…" until then, so
+        # nothing jumps and no "not reported" placeholder is ever shown.
+        view = self.w.progress_view
         slot = tk.Frame(zone, bg=SURFACE)
         self._progress_pct = tk.Label(
             slot, text="", font=self.font_stat, fg=INK, bg=SURFACE, anchor="w"
         )
         self._progress_wait = tk.Label(
-            slot, text=_progress.PROGRESS_UNKNOWN, font=self.font_lead, fg=MUTED,
+            slot, text=view.glance_headline, font=self.font_h, fg=INK,
             bg=SURFACE, anchor="w", justify=tk.LEFT,
             wraplength=max(200, self.lay.wrap - 80),
         )
         slot.configure(height=self._progress_pct.winfo_reqheight())
         slot.pack_propagate(False)
-        slot.pack(fill=tk.X, pady=(0, 12))
+        slot.pack(fill=tk.X, pady=(0, 8 if self.lay.short else 12))
         self._progress_wait.pack(fill=tk.BOTH, expand=True)
         bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE, highlightthickness=0)
         bar.pack(fill=tk.X)
         bar.bind("<Configure>", lambda _e: self._refresh_working())
         self._progress_bar = bar
-        self._progress_label = self._p(
-            zone, C.WORKING_PULSE, fg=MUTED, font=self.font_b, bg=SURFACE
+        # Each line sits in its own slot so a line with no real data can be
+        # hidden without moving the others.
+        def line_slot() -> tk.Frame:
+            holder = tk.Frame(zone, bg=SURFACE, height=1)
+            holder.pack(fill=tk.X)
+            return holder
+
+        self._progress_time = self._p(
+            line_slot(), "", font=self.font_size_big, bg=SURFACE
         )
-        self._progress_label.pack(fill=tk.X, pady=(14, 0))
+        self._progress_step = self._p(line_slot(), "", bg=SURFACE)
+        # Stale progress (Ref #30) stays prominent: a warning band that
+        # appears only while updates have stopped.
+        self._progress_stale_slot = line_slot()
+        self._progress_stale = self._p(
+            self._progress_stale_slot, "", font=self.font_b, fg=WARN, bg=WARN_BG,
+            wraplength=max(200, self.lay.wrap - 64), flow_pad=24,
+        )
+        self._progress_stale.configure(padx=12, pady=8)
+        self._progress_notes_slot = line_slot()
+        self._progress_label = self._p(
+            self._progress_notes_slot, "", fg=MUTED, font=self.font_s, bg=SURFACE
+        )
         self._power_notice(zone, reminder=False, bg=SURFACE)
         self._p(zone, self.w.method_summary, font=self.font_s,
                 fg=MUTED, bg=SURFACE).pack(fill=tk.X, pady=(10, 0))
@@ -5030,21 +5063,29 @@ class TkWizard:
         if self._progress_label is None:
             return
         view = self.w.progress_view
-        pulse = view.timing_text
+        if self._progress_bar is None:
+            # Stopping screen: one text line block, no bar or glance.
+            if self._progress_label.cget("text") != view.stopping_text:
+                self._progress_label.configure(text=view.stopping_text)
+            return
         pct = view.percent
-        if view.percent_is_old and pct is not None:
-            shown = _progress.OLD_PERCENT.format(percent=format_progress_percent(pct))
-        elif pct is None:
-            shown = ""
-        else:
-            shown = format_progress_percent(pct)
+        shown = view.glance_percent
         if self._progress_pct is not None and self._progress_pct.cget("text") != shown:
             self._progress_pct.configure(
                 text=shown, fg=MUTED if view.percent_is_old else INK
             )
+        wait = self._progress_wait
+        if wait is not None and wait.cget("text") != view.glance_headline and not shown:
+            wait.configure(text=view.glance_headline)
         self._show_progress_slot(bool(shown))
-        if self._progress_label.cget("text") != pulse:
-            self._progress_label.configure(text=pulse)
+        self._show_progress_line(
+            self._progress_time, view.glance_time, (6 if self.lay.short else 12, 0)
+        )
+        self._show_progress_line(self._progress_step, view.glance_step, (4, 0))
+        self._show_progress_line(self._progress_stale, view.glance_stale, (10, 0))
+        self._show_progress_line(
+            self._progress_label, "\n".join(view.glance_notes), (10, 0)
+        )
         if view.animate:
             # First number has not arrived during the known startup quiet
             # window. Slide only then; silence must not look like live data.
@@ -5054,10 +5095,29 @@ class TkWizard:
         elif pct is None:
             self._paint_bar(0.0)
         else:
-            self._paint_bar(max(0.02, pct / 100.0))
+            # Like the number above it, the bar never reads complete here.
+            self._paint_bar(max(0.02, min(pct, 99.9) / 100.0))
+
+    @staticmethod
+    def _show_progress_line(
+        label: Optional[tk.Label], text: str, pady: tuple[int, int]
+    ) -> None:
+        """Show a glance line only when it has real text (#132)."""
+        if label is None:
+            return
+        if label.cget("text") != text:
+            label.configure(text=text)
+        mapped = bool(label.winfo_manager())
+        if text and not mapped:
+            label.pack(fill=tk.X, pady=pady)
+        elif not text and mapped:
+            label.pack_forget()
+            # Pack keeps an emptied master at its old size; shrink it back.
+            if isinstance(label.master, tk.Frame):
+                label.master.configure(height=1)
 
     def _show_progress_slot(self, has_percent: bool) -> None:
-        """Percentage or the not-reported line, in the same fixed slot."""
+        """Percentage or the calm headline (#132), in the same fixed slot."""
         pct = self._progress_pct
         wait = getattr(self, "_progress_wait", None)
         if pct is None or wait is None:
