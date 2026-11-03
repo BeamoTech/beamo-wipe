@@ -286,6 +286,9 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `copy.SPLASH_TAGLINE` (changed 2026-11-03 for #137, not yet reviewed): the
+  start screen's first line. It must name the translated `BTN_ERASE` exactly
+  (tested) and stay two short sentences.
 - `copy.REFRESH_GUARD_LEAD`, `REFRESH_THEN_READER`, `BTN_REFRESH_CANCEL`,
   `HINT_REFRESH_GUARD` and `CON_REFRESH_GUARD_*` (2026-11-03 for #136, not
   yet reviewed): the guarded Check disks again dialog. It must say the

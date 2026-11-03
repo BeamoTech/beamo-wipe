@@ -43,7 +43,7 @@ STRINGS = {
         "BLOCKED_HEADING_REDISCOVER": "No se pudieron volver a comprobar los discos",
         "TITLE_EMPTY": "No hay ningún disco para borrar",
         "TITLE_REFRESH": "¿Volver a comprobar los discos?",
-        "SPLASH_TAGLINE": "El equipo ya se inició desde esta memoria USB. A continuación elegirá un disco para borrar.",
+        "SPLASH_TAGLINE": "Borre un disco en unos pocos pasos. No se borra nada hasta que elija Borrar ahora.",
         "KEYBOARD_LEAD": "Elija la distribución que coincida con las teclas que ve. Luego escriba algunos caracteres para comprobarla.",
         "KEYBOARD_LIMITS": "Solo se ofrecen las distribuciones de esta lista. El cambio dura hasta que se reinicie esta memoria USB. No cambia el teclado del firmware ni de la BIOS.",
         "KEYBOARD_CHECK_LABEL": "Escriba aquí para comprobar. No es una contraseña y no se guarda.",

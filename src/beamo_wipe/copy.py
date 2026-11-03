@@ -188,10 +188,12 @@ BLOCKED_HEADING_REDISCOVER = "Could not check the disks again"
 
 TITLE_REFRESH = "Check disks again?"
 
-# --- Splash: they already booted. Do not lecture. --------------------------
+# --- Splash: what this is, and that nothing happens yet (#137). ------------
+# Truthful: the only erase action is the separate Erase now button (BTN_ERASE),
+# after ownership, the typed check and the review countdown.
 
 SPLASH_TAGLINE = (
-    "You already started from this USB. Next you will pick a disk to erase."
+    "Erase a disk in a few steps. Nothing is erased until you choose Erase now."
 )
 
 KEYBOARD_LEAD = (

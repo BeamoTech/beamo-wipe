@@ -38,7 +38,7 @@ STRINGS = {
         "BLOCKED_HEADING_REDISCOVER": "Impossible de revérifier les disques",
         "TITLE_EMPTY": "Aucun disque à effacer",
         "TITLE_REFRESH": "Vérifier à nouveau les disques ?",
-        "SPLASH_TAGLINE": "Vous avez déjà démarré depuis cette clé USB. Ensuite, vous choisirez un disque à effacer.",
+        "SPLASH_TAGLINE": "Effacez un disque en quelques étapes. Rien n’est effacé avant que vous choisissiez Effacer maintenant.",
         "KEYBOARD_LEAD": "Choisissez la disposition qui correspond aux touches que vous voyez. Tapez ensuite quelques caractères pour vérifier.",
         "KEYBOARD_LIMITS": "Seules les dispositions listées ici sont proposées. Le changement dure jusqu’au redémarrage de cette clé USB. Il ne change pas les claviers du micrologiciel ni du BIOS.",
         "KEYBOARD_CHECK_LABEL": "Tapez ici pour vérifier. Ce n’est pas un mot de passe et rien n’est enregistré.",

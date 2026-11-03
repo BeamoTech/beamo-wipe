@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+import re
 from pathlib import Path
+
+import pytest
 
 from beamo_wipe import copy
 from beamo_wipe.compat_story import PLATFORMS, SECURE_BOOT_HINT as STORY_SECURE_BOOT
@@ -203,11 +206,36 @@ def test_failed_wipe_copy_does_not_promise_in_session_retry():
     assert "files may still be on the disk" in text
 
 
-def test_splash_says_they_already_booted():
-    text = copy.SPLASH_TAGLINE.lower()
-    assert "already" in text
-    assert "usb" in text
-    assert "pick" in text
+def test_splash_says_what_it_does_and_that_nothing_happens_yet():
+    """#137: one plain, reassuring opening line; the only erase action is
+    the separate Erase now button, so the line names it exactly."""
+    assert copy.SPLASH_TAGLINE == (
+        "Erase a disk in a few steps. Nothing is erased until you choose Erase now."
+    )
+    assert copy.BTN_ERASE in copy.SPLASH_TAGLINE
+    assert "already started" not in copy.SPLASH_TAGLINE.lower()
+
+
+@pytest.mark.parametrize("code", ["fr", "de", "es", "it"])
+def test_splash_names_the_translated_erase_button(code):
+    from beamo_wipe import lang
+
+    english = copy.SPLASH_TAGLINE
+    try:
+        lang.set_language(code)
+        assert copy.SPLASH_TAGLINE != english
+        assert copy.BTN_ERASE in copy.SPLASH_TAGLINE
+    finally:
+        lang.set_language("en")
+
+
+def test_splash_line_is_short_and_plain():
+    """Ref #181 reading level: two short sentences, everyday words."""
+    sentences = [s for s in copy.SPLASH_TAGLINE.split(".") if s.strip()]
+    assert len(sentences) == 2
+    assert all(len(s.split()) <= 10 for s in sentences)
+    words = re.findall(r"[A-Za-z]+", copy.SPLASH_TAGLINE)
+    assert max(len(w) for w in words) <= 7
 
 
 def test_claims_doc_forbids_bad_bullets():

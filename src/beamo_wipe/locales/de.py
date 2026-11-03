@@ -38,7 +38,7 @@ STRINGS = {
         "BLOCKED_HEADING_REDISCOVER": "Die Datenträger konnten nicht erneut geprüft werden",
         "TITLE_EMPTY": "Kein Datenträger zum Löschen",
         "TITLE_REFRESH": "Datenträger erneut prüfen?",
-        "SPLASH_TAGLINE": "Sie haben bereits von diesem USB-Stick gestartet. Als Nächstes wählen Sie einen Datenträger zum Löschen.",
+        "SPLASH_TAGLINE": "Löschen Sie einen Datenträger in wenigen Schritten. Nichts wird gelöscht, bevor Sie Jetzt löschen wählen.",
         "KEYBOARD_LEAD": "Wählen Sie das Layout, das zu den Tasten passt, die Sie sehen. Tippen Sie dann ein paar Zeichen zur Prüfung.",
         "KEYBOARD_LIMITS": "Nur die hier aufgeführten Layouts werden angeboten. Die Änderung gilt bis zum Neustart dieses USB-Sticks. Sie ändert keine Firmware- oder BIOS-Tastaturen.",
         "KEYBOARD_CHECK_LABEL": "Tippen Sie hier zur Prüfung. Das ist kein Passwort und wird nicht gespeichert.",

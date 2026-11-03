@@ -3273,3 +3273,32 @@ another very thorough and comprehensive pass of this." Repo
   at 72 DPI (WSL down), ISO/QEMU, native review of FR/DE/ES/IT strings.
 - NEXT: hosted ci.yml on the stack head (owner approval); native review;
   merge order #94 -> #127 -> ... -> #135 -> #136.
+
+## BW-137-START — Start screen opening line (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/start-line-137` (stacked on
+  `feat/refresh-guard-136` @ c856f2b), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
+  review item 11); Refs #138/#181 coordination.
+- WHAT CHANGED: `copy.SPLASH_TAGLINE` "You already started from this USB.
+  Next you will pick a disk to erase." -> "Erase a disk in a few steps.
+  Nothing is erased until you choose Erase now." Tighter than the suggested
+  "until you confirm": the ownership tick and typed check are confirmations
+  that erase nothing; only the separate Erase now (`BTN_ERASE`) starts it,
+  so the line names that control. FR/DE/ES/IT drafts name the translated
+  button. Tk, GTK (splash heading), curses, plain console and the web
+  preview read the same string. Docs: screens.md Splash row,
+  translations.md.
+- TESTS: tests/test_copy.py — exact English line + names BTN_ERASE; every
+  language names its BTN_ERASE; reading-level guard (2 sentences, <=10
+  words each, words <=7 letters; Ref #181). The first five fail on c856f2b;
+  the reading-level guard passes on both (the old line was short too).
+- CHECKS: copy/intro/language/translation-consistency files 237 pass;
+  ruff, diff --check. Screens: scratch work137-scratch-20261103
+  shots-before/shots-after (en 800x600 standard/large/extra, 1280x820; de).
+  Per-file comparison of 109 splash/gallery test files vs c856f2b: RUNNING at
+  commit time; result recorded before push.
+- NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: finish comparison, push branch; hosted gate on the stack head
+  (owner approval); merge after #136.

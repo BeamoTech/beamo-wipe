@@ -45,7 +45,7 @@ STRINGS = {
         "BLOCKED_HEADING_REDISCOVER": "Impossibile ricontrollare i dischi",
         "TITLE_EMPTY": "Nessun disco da cancellare",
         "TITLE_REFRESH": "Ricontrollare i dischi?",
-        "SPLASH_TAGLINE": "Il computer è già stato avviato da questa chiavetta USB. Ora sceglierà un disco da cancellare.",
+        "SPLASH_TAGLINE": "Cancelli un disco in pochi passaggi. Nulla viene cancellato finché non sceglie Cancella ora.",
         "KEYBOARD_LEAD": "Scelga il layout che corrisponde ai tasti che vede. Poi digiti qualche carattere per controllare.",
         "KEYBOARD_LIMITS": "Sono disponibili solo i layout elencati qui. La modifica dura fino al riavvio di questa chiavetta USB. Non cambia la tastiera nel firmware o nel BIOS.",
         "KEYBOARD_CHECK_LABEL": "Digiti qui per controllare. Non è una password e non viene salvato nulla.",
