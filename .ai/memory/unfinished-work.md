@@ -3304,3 +3304,45 @@ another very thorough and comprehensive pass of this." Repo
   review.
 - NEXT: finish comparison, push branch; hosted gate on the stack head
   (owner approval); merge after #136.
+
+## BW-138-STAGES — One stage vocabulary for the start roadmap and header (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/stage-names-138` (stacked on
+  `feat/start-line-137` @ 57bac5a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
+  review item 12); decided with #130 (step bar) and #166 (Review last before
+  Erase); #180 coordination only.
+- BASELINE: header = stages Preparation/Erase/Result (stepper >=1000 px,
+  progress strip) + "Step n of 6 · <step>"; start roadmap = 4 of the 6 step
+  names ("Choose a disk → Confirm its identity → Choose a method → Review and
+  erase"), no Erase/Result; last step "Review and erase" blurred into the
+  Erase stage; GTK, curses and plain console showed no roadmap; offline
+  helper still had the pre-#130 roadmap.
+- DECISION (one vocabulary): stages Preparation → Erase → Result everywhere
+  (stepper, strip, spoken stage, roadmap, helper); steps inside Preparation
+  keep the #130 names except `STEP_NAME_REVIEW` "Review and erase" ->
+  "Review" (FR Vérifier, DE Prüfen, ES Revisar, IT Controllare): Review is
+  the step before the Erase stage (#166) and must not say erase.
+- WHAT CHANGED: `copy.roadmap_parts(path)` = ("Preparation (6 steps)",
+  "Erase", "Result") from `JOURNEY_LABELS` + `len(PREPARATION_PATH)` (the
+  header's "Step n of N" total); `splash_roadmap` joins them; new
+  `ROADMAP_STAGE_STEPS` "{stage} ({count} steps)" (4 drafts). Roadmap added
+  to the GTK splash (focusable label), curses and plain console splash.
+  helper/index.html card now "Preparation (6 steps) → Erase → Result.
+  Nothing is erased until you choose Erase now." Docs screens.md,
+  translations.md.
+- TESTS: new tests/test_stage_names_138.py (roadmap = header stages; one
+  source: patching JOURNEY_LABELS moves roadmap, header caption and spoken
+  stage together, step count follows the path; Review has no erase verb in
+  5 languages; web preview + helper; consoles + GTK source; Tk splash
+  roadmap vs header stepper canvas text). Updated test_step_progress_130.py
+  (3 pins) and test_journey_stages.py (comment). New tests fail on 57bac5a.
+- CHECKS: stage/step/journey/language/translation files 258 pass non-Tk;
+  Tk cases 22 pass one by one; ruff, mypy --platform linux. Screens:
+  scratch work138-scratch-20261103 shots-before (57bac5a) / shots-after (en
+  800x600 all sizes, 1280x820; de). Per-file comparison vs 57bac5a:
+  PENDING (queued after the #136/#137 comparisons).
+- NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: run the comparison, push; hosted gate on the stack head (owner
+  approval); merge after #137.

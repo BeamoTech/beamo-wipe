@@ -153,7 +153,7 @@ def test_rendered_headers_name_preparation_erase_result_not_equal_pages(ui):  # 
     assert "Erase" in texts
     assert "Result" in texts
     # Three stages, never eight equal pages. The only "Step" text is the
-    # Preparation sub-step beside them (#130): "Step 6 of 6 · Review and erase".
+    # Preparation sub-step beside them (#130): "Step 6 of 6 · Review" (#138).
     assert all(" of 8" not in text for text in texts)
     steps = [text for text in texts if text.startswith("Step ")]
     assert steps == [C.journey_step_caption(wiz)]

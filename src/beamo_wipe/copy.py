@@ -87,18 +87,23 @@ def journey_announcement(screen: Screen) -> str:
     return f"{caption}."
 
 
-# Preparation steps (#130). One set of names for the step bar and the start
-# screen's roadmap (#138); Review is the last step before Erase (#166). The
-# order and count come from wizard.PREPARATION_PATH, never from this file.
+# Preparation steps (#130). One vocabulary (#138): the stages above
+# (Preparation, Erase, Result) name the header stepper, the progress strip,
+# spoken announcements and the start-screen roadmap; these names are the
+# steps inside Preparation. Review is the last step before Erase (#166), so
+# it does not say "erase". Order and count come from wizard.PREPARATION_PATH.
 STEP_NAME_KEYBOARD = "Check keyboard"
 STEP_NAME_OWNER = "Confirm ownership"
 STEP_NAME_PICK = "Choose a disk"
 STEP_NAME_CONFIRM = "Confirm its identity"
 STEP_NAME_METHOD = "Choose a method"
-STEP_NAME_REVIEW = "Review and erase"
+STEP_NAME_REVIEW = "Review"
 STEP_CAPTION = "Step {n} of {total} · {name}"
 STEP_SPOKEN = "{stage}, step {n} of {total}: {name}."
 _ROADMAP_ARROW = "  →  "  # not translated: an arrow
+# Start-screen roadmap entry for the first stage (#138): its name and how
+# many steps the header will count through.
+ROADMAP_STAGE_STEPS = "{stage} ({count} steps)"
 
 _STEP_NAME_KEYS = {
     Screen.KEYBOARD: "STEP_NAME_KEYBOARD",
@@ -108,8 +113,6 @@ _STEP_NAME_KEYS = {
     Screen.METHOD: "STEP_NAME_METHOD",
     Screen.LAST_CHANCE: "STEP_NAME_REVIEW",
 }
-# The roadmap names the decisions: setup steps (keyboard, ownership) stay off it.
-_ROADMAP_FROM = Screen.PICK
 
 
 def step_name(screen: Screen) -> str:
@@ -153,10 +156,16 @@ def journey_step_announcement(wizard) -> str:
     return journey_announcement(wizard.screen)
 
 
+def roadmap_parts(path: tuple[Screen, ...]) -> tuple[str, ...]:
+    """The stages as the header names them (#138): "Preparation (6 steps)",
+    "Erase", "Result". The step count is the header's "Step n of N" total."""
+    first = ROADMAP_STAGE_STEPS.format(stage=JOURNEY_LABELS[0], count=len(path))
+    return (first, *JOURNEY_LABELS[1:])
+
+
 def splash_roadmap(path: tuple[Screen, ...]) -> str:
-    """Start-screen roadmap from the same step names, from Choose a disk on."""
-    steps = path[path.index(_ROADMAP_FROM):] if _ROADMAP_FROM in path else path
-    return _ROADMAP_ARROW.join(step_name(screen) for screen in steps)
+    """Start-screen roadmap: the header's stages, from the same source."""
+    return _ROADMAP_ARROW.join(roadmap_parts(path))
 
 SELECTED_DISK = "This disk"
 SERIAL_LABEL = "Serial number"

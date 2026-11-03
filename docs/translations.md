@@ -252,11 +252,15 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   string must keep literal [brackets]. FR *soulignés*, DE *unterstrichen*,
   ES *subrayados*, IT *sottolineati* refer to the marked characters.
 - `copy.STEP_NAME_KEYBOARD` … `STEP_NAME_REVIEW`, `STEP_CAPTION` and
-  `STEP_SPOKEN` (added 2026-11-02 for #130, not yet reviewed): the step bar
-  and the start-screen roadmap share these names (#138), so *Choose a disk*,
-  *Confirm its identity* and *Review and erase* must keep the earlier roadmap
-  wording. Keep `{n}`, `{total}`, `{name}` and `{stage}`; the caption must fit
-  the 800 px header (it is shortened to `STEP_OF` when it does not).
+  `STEP_SPOKEN` (added 2026-11-02 for #130, not yet reviewed): the step
+  bar's step names. `STEP_NAME_REVIEW` is just *Review* (#138; FR *Vérifier*,
+  DE *Prüfen*, ES *Revisar*, IT *Controllare*) and must never contain the
+  erase verb: it is the step before the Erase stage. Keep `{n}`, `{total}`,
+  `{name}` and `{stage}`; the caption must fit the 800 px header (it is
+  shortened to `STEP_OF` when it does not).
+- `copy.ROADMAP_STAGE_STEPS` (2026-11-03 for #138, not yet reviewed): the
+  start-screen roadmap's first stage, "{stage} ({count} steps)". The roadmap
+  is otherwise the `JOURNEY_LABELS` stage names, so it matches the header.
 - `copy.HINT_KEYBOARD`, `KEYBOARD_AUTO`, `KEYBOARD_AUTO_ALT`,
   `KEYBOARD_AUTO_OTHER`, `KEYBOARD_KEPT` and `KEYBOARD_STAYS` (changed or added
   2026-11-02 for #131, not yet reviewed): keep the literal key words

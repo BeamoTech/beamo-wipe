@@ -93,7 +93,7 @@ def test_each_step_has_a_name_and_numbers_count_up_without_gaps():
                                             name=C.step_name(screen)))
     assert len(set(labels)) == len(labels)
     assert labels[2] == "Step 3 of 6 · Choose a disk"
-    assert labels[5] == "Step 6 of 6 · Review and erase"
+    assert labels[5] == "Step 6 of 6 · Review"  # #138: last step before Erase
 
 
 @pytest.mark.parametrize("screen,parent", [
@@ -213,8 +213,11 @@ def test_roadmap_and_step_bar_share_the_same_names(code):
     lang.set_language(code)
     names = [C.step_name(screen) for screen in PREPARATION_PATH]
     assert len(set(names)) == len(names) and all(names)
-    roadmap = C.splash_roadmap(PREPARATION_PATH)
-    assert roadmap.split(C._ROADMAP_ARROW) == names[2:]
+    # #138: the roadmap names the header's stages, with Preparation's count.
+    roadmap = C.splash_roadmap(PREPARATION_PATH).split(C._ROADMAP_ARROW)
+    assert roadmap[0] == C.ROADMAP_STAGE_STEPS.format(
+        stage=C.JOURNEY_LABELS[0], count=len(PREPARATION_PATH))
+    assert roadmap[1:] == list(C.JOURNEY_LABELS[1:])
     for number, screen in enumerate(PREPARATION_PATH, 1):
         caption = C.STEP_CAPTION.format(n=number, total=6, name=C.step_name(screen))
         assert str(number) in caption and "6" in caption and C.step_name(screen) in caption
@@ -225,9 +228,10 @@ def test_roadmap_and_step_bar_share_the_same_names(code):
         assert C.step_name(Screen.PICK) != "Choose a disk"
 
 
-def test_english_roadmap_keeps_the_start_screen_wording_and_adds_method():
+def test_english_roadmap_names_the_header_stages():
+    """#138 replaces the four-step roadmap with the header's stages."""
     assert C.splash_roadmap(PREPARATION_PATH) == (
-        "Choose a disk  →  Confirm its identity  →  Choose a method  →  Review and erase")
+        "Preparation (6 steps)  →  Erase  →  Result")
 
 
 # --- Console and web preview show the same text -----------------------------------
@@ -253,7 +257,7 @@ def test_web_preview_uses_the_wizard_step_captions():
     captions = payload["stepCaptions"]
     assert captions["pick"] == captions["empty"] == captions["blocked"] == captions["disk_help"]
     assert captions["method"] == captions["advanced"] == captions["limits"]
-    assert captions["last"] == "Step 6 of 6 · Review and erase"
+    assert captions["last"] == "Step 6 of 6 · Review"
     assert [captions[k] for k in ("keyboard", "owner", "pick", "confirm", "method", "last")] == [
         C.STEP_CAPTION.format(n=n, total=6, name=C.step_name(s)) for n, s in enumerate(MAIN, 1)]
     assert payload["stepParts"]["pick"] == pytest.approx(0.5)

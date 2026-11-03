@@ -30,7 +30,7 @@ from beamo_wipe.methods import METHODS, MethodId
 from beamo_wipe.models import Screen
 from beamo_wipe.progress import ProgressAnnouncer, ProgressView
 from beamo_wipe.safety import same_size_conflict
-from beamo_wipe.wizard import Wizard, error_needs_support
+from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support
 
 
 def _print_recovery(sections) -> None:
@@ -929,6 +929,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.SPLASH:
             print(C.SPLASH_TAGLINE)
+            print(C.splash_roadmap(PREPARATION_PATH))  # the header's stages (#138)
             _answer(wizard, C.CON_PRESS_ENTER)
             wizard.skip_splash()
             continue
@@ -1482,6 +1483,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 y += 1
         elif wizard.screen == Screen.SPLASH:
             y = _wrap(stdscr, y, C.SPLASH_TAGLINE, w, y_max)
+            y = _wrap(stdscr, y, C.splash_roadmap(PREPARATION_PATH), w, y_max)
         elif wizard.screen == Screen.KEYBOARD:
             # #131: the language list comes first and always stays on screen;
             # F2 changes it before anything else has to be read.

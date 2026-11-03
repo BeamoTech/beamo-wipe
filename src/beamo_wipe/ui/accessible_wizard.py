@@ -39,7 +39,7 @@ from beamo_wipe.progress import ProgressAnnouncer  # noqa: E402
 from beamo_wipe.diagnostics import emit_serial_marker  # noqa: E402
 from beamo_wipe.safety import same_size_conflict  # noqa: E402
 from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
-from beamo_wipe.wizard import Wizard, error_needs_support  # noqa: E402
+from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support  # noqa: E402
 
 
 def _record_image(text: str, scale: int = 4):
@@ -458,6 +458,8 @@ class AccessibleWizard:
         arrival = heading
         if screen == Screen.SPLASH:
             heading.set_text(C.SPLASH_TAGLINE)
+            # The header's stages, from the same source (#138).
+            self.label(C.splash_roadmap(PREPARATION_PATH), focusable=True)
             self.button(C.primary_action(Screen.SPLASH), self.w.skip_splash)
         elif screen == Screen.KEYBOARD:
             heading.set_text(C.TITLE_KEYBOARD)
