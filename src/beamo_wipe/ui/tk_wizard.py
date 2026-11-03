@@ -3451,6 +3451,21 @@ class TkWizard:
 
         entry.bind("<FocusIn>", _entry_focus)
         entry.bind("<FocusOut>", lambda _e: shell.set_focused(False))
+        # Guided check (#140): the X keysym the key printed Z produced under
+        # the active layout. Advisory; Continue never waits for it.
+        entry.bind("<KeyPress>", self._keyboard_check_key, add="+")
+        result = self.w.keyboard_check_text
+        if result:
+            check = self.w.keyboard_check
+            kind = check.kind if check is not None else ""
+            color = OK if kind == "match" else WARN if kind == "other" else MUTED
+            self._p(zone, result, font=self.font_s_bold, fg=color).pack(fill=tk.X, pady=(6, 0))
+            switch = self.w.keyboard_check_switch
+            if switch:
+                _Button(
+                    zone, text=switch, command=self._nav(self._accept_keyboard_suggestion),
+                    font=self.font_btn, variant="secondary", compact=True,
+                ).pack(anchor="w", pady=(6, 0))
         # First arrival: the chosen language (the first control). Redraws
         # keep the control the person was using: a layout card or the box.
         memory = getattr(self, "_kbd_focus", None)
@@ -3465,6 +3480,24 @@ class TkWizard:
         if self.w._keyboard_from:
             self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.KEYBOARD), self.w.accept_keyboard)
+
+    def _keyboard_check_key(self, event) -> None:
+        """Judge one key press for the guided check (#140)."""
+        keysym = str(getattr(event, "keysym", "") or "")
+        typed = keysym if len(keysym) == 1 else str(getattr(event, "char", "") or "")
+        if self.w.check_keyboard_key(typed) is None:
+            return
+        self._kbd_focus = ("entry",)
+        # After the key reaches the box: redraw with the result below it.
+        self.root.after_idle(self._redraw_keyboard_check)
+
+    def _redraw_keyboard_check(self) -> None:
+        if not getattr(self, "_ui_dead", False) and self.w.screen == Screen.KEYBOARD:
+            self._draw()
+
+    def _accept_keyboard_suggestion(self) -> None:
+        self._kbd_focus = ("entry",)
+        self.w.accept_keyboard_suggestion()
 
     def _typing_var_written(self, *_a) -> None:
         if self.w.screen != Screen.KEYBOARD:

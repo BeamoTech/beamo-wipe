@@ -526,7 +526,24 @@ class AccessibleWizard:
                 lambda widget: self._typing(widget.get_text(), generation),
             )
             self.body.pack_start(entry, False, False, 4)
+            # Guided check (#140): Orca reads the prompt as the box's name;
+            # a result is an alert label that takes focus so it is spoken.
+            entry.get_accessible().set_name(C.KEYBOARD_CHECK_LABEL)
+            entry.connect(
+                "key-press-event",
+                lambda _widget, event: self._keyboard_check_key(event, generation),
+            )
             arrival = chosen_language or entry
+            result = self.w.keyboard_check_text
+            if result:
+                result_label = self.label(result, focusable=True)
+                result_label.get_accessible().set_role(Atk.Role.ALERT)
+                if getattr(self, "_check_fresh", False):
+                    arrival = result_label
+                switch = self.w.keyboard_check_switch
+                if switch:
+                    self.button(switch, self.w.accept_keyboard_suggestion, in_body=True)
+            self._check_fresh = False
             self.button(C.primary_action(Screen.KEYBOARD), self.w.accept_keyboard)
         elif screen in (Screen.WHAT, Screen.OWNER):
             heading.set_text(C.TITLE_OWNER)
@@ -1136,6 +1153,24 @@ class AccessibleWizard:
             return
         self.w.set_confirm_input(text)
         self.primary.set_sensitive(self.w.token_ok)
+
+    def _keyboard_check_key(self, event, generation) -> bool:
+        """Guided check (#140): the keysym the key printed Z produced."""
+        if generation != self.generation or self.w.screen != Screen.KEYBOARD:
+            return False
+        name = Gdk.keyval_name(event.keyval) or ""
+        if len(name) != 1:
+            code = Gdk.keyval_to_unicode(event.keyval)
+            name = chr(code) if code else ""
+        if self.w.check_keyboard_key(name) is not None:
+            self._check_fresh = True
+            GLib.idle_add(self._rerender_keyboard_check, generation)
+        return False  # the key still reaches the box
+
+    def _rerender_keyboard_check(self, generation) -> bool:
+        if generation == self.generation and self.w.screen == Screen.KEYBOARD:
+            self.render()
+        return False
 
     def _typing(self, text, generation):
         if generation != self.generation or self.w.screen != Screen.KEYBOARD:

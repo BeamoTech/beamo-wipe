@@ -598,6 +598,26 @@ def _gallery_html_for_current_language(lang: str) -> str:
             }
             for layout_id in LAYOUT_ORDER
         ],
+        # Guided keyboard check (#140): the same rule table as keyboard.py.
+        # A browser cannot switch layouts, so the preview judges the key it
+        # receives against the layout picked on the page.
+        "keyCheck": {
+            "families": {name: dict(letters) for name, letters in _keyboard._FAMILY_LETTERS.items()},
+            "layoutFamily": {lid: _keyboard.LAYOUTS[lid].family for lid in LAYOUT_ORDER},
+            "familyLayout": {
+                **_keyboard._FAMILY_LAYOUT,
+                "qwerty": next(
+                    (lid for lid in (_keyboard.LANGUAGE_LAYOUTS.get(lang, "us"),)
+                     if _keyboard.LAYOUTS[lid].family == "qwerty"),
+                    "us",
+                ),
+            },
+            "key": _keyboard.CHECK_KEY,
+            "match": C.KEYBOARD_CHECK_MATCH,
+            "other": C.KEYBOARD_CHECK_OTHER,
+            "switch": C.KEYBOARD_CHECK_SWITCH,
+            "unclear": C.KEYBOARD_CHECK_UNCLEAR,
+        },
         "titles": {
             "keyboard": C.TITLE_KEYBOARD,
             "what": C.TITLE_WHAT,
@@ -1542,6 +1562,18 @@ function diskCard(d) {
     </div>
   </div>`;
 }
+// #140: the guided keyboard check, same rules as keyboard.check_key.
+function keyCheck(active, typed) {
+  if (typeof typed !== "string" || !/^\p{L}$/u.test(typed)) return null;
+  const k = P.keyCheck, produced = typed.toLowerCase();
+  const fam = k.layoutFamily[active] || "qwerty";
+  const pos = Object.keys(k.families[fam]).find(p => k.families[fam][p] === produced);
+  const target = pos === undefined ? undefined
+    : Object.keys(k.families).find(f => k.families[f][pos] === k.key);
+  if (!target) return {kind: "unclear", typed: produced};
+  if (target === fam) return {kind: "match", layout: active};
+  return {kind: "other", layout: k.familyLayout[target] || "us"};
+}
 function requestRefresh() {
   // #136: not on What/Owner (no disk list yet); guarded after Pick.
   if (!REFRESH_OFFERED.includes(screen)) return;
@@ -1648,7 +1680,8 @@ function draw() {
       <div class="cz"><div class="czc">${layouts}
       <p class="small muted">${P.keyboardLimits}</p>
       <p class="small">${P.keyboardCheck}</p>
-      <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value=""></div>
+      <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value="" aria-label="${P.keyboardCheck}"></div>
+      <p class="small" id="kbresult" role="status" aria-live="polite"></p><div id="kbswitch"></div>
       </div></div>`;
     main.querySelectorAll("[data-layout]").forEach(el => {
       const pick = (keyboard = false) => {
@@ -1674,7 +1707,24 @@ function draw() {
       };
     });
     const box = main.querySelector("#kbcheck");
-    if (box) box.value = "";
+    if (box) {
+      box.value = "";
+      box.addEventListener("keydown", (e) => {
+        const result = keyCheck(keyboardLayout || "us", e.key);
+        if (!result) return;
+        const title = id => (P.keyboardLayouts.find(l => l.id === id) || {title: id}).title;
+        const out = main.querySelector("#kbresult"), sw = main.querySelector("#kbswitch");
+        sw.innerHTML = "";
+        if (result.kind === "match") out.textContent = P.keyCheck.match.replace("{layout}", title(result.layout));
+        else if (result.kind === "other") {
+          out.textContent = P.keyCheck.other.replace("{layout}", title(result.layout));
+          sw.append(btn(P.keyCheck.switch.replace("{layout}", title(result.layout)), () => {
+            keyboardLayout = result.layout; layoutChosen = true; draw();
+            main.querySelector("#kbcheck")?.focus();
+          }, "secondary"));
+        } else out.textContent = P.keyCheck.unclear.replace("{typed}", result.typed);
+      });
+    }
     btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
     renderHint(P.hints.keyboard);
     btnsR.append(btn(P.buttons.continue, () => { screen = "owner"; draw(); }, "primary"));

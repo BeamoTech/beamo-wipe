@@ -207,15 +207,27 @@ SPLASH_TAGLINE = (
 
 KEYBOARD_LEAD = (
     "Choose the layout that matches the keys you see. "
-    "Then type a few characters to check."
+    "Then press one key below to check it."
 )
 KEYBOARD_LIMITS = (
     "Only the layouts listed here are offered. "
     "The change lasts until this USB restarts. "
     "It does not change firmware or BIOS keyboards."
 )
-KEYBOARD_CHECK_LABEL = "Type here to check. This is not a password and is not saved."
-KEYBOARD_CHECK_HINT = "Try letters that differ on your keyboard, then a number."
+# Guided check (#140): one key, advisory, never blocks Continue. "Z" is the
+# key label printed on the keyboard; keep it as is in every language.
+KEYBOARD_CHECK_LABEL = (
+    "Optional check: press the key labelled Z here. Nothing you type is saved."
+)
+KEYBOARD_CHECK_HINT = "Press the key labelled Z"
+KEYBOARD_CHECK_MATCH = "✓ Letters and numbers match {layout}."
+KEYBOARD_CHECK_OTHER = "That looks like {layout}. Switch to it?"
+KEYBOARD_CHECK_SWITCH = "Switch to {layout}"
+KEYBOARD_CHECK_UNCLEAR = (
+    "That key typed “{typed}”. Press the key labelled Z to check, or just continue."
+)
+CON_KEYBOARD_CHECK_SWITCH = "F3: switch to {layout}"
+CON_KEYBOARD_CHECK_SWITCH_WORD = "Type SWITCH to use {layout}."
 KEYBOARD_UTILITY = "Keyboard layout"
 TEXT_SIZE_LEAD = "Choose a size that is easy to read. You can change it later."
 TEXT_SIZE_STANDARD = "Standard"

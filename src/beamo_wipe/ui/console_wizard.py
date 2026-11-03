@@ -499,10 +499,17 @@ def _primary_footer(
     if screen == Screen.SPLASH:
         return [C.CON_PRESS_ANY_KEY]
     if screen == Screen.KEYBOARD:
-        return [
-            C.CON_KEYBOARD_FOOTER,
-            C.CON_INPUT_PREFIX + wizard.typing_check,
-        ]
+        lines = [C.CON_KEYBOARD_FOOTER]
+        # Guided check (#140): the result sits beside the typed text.
+        result = getattr(wizard, "keyboard_check_text", "")
+        if result:
+            lines.append(result)
+            check = getattr(wizard, "keyboard_check", None)
+            if check is not None and check.kind == "other":
+                title = _keyboard.LAYOUTS[check.layout_id].title
+                lines.append(C.CON_KEYBOARD_CHECK_SWITCH.format(layout=title))
+        lines.append(C.CON_INPUT_PREFIX + wizard.typing_check)
+        return lines
     if screen in (Screen.WHAT, Screen.OWNER):
         return [C.CON_OWNER_FOOTER, C.CON_READ_MORE]
     if screen == Screen.PICK:
@@ -962,8 +969,21 @@ def _plain_loop_body(wizard: Wizard) -> int:
             elif wizard.keyboard_message:
                 print(f"{C.SEVERITY_WARNING}: {wizard.keyboard_message}")
             print(C.KEYBOARD_CHECK_LABEL)
+            result = wizard.keyboard_check_text
+            if result:
+                print(result)
+                check = wizard.keyboard_check
+                if check is not None and check.kind == "other":
+                    title = _keyboard.LAYOUTS[check.layout_id].title
+                    print(C.CON_KEYBOARD_CHECK_SWITCH_WORD.format(layout=title))
             typed = input(C.CON_INPUT_PREFIX)
             key = typed.strip()
+            if key.upper() == "SWITCH":
+                wizard.accept_keyboard_suggestion()
+                continue
+            if len(key) == 1 and key.isalpha():
+                # #140: one letter is an answer to the guided check.
+                wizard.check_keyboard_key(key)
             keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             language_mapping = {f"L{i}": code for i, code in enumerate(LANGUAGE_ORDER, 1)}
             if key in keyboard_mapping:
@@ -2230,6 +2250,9 @@ def _handle(wizard: Wizard, ch: int) -> None:
         if ch == curses.KEY_F2:
             wizard.choose_language(_next_language(wizard))
             return
+        if ch == curses.KEY_F3:
+            wizard.accept_keyboard_suggestion()  # #140 one-key switch
+            return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.accept_keyboard()
             return
@@ -2238,6 +2261,8 @@ def _handle(wizard: Wizard, ch: int) -> None:
             return
         if 32 <= ch < 127:
             wizard.set_typing_check(wizard.typing_check + chr(ch))
+            # #140: the console compares the character the keymap produced.
+            wizard.check_keyboard_key(chr(ch))
             return
         if ch == 27:
             wizard.back()

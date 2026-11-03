@@ -163,6 +163,65 @@ LANGUAGE_ALTERNATIVE_LAYOUTS: Mapping[str, str] = {
     "es": "latam",
 }
 
+# Guided keyboard check (#140). The person presses the key printed "Z";
+# the active layout turns that physical key into a character. Z sits in a
+# different place in each shipped family (QWERTY: bottom row; QWERTZ: top
+# row, 6th; AZERTY: top row, 2nd), so one key tells the families apart.
+# Inside the QWERTY family letters and unshifted digits are identical, which
+# is what the typed confirmation needs. Positions are named by the US QWERTY
+# key there; only the letters the check needs are listed.
+CHECK_KEY = "z"
+_FAMILY_LETTERS: Mapping[str, Mapping[str, str]] = {
+    "qwerty": {"q": "q", "w": "w", "y": "y", "z": "z", "a": "a"},
+    "qwertz": {"q": "q", "w": "w", "y": "z", "z": "y", "a": "a"},
+    "azerty": {"q": "a", "w": "z", "y": "y", "z": "w", "a": "q"},
+}
+_FAMILY_LAYOUT = {"qwertz": "de", "azerty": "fr"}
+
+
+@dataclass(frozen=True)
+class KeyCheck:
+    """One check result. ``kind``: match, other (suggest ``layout_id``),
+    or unclear (a different key; ``typed`` says which)."""
+
+    kind: str
+    layout_id: str
+    typed: str
+
+
+def check_key(active_layout_id: str, typed: str, *, language: str = "en") -> Optional[KeyCheck]:
+    """Compare what the key printed Z produced under the active layout.
+
+    ``typed`` is the character (or one-letter X keysym) the key produced.
+    Returns None for modifiers and anything that is not one letter: those
+    are not an answer. Advisory only; it never changes the layout itself.
+    """
+    if not isinstance(typed, str) or len(typed) != 1 or not typed.isalpha():
+        return None
+    produced = typed.lower()
+    active = LAYOUTS.get(active_layout_id)
+    if active is None or active.family not in _FAMILY_LETTERS:
+        return None
+    position = next(
+        (pos for pos, char in _FAMILY_LETTERS[active.family].items() if char == produced),
+        None,
+    )
+    family = next(
+        (name for name, letters in _FAMILY_LETTERS.items()
+         if position is not None and letters.get(position) == CHECK_KEY),
+        None,
+    )
+    if family is None:
+        return KeyCheck("unclear", active.id, produced)
+    if family == active.family:
+        return KeyCheck("match", active.id, produced)
+    suggestion = _FAMILY_LAYOUT.get(family)
+    if suggestion is None:  # the QWERTY family: the language's usual one
+        usual = LANGUAGE_LAYOUTS.get(language, DEFAULT_LAYOUT)
+        suggestion = usual if LAYOUTS[usual].family == "qwerty" else DEFAULT_LAYOUT
+    return KeyCheck("other", suggestion, produced)
+
+
 UNAVAILABLE = "That keyboard layout is not available."
 APPLY_FAILED = (
     "Could not change the keyboard layout. The previous layout is still in use."

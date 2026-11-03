@@ -451,6 +451,7 @@ class Wizard:
         self.text_size = "standard"
         self.language = "en"
         self.typing_check = ""
+        self.keyboard_check: Optional[_keyboard.KeyCheck] = None
         self.keyboard_message = ""
         # #131: a layout the person picked is never replaced by a language's
         # usual layout. ``layout_notice`` says what choosing a language did
@@ -1043,6 +1044,7 @@ class Wizard:
                 self.screen = Screen.KEYBOARD
             if self.screen == Screen.KEYBOARD:
                 self.typing_check = ""
+                self.keyboard_check = None
                 self.screen = Screen.OWNER
 
     def set_text_size(self, size: str) -> bool:
@@ -1080,6 +1082,7 @@ class Wizard:
                 dest = Screen.OWNER
             self._keyboard_from = None
             self.typing_check = ""
+            self.keyboard_check = None
             self._return_to_screen_locked(dest)
 
     @property
@@ -1114,7 +1117,52 @@ class Wizard:
             self._keyboard_from = self.screen
             self.screen = Screen.KEYBOARD
             self.typing_check = ""
+            self.keyboard_check = None
             self.keyboard_message = ""
+
+    def check_keyboard_key(self, typed: str):
+        """Guided keyboard check (#140): judge the key printed Z.
+
+        Advisory only: it never changes the layout or blocks Continue.
+        Returns the new result, or None when ``typed`` is not an answer.
+        """
+        with self._lock:
+            if self.screen != Screen.KEYBOARD:
+                return None
+            result = _keyboard.check_key(self.keyboard_layout, typed, language=self.language)
+            if result is not None:
+                self.keyboard_check = result
+            return result
+
+    def accept_keyboard_suggestion(self) -> bool:
+        """The one-click switch offered by a mismatch result."""
+        check = self.keyboard_check
+        if self.screen != Screen.KEYBOARD or check is None or check.kind != "other":
+            return False
+        return self.set_keyboard_layout(check.layout_id)
+
+    @property
+    def keyboard_check_text(self) -> str:
+        """The check's result in words, or "" before a key is pressed."""
+        check = self.keyboard_check
+        if check is None:
+            return ""
+        layout = _keyboard.LAYOUTS.get(check.layout_id)
+        title = layout.title if layout is not None else check.layout_id
+        if check.kind == "match":
+            return C.KEYBOARD_CHECK_MATCH.format(layout=title)
+        if check.kind == "other":
+            return C.KEYBOARD_CHECK_OTHER.format(layout=title)
+        return C.KEYBOARD_CHECK_UNCLEAR.format(typed=check.typed)
+
+    @property
+    def keyboard_check_switch(self) -> str:
+        """Button label for the one-click switch, or "" when none is offered."""
+        check = self.keyboard_check
+        if check is None or check.kind != "other":
+            return ""
+        layout = _keyboard.LAYOUTS.get(check.layout_id)
+        return C.KEYBOARD_CHECK_SWITCH.format(layout=layout.title if layout else check.layout_id)
 
     def set_typing_check(self, text: str) -> None:
         with self._lock:
@@ -1235,6 +1283,7 @@ class Wizard:
             return False
         self.keyboard_layout = layout_id
         self.typing_check = ""
+        self.keyboard_check = None
         self.keyboard_message = result.message
         self.error = None
         self._invalidate_after_layout_change_locked()
@@ -1248,6 +1297,7 @@ class Wizard:
         self._authorized_operation = None
         self._keyboard_from = None
         self.typing_check = ""
+        self.keyboard_check = None
         if self.screen not in {Screen.KEYBOARD, Screen.SPLASH, Screen.WHAT, Screen.OWNER}:
             self.screen = Screen.OWNER
 
@@ -1280,6 +1330,7 @@ class Wizard:
         except Exception:
             self.language = "en"
         self.typing_check = ""
+        self.keyboard_check = None
         self.keyboard_message = ""
         self._keyboard_from = None
         self.method = DEFAULT_METHOD
@@ -3956,6 +4007,7 @@ class Wizard:
                 dest = self._keyboard_from
                 self._keyboard_from = None
                 self.typing_check = ""
+                self.keyboard_check = None
                 if dest and dest not in {
                     Screen.KEYBOARD,
                     Screen.SPLASH,

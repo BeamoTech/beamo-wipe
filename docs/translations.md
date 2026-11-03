@@ -290,6 +290,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `copy.KEYBOARD_CHECK_*`, `CON_KEYBOARD_CHECK_*` and the changed
+  `KEYBOARD_LEAD` (2026-11-03 for #140, not yet reviewed): the guided keyboard
+  check. "Z" is the key label printed on the keyboard; keep it as is. Keep
+  `{layout}` and `{typed}`; the typed `SWITCH` and `F3` stay English. The match
+  line promises only letters and numbers, nothing about symbols.
 - `copy.SPLASH_TAGLINE` (changed 2026-11-03 for #137, not yet reviewed): the
   start screen's first line. It must name the translated `BTN_ERASE` exactly
   (tested) and stay two short sentences.

@@ -3383,3 +3383,46 @@ another very thorough and comprehensive pass of this." Repo
   related files vs 126bd2a: PENDING (queued after #136-#138).
 - NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
 - NEXT: comparison, push; hosted gate on the stack head (owner approval).
+
+## BW-140-KEYCHECK — Guided keyboard check (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, REAL X/CONSOLE KEYMAPS, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-check-140` (stacked on
+  `feat/setup-order-139` @ 9d93be5), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
+  review item 14); #131/#139/#155 coordination only.
+- DESIGN: "Optional check: press the key labelled Z here." The active
+  layout turns that physical key into a character; Z sits in a different
+  place on QWERTY (bottom row), QWERTZ (top row 6th) and AZERTY (top row
+  2nd), so one key separates the shipped families (`keyboard.check_key`,
+  table `_FAMILY_LETTERS` by US-key position). Within QWERTY (us, gb, es,
+  latam, it) letters and unshifted digits are identical — what the typed
+  confirmation needs — so the match line promises only "letters and
+  numbers". Results: match; other (suggest de / fr / the language's usual
+  QWERTY else us) with one-click switch; unclear (another letter). Not one
+  letter (Shift, dead keys, digits) is not an answer. Advisory: never
+  switches by itself, never blocks Continue; a failed switch keeps the
+  layout and shows the existing failure message.
+- SURFACES: Tk reads the X keysym on <KeyPress> in the check box, shows the
+  result (green/amber) and a Switch button, focus stays in the box. GTK
+  reads Gdk.keyval_name, names the box with the prompt, shows the result as
+  an ALERT label that takes focus (Orca speaks it), then the Switch button.
+  Curses compares the produced character (keymap from loadkeys); result in
+  the footer, F3 switches. Plain console: a single letter is checked, SWITCH
+  switches. Web preview: same rule table from Python, aria-live result.
+  KEYBOARD_LEAD now says "Then press one key below to check it."
+- FILES: keyboard.py, wizard.py, copy.py, locales fr/de/es/it (8 strings +
+  2 changed + lead; drafts), ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, gallery.py; docs screens.md, screen-reader.md,
+  translations.md. Tests: new tests/test_keyboard_check_140.py.
+- CHECKS: new tests 69 pass (55 non-Tk incl. 7 layouts x 3 families, 14 one
+  by one incl. simulated Tk key events for us/fr/de/gb/it and mismatches,
+  800x600 at all sizes); on 9d93be5: 66 fail, 2 general guards pass, 1
+  skipped. translation/language/keyboard_layout files pass; ruff, mypy
+  --platform linux, node --check (en, de). Screens: scratch
+  work140-scratch-20261103/shots-after (Z match, Y mismatch; 800x600 all
+  sizes, 1280x820). Related-file comparison vs 9d93be5: PENDING (queued).
+- NOT VERIFIED: real X keysyms under setxkbmap and real console keymaps on
+  the live ISO (simulated events only here), GTK/Orca speech, Linux pytest
+  at 72 DPI, ISO/QEMU, native review.
+- NEXT: comparison, push; live-ISO keyboard check per layout in the QEMU
+  worker (owner approval for hosted gate).
