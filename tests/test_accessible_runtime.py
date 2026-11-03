@@ -1913,3 +1913,41 @@ def test_accessible_confirm_names_the_field_and_marks_the_characters(ui, serial)
         assert not identity.get_use_markup()
         assert spec.token in prompt
     assert not wizard.runner.started
+
+
+@pytest.mark.parametrize("stop", ["keyboard", "owner", "pick", "confirm", "method", "last_chance"])
+def test_accessible_heading_describes_the_preparation_step(ui, stop):
+    """#130: Orca hears "Preparation, step N of 6: <name>." on each step."""
+    from beamo_wipe import copy as C
+    from beamo_wipe.wizard import PREPARATION_PATH
+
+    wizard = make_demo_wizard()
+    wizard.skip_splash()
+    order = ["keyboard", "owner", "pick", "confirm", "method", "last_chance"]
+    steps = order[: order.index(stop) + 1]
+    if "owner" in steps:
+        wizard.accept_keyboard()
+    if "pick" in steps:
+        wizard.set_owner(True)
+        wizard.continue_owner()
+    if "confirm" in steps:
+        wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+        wizard.continue_pick()
+    if "method" in steps:
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+    if "last_chance" in steps:
+        wizard.continue_method()
+    assert wizard.screen.value == stop
+    app = ui(wizard)
+    heading = next(
+        widget for widget in widgets(app.window)
+        if isinstance(widget, Gtk.Label)
+        and widget.get_style_context().has_class("screen-heading")
+    )
+    number = PREPARATION_PATH.index(wizard.screen) + 1
+    description = heading.get_accessible().get_description()
+    assert description == C.journey_step_announcement(wizard)
+    assert description == f"Preparation, step {number} of 6: {C.step_name(wizard.screen)}."
+    # The step is the description; the heading name stays the page title.
+    assert "step" not in heading.get_accessible().get_name().lower()

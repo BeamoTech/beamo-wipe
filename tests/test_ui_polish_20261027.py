@@ -107,8 +107,9 @@ def test_header_stage_caption_follows_the_language(ui, code):  # noqa: F811
     wiz.set_language(code)
     _drive_to(wiz, app, Screen.CONFIRM)
     texts = [text for text, _ in _header_texts(app)]
-    assert C.JOURNEY_LABELS[0] in texts
-    assert "Preparation" not in texts
+    # Narrow windows name the step in the active language (#130).
+    assert C.journey_step_caption(wiz) in texts or C.journey_step_short(wiz) in texts
+    assert not any("Preparation" in text or "Step " in text for text in texts)
 
 
 def test_wide_header_names_the_stage_once(ui):  # noqa: F811
@@ -118,10 +119,14 @@ def test_wide_header_names_the_stage_once(ui):  # noqa: F811
     assert texts.count("Preparation") == 1
     for label in C.JOURNEY_LABELS:
         assert label in texts
-    # Without the stepper (narrow windows) the caption remains the one label.
+    # Beside the stepper, the step caption names where you are in Preparation.
+    assert C.journey_step_caption(wiz) in texts
+    # Without the stepper (narrow windows) the step caption is the one label.
     narrow_wiz, narrow = ui(size=MIN_SIZE)
     _drive_to(narrow_wiz, narrow, Screen.CONFIRM)
-    assert [text for text, _ in _header_texts(narrow)].count("Preparation") == 1
+    narrow_texts = [text for text, _ in _header_texts(narrow)]
+    assert "Preparation" not in narrow_texts
+    assert narrow_texts.count(C.journey_step_caption(narrow_wiz)) == 1
 
 
 @pytest.mark.parametrize("size", [LAPTOP_SIZE, NETBOOK_SIZE, (1280, 820)])

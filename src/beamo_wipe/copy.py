@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """User-facing strings. 8th-grade English. No forbidden claims."""
 
+from typing import Optional
+
 from beamo_wipe import inventory as _inventory
 from beamo_wipe import outcomes as _outcomes
 from beamo_wipe import progress as _progress
@@ -84,10 +86,81 @@ def journey_announcement(screen: Screen) -> str:
         return ""
     return f"{caption}."
 
+
+# Preparation steps (#130). One set of names for the step bar and the start
+# screen's roadmap (#138); Review is the last step before Erase (#166). The
+# order and count come from wizard.PREPARATION_PATH, never from this file.
+STEP_NAME_KEYBOARD = "Check keyboard"
+STEP_NAME_OWNER = "Confirm ownership"
+STEP_NAME_PICK = "Choose a disk"
+STEP_NAME_CONFIRM = "Confirm its identity"
+STEP_NAME_METHOD = "Choose a method"
+STEP_NAME_REVIEW = "Review and erase"
+STEP_CAPTION = "Step {n} of {total} · {name}"
+STEP_SPOKEN = "{stage}, step {n} of {total}: {name}."
+_ROADMAP_ARROW = "  →  "  # not translated: an arrow
+
+_STEP_NAME_KEYS = {
+    Screen.KEYBOARD: "STEP_NAME_KEYBOARD",
+    Screen.OWNER: "STEP_NAME_OWNER",
+    Screen.PICK: "STEP_NAME_PICK",
+    Screen.CONFIRM: "STEP_NAME_CONFIRM",
+    Screen.METHOD: "STEP_NAME_METHOD",
+    Screen.LAST_CHANCE: "STEP_NAME_REVIEW",
+}
+# The roadmap names the decisions: setup steps (keyboard, ownership) stay off it.
+_ROADMAP_FROM = Screen.PICK
+
+
+def step_name(screen: Screen) -> str:
+    """Active-language name of a Preparation step screen."""
+    return str(globals()[_STEP_NAME_KEYS[screen]])
+
+
+def _journey_step(wizard) -> Optional[tuple[int, int, Screen]]:
+    return getattr(wizard, "journey_step", None)
+
+
+def journey_step_caption(wizard) -> str:
+    """Header / console text for the current screen (#130).
+
+    Preparation screens: "Step 3 of 6 · Choose a disk". Other journey
+    screens keep their stage name ("Erase", "Result"); screens without
+    journey chrome return "".
+    """
+    step = _journey_step(wizard)
+    if step is not None:
+        number, total, screen = step
+        return STEP_CAPTION.format(n=number, total=total, name=step_name(screen))
+    return journey_caption(wizard.screen)
+
+
+def journey_step_short(wizard) -> str:
+    """"Step 3 of 6" when the full caption does not fit; else the stage."""
+    step = _journey_step(wizard)
+    if step is not None:
+        return STEP_OF.format(n=step[0], total=step[1])
+    return journey_caption(wizard.screen)
+
+
+def journey_step_announcement(wizard) -> str:
+    """Spoken stage and step: "Preparation, step 3 of 6: Choose a disk."."""
+    step = _journey_step(wizard)
+    if step is not None:
+        number, total, screen = step
+        return STEP_SPOKEN.format(stage=JOURNEY_LABELS[JOURNEY_PREPARATION - 1],
+                                  n=number, total=total, name=step_name(screen))
+    return journey_announcement(wizard.screen)
+
+
+def splash_roadmap(path: tuple[Screen, ...]) -> str:
+    """Start-screen roadmap from the same step names, from Choose a disk on."""
+    steps = path[path.index(_ROADMAP_FROM):] if _ROADMAP_FROM in path else path
+    return _ROADMAP_ARROW.join(step_name(screen) for screen in steps)
+
 SELECTED_DISK = "This disk"
 SERIAL_LABEL = "Serial number"
 REVIEW_CHECK = "Check the disk and method before you erase."
-SPLASH_ROADMAP = "Choose a disk  →  Confirm its identity  →  Review and erase"
 
 # --- Screen titles (happy path talks like a person) ------------------------
 

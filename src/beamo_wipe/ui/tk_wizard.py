@@ -48,6 +48,7 @@ from beamo_wipe.recovery import (
 from beamo_wipe.support_export import next_step_needs_support
 from beamo_wipe.wizard import (
     COUNTDOWN_S,
+    PREPARATION_PATH,
     ReportView,
     Wizard,
     error_needs_support,
@@ -172,7 +173,8 @@ def _step_order() -> dict:
     }
 
 
-# English table kept for source checks; draws use _step_order().
+# Stage and page title per screen, for source checks. The header text
+# itself is copy.journey_step_caption (#130).
 _STEP_ORDER = _step_order()
 
 # Spans of hint copy that render as key-caps instead of plain text.
@@ -1773,17 +1775,19 @@ class TkWizard:
             text_x, mid, anchor="w",
             text=C.APP_NAME, font=self.font_brand, fill=INK,
         )
-        # Combined intro still uses the Owner page. The header names the stage
-        # (Preparation, Erase, Result) and never a wipe percent.
-        step = _step_order().get(self.w.screen, (0, "", ""))
-        stepper = self._draw_journey(cv, width, step[0])
-        label = header_caption(step[0], step[1])
-        if stepper and label == C.JOURNEY_LABELS[step[0] - 1]:
-            # The stepper already highlights this stage; do not repeat it.
-            label = ""
-        if label and stepper and width - 24 - self.font_meta.measure(label) < stepper + 12:
-            # A long caption (Spanish, French, German page names) would run
-            # over the last stage name; the page title below still names it.
+        # The header names the stage (Preparation, Erase, Result) and, while
+        # preparing, the step: "Step 3 of 6 · Choose a disk" (#130). Never a
+        # wipe percent.
+        stage = C.journey_stage(self.w.screen)
+        brand_end = text_x + self.font_brand.measure(C.APP_NAME)
+        label = self.header_step_label(width, brand_end)
+        if stage and label == C.JOURNEY_LABELS[stage - 1]:
+            # The stepper names this stage; repeat it only without a stepper.
+            room = 0.0
+        else:
+            room = self.font_meta.measure(label) + 36 if label else 0.0
+        stepper = self._draw_journey(cv, width, stage, right=width - 24 - room)
+        if stepper and label == C.JOURNEY_LABELS[stage - 1]:
             label = ""
         if label:
             cv.create_text(
@@ -1791,13 +1795,33 @@ class TkWizard:
                 text=label, font=self.font_meta, fill=MUTED,
             )
 
-    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> float:
-        """Draw the stages; return the right edge they use (0 when hidden)."""
+    def header_step_label(self, width: int, brand_end: float) -> str:
+        """Longest step caption that fits right of the brand, whole.
+
+        Full ("Step 3 of 6 · Choose a disk"), then "Step 3 of 6": a long
+        translation is shortened by dropping the name, never cut mid-word.
+        The page title below still says where you are.
+        """
+        room = width - 24 - brand_end - 24
+        for text in (C.journey_step_caption(self.w), C.journey_step_short(self.w)):
+            if text and self.font_meta.measure(text) <= room:
+                return text
+        return ""
+
+    def _draw_journey(self, cv: tk.Canvas, width: int, step: int, *, right: float = 0.0) -> float:
+        """Draw the stages; return the right edge they use (0 when hidden).
+
+        ``right`` is where the step caption begins; the stages share the
+        space left of it and are hidden when their names would not fit.
+        """
         # Three named stages, never eight equal pages or success badges.
         if not step or width < 1000:
             return 0.0
-        start, end = 260, width - 150
+        start, end = 260, min(width - 150, right or width)
         gap = (end - start) / len(C.JOURNEY_LABELS)
+        widest = max(self.font_meta.measure(name) for name in C.JOURNEY_LABELS)
+        if gap < widest + 24:
+            return 0.0
         # The compact 48 px header put descenders on the bottom hairline.
         line = self.font_meta.metrics("linespace")
         label_y = min(42.0, cv.winfo_height() - 3 - line / 2.0)
@@ -1828,9 +1852,16 @@ class TkWizard:
         count = len(C.JOURNEY_LABELS)
         gap = 2.0
         segment = (width - gap * (count - 1)) / count
+        # While preparing, the first segment fills step by step (#130).
+        step = self.w.journey_step
+        part = step[0] / step[1] if step is not None and stage == C.JOURNEY_PREPARATION else 1.0
         for index in range(count):
             x0 = index * (segment + gap)
             x1 = x0 + segment
+            if (index + 1) == stage and part < 1.0:
+                _round_rect(cv, x0, 0, x1, 2, 1, fill=TRACK, outline="")
+                _round_rect(cv, x0, 0, x0 + segment * part, 2, 1, fill=ACCENT, outline="")
+                continue
             fill = ACCENT if (index + 1) == stage else TRACK
             _round_rect(cv, x0, 0, x1, 2, 1, fill=fill, outline="")
 
@@ -3173,7 +3204,7 @@ class TkWizard:
             wraplength=max(200, self.lay.content_w - 24),
             justify=tk.CENTER, anchor="center",
         ).pack(fill=tk.X, pady=(8, 0))
-        self._p(col, C.SPLASH_ROADMAP, fg=MUTED, font=self.font_s,
+        self._p(col, C.splash_roadmap(PREPARATION_PATH), fg=MUTED, font=self.font_s,
                 justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(14, 0))
         hero = _Button(
             col,

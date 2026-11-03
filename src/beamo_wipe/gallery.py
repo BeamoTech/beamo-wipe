@@ -39,7 +39,8 @@ from beamo_wipe.lang import (
     set_language,
 )
 from beamo_wipe.methods import METHODS
-from beamo_wipe.models import MethodId
+from beamo_wipe.models import MethodId, Screen
+from beamo_wipe.wizard import PREPARATION_PATH, journey_step_for
 from beamo_wipe import progress as _progress
 from beamo_wipe.power import PowerStatus
 from beamo_wipe import identity as _identity
@@ -429,6 +430,36 @@ def gallery_html(lang: str = "en") -> str:
         set_language(previous)
 
 
+# Click-through screen names for wizard screens (#130). The step numbers and
+# names come from the wizard's own tables, never a JavaScript copy.
+_GALLERY_SCREENS = {
+    "keyboard": Screen.KEYBOARD, "what": Screen.WHAT, "owner": Screen.OWNER,
+    "pick": Screen.PICK, "blocked": Screen.PICK_BLOCKED, "empty": Screen.PICK_EMPTY,
+    "disk_help": Screen.DISK_HELP, "confirm": Screen.CONFIRM, "method": Screen.METHOD,
+    "advanced": Screen.ADVANCED, "limits": Screen.LIMITS, "last": Screen.LAST_CHANCE,
+}
+
+
+def _gallery_steps():
+    for name, screen in _GALLERY_SCREENS.items():
+        step = journey_step_for(screen)
+        if step is not None:
+            yield name, step
+
+
+def _step_captions() -> dict[str, str]:
+    """Header step text per click-through screen, as the Tk header shows it."""
+    return {
+        name: C.STEP_CAPTION.format(n=n, total=total, name=C.step_name(screen))
+        for name, (n, total, screen) in _gallery_steps()
+    }
+
+
+def _step_parts() -> dict[str, float]:
+    """How much of the Preparation segment of the strip is filled."""
+    return {name: n / total for name, (n, total, _screen) in _gallery_steps()}
+
+
 def _gallery_html_for_current_language(lang: str) -> str:
     from beamo_wipe import recovery as Rec
 
@@ -444,7 +475,9 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "connectionLabel": _identity.CONNECTION_LABEL,
         "capacityUnitNote": C.CAPACITY_UNIT_NOTE,
         "reviewCheck": C.REVIEW_CHECK,
-        "splashRoadmap": C.SPLASH_ROADMAP,
+        "splashRoadmap": C.splash_roadmap(PREPARATION_PATH),
+        "stepCaptions": _step_captions(),
+        "stepParts": _step_parts(),
         "sevWarning": C.SEVERITY_WARNING,
         "sevError": C.SEVERITY_ERROR,
         "sevSaved": C.SEVERITY_SAVED,
@@ -902,6 +935,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .strip { display: flex; height: 2px; gap: 2px; background: transparent; }
   .strip span { flex: 1; background: var(--track); }
   .strip span.now { background: var(--accent); }
+  .strip span.now.part { background: linear-gradient(to right, var(--accent) var(--part), var(--track) var(--part)); }
   .body { flex: 1; min-height: 0; overflow: auto; padding: 4px 32px 16px; background: var(--bg); display: flex; }
   .col { max-width: 940px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; }
   /* The one screen-header pattern, mirroring _title_block: bold title,
@@ -1510,10 +1544,15 @@ function draw() {
   document.getElementById("journey").innerHTML = info[0]
     ? P.journey.map((label, index) =>
         `<li${index + 1 === info[0] ? ' aria-current="step"' : ''}>${esc(label)}</li>`).join("") : "";
-  stepEl.textContent = headerCaption(info);
+  // Report help returns to the screen that opened it and shows its step (#130).
+  const stepKey = screen === "report_help" ? reportHelpFrom : screen;
+  stepEl.textContent = (info[0] === 1 && P.stepCaptions[stepKey]) || headerCaption(info);
   stepEl.style.visibility = stepEl.textContent ? "visible" : "hidden";
+  const part = info[0] === 1 ? P.stepParts[stepKey] : undefined;
   document.getElementById("sfill").innerHTML = P.journey.map((_, index) =>
-    `<span class="${index + 1 === info[0] ? "now" : ""}"></span>`).join("");
+    index + 1 === info[0] && part !== undefined && part < 1
+      ? `<span class="now part" style="--part:${(part * 100).toFixed(1)}%"></span>`
+      : `<span class="${index + 1 === info[0] ? "now" : ""}"></span>`).join("");
   const main = document.getElementById("main");
   const btnsL = document.getElementById("btnsL");
   const btnsR = document.getElementById("btnsR");

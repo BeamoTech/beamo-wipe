@@ -211,13 +211,19 @@ def _chrome_lines(wizard: Wizard, width: int) -> list[str]:
     that pushes those off the screen.
     """
     title = _screen_title(wizard)
-    stage = C.journey_caption(wizard.screen)
+    # The same step text as the Tk header (#130), shortened to "Step 3 of 6"
+    # before it is dropped; never a second header row.
+    stage = C.journey_step_caption(wizard)
+    short = C.journey_step_short(wizard)
     room = max(8, width - 2)
     if title and title != C.APP_NAME:
         with_stage = f"{C.APP_NAME} — {stage} — {title}" if stage else f"{C.APP_NAME} — {title}"
+        with_short = f"{C.APP_NAME} — {short} — {title}" if short else with_stage
         without_stage = f"{C.APP_NAME} — {title}"
         if _display_cols(with_stage) <= room:
             lines = _lines(with_stage, width)
+        elif _display_cols(with_short) <= room:
+            lines = _lines(with_short, width)
         elif _display_cols(without_stage) <= room:
             lines = _lines(without_stage, width)
         else:
@@ -743,7 +749,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
         if screen != Screen.WORKING:
             print("\n" + "=" * 60)
             print(C.APP_NAME)
-            stage = C.journey_caption(screen)
+            stage = C.journey_step_caption(wizard)
             if stage:
                 print(stage)
             print(_screen_title(wizard))

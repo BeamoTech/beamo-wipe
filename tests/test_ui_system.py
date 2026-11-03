@@ -495,8 +495,9 @@ def test_header_names_the_current_stage_instead_of_eight_equal_pages():
     assert tkui.header_caption(2, C.JOURNEY_LABELS[1]) == "Erase"
     assert tkui.header_caption(3, "Identify the disk") == "Identify the disk"
     assert tkui.header_caption(0, "") == ""
-    source = inspect.getsource(tkui.TkWizard._draw_header)
-    assert "header_caption" in source
+    # The header text is the stage, or the Preparation sub-step (#130).
+    source = inspect.getsource(tkui.TkWizard.header_step_label)
+    assert "journey_step_caption" in source
     strip = inspect.getsource(tkui.TkWizard._draw_strip)
     assert "/ 8" not in strip
     assert "len(C.JOURNEY_LABELS)" in strip

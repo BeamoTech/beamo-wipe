@@ -251,3 +251,9 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   / `HARDWARE_ID_LABEL` in the card; *{count}* is a numeral; the console
   string must keep literal [brackets]. FR *soulignés*, DE *unterstrichen*,
   ES *subrayados*, IT *sottolineati* refer to the marked characters.
+- `copy.STEP_NAME_KEYBOARD` … `STEP_NAME_REVIEW`, `STEP_CAPTION` and
+  `STEP_SPOKEN` (added 2026-11-02 for #130, not yet reviewed): the step bar
+  and the start-screen roadmap share these names (#138), so *Choose a disk*,
+  *Confirm its identity* and *Review and erase* must keep the earlier roadmap
+  wording. Keep `{n}`, `{total}`, `{name}` and `{stage}`; the caption must fit
+  the 800 px header (it is shortened to `STEP_OF` when it does not).

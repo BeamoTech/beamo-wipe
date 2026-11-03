@@ -2799,3 +2799,59 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT (owner decision): either one more ci.yml run on 4fa4c15+ to test
   the race hypothesis, or first investigate DONE-screen release handling
   (#127) in a Linux X11 guest. Then native review and the merge order.
+
+## BW-130-STEPS — Preparation sub-steps in the step bar (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/step-progress-130` (stacked on
+  `feat/serial-suffix-token-129` @ 946c622), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
+  (UI review item 4) with #138 (one set of names) and #166 (Review last
+  before Erase); #138/#166 are not recorded in this repo.
+- Owner decision (2026-11-02, in chat): sub-steps, keeping the three stages
+  Preparation -> Erase -> Result; step names reuse the start-screen roadmap.
+- What changed: `wizard.BACK_SCREENS` (Back now uses it), `PREPARATION_PATH`
+  (Back chain from Review: keyboard, owner, pick, confirm, method, review),
+  `STEP_VARIANTS` (WHAT->owner, PICK_EMPTY/PICK_BLOCKED->pick,
+  CHECKING->review), `journey_step_for()` and `Wizard.journey_step`
+  (detours keyboard/Advanced/report help follow where they were opened;
+  disk help, limits follow Back). `copy`: STEP_NAME_* (Check keyboard,
+  Confirm ownership, Choose a disk, Confirm its identity, Choose a method,
+  Review and erase), STEP_CAPTION "Step {n} of {total} · {name}",
+  STEP_SPOKEN, `journey_step_caption/short/announcement`, `splash_roadmap()`
+  (replaces SPLASH_ROADMAP; now adds Choose a method). Tk header shows the
+  caption right of the brand (stepper narrows to leave room, hides if the
+  stage names would not fit; caption falls back to "Step N of 6", never
+  cut); strip fills the Preparation segment by step. GTK heading ATK
+  description "Preparation, step N of 6: <name>."; curses/plain console
+  header carries the same text (80 cols full, narrower "Step N of 6", very
+  narrow dropped as before to protect the 16-row pick view). Web preview
+  gets per-screen captions/strip fill from the same Python tables. fr/de/
+  es/it strings added (native review pending, docs/translations.md).
+- Files: wizard.py, copy.py, gallery.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, ui/accessible_wizard.py, ui/console_wizard.py,
+  docs/screens.md, docs/translations.md; tests: new
+  tests/test_step_progress_130.py (path = Back chain, every screen classed
+  once, distinct labels, variants/detours on the real wizard, empty/blocked
+  scenarios, erase/result fallback, roadmap = step names in 5 languages,
+  console, web preview, rendered Tk header at 800x600/1280x820 x 3 text
+  sizes, 4 languages at 800x600 standard/extra, strip fill), GTK test in
+  test_accessible_runtime.py; updated test_journey_stages.py,
+  test_ui_polish_20261027.py, test_ui_system.py (old "Preparation only"
+  header expectations; still no "of 8", no percent).
+- Checks (Windows-native; WSL broken): new tests pass (non-Tk 32/32; all 15
+  Tk cases individually; one full-file run had a local Tcl flake that
+  passes alone). Per-file comparison of 155 related files vs the
+  untouched branch head: new-only failures were the 4 old-header
+  expectations (updated) and ROADMAP_ARROW in the translation sweep (made
+  private); the rest pass alone or fail identically on the baseline
+  (export worker st_rdev, canvas progress). ruff (CI selections), mypy
+  --platform linux, compileall pass. Screenshots
+  `C:\Users\Jack\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
+  console/GTK text `console-{before,after}.txt`.
+- Not run here: GTK/Orca runtime test (no gi), full pytest on Linux at
+  72 DPI, ISO/QEMU, web preview in a browser (payload checked by test).
+  Review at 800x600 extra text is skipped on Windows only (pre-existing Tk
+  idle-layout loop); Linux CI runs it.
+- NEXT: hosted ci.yml on the stack (#94/#127/#128/#129/#130; also tests the
+  open SATA release-ack question in BW-129-TOKEN); native translation
+  review; merge in order #94 -> #127 -> #128 -> #129 -> #130.

@@ -13,7 +13,8 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Optional, Protocol
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional, Protocol
 
 from beamo_wipe import copy as C
 from beamo_wipe.copy import (
@@ -284,6 +285,76 @@ def _start_guarded_thread(
     finally:
         release.set()
     return started, worker
+
+
+# Where Back goes from each step of the journey. ``Wizard.back`` uses this
+# table, and the step bar (#130) numbers the Preparation steps by walking it
+# from Review to the start, so the two can never drift apart. Advanced
+# returns to whichever screen opened it (default Method).
+BACK_SCREENS: Mapping[Screen, Screen] = MappingProxyType({
+    Screen.WHAT: Screen.KEYBOARD,
+    Screen.OWNER: Screen.KEYBOARD,
+    Screen.DISK_HELP: Screen.PICK,
+    Screen.PICK: Screen.OWNER,
+    Screen.PICK_EMPTY: Screen.OWNER,
+    Screen.PICK_BLOCKED: Screen.OWNER,
+    Screen.CONFIRM: Screen.PICK,
+    Screen.METHOD: Screen.CONFIRM,
+    Screen.LAST_CHANCE: Screen.METHOD,
+    Screen.ADVANCED: Screen.METHOD,
+    Screen.LIMITS: Screen.METHOD,
+})
+
+
+def _preparation_path() -> tuple[Screen, ...]:
+    path = [Screen.LAST_CHANCE]
+    while path[-1] in BACK_SCREENS:
+        path.append(BACK_SCREENS[path[-1]])
+    return tuple(reversed(path))
+
+
+# The Preparation steps in order: keyboard check through Review (#166).
+PREPARATION_PATH: tuple[Screen, ...] = _preparation_path()
+
+# Screens that stand in for a step rather than leaving it and coming back:
+# the old combined intro, a disk list with nothing or nothing safe to pick,
+# and the final re-check after Erase now. Every other screen off the path is
+# a detour and shows the step it returns to.
+STEP_VARIANTS: Mapping[Screen, Screen] = MappingProxyType({
+    Screen.WHAT: Screen.OWNER,
+    Screen.PICK_EMPTY: Screen.PICK,
+    Screen.PICK_BLOCKED: Screen.PICK,
+    Screen.CHECKING: Screen.LAST_CHANCE,
+})
+
+
+
+def journey_step_for(
+    screen: Screen, origins: Optional[Mapping[Screen, Optional[Screen]]] = None
+) -> Optional[tuple[int, int, Screen]]:
+    """(number, total, step screen) for the step bar (#130), or None.
+
+    Numbers come from ``PREPARATION_PATH``. A variant shows the step it
+    stands in for; a detour (keyboard check, disk help, Advanced, limits,
+    report help) shows the step it returns to: ``origins`` names the screen
+    a detour was opened from (Advanced defaults to Method). Busy, recovery,
+    erase and result screens have no Preparation step.
+    """
+    opened_from = dict(origins or {})
+    opened_from[Screen.ADVANCED] = opened_from.get(Screen.ADVANCED) or Screen.METHOD
+    for _ in range(len(Screen)):
+        origin = opened_from.get(screen)
+        if origin is not None and origin not in (screen, Screen.SPLASH):
+            screen = origin
+        elif screen in PREPARATION_PATH:
+            return PREPARATION_PATH.index(screen) + 1, len(PREPARATION_PATH), screen
+        elif screen in STEP_VARIANTS:
+            screen = STEP_VARIANTS[screen]
+        elif screen in BACK_SCREENS:
+            screen = BACK_SCREENS[screen]
+        else:
+            return None
+    return None
 
 
 class Wizard:
@@ -3449,24 +3520,22 @@ class Wizard:
                 }:
                     self._return_to_screen_locked(dest)
                 return
-            mapping = {
-                Screen.WHAT: Screen.KEYBOARD,
-                Screen.OWNER: Screen.KEYBOARD,
-                Screen.DISK_HELP: Screen.PICK,
-                Screen.PICK: Screen.OWNER,
-                Screen.PICK_EMPTY: Screen.OWNER,
-                Screen.PICK_BLOCKED: Screen.OWNER,
-                Screen.CONFIRM: Screen.PICK,
-                Screen.METHOD: Screen.CONFIRM,
-                Screen.LAST_CHANCE: Screen.METHOD,
-                Screen.ADVANCED: self._advanced_from or Screen.METHOD,
-                Screen.LIMITS: Screen.METHOD,
-            }
+            mapping = dict(BACK_SCREENS)
+            mapping[Screen.ADVANCED] = self._advanced_from or Screen.METHOD
             if self.screen in mapping:
                 self._return_to_screen_locked(mapping[self.screen])
                 if self.screen != Screen.LAST_CHANCE:
                     self._erase_until = None
                 self.error = None
+
+    @property
+    def journey_step(self) -> Optional[tuple[int, int, Screen]]:
+        """(number, total, step screen) for the step bar (#130), or None."""
+        return journey_step_for(self.screen, {
+            Screen.KEYBOARD: self._keyboard_from,
+            Screen.ADVANCED: self._advanced_from,
+            Screen.REPORT_HELP: self._report_help_from,
+        })
 
     def warning_text(self) -> str:
         if self.selected is None:

@@ -915,10 +915,11 @@ class AccessibleWizard:
             # timer. Give Orca users the full five seconds after arrival.
             self.w.restart_review_countdown()
         self.update_status()
-        # Stage is ATK description, not a prefix on the heading name.
-        # Result/busy tests match the canonical announcement exactly;
+        # Stage and step are the ATK description, not a prefix on the heading
+        # name: "Preparation, step 3 of 6: Choose a disk." (#130). Result and
+        # busy screens keep the canonical stage announcement exactly;
         # "Result. Erase completed…" hid that title from heading names.
-        spoken_stage = C.journey_announcement(screen)
+        spoken_stage = C.journey_step_announcement(self.w)
         if spoken_stage:
             heading.get_accessible().set_description(spoken_stage)
         emit_serial_marker(f"BEAMO_WIPE_ACCESSIBLE_SCREEN_{screen.name}")
