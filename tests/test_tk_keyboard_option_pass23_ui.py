@@ -10,11 +10,14 @@ from beamo_wipe.ui.tk_wizard import TkWizard
 def test_setup_layout_and_language_cards_are_keyboard_controls():
     source = inspect.getsource(TkWizard._keyboard)
     assert 'card.configure(cursor="hand2", takefocus=1)' in source
-    assert 'chip.configure(cursor="hand2", takefocus=1)' in source
     assert 'card.bind("<space>"' in source
     assert 'card.bind("<Return>"' in source
-    assert 'chip.bind("<space>"' in source
-    assert 'chip.bind("<Return>"' in source
+    # Language chips come first (#131) and are radio-group controls: Space
+    # chooses; Enter falls through to Continue, as on the rest of the screen.
+    picker = inspect.getsource(TkWizard._language_picker)
+    assert 'chip.configure(cursor="hand2", takefocus=1)' in picker
+    assert 'chip.bind("<space>"' in picker
+    assert 'chip.bind("<Return>"' not in picker
 
 
 def test_setup_choice_claims_one_physical_key_press():

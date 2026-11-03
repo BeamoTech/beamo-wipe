@@ -795,8 +795,8 @@ PRIMARY_ACTION_LABELS = frozenset(_primary_by_screen().values()) | {BTN_CONTINUE
 PREVIEW_BANNER = "PREVIEW on this computer — fake disks — nothing is erased"
 
 HINT_KEYBOARD = (
-    "Up/Down chooses a layout. Type in the check box. Enter continues. "
-    "Text size stays until this USB restarts."
+    "Left/Right chooses a language. Up/Down chooses a layout. "
+    "Tab reaches the check box. Enter continues."
 )
 HINT_DEFAULT = "Enter continues.  Esc goes back."
 HINT_PICK = "Click a disk, or use Up/Down.  Enter reviews this disk.  Esc goes back."
@@ -1247,6 +1247,35 @@ CONFIRM_KEYBOARD_LINE = "Keyboard: {layout} · Language: {language}"
 
 # Language selection. Option names are endonyms: identical in every language.
 TITLE_LANGUAGE = "Choose your language"
+# What choosing a language did to the keyboard layout (#131).
+KEYBOARD_AUTO = "Keyboard set to {layout} to match {language}."
+KEYBOARD_AUTO_ALT = "Using a {alt} keyboard? Choose it below."
+KEYBOARD_AUTO_OTHER = "Keys do not match? Choose your keyboard below."
+KEYBOARD_KEPT = "Keyboard stays {layout}, the layout you chose."
+KEYBOARD_STAYS = (
+    "Keyboard stays {layout} so your answers so far stay valid. "
+    "Choosing another layout below starts those answers again."
+)
+
+
+def keyboard_layout_notice(wizard) -> str:
+    """One line saying what choosing a language did to the layout, or ""."""
+    from beamo_wipe import keyboard as _kb
+    from beamo_wipe.lang import LANGUAGE_NAMES
+
+    kind = getattr(wizard, "layout_notice", None)
+    spec = _kb.LAYOUTS.get(getattr(wizard, "keyboard_layout", ""))
+    if kind is None or spec is None:
+        return ""
+    if kind == "kept":
+        return KEYBOARD_KEPT.format(layout=spec.title)
+    if kind == "stays":
+        return KEYBOARD_STAYS.format(layout=spec.title)
+    language = LANGUAGE_NAMES.get(getattr(wizard, "language", ""), "")
+    alt = _kb.LAYOUTS.get(_kb.LANGUAGE_ALTERNATIVE_LAYOUTS.get(getattr(wizard, "language", ""), ""))
+    follow = (KEYBOARD_AUTO_ALT.format(alt=alt.title) if alt is not None and alt.id != spec.id
+              else KEYBOARD_AUTO_OTHER)
+    return f"{KEYBOARD_AUTO.format(layout=spec.title, language=language)} {follow}"
 LANGUAGE_LEAD = "Pick the language for every screen, report, and help page."
 LANGUAGE_NAME_EN = "English"
 LANGUAGE_NAME_FR = "Français"

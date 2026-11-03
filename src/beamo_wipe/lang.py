@@ -20,6 +20,17 @@ LANGUAGE_NAMES = {
     "it": "Italiano",
 }
 
+# The language picker's label is the word "Language" in every offered
+# language (#131), so it reads before anyone has chosen one. Not translated.
+LANGUAGE_WORDS = {
+    "en": "Language",
+    "fr": "Langue",
+    "de": "Sprache",
+    "es": "Idioma",
+    "it": "Lingua",
+}
+LANGUAGE_PICKER_LABEL = " · ".join(LANGUAGE_WORDS[code] for code in LANGUAGE_ORDER)
+
 # Translated modules in dependency order: a module's _apply_language() may
 # read another module's already-translated attributes (copy reads outcomes,
 # methods, inventory, storage_limits), so leaves come first and copy last.

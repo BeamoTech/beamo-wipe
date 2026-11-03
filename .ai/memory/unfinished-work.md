@@ -2855,3 +2855,66 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: hosted ci.yml on the stack (#94/#127/#128/#129/#130; also tests the
   open SATA release-ack question in BW-129-TOKEN); native translation
   review; merge in order #94 -> #127 -> #128 -> #129 -> #130.
+
+## BW-131-LANG — Language first; its usual layout follows (IMPLEMENTED LOCALLY; HOSTED GATE, ORCA VOICE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/language-first-131` (stacked
+  on `feat/step-progress-130` @ 979b5ff), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
+  (UI review item 5); #139/#140/#155 are not recorded in this repo.
+- What changed: `keyboard.LANGUAGE_LAYOUTS` (en->us, fr->fr, de->de,
+  es->es, it->it; shipped layouts only) and `LANGUAGE_ALTERNATIVE_LAYOUTS`
+  (en->gb, es->latam, named as the obvious alternative; nothing else
+  guessed). `Wizard.choose_language()` (used by every language picker):
+  applies the language; on the keyboard screen it also applies the mapped
+  layout through `_apply_layout_locked` (the same OS-apply + authorization
+  invalidation as a manual pick) unless the person picked a layout
+  (`layout_chosen`, notice "kept") or owner tick / disk / typed confirmation
+  / authorization exists (notice "stays", layout untouched). Failed apply:
+  old layout kept, existing failure message. `set_language()` unchanged
+  (never touches the layout). Notice text `copy.keyboard_layout_notice`
+  ("Keyboard set to AZERTY (French) to match Français. Keys do not match?
+  Choose your keyboard below."). `lang.LANGUAGE_PICKER_LABEL` ("Language ·
+  Langue · Sprache · Idioma · Lingua", untranslated). Tk: picker above the
+  title, first in focus (initial focus on the chosen language), Left/Right
+  and Space choose, Enter continues (radio-group keys; QEMU's Return still
+  reaches Owner), focus remembered across redraws (layout card / check
+  box), notice above the layout cards, HINT_KEYBOARD now starts
+  "Left/Right" (key caps added in Tk and web). GTK: picker right after the
+  heading, arrival on the chosen language, notice before layouts. Curses:
+  language line + notice under the header, always on screen (F2 cycles);
+  plain console lists L1..L5 first. Web preview: language first, page
+  starts on its language's layout with the notice; Confirm's keyboard line
+  follows the layout.
+- Files: keyboard.py, lang.py, wizard.py, copy.py, gallery.py,
+  locales/{fr,de,es,it}.py, ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, docs/screens.md, docs/translations.md; tests: new
+  tests/test_language_first_131.py (mapping, own names, auto-pick per
+  language, back to English + UK alternative, Spanish + Latin American,
+  manual override sticks, progress keeps layout and answers, off-screen and
+  programmatic changes never touch layout, failed apply, preview reset,
+  token comparison after each auto layout incl. partial/inner-space/other
+  disk rejected, later manual change still clears confirmation, curses,
+  plain console, web preview x5 languages, Tk first on screen/focus at
+  800x600/1280x820 x 3 text sizes, French re-render incl. header/footer/
+  primary, arrows+Enter, layout focus kept, Tk confirm box token per
+  layout); GTK test in test_accessible_runtime.py; updated
+  test_keyboard_layout.py, test_tk_keyboard_option_pass23_ui.py,
+  test_ui_system.py, test_language_selection.py (old order/focus/regex).
+- Checks (Windows-native): #131 tests 26 non-Tk + 14 Tk pass. Per-file
+  comparison of 123 related files vs 979b5ff: new-only failures were the 4
+  intended expectation changes (updated, pass); others were Tcl start-up
+  flakes (pass alone), Windows cp1252 source reads (pass with UTF-8, as on
+  Linux) or the sparse checkout without docs/evidence (environment). ruff
+  (CI selections), mypy --platform linux, compileall pass. Screenshots
+  `C:\Users\Jack\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
+  console `console-before.txt`.
+- NOT DONE: Orca speaking in the chosen language. Bookworm's Orca 43 speaks
+  with its configured voice; the live image has no locale data, and
+  switching would need restarting/reconfiguring Orca mid-session, which
+  cannot be verified here (needs a Linux X11 + Orca + espeak-ng run). GTK
+  labels and names do switch immediately. Owner decision needed.
+- Not run here: GTK/Orca runtime tests (no gi), full Linux pytest, ISO/QEMU,
+  real setxkbmap/loadkeys on the live image, browser check of the web view.
+- NEXT: hosted ci.yml on the stack; Orca-voice decision; native review;
+  merge #94 -> #127 -> #128 -> #129 -> #130 -> #131.

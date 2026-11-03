@@ -30,7 +30,7 @@ from beamo_wipe.recovery import (  # noqa: E402
 )
 from beamo_wipe import keyboard as _keyboard  # noqa: E402
 from beamo_wipe.keyboard import LAYOUT_ORDER  # noqa: E402
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER  # noqa: E402
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL  # noqa: E402
 from beamo_wipe.methods import METHODS  # noqa: E402
 from beamo_wipe.models import Screen  # noqa: E402
 from beamo_wipe.diagnostics import emit_serial_marker  # noqa: E402
@@ -402,6 +402,20 @@ class AccessibleWizard:
             self.button(C.primary_action(Screen.SPLASH), self.w.skip_splash)
         elif screen == Screen.KEYBOARD:
             heading.set_text(C.TITLE_KEYBOARD)
+            # #131: language is the first control, each in its own name, so
+            # Orca users reach it before the rest of the instructions.
+            self.label(LANGUAGE_PICKER_LABEL)
+            chosen_language = None
+            for code in LANGUAGE_ORDER:
+                state = C.ACCESSIBLE_SELECTED if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
+                language_button = self.button(
+                    f"{LANGUAGE_NAMES[code]} ({state})",
+                    lambda lang_code=code: self.w.choose_language(lang_code),
+                    in_body=True,
+                )
+                if self.w.language == code:
+                    chosen_language = language_button
+            self.label(C.LANGUAGE_LEAD)
             self.label(C.KEYBOARD_LEAD)
             self.label(C.KEYBOARD_LIMITS)
             self.label(C.TEXT_SIZE_LEAD)
@@ -412,6 +426,9 @@ class AccessibleWizard:
                     lambda sid=size_id: self.w.set_text_size(sid),
                     in_body=True,
                 )
+            notice = C.keyboard_layout_notice(self.w)
+            if notice:
+                self.label(notice)
             for index, layout_id in enumerate(LAYOUT_ORDER, 1):
                 spec = _keyboard.LAYOUTS[layout_id]
                 state = C.ACCESSIBLE_SELECTED if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
@@ -421,15 +438,6 @@ class AccessibleWizard:
                     in_body=True,
                 )
                 self.label(spec.note)
-            self.label(C.TITLE_LANGUAGE)
-            self.label(C.LANGUAGE_LEAD)
-            for code in LANGUAGE_ORDER:
-                state = C.ACCESSIBLE_SELECTED if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
-                    f"{LANGUAGE_NAMES[code]} ({state})",
-                    lambda lang_code=code: self.w.set_language(lang_code),
-                    in_body=True,
-                )
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -452,7 +460,7 @@ class AccessibleWizard:
                 lambda widget: self._typing(widget.get_text(), generation),
             )
             self.body.pack_start(entry, False, False, 4)
-            arrival = entry
+            arrival = chosen_language or entry
             self.button(C.primary_action(Screen.KEYBOARD), self.w.accept_keyboard)
         elif screen in (Screen.WHAT, Screen.OWNER):
             heading.set_text(C.TITLE_OWNER)

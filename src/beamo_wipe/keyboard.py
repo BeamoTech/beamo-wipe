@@ -146,6 +146,23 @@ LAYOUTS: Mapping[str, KeyboardLayout] = _build_layouts()
 # Digit shortcuts are 1..N in this order; N must stay a single digit.
 LAYOUT_ORDER = ("us", "fr", "de", "gb", "es", "latam", "it")
 
+# Choosing a language suggests its usual layout (#131), only from the layouts
+# above. Where another shipped layout is also common for that language, the
+# screen names it as the obvious alternative instead of guessing further
+# (French in Belgium, Canada or Switzerland has no shipped layout: the screen
+# says to choose a different one if the keys do not match).
+LANGUAGE_LAYOUTS: Mapping[str, str] = {
+    "en": "us",
+    "fr": "fr",
+    "de": "de",
+    "es": "es",
+    "it": "it",
+}
+LANGUAGE_ALTERNATIVE_LAYOUTS: Mapping[str, str] = {
+    "en": "gb",
+    "es": "latam",
+}
+
 UNAVAILABLE = "That keyboard layout is not available."
 APPLY_FAILED = (
     "Could not change the keyboard layout. The previous layout is still in use."

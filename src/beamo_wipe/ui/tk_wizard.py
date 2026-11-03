@@ -32,7 +32,7 @@ from beamo_wipe import inventory
 from beamo_wipe import progress as _progress
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
 from beamo_wipe.models import Disk, DiskKind, ExcludedDevice, MethodId, Screen
 from beamo_wipe.safety import same_size_conflict
 from beamo_wipe.ui import StartupDisplayUnavailable
@@ -179,8 +179,9 @@ _STEP_ORDER = _step_order()
 
 # Spans of hint copy that render as key-caps instead of plain text.
 # Whole words only: Spanish "Escriba" must not become an Esc cap plus "riba".
-_KEY_TOKEN_RE = re.compile(r"\b(Up/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)\b")
+_KEY_TOKEN_RE = re.compile(r"\b(Left/Right|Up/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)\b")
 _KEY_TOKEN_KEYS = {
+    "Left/Right": ("←", "→"),
     "Up/Down": ("↑", "↓"),
     "1, 2, or 3": ("1", "2", "3"),
 }
@@ -2362,6 +2363,9 @@ class TkWizard:
         if callable(sync):
             sync()
         self._draw_generation = getattr(self, "_draw_generation", 0) + 1
+        if self.w.screen != Screen.KEYBOARD:
+            # Each visit to the keyboard screen starts on the language (#131).
+            self._kbd_focus: Optional[tuple] = None
         assert self._body is not None and self._footer is not None
         if self._pick_canvas is not None:
             try:
@@ -3223,8 +3227,12 @@ class TkWizard:
 
     def _keyboard(self) -> None:
         self._keyboard_layout_cards = {}
-        self._keyboard_language_cards = {}
+        self._keyboard_language_cards: dict[str, _Box] = {}
         col = self._column(self._body, fill_height=True)
+        # #131: language comes first, in focus and on screen, so nobody reads
+        # the rest in a language they did not choose. The label names the
+        # control in every offered language; each language in its own name.
+        self._language_picker(col)
         self._title_block(col, C.TITLE_KEYBOARD, C.KEYBOARD_LEAD)
         zone = self._center_zone(col)
         self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X)
@@ -3243,6 +3251,11 @@ class TkWizard:
                 compact=True,
             ).pack(side=tk.LEFT)
         size_row.fit_now()
+        notice = C.keyboard_layout_notice(self.w)
+        if notice:
+            # What choosing the language did to the layout, with the way to
+            # change it: the layout cards right below.
+            self._p(zone, notice, font=self.font_s_bold, fg=INK).pack(fill=tk.X, pady=(4, 0))
         # Seven layouts: compact title cards in two columns when there is
         # room (one column for narrow windows or larger text), and only the
         # selected layout's note below, so Continue stays near at 800x600.
@@ -3279,14 +3292,14 @@ class TkWizard:
 
             def _click(_e=None, lid=layout_id, keyboard=False):
                 self.w.set_keyboard_layout(lid)
+                self._kbd_focus = ("layout", lid)
                 self._draw()
-                if keyboard:
-                    self._keyboard_layout_cards[lid].focus_set()
                 return "break"
 
             self._bind_tree(card, _click)
             card.configure(cursor="hand2", takefocus=1)
-            card.bind("<FocusIn>", partial(self._keyboard_option_focus, card=card, focused=True))
+            card.bind("<FocusIn>", partial(self._remember_keyboard_focus, ("layout", layout_id)), add="+")
+            card.bind("<FocusIn>", partial(self._keyboard_option_focus, card=card, focused=True), add="+")
             card.bind("<FocusOut>", partial(self._keyboard_option_focus, card=card, focused=False))
             card.bind("<space>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
             card.bind("<Return>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
@@ -3317,42 +3330,6 @@ class TkWizard:
             self._p(
                 zone, f"{chosen.title}: {chosen.note}", font=self.font_s, fg=MUTED,
             ).pack(fill=tk.X, pady=(8, 0))
-        tk.Label(
-            zone, text=C.TITLE_LANGUAGE, font=self.font_bold, fg=INK, bg=BG, anchor="w",
-        ).pack(fill=tk.X, pady=(14, 2))
-        self._p(zone, C.LANGUAGE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X)
-        lang_row = tk.Frame(zone, bg=BG)
-        lang_row.pack(fill=tk.X, pady=(6, 0))
-        for code in LANGUAGE_ORDER:
-            selected = self.w.language == code
-
-            def _pick_language(_e=None, lang_code=code, keyboard=False):
-                self.w.set_language(lang_code)
-                self._draw()
-                if keyboard:
-                    self._keyboard_language_cards[lang_code].focus_set()
-                return "break"
-
-            chip = _Box(
-                lang_row, radius=PILL, fill=PRIMARY_TINT if selected else SURFACE,
-                outline=PRIMARY if selected else BORDER, ow=2 if selected else 1,
-                padx=14, pady=6, halo=False,
-            )
-            chip.pack(side=tk.LEFT, padx=(0, 8))
-            tk.Label(
-                chip.inner, text=LANGUAGE_NAMES[code], font=self.font_s_bold,
-                fg=PRIMARY if selected else INK,
-                bg=PRIMARY_TINT if selected else SURFACE,
-            ).pack()
-            self._bind_tree(chip, _pick_language)
-            chip.configure(cursor="hand2", takefocus=1)
-            chip.bind("<FocusIn>", partial(self._keyboard_option_focus, card=chip, focused=True))
-            chip.bind("<FocusOut>", partial(self._keyboard_option_focus, card=chip, focused=False))
-            chip.bind("<space>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            chip.bind("<Return>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            chip.bind("<KP_Enter>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            self._keyboard_language_cards[code] = chip
-            chip.inner.configure(cursor="hand2")
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -3386,10 +3363,22 @@ class TkWizard:
         )
         self._typing_var.set(self.w.typing_check)
         entry.pack(fill=tk.X, ipady=4)
-        entry.bind("<FocusIn>", lambda _e: shell.set_focused(True))
+        def _entry_focus(_e=None) -> None:
+            shell.set_focused(True)
+            self._remember_keyboard_focus(("entry",))
+
+        entry.bind("<FocusIn>", _entry_focus)
         entry.bind("<FocusOut>", lambda _e: shell.set_focused(False))
-        shell.set_focused(True)
-        entry.focus_set()
+        # First arrival: the chosen language (the first control). Redraws
+        # keep the control the person was using: a layout card or the box.
+        memory = getattr(self, "_kbd_focus", None)
+        if memory == ("entry",):
+            shell.set_focused(True)
+            entry.focus_set()
+        elif memory and memory[0] == "layout" and memory[1] in self._keyboard_layout_cards:
+            self._keyboard_layout_cards[memory[1]].focus_set()
+        elif self.w.language in self._keyboard_language_cards:
+            self._keyboard_language_cards[self.w.language].focus_set()
         row = self._footer_shell(C.HINT_KEYBOARD)
         if self.w._keyboard_from:
             self._back_btn(row)
@@ -3402,6 +3391,59 @@ class TkWizard:
 
     def _keyboard_option_focus(self, _event: object, *, card: _Box, focused: bool) -> None:
         card.set_focused(focused)
+
+    def _remember_keyboard_focus(self, target: tuple, _event: object = None) -> None:
+        self._kbd_focus = target
+
+    def _language_picker(self, parent: tk.Widget) -> None:
+        """Language chips, first on the keyboard screen (#131).
+
+        Space or a click chooses; Left/Right move to the next language and
+        choose it (radio-group keys); Enter continues, as everywhere on this
+        screen. Choosing a language also sets its usual keyboard layout
+        unless the person picked one (``Wizard.choose_language``).
+        """
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(10, 0))
+        tk.Label(
+            block, text=LANGUAGE_PICKER_LABEL, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        row = tk.Frame(block, bg=BG)
+        row.pack(fill=tk.X)
+        for code in LANGUAGE_ORDER:
+            selected = self.w.language == code
+
+            def _pick_language(_e=None, lang_code=code):
+                self.choose_language(lang_code)
+                return "break"
+
+            chip = _Box(
+                row, radius=PILL, fill=PRIMARY_TINT if selected else SURFACE,
+                outline=PRIMARY if selected else BORDER, ow=2 if selected else 1,
+                padx=14, pady=6, halo=False,
+            )
+            chip.pack(side=tk.LEFT, padx=(0, 8), pady=(0, 4))
+            tk.Label(
+                chip.inner, text=LANGUAGE_NAMES[code], font=self.font_s_bold,
+                fg=PRIMARY if selected else INK,
+                bg=PRIMARY_TINT if selected else SURFACE,
+            ).pack()
+            setattr(chip, "_beamo_language", code)
+            self._bind_tree(chip, _pick_language)
+            chip.configure(cursor="hand2", takefocus=1)
+            chip.bind("<FocusIn>", partial(self._remember_keyboard_focus, ("language",)), add="+")
+            chip.bind("<FocusIn>", partial(self._keyboard_option_focus, card=chip, focused=True), add="+")
+            chip.bind("<FocusOut>", partial(self._keyboard_option_focus, card=chip, focused=False))
+            chip.bind("<space>", partial(self._keyboard_option_key, activate=_pick_language))
+            self._keyboard_language_cards[code] = chip
+            chip.inner.configure(cursor="hand2")
+        self._p(block, C.LANGUAGE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(2, 0))
+
+    def choose_language(self, code: str) -> None:
+        """Apply a language (and maybe its layout); focus stays on the chip."""
+        self.w.choose_language(code)
+        self._kbd_focus = ("language",)
+        self._draw()
 
     def _keyboard_option_key(self, event: object, *, activate: Callable[[], object]) -> str:
         """Activate one focused setup card once per physical key press."""
@@ -5635,6 +5677,12 @@ class TkWizard:
             return "break"
         if self.w.screen == Screen.KEYBOARD:
             focused = self.root.focus_get()
+            if event.keysym in ("Left", "Right") and getattr(focused, "_beamo_language", None):
+                languages = list(LANGUAGE_ORDER)
+                index = languages.index(self.w.language) if self.w.language in languages else 0
+                step = -1 if event.keysym == "Left" else 1
+                self.choose_language(languages[(index + step) % len(languages)])
+                return "break"
             # The one-line check box has no use for Up/Down, so they choose
             # the layout even while it has focus; digits type there instead.
             if event.keysym in ("Up", "Down") and not isinstance(focused, _Scrollbar):

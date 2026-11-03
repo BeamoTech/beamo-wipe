@@ -257,3 +257,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   *Confirm its identity* and *Review and erase* must keep the earlier roadmap
   wording. Keep `{n}`, `{total}`, `{name}` and `{stage}`; the caption must fit
   the 800 px header (it is shortened to `STEP_OF` when it does not).
+- `copy.HINT_KEYBOARD`, `KEYBOARD_AUTO`, `KEYBOARD_AUTO_ALT`,
+  `KEYBOARD_AUTO_OTHER`, `KEYBOARD_KEPT` and `KEYBOARD_STAYS` (changed or added
+  2026-11-02 for #131, not yet reviewed): keep the literal key words
+  `Left/Right`, `Up/Down`, `Tab` and `Enter` (the Tk and web views turn the
+  first two into key caps) and the `{layout}`, `{language}` and `{alt}`
+  slots, which take the translated layout title and the language's own name.
+  `lang.LANGUAGE_WORDS` (the picker label) is deliberately not translated: it
+  is the word *Language* in every offered language.

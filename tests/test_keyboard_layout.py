@@ -488,9 +488,11 @@ def test_keyboard_hints_name_every_layout_shortcut():
     try:
         for code in ("en", "fr", "de", "es", "it"):
             lang.set_language(code)
-            # The Tk check box has focus and takes digits, so the hint names
-            # the keys that always work there, not 1-7.
-            assert C.HINT_KEYBOARD.startswith("Up/Down"), code
+            # The check box takes digits, so the hint names the keys that
+            # always work, not 1-7: Left/Right for the language, which comes
+            # first (#131), and Up/Down for the layout.
+            assert C.HINT_KEYBOARD.startswith("Left/Right"), code
+            assert "Up/Down" in C.HINT_KEYBOARD, code
             assert "1–" not in C.HINT_KEYBOARD, code
             # The curses screen keeps every digit for the typing check.
             assert C.CON_KEYBOARD_FOOTER.startswith("Left/Right"), code
@@ -649,6 +651,12 @@ def _clipping_free(app) -> bool:
     return True
 
 
+def _all_widgets(widget):
+    yield widget
+    for child in widget.winfo_children():
+        yield from _all_widgets(child)
+
+
 def _tk_keyboard(language="en", size=(1280, 720)):
     from test_tk_runtime import _needs_display
 
@@ -685,6 +693,10 @@ def test_tk_up_down_choose_layouts_while_the_check_box_has_focus():
 
     wiz, app = _tk_keyboard()
     try:
+        # The screen opens on the language (#131); put focus in the box.
+        entry = next(w for w in _all_widgets(app.root) if isinstance(w, tk.Entry))
+        entry.focus_set()
+        app.root.update()
         assert isinstance(app.root.focus_get(), tk.Entry)
         reached = [wiz.keyboard_layout]
         for _ in LAYOUT_ORDER:

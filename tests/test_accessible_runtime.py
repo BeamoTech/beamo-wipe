@@ -1951,3 +1951,34 @@ def test_accessible_heading_describes_the_preparation_step(ui, stop):
     assert description == f"Preparation, step {number} of 6: {C.step_name(wizard.screen)}."
     # The step is the description; the heading name stays the page title.
     assert "step" not in heading.get_accessible().get_name().lower()
+
+
+def test_accessible_keyboard_screen_puts_language_first_and_follows_with_layout(ui):
+    """#131: the first control is the language, each in its own name; Orca
+    arrives on the chosen language, and choosing one sets its layout."""
+    from beamo_wipe import copy as C
+    from beamo_wipe import lang
+    from beamo_wipe.keyboard import ApplyResult
+
+    wizard = make_demo_wizard()
+    calls = []
+    wizard._apply_keyboard = lambda layout_id, **_: (calls.append(layout_id), ApplyResult(True, "", layout_id))[1]
+    wizard.skip_splash()
+    app = ui(wizard)
+    buttons = [w for w in widgets(app.window) if isinstance(w, Gtk.Button)]
+    names = [b.get_label() for b in buttons]
+    first_language = next(i for i, n in enumerate(names) if n.startswith("English ("))
+    first_layout = next(i for i, n in enumerate(names) if "QWERTY (US)" in n)
+    assert first_language < first_layout
+    assert all(any(n.startswith(f"{lang.LANGUAGE_NAMES[c]} (") for n in names) for c in lang.LANGUAGE_ORDER)
+    assert app.arrival is buttons[first_language]
+    labels = [w.get_text() for w in widgets(app.window) if isinstance(w, Gtk.Label)]
+    assert lang.LANGUAGE_PICKER_LABEL in labels
+    try:
+        french = next(b for b in buttons if b.get_label().startswith("Français ("))
+        french.clicked()
+        app.render() if hasattr(app, "render") else None
+        assert wizard.language == "fr" and wizard.keyboard_layout == "fr" and calls == ["fr"]
+        assert C.keyboard_layout_notice(wizard)
+    finally:
+        lang.set_language("en")

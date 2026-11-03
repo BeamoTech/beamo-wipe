@@ -24,7 +24,7 @@ from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
 from beamo_wipe import identity as _identity
 from beamo_wipe.methods import METHODS, MethodId
 from beamo_wipe.models import Screen
@@ -804,6 +804,15 @@ def _plain_loop_body(wizard: Wizard) -> int:
             wizard.skip_splash()
             continue
         if screen == Screen.KEYBOARD:
+            # #131: language first, each in its own name.
+            print(LANGUAGE_PICKER_LABEL)
+            for index, code in enumerate(LANGUAGE_ORDER, 1):
+                mark = ">" if wizard.language == code else " "
+                print(f"{mark} L{index} {LANGUAGE_NAMES[code]}")
+            print(C.LANGUAGE_LEAD)
+            notice = C.keyboard_layout_notice(wizard)
+            if notice:
+                print(notice)
             print(C.TITLE_KEYBOARD)
             print(C.KEYBOARD_LEAD)
             print(C.KEYBOARD_LIMITS)
@@ -815,11 +824,6 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 mark = ">" if wizard.keyboard_layout == layout_id else " "
                 print(f"{mark} {i} {layout_spec.title}")
                 print(layout_spec.note)
-            print(C.TITLE_LANGUAGE)
-            print(C.LANGUAGE_LEAD)
-            for code in LANGUAGE_ORDER:
-                mark = ">" if wizard.language == code else " "
-                print(f"{mark} {LANGUAGE_NAMES[code]}")
             if wizard.error:
                 _print_error_recovery(wizard.error)
                 if error_needs_support(wizard.error):
@@ -830,12 +834,15 @@ def _plain_loop_body(wizard: Wizard) -> int:
             typed = input(C.CON_INPUT_PREFIX)
             key = typed.strip()
             keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
+            language_mapping = {f"L{i}": code for i, code in enumerate(LANGUAGE_ORDER, 1)}
             if key in keyboard_mapping:
                 wizard.set_keyboard_layout(keyboard_mapping[key])
             elif key.upper() == "K":
                 pass
             elif key.upper() == "LANG":
-                wizard.set_language(_next_language(wizard))
+                wizard.choose_language(_next_language(wizard))
+            elif key.upper() in language_mapping:
+                wizard.choose_language(language_mapping[key.upper()])
             elif key == "":
                 wizard.accept_keyboard()
             else:
@@ -1327,6 +1334,22 @@ def _loop(stdscr, wizard: Wizard) -> int:
         elif wizard.screen == Screen.SPLASH:
             y = _wrap(stdscr, y, C.SPLASH_TAGLINE, w, y_max)
         elif wizard.screen == Screen.KEYBOARD:
+            # #131: the language list comes first and always stays on screen;
+            # F2 changes it before anything else has to be read.
+            languages = _lines(LANGUAGE_PICKER_LABEL, w) + _lines(
+                "  ".join(
+                    f"{'>' if wizard.language == code else ' '}{LANGUAGE_NAMES[code]}"
+                    for code in LANGUAGE_ORDER
+                ),
+                w,
+            )
+            notice = C.keyboard_layout_notice(wizard)
+            if notice:
+                languages.extend(_lines(notice, w))
+            for line in languages:
+                if y < y_max:
+                    _add(stdscr, y, 0, line)
+                    y += 1
             lead: list[str] = []
             for text in (C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS, C.TEXT_SIZE_LEAD,
                          C.TEXT_SIZE_CONSOLE, _keyboard.CONSOLE_DEAD_KEYS):
@@ -1347,12 +1370,6 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 star = ">" if wizard.keyboard_layout == layout_id else " "
                 lines.extend(_lines(f"{star} {layout_spec.title}: {layout_spec.note}", w))
                 lines.append("")
-            lines.extend(_lines(C.TITLE_LANGUAGE, w))
-            lines.extend(_lines(C.LANGUAGE_LEAD, w))
-            for code in LANGUAGE_ORDER:
-                star = ">" if wizard.language == code else " "
-                lines.extend(_lines(f"{star} {LANGUAGE_NAMES[code]}", w))
-            lines.append("")
             if wizard.error:
                 lines.extend(_lines(_error_recovery_text(wizard.error), w))
                 if error_needs_support(wizard.error):
@@ -2053,7 +2070,7 @@ def _handle(wizard: Wizard, ch: int) -> None:
             wizard.set_keyboard_layout(LAYOUT_ORDER[(index + step) % len(LAYOUT_ORDER)])
             return
         if ch == curses.KEY_F2:
-            wizard.set_language(_next_language(wizard))
+            wizard.choose_language(_next_language(wizard))
             return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.accept_keyboard()

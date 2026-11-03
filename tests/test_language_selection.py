@@ -464,11 +464,12 @@ def test_keyboard_screen_offers_languages_in_every_renderer():
 
     root = pathlib.Path(__file__).resolve().parents[1]
     tk = (root / "src/beamo_wipe/ui/tk_wizard.py").read_text()
-    assert "LANGUAGE_NAMES" in tk and "set_language" in tk
+    # The pickers choose a language and its usual layout (#131).
+    assert "LANGUAGE_NAMES" in tk and "choose_language" in tk
     console = (root / "src/beamo_wipe/ui/console_wizard.py").read_text()
-    assert "LANGUAGE_NAMES" in console and "set_language" in console
+    assert "LANGUAGE_NAMES" in console and "choose_language" in console
     accessible = (root / "src/beamo_wipe/ui/accessible_wizard.py").read_text()
-    assert "LANGUAGE_NAMES" in accessible and "set_language" in accessible
+    assert "LANGUAGE_NAMES" in accessible and "choose_language" in accessible
     gallery = (root / "src/beamo_wipe/gallery.py").read_text()
     assert "language" in gallery and "LANGUAGE_NAMES" in gallery
 

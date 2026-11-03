@@ -113,7 +113,7 @@ def test_key_caps_match_whole_words_in_every_language():
     finally:
         lang.set_language("en")
     html = gallery_html("es")
-    assert "(?<![\\p{L}\\p{N}])(Up\\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\\p{L}\\p{N}])/gu" in html
+    assert "(?<![\\p{L}\\p{N}])(Left\\/Right|Up\\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\\p{L}\\p{N}])/gu" in html
 
 
 def test_box_component_supports_shadows_and_sync_fit():

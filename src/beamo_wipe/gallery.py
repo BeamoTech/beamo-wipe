@@ -34,6 +34,7 @@ from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import (
     LANGUAGE_NAMES,
     LANGUAGE_ORDER,
+    LANGUAGE_PICKER_LABEL,
     current as current_language,
     is_supported,
     set_language,
@@ -430,6 +431,17 @@ def gallery_html(lang: str = "en") -> str:
         set_language(previous)
 
 
+def _auto_layout_notice(lang: str) -> str:
+    """The keyboard-screen line for this page's language and its layout."""
+    from types import SimpleNamespace
+
+    return C.keyboard_layout_notice(SimpleNamespace(
+        layout_notice="auto",
+        keyboard_layout=_keyboard.LANGUAGE_LAYOUTS.get(lang, _keyboard.DEFAULT_LAYOUT),
+        language=lang,
+    ))
+
+
 # Click-through screen names for wizard screens (#130). The step numbers and
 # names come from the wizard's own tables, never a JavaScript copy.
 _GALLERY_SCREENS = {
@@ -745,14 +757,17 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "closeTab": C.GALLERY_CLOSE_TAB,
         },
         "languageTitle": C.TITLE_LANGUAGE,
+        "languagePicker": LANGUAGE_PICKER_LABEL,
         "languageLead": C.LANGUAGE_LEAD,
+        # #131: this page's language starts on its usual layout, and says so.
+        "languageLayout": _keyboard.LANGUAGE_LAYOUTS.get(lang, _keyboard.DEFAULT_LAYOUT),
+        "layoutNotice": _auto_layout_notice(lang),
         "languages": [
             {"id": code, "name": LANGUAGE_NAMES[code], "active": code == lang}
             for code in LANGUAGE_ORDER
         ],
-        "confirmKeyboard": C.CONFIRM_KEYBOARD_LINE.format(
-            layout=_keyboard.LAYOUTS["us"].title, language=LANGUAGE_NAMES[lang]
-        ),
+        # The layout in use (#131: it follows the page's language until picked).
+        "confirmKeyboard": C.CONFIRM_KEYBOARD_LINE.replace("{language}", LANGUAGE_NAMES[lang]),
         "steps": {str(n): C.JOURNEY_LABELS[n - 1] for n in range(1, len(C.JOURNEY_LABELS) + 1)},
         "stepPrefix": C.STEP_PREFIX,
         "stepIdentify": C.STEP_IDENTIFY,
@@ -1237,7 +1252,8 @@ let anotherPending = false;
 let owner = false;
 let selected = null;
 let token = "";
-let keyboardLayout = "us";
+let keyboardLayout = P.languageLayout;
+let layoutChosen = false;
 let textSize = "standard";
 let method = "everyday";
 let tLeft = 5;
@@ -1298,8 +1314,8 @@ const MATCH_OK = '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11
 const EMBLEM = '__LOGO_SPLASH__';
 
 // Key names inside hint copy render as key-caps, mirroring _hint_bar.
-const KEY_RE = /(?<![\p{L}\p{N}])(Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
-const KEY_MAP = {"Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
+const KEY_RE = /(?<![\p{L}\p{N}])(Left\/Right|Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
+const KEY_MAP = {"Left/Right": ["←", "→"], "Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
 function renderHint(text) {
   const el = document.getElementById("hint");
   el.innerHTML = "";
@@ -1331,7 +1347,8 @@ function boot(m) {
   owner = false;
   selected = null;
   token = "";
-  keyboardLayout = "us";
+  keyboardLayout = P.languageLayout;
+  layoutChosen = false;
   method = "everyday";
   tLeft = 5;
   demoPct = null;
@@ -1583,20 +1600,24 @@ function draw() {
       return `<div class="card pickable${selected ? " sel" : ""}" data-layout="${item.id}" tabindex="0" role="button" aria-pressed="${selected}"><div class="row"><span class="radio"></span><div class="grow"><div class="title">${item.title}</div><p class="small muted">${item.note}</p></div><span class="kbd">${i+1}</span></div></div>`;
     }).join("");
     const sizes = P.textSizes.map(item => `<button type="button" class="btn ${textSize === item.id ? "primary" : "segment"}" data-text="${item.id}">${item.label}</button>`).join("");
-    const langs = P.languages.map(l => `<div class="small">${l.active ? ">" : "&nbsp;"} ${l.name}</div>`).join("");
-    main.innerHTML = `<h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>
+    const langs = P.languages.map(l => `<span class="small">${l.active ? ">" : "&nbsp;"} ${l.name}</span>`).join(" &nbsp; ");
+    // #131: language first, each in its own name; the page's layout follows
+    // it until a layout is picked by hand.
+    const layoutNotice = layoutChosen ? "" : `<p class="small"><strong>${P.layoutNotice}</strong></p>`;
+    main.innerHTML = `<section class="language-first" aria-label="${P.languagePicker}"><p class="small"><strong>${P.languagePicker}</strong></p>
+      <p>${langs}</p><p class="small muted">${P.languageLead}</p></section>
+      <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>
       <p class="small muted">${P.keyboardLimits}</p>
       <p class="small">${P.textSizeLead}</p>
-      <div class="textsizes">${sizes}</div>
+      <div class="textsizes">${sizes}</div>${layoutNotice}
       <div class="cz"><div class="czc">${layouts}
-      <p class="small" style="margin-top:12px"><strong>${P.languageTitle}</strong></p>
-      <p class="small muted">${P.languageLead}</p>${langs}
       <p class="small">${P.keyboardCheck}</p>
       <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value=""></div>
       </div></div>`;
     main.querySelectorAll("[data-layout]").forEach(el => {
       const pick = (keyboard = false) => {
         keyboardLayout = el.dataset.layout;
+        layoutChosen = true;
         owner = false; token = ""; selected = null;
         draw();
         if (keyboard) main.querySelector(`[data-layout="${keyboardLayout}"]`)?.focus();
@@ -1700,7 +1721,7 @@ function draw() {
       ${summaryCard(d)}
       ${moreLink("more-detail")}
       <div style="margin-top:12px">${panel("warn", d.warning)}</div>
-      <p class="small muted" style="margin-top:8px">${P.confirmKeyboard}</p>
+      <p class="small muted" style="margin-top:8px">${P.confirmKeyboard.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title)}</p>
       <p style="font-size:16px;margin:14px 0 8px;overflow-wrap:anywhere"><label for="tok">${esc(d.prompt)}</label></p>
       <div class="entryshell"><input class="token" id="tok" aria-describedby="match" autocomplete="off" spellcheck="false"></div>
       <p class="match" id="match" role="status" aria-live="polite"></p></div></div>`;
@@ -1994,6 +2015,7 @@ document.addEventListener("keydown", e => {
     const ids = P.keyboardLayouts.map(item => item.id);
     const at = Math.max(0, ids.indexOf(keyboardLayout || "us"));
     keyboardLayout = ids[(at + (e.key === "ArrowUp" ? ids.length - 1 : 1)) % ids.length];
+    layoutChosen = true;
     owner = false; token = ""; selected = null;
     draw();
     return;

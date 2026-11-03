@@ -24,6 +24,7 @@ from beamo_wipe.copy import (
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import (
     DEFAULT_LAYOUT,
+    LANGUAGE_LAYOUTS,
     apply_layout,
     is_allowed,
 )
@@ -415,6 +416,12 @@ class Wizard:
         self.language = "en"
         self.typing_check = ""
         self.keyboard_message = ""
+        # #131: a layout the person picked is never replaced by a language's
+        # usual layout. ``layout_notice`` says what choosing a language did
+        # to the layout: "auto" (set to match), "kept" (their own choice
+        # kept) or "stays" (kept so progress so far stays valid).
+        self.layout_chosen = False
+        self.layout_notice: Optional[str] = None
         self._keyboard_from: Optional[Screen] = None
         self._apply_keyboard = apply_layout
         self.method = DEFAULT_METHOD
@@ -1091,6 +1098,46 @@ class Wizard:
                 self.keyboard_message = ui_lang.current_text(self.keyboard_message)
             return True
 
+    def choose_language(self, code: str) -> bool:
+        """The language picker (#131): apply a language and, on the keyboard
+        screen, its usual layout from ``LANGUAGE_LAYOUTS``.
+
+        The layout follows only while the person has not picked one and
+        nothing would be lost: a layout change clears the ownership tick,
+        the chosen disk and any typed confirmation, so with any of those in
+        place the layout stays and the screen says so. The change itself is
+        the same transition as picking the layout by hand.
+        """
+        with self._lock:
+            if not self.set_language(code):
+                return False
+            if self.screen != Screen.KEYBOARD:
+                return True
+            target = LANGUAGE_LAYOUTS.get(code)
+            if self.layout_chosen:
+                self.layout_notice = "kept"
+                return True
+            if self._authorization_in_progress_locked():
+                self.layout_notice = "stays"
+                return True
+            if target is None or target == self.keyboard_layout:
+                self.layout_notice = "auto"
+                return True
+            if self._apply_layout_locked(target):
+                self.layout_notice = "auto"
+            else:
+                self.layout_notice = None
+            return True
+
+    def _authorization_in_progress_locked(self) -> bool:
+        return bool(
+            self.owner_ok
+            or self.selected is not None
+            or self.confirm_input
+            or self._authorized_operation is not None
+            or self._erase_until is not None
+        )
+
     def set_keyboard_layout(self, layout_id: str) -> bool:
         """Apply an allowlisted layout. Failed applies leave the previous layout."""
         with self._lock:
@@ -1103,34 +1150,44 @@ class Wizard:
             if layout_id == self.keyboard_layout:
                 self.error = None
                 self.keyboard_message = ""
+                self.layout_chosen = True
+                self.layout_notice = None
                 return True
-            if self.screen in {
-                Screen.WORKING,
-                Screen.CHECKING,
-                Screen.STOPPING,
-                Screen.REFRESHING,
-            }:
-                return False
-            # Applying the OS layout and invalidating authorization are one
-            # transition. Otherwise an erase can claim the old confirmation
-            # while the command runs, then this method moves WORKING to OWNER.
-            result = self._apply_keyboard(layout_id)
-            if not result.ok:
-                self.error = result.message or _keyboard.APPLY_FAILED
-                self.keyboard_message = self.error
-                try:
-                    from beamo_wipe.diagnostics import log_diag
+            if self._apply_layout_locked(layout_id):
+                self.layout_chosen = True
+                self.layout_notice = None
+                return True
+            return False
 
-                    log_diag("keyboard", "apply_failed", layout_id if is_allowed(layout_id) else "rejected")
-                except Exception:
-                    pass
-                return False
-            self.keyboard_layout = layout_id
-            self.typing_check = ""
-            self.keyboard_message = result.message
-            self.error = None
-            self._invalidate_after_layout_change_locked()
-            return True
+    def _apply_layout_locked(self, layout_id: str) -> bool:
+        """Apply an allowed layout and invalidate authorization in one step."""
+        if self.screen in {
+            Screen.WORKING,
+            Screen.CHECKING,
+            Screen.STOPPING,
+            Screen.REFRESHING,
+        }:
+            return False
+        # Applying the OS layout and invalidating authorization are one
+        # transition. Otherwise an erase can claim the old confirmation
+        # while the command runs, then this method moves WORKING to OWNER.
+        result = self._apply_keyboard(layout_id)
+        if not result.ok:
+            self.error = result.message or _keyboard.APPLY_FAILED
+            self.keyboard_message = self.error
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("keyboard", "apply_failed", layout_id if is_allowed(layout_id) else "rejected")
+            except Exception:
+                pass
+            return False
+        self.keyboard_layout = layout_id
+        self.typing_check = ""
+        self.keyboard_message = result.message
+        self.error = None
+        self._invalidate_after_layout_change_locked()
+        return True
 
     def _invalidate_after_layout_change_locked(self) -> None:
         self.owner_ok = False
@@ -1164,6 +1221,8 @@ class Wizard:
         self.selected = None
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
+        self.layout_chosen = False
+        self.layout_notice = None
         self.text_size = "standard"
         try:
             self.set_language("en")
