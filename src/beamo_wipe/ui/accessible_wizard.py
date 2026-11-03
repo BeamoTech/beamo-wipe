@@ -890,9 +890,17 @@ class AccessibleWizard:
             )
         elif screen == Screen.REFRESH_CONFIRM:
             heading.set_text(C.TITLE_REFRESH)
-            self.label(C.REFRESH_LEAD, focusable=True)
-            self.button(C.BTN_REFRESH, self._begin_refresh_scan)
-            self.button(C.BTN_BACK, self.w.back)
+            if self.w.refresh_guarded:
+                # #136: Cancel comes first and is the safe choice; Enter on
+                # the arrival heading does nothing, F5 cannot accept.
+                self.label(C.REFRESH_GUARD_LEAD, focusable=True)
+                self.label(C.HINT_REFRESH_GUARD, focusable=True)
+                self.button(C.BTN_REFRESH_CANCEL, self.w.back)
+                self.button(C.BTN_REFRESH, self._begin_refresh_scan)
+            else:
+                self.label(C.REFRESH_LEAD, focusable=True)
+                self.button(C.BTN_REFRESH, self._begin_refresh_scan)
+                self.button(C.BTN_BACK, self.w.back)
         elif screen == Screen.SHUTDOWN_CONFIRM:
             heading.set_text(self.w.exit_confirmation_title)
             self.label(self.w.exit_confirmation_loss)
@@ -949,7 +957,8 @@ class AccessibleWizard:
             self.button(C.DIAGNOSTIC_TITLE, self.w.open_diagnostic, utility=True)
         if self.w.can_open_report_help:
             self.button(C.REPORT_HELP_TITLE, self.w.open_report_help, utility=True)
-        if self.w.can_refresh and screen != Screen.REFRESH_CONFIRM:
+        if self.w.refresh_offered:
+            # #136: not on What/Owner; guarded from Confirm, Method, Review.
             self.button(C.BTN_REFRESH_UTILITY, self.w.open_refresh_confirm, utility=True)
         if self.w.can_open_keyboard and screen != Screen.KEYBOARD:
             self.button(C.KEYBOARD_UTILITY, self.w.open_keyboard, utility=True)
@@ -1360,8 +1369,10 @@ class AccessibleWizard:
             return True
         if key == Gdk.KEY_F5 and self.w.can_refresh:
             if self.w.screen == Screen.REFRESH_CONFIRM:
-                self._begin_refresh_scan()
-            else:
+                # A second F5 accepts only the unguarded (Pick) dialog (#136).
+                if not self.w.refresh_guarded:
+                    self._begin_refresh_scan()
+            elif self.w.refresh_offered:
                 self.w.open_refresh_confirm()
             self.render()
             return True

@@ -615,6 +615,9 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "refresh": C.TITLE_REFRESH,
         },
         "refreshLead": C.REFRESH_LEAD,
+        "refreshGuardLead": C.REFRESH_GUARD_LEAD,
+        "refreshGuardHint": C.HINT_REFRESH_GUARD,
+        "refreshCancel": C.BTN_REFRESH_CANCEL,
         "refreshButton": C.BTN_REFRESH,
         "refreshUtility": C.BTN_REFRESH_UTILITY,
         "whatLead": C.WHAT_LEAD,
@@ -1539,9 +1542,12 @@ function diskCard(d) {
     </div>
   </div>`;
 }
+// #136: not on What/Owner (no disk list yet); guarded after Pick.
+const REFRESH_OFFERED = ["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"];
+const REFRESH_DIRECT = ["pick", "empty", "blocked", "disk_help"];
+function refreshGuarded() { return !REFRESH_DIRECT.includes(refreshFrom); }
 function requestRefresh() {
-  if (["working", "done", "splash", "keyboard", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "shutdown_confirm"].includes(screen)) return;
-  if (screen === "refresh_confirm") return;
+  if (!REFRESH_OFFERED.includes(screen)) return;
   if (screen === "last" && timer) { clearInterval(timer); timer = null; }
   refreshFrom = screen;
   screen = "refresh_confirm";
@@ -1818,6 +1824,13 @@ function draw() {
     renderHint(P.hints.method);
     btnsL.append(btn(P.buttons.back, () => { screen = "confirm"; draw(); }));
     btnsR.append(btn(P.buttons.reviewErase, () => { screen = "last"; tLeft = 5; startCount(); draw(); }, "primary"));
+  } else if (screen === "refresh_confirm" && refreshGuarded()) {
+    main.innerHTML = `<h1 class="sub">${P.titles.refresh}</h1><p class="subtitle">${P.refreshGuardLead}</p>`;
+    btnsL.append(btn(P.refreshButton, refreshPreview, "secondary"));
+    const cancel = btn(P.refreshCancel, cancelRefresh, "primary");
+    btnsR.append(cancel);
+    renderHint(P.refreshGuardHint);
+    cancel.focus();
   } else if (screen === "refresh_confirm") {
     main.innerHTML = `<h1 class="sub">${P.titles.refresh}</h1><p class="subtitle">${P.refreshLead}</p>`;
     btnsL.append(btn(P.buttons.back, cancelRefresh));
@@ -2013,7 +2026,7 @@ function draw() {
   if (["what", "owner", "method", "advanced"].includes(screen)) {
     utilities.append(btn(P.reportHelpTitle, () => { reportHelpFrom = screen; screen = "report_help"; draw(); }, "ghost"));
   }
-  if (!["working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "splash", "keyboard", "shutdown_confirm", "refresh_confirm"].includes(screen)) {
+  if (REFRESH_OFFERED.includes(screen)) {
     utilities.prepend(btn(P.refreshUtility, requestRefresh, "ghost"));
   }
   if (screen === "method") {
@@ -2088,7 +2101,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "F5") {
     e.preventDefault();
     if (e.repeat || ["working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "splash", "shutdown_confirm"].includes(screen)) return;
-    if (screen === "refresh_confirm") refreshPreview();
+    if (screen === "refresh_confirm") { if (!refreshGuarded()) refreshPreview(); }
     else requestRefresh();
     return;
   }

@@ -3105,8 +3105,11 @@ class TkWizard:
                 f"{C.TEXT_SIZE_UTILITY}: {C.TEXT_SIZE_LABELS.get(self.w.text_size, C.TEXT_SIZE_STANDARD)}",
                 self._cycle_text_size,
             )
-        if self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM:
+        if self.w.refresh_offered:
+            # #136: not on What/Owner (no disk list yet); guarded from
+            # Confirm, Method and Review by the Check disks again dialog.
             utility(C.BTN_REFRESH_UTILITY, self._click_refresh)
+        if self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM:
             if self.w.can_open_report_help:
                 utility(C.REPORT_HELP_TITLE, self._nav(self.w.open_report_help))
             if sys.platform.startswith("linux"):
@@ -4817,12 +4820,26 @@ class TkWizard:
 
     def _refresh_confirm(self) -> None:
         col = self._column(self._body, fill_height=True)
-        self._title_block(col, C.TITLE_REFRESH, C.REFRESH_LEAD)
-        row = self._footer_shell(C.HINT_REFRESH)
-        self._back_btn(row)
-        self._primary_btn(row, C.BTN_REFRESH, self._click_refresh)
-        if self._primary is not None:
-            self._primary.focus_set()
+        if not self.w.refresh_guarded:
+            # From Pick: a normal action, as before.
+            self._title_block(col, C.TITLE_REFRESH, C.REFRESH_LEAD)
+            row = self._footer_shell(C.HINT_REFRESH)
+            self._back_btn(row)
+            self._primary_btn(row, C.BTN_REFRESH, self._click_refresh)
+            if self._primary is not None:
+                self._primary.focus_set()
+            return
+        # #136: from a screen holding confirmations, Cancel is the default
+        # and the emphasised button. Enter and Esc keep the answers;
+        # clearing them needs Tab to the outlined Check disks again.
+        lead = C.REFRESH_GUARD_LEAD
+        if self.w.refresh_then_reader:
+            lead += " " + C.REFRESH_THEN_READER
+        self._title_block(col, C.TITLE_REFRESH, lead)
+        row = self._footer_shell(C.HINT_REFRESH_GUARD)
+        self._secondary_btn(row, C.BTN_REFRESH, self._click_refresh)
+        cancel = self._primary_btn(row, C.BTN_REFRESH_CANCEL, self.w.back)
+        cancel.focus_set()
 
     def _report_help(self) -> None:
         col = self._column(self._body, fill_height=True)
@@ -5872,7 +5889,9 @@ class TkWizard:
                 return
             self._draw()
             return
-        if self._start_refresh_scan(self._redraw_after_refresh) is None:
+        reader = self.w.refresh_then_reader
+        after = self._open_reader_after_refresh if reader else self._redraw_after_refresh
+        if self._start_refresh_scan(after) is None:
             return
         self._show_more = False
         self._pick_scroll = 0.0
@@ -5897,7 +5916,12 @@ class TkWizard:
                 return "break"
             self._f5_held = True
             self._f5_release_time = None
-            if self.w.can_refresh:
+            if self.w.screen == Screen.REFRESH_CONFIRM:
+                # A second F5 accepts only the unguarded (Pick) dialog;
+                # the guarded one needs its own button (#136).
+                if not self.w.refresh_guarded:
+                    self._click_refresh()
+            elif self.w.refresh_offered:
                 self._click_refresh()
             return "break"
         if self._body_canvas is not None and event.keysym in ("Prior", "Next"):
@@ -6012,6 +6036,14 @@ class TkWizard:
 
     def _click_accessible(self) -> None:
         if not sys.platform.startswith("linux") or not self.w.can_refresh:
+            return
+        if self.w.screen != Screen.REFRESH_CONFIRM and self.w.refresh_guarded:
+            # The switch rescans, which clears confirmations: ask first,
+            # with the same guarded dialog as Check disks again (#136).
+            self.w.open_refresh_confirm(then_reader=True)
+            self._draw()
+            return
+        if self.w.screen == Screen.REFRESH_CONFIRM:
             return
         if self._start_refresh_scan(self._open_reader_after_refresh) is None:
             self._draw()

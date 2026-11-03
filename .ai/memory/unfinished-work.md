@@ -3206,3 +3206,58 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: hosted ci.yml on the stack head (owner approval) incl. QEMU report
   save; native review; #175 decides the final sound-settings place; merge
   order #94 -> #127 -> ... -> #134 -> #135.
+
+## BW-136-REFRESH — Check disks again cannot silently clear confirmations (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/refresh-guard-136` (stacked on
+  `feat/report-panel-135` @ 05161a5), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
+  (UI review item 10). Safety-adjacent: `safety:` commit.
+- BASELINE (05161a5): the utility showed on What/Owner (no disk list); the
+  Check disks again screen from Review/Confirm focused "Check disks again",
+  so Enter or a second F5 cleared every confirmation; the Tk screen-reader
+  switch (F8 / utility) rescanned directly from any screen, including
+  Confirm/Review, with no question at all.
+- CHOICE: guarded dialog, not hiding, on Confirm and Review (also Method,
+  Advanced, Limits). Why: a person who replugs a disk at Review needs the
+  rescan where they are; hiding would send them back through several
+  screens to Pick, where the same reset happens anyway with less
+  explanation. The guard keeps it reachable but deliberate: Cancel is the
+  default and emphasised button, Enter/Esc keep the answers, a second F5
+  does nothing, and only the outlined Check disks again button (curses C,
+  plain console the typed words) clears them.
+- WHAT CHANGED: wizard `REFRESH_DIRECT_SCREENS` (What, Owner, Pick,
+  empty, blocked, disk help) and `REFRESH_OFFERED_SCREENS` (Pick family +
+  Confirm, Method, Review, Advanced, Limits); `refresh_offered`,
+  `refresh_guarded` (unknown origin fails closed), `open_refresh_confirm(
+  then_reader=)` only on offered screens; `begin_refresh` refuses a direct
+  scan from any non-direct screen (incl. report help opened after Owner), so
+  no surface can skip the dialog. Accepting runs the unchanged
+  begin/finish_refresh reset (same fields cleared, lands on Owner). Pick's
+  dialog is unchanged (normal action). Tk, GTK, curses, plain console and the
+  web preview follow; the Tk F8 reader switch opens the same guarded dialog
+  on those screens and opens the reader after acceptance. Pre-launch
+  rediscovery/identity comparison (`confirm_erase`) untouched.
+- COPY: "Check disks again?" + "This clears your confirmations and you will
+  start again from choosing a disk: you tick the ownership box again, then
+  choose the disk." (the requested sentence, extended because a rescan
+  lands on the ownership question before Pick); Cancel; hints; curses/plain
+  keys. FR/DE/ES/IT drafts.
+- FILES: wizard.py, copy.py, locales fr/de/es/it, ui/tk_wizard.py,
+  ui/accessible_wizard.py, ui/console_wizard.py, gallery.py; docs
+  screens.md, screen-reader.md, README.md, translations.md. Tests: new
+  tests/test_refresh_guard_136.py; test_accessible_runtime.py (2 updated,
+  1 added; GTK not run here).
+- CHECKS: Windows-native (WSL down), 2026-11-03. New test file: 52 pass
+  (41 non-Tk, 11 Tk run one by one); on 05161a5 all fail except the Pick-
+  unchanged guard (passes on both by design). ruff (CI selections), mypy
+  --platform linux, node --check of the gallery script and git diff --check
+  pass. Per-file comparison of 264 related test files vs 05161a5: RUNNING at
+  commit time; result recorded in a follow-up commit before push.
+- SCREENSHOTS: scratch `work136-scratch-20261103` shots-before (05161a5) and
+  shots-after (owner/pick/confirm/review/dialog-from-pick/dialog-from-
+  review at 800x600 and 1280x820, visible.txt with focus).
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK here), full Linux pytest
+  at 72 DPI (WSL down), ISO/QEMU, native review of FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval); native review;
+  merge order #94 -> #127 -> ... -> #135 -> #136.

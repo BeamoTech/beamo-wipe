@@ -17,7 +17,12 @@ authorization flow in the new view. Switching is unavailable while an erase is
 starting or running. A failed refresh leaves no stale disk selectable.
 
 **Check disks again (F5)** first explains that reset and waits for confirm or
-Back. F8 screen-reader handoff still scans immediately after you choose it.
+Back. It is not offered on the ownership screen. From Confirm, Method or
+Review the dialog is guarded (#136): **Cancel** comes first, Enter on the
+heading does nothing, a second F5 cannot accept it, and only the **Check disks
+again** button clears your answers. In the graphical view, F8 screen-reader
+handoff scans immediately from Pick and earlier; from Confirm, Method or Review
+it first opens the same guarded dialog.
 
 The live USB boot menu also offers **Beamo Wipe: speech for screen readers** —
 press **S** when the menu appears. That entry passes `beamo.ui=accessible` on

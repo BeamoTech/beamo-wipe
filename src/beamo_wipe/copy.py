@@ -853,6 +853,15 @@ HINT_LAST_CHANCE = "Esc goes back.  Enter erases after the countdown."
 HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase now, then Enter after the countdown."
 HINT_BLOCKED = "Enter requests shutdown. Esc goes back."
 HINT_REFRESH = "Esc keeps your answers. Enter checks disks again."
+# Guarded Check disks again (#136): from Confirm, Method and Review the
+# dialog defaults to Cancel; Enter and Esc keep the answers.
+REFRESH_GUARD_LEAD = (
+    "This clears your confirmations and you will start again from choosing "
+    "a disk: you tick the ownership box again, then choose the disk."
+)
+REFRESH_THEN_READER = "Afterwards the screen-reader view opens."
+BTN_REFRESH_CANCEL = "Cancel"
+HINT_REFRESH_GUARD = "Enter or Esc keeps your answers. Tab to Check disks again to clear them."
 REFRESH_LEAD = (
     "This clears the selected disk, the ownership acknowledgement, the typed "
     "confirmation, the erase method, and the countdown. Preparation starts "
@@ -1187,6 +1196,9 @@ CON_STOPPING = "The disk may still be erasing. Keep this USB connected."
 CON_REFRESHING = "Please wait. Previous selections have been cleared."
 CON_REFRESH_ENTER = "Enter: check disks again"
 CON_REFRESH_ESC = "Esc: keep your answers"
+CON_REFRESH_GUARD_KEEP = "Enter/Esc: keep your answers (Cancel)"
+CON_REFRESH_GUARD_GO = "C: check disks again (clears your confirmations)"
+CON_REFRESH_GUARD_PROMPT = "Type CHECK DISKS AGAIN to clear your answers; Enter keeps them: "
 CON_SHUTDOWN_KEEP = "Enter/Esc: keep session open"
 CON_SHUTDOWN_DISCARD = "D: {action} (type confirmation)"
 CON_DIAG_SAVE = "save diagnostic report"

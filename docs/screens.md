@@ -34,7 +34,21 @@ Primary actions name the next step: **Choose a disk**, **Review this disk**, **C
 Before erasure, **Check disks again** (F5) first shows that it clears the
 selected disk, ownership acknowledgement, typed confirmation, method, and
 countdown, and that preparation starts again from the beginning. Back keeps
-those answers. Confirming then performs fresh discovery and boot
+those answers. Where it is offered (#136): not on What/Owner (no disk list
+exists yet); on Pick and its empty, blocked and help screens as a normal
+action (the dialog's Check disks again is focused; Enter or a second F5
+accepts); from Confirm, Method, Review, Advanced and Limits only through a
+guarded dialog — "Check disks again? This clears your confirmations and you
+will start again from choosing a disk: you tick the ownership box again, then
+choose the disk." — whose default focus is **Cancel**. Enter and Esc keep the
+answers, a second F5 does nothing, and clearing them needs Tab to **Check
+disks again** (curses: `C`; plain console: the typed words; a bare Enter
+keeps them). The wizard refuses a direct rescan from those screens, so no
+surface can skip the dialog. The Tk screen-reader switch (F8), which rescans,
+opens the same guarded dialog there and opens the reader only after it is
+accepted. Any accepted rescan still clears every confirmation exactly as
+before; the automatic pre-launch rediscovery and identity comparison are
+unchanged. Confirming then performs fresh discovery and boot
 identification and requires the full flow again. The inventory count is taken
 from that new discovery. A failed refresh leaves no
 stale target selectable. Refresh is disabled once starting or running.

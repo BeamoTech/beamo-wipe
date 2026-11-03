@@ -136,6 +136,18 @@ REPORT_NOT_SAVED = "The report was not saved and verified. Shut down before remo
 REPORT_CHANGED_DURING_SAVE = "The finished wipe report changed while it was being saved. Shut down before removing the USB."
 EXPORT_NO_START = "The report export could not start."
 REPORT_USB_POLL_S = 1.5  # read-only report-USB detection on Done (#135)
+# Check disks again (#136). Direct: a rescan clears at most the ownership
+# tick (and a highlighted disk). Offered: where the action is shown; every
+# offered screen outside the direct set goes through the guarded dialog.
+REFRESH_DIRECT_SCREENS = frozenset({
+    Screen.WHAT, Screen.OWNER, Screen.PICK, Screen.PICK_EMPTY,
+    Screen.PICK_BLOCKED, Screen.DISK_HELP,
+})
+REFRESH_OFFERED_SCREENS = frozenset({
+    Screen.PICK, Screen.PICK_EMPTY, Screen.PICK_BLOCKED, Screen.DISK_HELP,
+    Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED,
+    Screen.LIMITS,
+})
 DIAG_VERIFYING = "Saving and verifying. Leave the USB connected."
 DIAG_CHECKING = "Checking connected disks."
 DIAG_NO_PREVIEW = "Diagnostic USB export is unavailable in preview or dry-run."
@@ -429,6 +441,9 @@ class Wizard:
         self._saved_diagnostic_context: Optional[tuple[str, DiscoveryResult]] = None
         self._report_help_from: Optional[Screen] = None
         self._refresh_confirm_from: Optional[Screen] = None
+        # #136: the guarded dialog was opened by the screen-reader switch,
+        # which reopens in the reader once the rescan finishes (Tk only).
+        self.refresh_then_reader = False
         self.owner_ok = False
         self.selected: Optional[Disk] = None
         self.confirm_input = ""
@@ -1792,16 +1807,49 @@ class Wizard:
             Screen.REFRESH_CONFIRM,
         } and self._wipe_request is None and not self.wants_shutdown and not self._startup_blocked and not self._diagnostic_busy
 
+    def _refresh_guarded_from(self, screen: Optional[Screen]) -> bool:
+        """True when rediscovery from ``screen`` would clear confirmations
+        beyond the ownership tick (#136). Unknown origins fail closed."""
+        if screen in REFRESH_DIRECT_SCREENS:
+            return False
+        if screen == Screen.REPORT_HELP:
+            return self._report_help_from not in (Screen.WHAT, Screen.OWNER)
+        return True
+
+    @property
+    def refresh_offered(self) -> bool:
+        """Show Check disks again (and its F5 key) on this screen (#136).
+
+        Not on What/Owner: no disk list exists yet. Pick and its empty,
+        blocked and help screens offer it as a normal action; Confirm,
+        Method, Review, Advanced and Limits offer it through the guarded
+        dialog.
+        """
+        return self.can_refresh and self.screen in REFRESH_OFFERED_SCREENS
+
+    @property
+    def refresh_guarded(self) -> bool:
+        """The open Check disks again dialog guards confirmations: Cancel
+        is its default and repeat keys cannot accept it (#136)."""
+        with self._lock:
+            if self.screen == Screen.REFRESH_CONFIRM:
+                return self._refresh_guarded_from(self._refresh_confirm_from)
+            return self._refresh_guarded_from(self.screen)
+
     def begin_refresh(self) -> Optional[int]:
         """Claim the checking state; the caller runs I/O elsewhere.
 
         Runs on the UI thread and returns a sequence number, or None when
         refresh is not allowed from the current screen. A second attempt
         while a scan is in flight is refused (None): one scan runs at a
-        time, so results can never pile up or race the UI.
+        time, so results can never pile up or race the UI. From a screen
+        holding confirmations, only the Check disks again dialog may start
+        a scan (#136); a direct call fails closed.
         """
         with self._lock:
             if self.screen == Screen.REFRESHING or not self.can_refresh:
+                return None
+            if self.screen != Screen.REFRESH_CONFIRM and self._refresh_guarded_from(self.screen):
                 return None
             self._refresh_seq += 1
             self.screen = Screen.REFRESHING
@@ -1815,6 +1863,7 @@ class Wizard:
             self._advanced_from = None
             self._report_help_from = None
             self._refresh_confirm_from = None
+            self.refresh_then_reader = False
             self._done_keyboard_armed = False
             self.error = None
             return self._refresh_seq
@@ -1892,8 +1941,12 @@ class Wizard:
         self.finish_refresh(seq, outcome)
         return True
 
-    def open_refresh_confirm(self) -> bool:
-        """Show the reset explanation. Does not clear authorization."""
+    def open_refresh_confirm(self, *, then_reader: bool = False) -> bool:
+        """Show the reset explanation. Does not clear authorization.
+
+        Offered screens only (#136). ``then_reader`` is the screen-reader
+        switch on a screen holding confirmations: the same guarded dialog.
+        """
         with self._lock:
             if self.screen == Screen.REFRESHING:
                 return False
@@ -1901,7 +1954,12 @@ class Wizard:
                 return True
             if not self.can_refresh:
                 return False
+            if self.screen not in REFRESH_OFFERED_SCREENS and not (
+                then_reader and self._refresh_guarded_from(self.screen)
+            ):
+                return False
             self._refresh_confirm_from = self.screen
+            self.refresh_then_reader = bool(then_reader)
             self.screen = Screen.REFRESH_CONFIRM
             return True
 
@@ -1918,6 +1976,7 @@ class Wizard:
                 return
             dest = self._refresh_confirm_from or Screen.OWNER
             self._refresh_confirm_from = None
+            self.refresh_then_reader = False
             self._return_to_screen_locked(dest)
 
     def _operation_key(self) -> Optional[tuple[Any, ...]]:

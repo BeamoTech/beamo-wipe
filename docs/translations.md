@@ -286,6 +286,13 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `copy.REFRESH_GUARD_LEAD`, `REFRESH_THEN_READER`, `BTN_REFRESH_CANCEL`,
+  `HINT_REFRESH_GUARD` and `CON_REFRESH_GUARD_*` (2026-11-03 for #136, not
+  yet reviewed): the guarded Check disks again dialog. It must say the
+  confirmations are cleared and the person starts again from choosing a
+  disk; `HINT_REFRESH_GUARD` names the `BTN_REFRESH` button exactly; the
+  typed `CHECK DISKS AGAIN` and the `C`, `Enter`, `Esc`, `Tab` keys stay
+  English.
 - `copy.REPORT_STEP_*`, `REPORT_USB_*`, `REPORT_SAVE_WAIT`,
   `REPORT_NOT_OFFERED`, `RETRY_UNAVAILABLE`, `DONE_WAIT_*`, `DONE_ANOTHER_*`,
   `CON_PANEL_*` and `CON_PLAIN_RECHECK`, plus the changed

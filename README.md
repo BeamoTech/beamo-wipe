@@ -77,7 +77,8 @@ Before erasure, **Check disks again** (F5, or `CHECK DISKS AGAIN` at a text
 prompt) first explains that it clears the selected disk, ownership
 acknowledgement, typed confirmation, method, and countdown, and that
 preparation starts again from the beginning. You can keep your answers, or
-continue. Then it reads the inventory again and identifies the boot device
+continue. It appears from the disk list onward, not on the ownership screen;
+after you have chosen a disk, the question defaults to **Cancel**. Then it reads the inventory again and identifies the boot device
 again. Complete the entire confirmation flow again. A failed refresh leaves
 no stale target selectable. Refresh is unavailable once an erase is starting
 or running.

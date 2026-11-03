@@ -220,7 +220,9 @@ def test_accessible_refresh_requires_full_confirmation(ui, tmp_path, monkeypatch
     app.actions["Check disks again (F5)"].clicked()
     assert wizard.screen == Screen.REFRESH_CONFIRM
     assert wizard.selected is not None and wizard.owner_ok
-    assert C.REFRESH_LEAD in text(app)
+    # #136: from Review the dialog is guarded; Cancel is offered first.
+    assert C.REFRESH_GUARD_LEAD in text(app)
+    assert C.BTN_REFRESH_CANCEL in app.actions
     app.actions[C.BTN_REFRESH].clicked()
     wait_refresh(app)
     assert wizard.selected is None and not wizard.owner_ok and not wizard.confirm_input
@@ -1038,6 +1040,16 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     assert w.report_wanted is wanted
     fresh = w.discovery
     w._rediscover = lambda: fresh
+    # #136: Check disks again is not offered on Owner or its help; rescan
+    # from Pick instead.
+    assert "Check disks again (F5)" not in app.actions
+    app.actions[C.BTN_BACK].clicked()
+    drain()
+    assert w.screen == Screen.OWNER and "Check disks again (F5)" not in app.actions
+    w.set_owner(True)
+    w.continue_owner()
+    app.render()
+    drain()
     app.actions["Check disks again (F5)"].clicked()
     drain()
     assert w.screen == Screen.REFRESH_CONFIRM
@@ -1926,6 +1938,39 @@ def test_done_export_stages_announced_per_state(ui, tmp_path, status):
         assert line in body
     if status == "error":
         assert "Report USB was removed." in body
+
+
+@pytest.mark.parametrize("origin", [Screen.CONFIRM, Screen.LAST_CHANCE])
+def test_guarded_refresh_cancel_is_first_and_keeps_answers(ui, origin):
+    """#136: Cancel first; F5 cannot accept; Cancel keeps answers. Needs display."""
+    from beamo_wipe import copy as C
+
+    wizard = make_demo_wizard()
+    fresh = wizard.discovery
+    wizard._rediscover = lambda: fresh
+    wizard.skip_intro()
+    wizard.accept_what()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+    wizard.continue_pick()
+    wizard.set_confirm_input(wizard.confirm.token)
+    if origin == Screen.LAST_CHANCE:
+        wizard.continue_confirm()
+        wizard.continue_method()
+    assert wizard.screen == origin
+    app = ui(wizard)
+    selected, token = wizard.selected, wizard.confirm_input
+    app.actions["Check disks again (F5)"].clicked()
+    drain()
+    assert wizard.screen == Screen.REFRESH_CONFIRM
+    buttons = [w.get_label() for w in app.navigation.get_children()]
+    assert C.BTN_REFRESH_CANCEL in buttons and C.BTN_REFRESH in buttons
+    assert list(app.actions).index(C.BTN_REFRESH_CANCEL) < list(app.actions).index(C.BTN_REFRESH)
+    app.actions[C.BTN_REFRESH_CANCEL].clicked()
+    drain()
+    assert wizard.screen == origin
+    assert wizard.selected == selected and wizard.confirm_input == token and wizard.owner_ok
 
 
 @pytest.mark.parametrize("found", [True, False])

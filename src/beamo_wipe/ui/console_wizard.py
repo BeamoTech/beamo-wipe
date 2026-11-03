@@ -427,7 +427,7 @@ def _chrome_extra(wizard: Wizard) -> list[str]:
         bits.append(C.CON_DIAGNOSTIC)
     if wizard.can_open_report_help:
         bits.append(C.CON_REPORT_HELP)
-    if wizard.can_refresh and wizard.screen not in {Screen.REPORT_HELP, Screen.REFRESH_CONFIRM}:
+    if wizard.refresh_offered:
         bits.append(C.CON_REFRESH.format(note=C.REFRESH_UTILITY_NOTE))
     if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
         bits.append(C.CON_KEYBOARD)
@@ -548,6 +548,9 @@ def _primary_footer(
     if screen == Screen.REFRESHING:
         return [C.CON_REFRESHING]
     if screen == Screen.REFRESH_CONFIRM:
+        if wizard.refresh_guarded:
+            # #136: Enter keeps the answers; clearing needs its own key.
+            return [C.CON_REFRESH_GUARD_KEEP, C.CON_REFRESH_GUARD_GO]
         return [
             C.CON_REFRESH_ENTER,
             C.CON_REFRESH_ESC,
@@ -725,11 +728,10 @@ def _answer(wizard: Wizard, prompt: str) -> str:
             print(C.CON_KEYBOARD_LONG)
         else:
             print(C.CON_KEYBOARD)
-    if wizard.can_refresh:
-        if wizard.screen == Screen.REFRESH_CONFIRM:
-            print(C.CON_REFRESH_HINT_CONFIRM)
-        else:
-            print(C.CON_REFRESH_HINT)
+    if wizard.screen == Screen.REFRESH_CONFIRM:
+        print(C.CON_REFRESH_HINT_CONFIRM)
+    elif wizard.refresh_offered:
+        print(C.CON_REFRESH_HINT)
     if wizard.can_open_diagnostic and confirm_word != "diagnostic":
         print(C.CON_DIAGNOSTIC_HINT)
     if wizard.can_open_report_help and confirm_word != "report":
@@ -755,7 +757,10 @@ def _answer(wizard: Wizard, prompt: str) -> str:
     if wizard.can_open_diagnostic and keyboard_command == "DIAGNOSTIC" and not names_confirm_token:
         wizard.open_diagnostic()
         raise _InventoryRefreshed
-    if wizard.can_refresh and answer.strip().upper() == "CHECK DISKS AGAIN":
+    if (
+        (wizard.refresh_offered or wizard.screen == Screen.REFRESH_CONFIRM)
+        and answer.strip().upper() == "CHECK DISKS AGAIN"
+    ):
         _request_or_confirm_refresh(wizard)
         raise _InventoryRefreshed
     if wizard.screen == Screen.REFRESH_CONFIRM and answer.strip().upper() == "BACK":
@@ -876,6 +881,13 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print("=" * 60)
         if screen == Screen.REFRESH_CONFIRM:
             print(_screen_title(wizard))
+            if wizard.refresh_guarded:
+                # #136: only the typed words clear the answers; a bare
+                # Enter keeps them (Cancel is the default).
+                _emit(C.REFRESH_GUARD_LEAD)
+                if not _answer(wizard, C.CON_REFRESH_GUARD_PROMPT).strip():
+                    wizard.back()
+                continue
             _emit(C.REFRESH_LEAD)
             _answer(wizard, C.CON_REFRESH_PROMPT)
             continue
@@ -1598,7 +1610,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if need_below:
                 _add(stdscr, y_max - 1, 0, C.CON_MORE_DISKS_BELOW)
         elif wizard.screen == Screen.REFRESH_CONFIRM:
-            _wrap(stdscr, y, C.REFRESH_LEAD, w, y_max)
+            _wrap(stdscr, y, C.REFRESH_GUARD_LEAD if wizard.refresh_guarded else C.REFRESH_LEAD,
+                  w, y_max)
         elif wizard.screen == Screen.SHUTDOWN_CONFIRM:
             y = _wrap(stdscr, y, wizard.exit_confirmation_loss, w, y_max)
             rest = (
@@ -1717,7 +1730,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if _is_enter_repeat(enter_held, ch):
                 continue
             enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
-            if ch == curses.KEY_F5 and wizard.can_refresh:
+            if ch == curses.KEY_F5 and wizard.refresh_offered:
                 wizard.open_refresh_confirm()
                 continue
             if ch in (curses.KEY_UP, curses.KEY_DOWN, curses.KEY_PPAGE, curses.KEY_NPAGE):
@@ -2020,7 +2033,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
         if wizard.screen == Screen.DIAGNOSTIC and ch in (ord("r"), ord("R")):
             _confirm_diagnostic_action(stdscr, wizard)
             continue
-        if ch == curses.KEY_F5 and wizard.can_refresh:
+        if ch == curses.KEY_F5 and wizard.refresh_offered:
             wizard.open_refresh_confirm()
             inventory_open = False
             continue
@@ -2242,6 +2255,14 @@ def _handle(wizard: Wizard, ch: int) -> None:
             wizard.request_hear_both_sounds()
         return
     if wizard.screen == Screen.REFRESH_CONFIRM:
+        if wizard.refresh_guarded:
+            # #136: Cancel is the default. Enter and Esc keep the answers;
+            # only C clears them.
+            if ch in (ord("c"), ord("C")):
+                wizard.confirm_refresh()
+            elif ch in (27, curses.KEY_ENTER, 10, 13):
+                wizard.back()
+            return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.confirm_refresh()
         elif ch == 27:
