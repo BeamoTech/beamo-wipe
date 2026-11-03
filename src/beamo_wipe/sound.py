@@ -439,6 +439,23 @@ def play_outcome(kind: str) -> SoundResult:
     return SoundResult(True, "")
 
 
+def output_status() -> SoundResult:
+    """Can a finish sound be heard? (#133) Never plays anything.
+
+    ok=True only when the live session has an unmuted output. Otherwise the
+    message is a short reason for the greyed Working-screen toggle.
+    """
+    if not _on_live():
+        return SoundResult(False, C.FINISH_SOUND_REASON_PREVIEW)
+    ensure_audio()
+    state = list_outputs()
+    if not state.available:
+        return SoundResult(False, C.FINISH_SOUND_REASON_NO_OUTPUT)
+    if state.muted:
+        return SoundResult(False, C.FINISH_SOUND_REASON_MUTED)
+    return SoundResult(True, "")
+
+
 def play_test(kind: str) -> SoundResult:
     """Blocking explicit test with truthful feedback."""
     ready, message = _ready(kind)

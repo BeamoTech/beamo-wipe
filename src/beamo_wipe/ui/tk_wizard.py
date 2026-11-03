@@ -255,9 +255,18 @@ def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
     return cv
 
 
-def _icon_check_box(parent: tk.Widget, checked: bool, size: int = 28) -> tk.Canvas:
+def _icon_check_box(
+    parent: tk.Widget, checked: bool, size: int = 28, *, muted: bool = False
+) -> tk.Canvas:
     cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
     pad = 2
+    if muted:
+        # Unavailable (#133): a flat grey box, never a live-looking tick.
+        _round_rect(
+            cv, pad, pad, size - pad, size - pad, 10,
+            fill=TRACK, outline=BORDER, width=2,
+        )
+        return cv
     if checked:
         _round_rect(
             cv, pad, pad, size - pad, size - pad, 10,
@@ -1057,17 +1066,20 @@ class _CheckRow(tk.Frame):
         command: Callable[[], None],
         font: tkfont.Font,
         wraplength: int = 0,
+        enabled: bool = True,
+        flow: bool = True,
     ) -> None:
         self._native_owner = threading.current_thread()
         bg = parent.cget("bg")
+        self._enabled = enabled
         super().__init__(
             parent,
             bg=bg,
-            takefocus=1,
+            takefocus=1 if enabled else 0,
             highlightthickness=2,
             highlightbackground=bg,
             highlightcolor=FOCUS,
-            cursor="hand2",
+            cursor="hand2" if enabled else "arrow",
         )
         self._text = text
         self._variable = variable
@@ -1080,11 +1092,14 @@ class _CheckRow(tk.Frame):
         self._pressed = False
         self._icon: Optional[tk.Canvas] = None
         self._label = tk.Label(
-            self, text=text, font=font, fg=INK, bg=bg, justify=tk.LEFT, anchor="w",
-            wraplength=wraplength or 0,
+            self, text=text, font=font, fg=INK if enabled else MUTED, bg=bg,
+            justify=tk.LEFT, anchor="w", wraplength=wraplength or 0,
         )
         self._label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(10, 4), pady=2)
-        self.bind("<Configure>", self._flow_label, add="+")
+        # flow=False: a footer control sized by its text, not by its row.
+        self._flows = flow
+        if flow:
+            self.bind("<Configure>", self._flow_label, add="+")
         self._sync()
         self._paint()
         self._variable_trace: Optional[str] = _new_owned_trace(self, "_variable_trace", variable, self._on_variable)
@@ -1098,7 +1113,8 @@ class _CheckRow(tk.Frame):
         self.bind("<KP_Enter>", self._activate)
         self._label.bind("<ButtonPress-1>", self._press)
         self._label.bind("<ButtonRelease-1>", self._release)
-        self.after_idle(self._flow_label)
+        if flow:
+            self.after_idle(self._flow_label)
 
     def _flow_label(self, event=None) -> None:
         width = int(event.width) if event is not None else int(self.winfo_width())
@@ -1147,6 +1163,8 @@ class _CheckRow(tk.Frame):
             _drain_retired_native()
 
     def _row_bg(self) -> str:
+        if not getattr(self, "_enabled", True):
+            return self._base_bg
         if self._pressed:
             return "#E2E8EE"
         if bool(self._variable.get()):
@@ -1210,6 +1228,8 @@ class _CheckRow(tk.Frame):
         return "break"
 
     def invoke(self) -> None:
+        if not getattr(self, "_enabled", True):
+            return
         self._variable.set(not bool(self._variable.get()))
         self._command()
 
@@ -1217,7 +1237,10 @@ class _CheckRow(tk.Frame):
         if self._icon is not None:
             self._icon.destroy()
         bg = self._row_bg()
-        icon = _icon_check_box(self, bool(self._variable.get()), 22)
+        icon = _icon_check_box(
+            self, bool(self._variable.get()), 22,
+            muted=not getattr(self, "_enabled", True),
+        )
         icon.configure(bg=bg)
         icon.pack(side=tk.LEFT, anchor="n", pady=6, before=self._label)
         icon.bind("<ButtonPress-1>", self._press)
@@ -1440,7 +1463,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1543,6 +1566,7 @@ class TkWizard:
             self._progress_stale: Optional[tk.Label] = None
             self._progress_stale_slot: Optional[tk.Frame] = None
             self._progress_notes_slot: Optional[tk.Frame] = None
+            self._finish_toggle: Optional[_CheckRow] = None
             self._indet = 0.0
             self._match_label: Optional[tk.Label] = None
             self._match_icon: Optional[tk.Canvas] = None
@@ -1604,6 +1628,9 @@ class TkWizard:
             self.root.bind("<KeyRelease-space>", self._on_space_release)
             self.root.bind("<KeyRelease-F5>", self._on_f5_release)
             self.root.bind("<Key>", self._on_key)
+            self.root.bind(
+                "<ButtonPress>", lambda _e: getattr(self.w, "acknowledge_finish_sound", lambda: None)(), add="+"
+            )
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
                 self.root.bind(sequence, self._on_body_wheel)
             self.root.bind("<FocusIn>", self._on_body_focus)
@@ -2202,6 +2229,7 @@ class TkWizard:
         def wrapped() -> None:
             if getattr(self, "_ui_dead", False) or self.w.screen != expected_screen or generation != getattr(self, "_draw_generation", 0):
                 return
+            getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
             fn()
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self._teardown()
@@ -2406,6 +2434,7 @@ class TkWizard:
         self._progress_stale = None
         self._progress_stale_slot = None
         self._progress_notes_slot = None
+        self._finish_toggle = None
         self._match_label = None
         self._match_icon = None
         self._match_pill = None
@@ -5041,7 +5070,15 @@ class TkWizard:
         self._progress_label = self._p(
             self._progress_notes_slot, "", fg=MUTED, font=self.font_s, bg=SURFACE
         )
-        self._power_notice(zone, reminder=False, bg=SURFACE)
+        # Walk away (#133): promise the beep only when it can be heard, then
+        # the laptop power/lid advice it depends on (said once, here).
+        self._p(zone, self.w.walk_away_text, font=self.font_b, bg=SURFACE).pack(
+            fill=tk.X, pady=(10, 2)
+        )
+        if self.w.finish_sound_reason:
+            self._p(zone, self.w.finish_sound_reason, font=self.font_s, fg=MUTED,
+                    bg=SURFACE).pack(fill=tk.X, pady=(0, 2))
+        self._power_notice(zone, reminder=True, bg=SURFACE)
         self._p(zone, self.w.method_summary, font=self.font_s,
                 fg=MUTED, bg=SURFACE).pack(fill=tk.X, pady=(10, 0))
         if self.w.evidence_warning:
@@ -5055,9 +5092,40 @@ class TkWizard:
         # Stopping is always reachable, with consent before signalling.
         row = self._footer_shell(C.HINT_WORKING)
         self._secondary_btn(row, C.STOP_ASK, self._click_cancel)
-        self._link_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
+        self._finish_sound_toggle(row)
         self._link_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
         self._refresh_working()
+
+    def _finish_sound_toggle(self, row: tk.Frame) -> "_CheckRow":
+        """"Play a sound when it's finished" (#133): the session sound
+        setting, on by default for each erase, greyed without an output."""
+        enabled = self.w.finish_sound_toggle_enabled
+        var = _new_owned_native(
+            self.root, tk.BooleanVar, master=self.root,
+            value=bool(self.w.sounds_enabled and enabled),
+        )
+        width = self.font_s_bold.measure(C.FINISH_SOUND_TOGGLE) + 22 + 40
+
+        def choose() -> None:
+            self.w.set_finish_sound(bool(var.get()))
+
+        toggle = _CheckRow(
+            self._footer_left_parent(row, width), text=C.FINISH_SOUND_TOGGLE,
+            variable=var, command=self._nav(choose),
+            font=self.font_s_bold, enabled=enabled, flow=False,
+        )
+        toggle.pack(side=tk.LEFT, padx=(8, 0))
+        # Redraws (the toggle itself, a new availability answer) rebuild the
+        # footer; keep keyboard focus on the toggle when it had it.
+        def remember(focused: bool) -> None:
+            self._finish_focused = focused
+
+        toggle.bind("<FocusIn>", lambda _e: remember(True), add="+")
+        toggle.bind("<FocusOut>", lambda _e: remember(False), add="+")
+        if getattr(self, "_finish_focused", False) and enabled:
+            toggle.focus_set()
+        self._finish_toggle = toggle
+        return toggle
 
     def _refresh_working(self) -> None:
         if self._progress_label is None:
@@ -5694,6 +5762,7 @@ class TkWizard:
         return "break"
 
     def _on_key(self, event) -> Optional[str]:
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
         if event.keysym == "F8" and sys.platform.startswith("linux") and self.w.can_refresh:
             self._click_accessible()
             return "break"

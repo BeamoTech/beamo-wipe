@@ -114,9 +114,16 @@ devices are unreachable and the dialog says so instead of touching
 host audio. Speech belongs to this path alone, but outcome earcons
 are shared: the dialog also offers a Sounds off/on toggle and a Hear
 sounds button that plays the finished sound then the attention sound
-through the chosen output. The finished earcon plays once for a
-verified erase and the attention earcon once for any other final
-outcome; muted, missing, or preview audio stays silent. The earcon
+through the chosen output. The finished earcon plays for a
+verified erase and the attention earcon for any other final outcome,
+repeating every minute (at most five plays) until a key press or a
+control is used; muted, missing, or preview audio stays silent. On
+Working, a native check box "Play a sound when it's finished" (on by
+default for each erase) follows the progress, after a focusable line
+that promises the beep only when an output was found, or says sound
+is not available; the box is then insensitive and its accessible
+description gives the reason. Availability changes update the line
+and box in place, so focus never jumps. The earcon
 never changes the Done announcement, heading, or roles, and never
 blocks speech: text and sound stay independent channels. Tk, console,
 and gallery expose the same toggle and hear/replay actions in their

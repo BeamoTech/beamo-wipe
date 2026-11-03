@@ -1258,6 +1258,35 @@ def test_accessible_progress_has_shared_text_without_duplicate_announcements(ui)
         assert "About 2 hours left" in text(app)
 
 
+def test_accessible_working_finish_sound_toggle_and_walk_away(ui):
+    """#133: a real check box, on by default, updated in place (no re-render
+    focus jump); greyed with its reason when no output was found."""
+    wizard = make_demo_wizard()
+    wizard.preview = False
+    wizard.screen = Screen.WORKING
+    wizard.begin_finish_sound()
+    wizard.set_audio_availability(True)
+    wizard._audio_probe_at = wizard.now + 3600
+    app = ui(wizard)
+    toggle = app.finish_toggle
+    assert isinstance(toggle, Gtk.CheckButton)
+    assert toggle.get_label() == C.FINISH_SOUND_TOGGLE
+    assert toggle.get_active() and toggle.get_sensitive()
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_BEEP
+    generation = app.generation
+    toggle.set_active(False)
+    app.tick()
+    assert wizard.sounds_enabled is False
+    assert app.generation == generation  # updated in place, not re-rendered
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_QUIET
+    wizard.set_audio_availability(False, C.FINISH_SOUND_REASON_NO_OUTPUT)
+    app.tick()
+    assert not toggle.get_sensitive()
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_NO_SOUND
+    assert app.finish_reason_label.get_visible()
+    assert toggle.get_accessible().get_description() == C.FINISH_SOUND_REASON_NO_OUTPUT
+
+
 def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
     from unittest.mock import PropertyMock, patch
     from beamo_wipe.progress import STALE_MEANING, STALE_NEXT, ProgressView

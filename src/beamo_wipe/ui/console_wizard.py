@@ -410,6 +410,57 @@ def _sounds_footer(wizard: Wizard, hear: str) -> str:
     return f"{state}  {hear}"
 
 
+def _finish_sound_state(wizard: Wizard) -> str:
+    """Working (#133): the finish-sound toggle state in words."""
+    if not getattr(wizard, "finish_sound_toggle_enabled", True):
+        return C.FINISH_SOUND_STATE_UNAVAILABLE
+    return C.FINISH_SOUND_STATE_ON if getattr(wizard, "sounds_enabled", False) else C.FINISH_SOUND_STATE_OFF
+
+
+def _finish_sound_footer(wizard: Wizard) -> str:
+    """Curses key line: O toggles it (not offered while unavailable)."""
+    state = _finish_sound_state(wizard)
+    if getattr(wizard, "finish_sound_toggle_enabled", True):
+        state = f"O: {state}"
+    return f"{state}  {C.CON_SOUND_HEAR}"
+
+
+def _walk_away_lines(wizard: Wizard) -> list[str]:
+    """Walk-away line (#133) and, when sound is unavailable, the reason."""
+    lines = [getattr(wizard, "walk_away_text", "")]
+    reason = getattr(wizard, "finish_sound_reason", "")
+    if reason:
+        lines.append(reason)
+    return [line for line in lines if line]
+
+
+def _acknowledge_finish_sound(wizard) -> None:
+    """Someone is back (#133); test doubles may not track this."""
+    acknowledge = getattr(wizard, "acknowledge_finish_sound", None)
+    if acknowledge is not None:
+        acknowledge()
+
+
+def _plain_bell() -> None:
+    sys.stdout.write("\a")
+    sys.stdout.flush()
+
+
+def _ring_finish_bell(wizard: Wizard, rung: int, ring) -> int:
+    """Terminal bell fallback (#133) for finish alerts that cannot play.
+
+    Rings once per due alert (first and capped repeats) only when no sound
+    output was found; returns the alert serial now accounted for.
+    """
+    serial = getattr(wizard, "finish_alert_serial", 0)
+    if serial != rung and getattr(wizard, "audio_available", None) is not True:
+        try:
+            ring()
+        except Exception:
+            pass
+    return serial
+
+
 def _primary_footer(
     wizard: Wizard, inventory_open: bool, review_pending: bool = False
 ) -> list[str]:
@@ -457,7 +508,7 @@ def _primary_footer(
     if screen == Screen.WORKING:
         lines = ([C.CON_WORKING_STOP]
                  if wizard.stop_confirmation is not None else [C.CON_WORKING_IDLE])
-        lines.append(_sounds_footer(wizard, C.CON_SOUND_HEAR))
+        lines.append(_finish_sound_footer(wizard))
         if wizard.sound_message:
             lines.append(wizard.sound_message)
         return lines
@@ -660,6 +711,7 @@ def _answer(wizard: Wizard, prompt: str) -> str:
     if wizard.can_open_report_help and confirm_word != "report":
         print(C.CON_REPORT_HINT)
     answer = input(prompt)
+    _acknowledge_finish_sound(wizard)
     keyboard_command = answer.strip().upper()
     names_confirm_token = (
         confirm_token is not None
@@ -758,6 +810,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
     # pace as the screen-reader view, not on every percentage change.
     announcer = ProgressAnnouncer()
     spoken = ""
+    bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
         screen = wizard.screen
@@ -1092,7 +1145,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             update = announcer.update(wizard.progress_view, time.monotonic())
             if update is not None:
                 spoken = update
-            status = (spoken, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message)
+            status = (spoken, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message, *_walk_away_lines(wizard), getattr(wizard, "sounds_enabled", False))
             if status != last_working:
                 print(status[0])
                 _print_operation_identity(wizard)
@@ -1102,7 +1155,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 else:
                     print(f"{C.SEVERITY_WARNING}: {C.STOP_WARNING}")
                     print(C.CON_STOP_REVIEW)
-                print(wizard.sound_toggle_text)
+                print(_finish_sound_state(wizard))
                 print(C.CON_SOUND_WORDS_WORKING)
                 if wizard.sound_message:
                     print(wizard.sound_message)
@@ -1113,7 +1166,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                         print(C.support_text())
                 if wizard.evidence_warning:
                     print(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}")
-                for notice in (C.POWER_KEEP, wizard.power_text):
+                for notice in (*_walk_away_lines(wizard), C.POWER_KEEP, wizard.power_text):
                     if notice:
                         print(notice)
                 last_working = status
@@ -1148,6 +1201,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.DONE:
             wizard.request_auto_outcome_sound()
+            # Plain mode waits on typed input here, so it rings once (#133).
+            bell_rung = _ring_finish_bell(wizard, bell_rung, _plain_bell)
             print(wizard.method_result)
             print(wizard.elapsed_text)
             report = wizard.report_view
@@ -1294,6 +1349,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
     review_overlay_held = False
     review_lines: tuple[str, ...] = ()
     review_seen: set[int] = set()
+    bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
         screen_changed = wizard.screen != shown_screen
@@ -1751,6 +1807,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines.extend(_lines(wizard.operation_method_text, w))
             if wizard.evidence_warning:
                 lines.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}", w))
+            for text in _walk_away_lines(wizard):
+                lines.extend(_lines(text, w))
             for text in (C.POWER_KEEP, wizard.power_text):
                 if text:
                     lines.extend(_lines(text, w))
@@ -1838,9 +1896,12 @@ def _loop(stdscr, wizard: Wizard) -> int:
             # final details has actually been painted at least once.
             wizard.end_review_overlay()
             review_overlay_held = False
+        bell_rung = _ring_finish_bell(wizard, bell_rung, curses.beep)
         ch = stdscr.getch()
         if ch == KEY_RESIZE:
             continue
+        if ch != -1:
+            _acknowledge_finish_sound(wizard)
         enter_repeat = space_repeat = action_s_repeat = False
         if ch != -1:
             # Every queued key interrupts release evidence before a shortcut,

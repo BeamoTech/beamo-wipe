@@ -285,6 +285,8 @@ def test_plain_working_sounds_command_toggles(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr(sound_module, "_run", _boom)
     monkeypatch.setattr(sound_module, "_popen", _boom)
+    # An output was found (#133), so the finish-sound toggle is available.
+    monkeypatch.setattr(sound_module, "output_status", lambda: sound_module.SoundResult(True, ""))
     monkeypatch.setattr(
         "beamo_wipe.safety.default_log_dir", lambda: tmp_path
     )
@@ -310,10 +312,11 @@ def test_plain_working_sounds_command_toggles(monkeypatch, tmp_path, capsys):
         select_module, "select", lambda r, w, x, t=0: (r, [], [])
     )
     assert _plain_loop(wiz) == 0
-    assert wiz.sounds_enabled is True
+    # The erase turned the finish sound on (#133); SOUNDS turned it off.
+    assert wiz.sounds_enabled is False
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     out = capsys.readouterr().out
-    assert C.SOUND_TOGGLE_ON in out
+    assert C.FINISH_SOUND_STATE_ON in out and C.SOUND_TOGGLE_OFF in out
     assert "SOUNDS" in out
 
 
@@ -355,9 +358,11 @@ def test_plain_done_sounds_words_and_auto_play(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr("builtins.input", fake_input)
     assert _plain_loop(wiz) == 0
-    assert wiz.sounds_enabled is True
+    # On from the erase (#133): the result plays automatically, SOUNDS
+    # then turns it off, and HEAR still replays on demand.
+    assert wiz.sounds_enabled is False
     assert calls == [sound_module.KIND_ATTENTION, sound_module.KIND_ATTENTION]
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     out = capsys.readouterr().out
-    assert C.SOUND_TOGGLE_ON in out
+    assert C.SOUND_TOGGLE_OFF in out
     assert "HEAR" in out

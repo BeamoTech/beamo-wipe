@@ -164,6 +164,12 @@ class Runner(Protocol):
 
 COUNTDOWN_S = 5.0
 SPLASH_S = 3.0
+# Finish sound (#133): a modest repeat until someone interacts, with a cap.
+FINISH_REPEAT_S = 60.0
+FINISH_PLAYS_MAX = 5
+# Availability checks for the beep promise run on the audio worker only.
+AUDIO_PROBE_S = 60.0
+AUDIO_PROBE_RETRY_S = 5.0
 EVIDENCE_RETRIES = 3
 
 
@@ -400,6 +406,19 @@ class Wizard:
         self.sound_revision = 0
         self._audio_request = None
         self._sound_played_for: Optional[tuple[str, str]] = None
+        # Finish sound (#133). sounds_enabled stays the one session setting;
+        # each erase turns it on unless the person has chosen for themselves.
+        self._sounds_chosen = False
+        self.audio_available: Optional[bool] = None
+        self.audio_reason = ""
+        self._audio_probe: Optional[tuple[Any, int]] = None
+        self._audio_probe_at: Optional[float] = None
+        self._finish_plays = 0
+        self._finish_last_at: Optional[float] = None
+        self._finish_ack = False
+        # Counts finish alerts that are due (first and repeats), whether or
+        # not audio can play, so the console can ring its bell instead.
+        self.finish_alert_serial = 0
         self._intent_store = None
         self.report_recovery_warning = ""
         self._shutdown_from: Optional[Screen] = None
@@ -942,6 +961,7 @@ class Wizard:
     def tick(self) -> None:
         self.power.tick(self.now)
         self._poll_audio()
+        self._tick_finish_sound()
         with self._lock:
             self._recover_when_quiescent()
         if (
@@ -1521,6 +1541,7 @@ class Wizard:
     def _arm_running_wipe(self, request: WipeRequest) -> None:
         """Publish a run that start() has already handed to the engine."""
         with self._lock:
+            self._begin_finish_sound_locked()
             self.error = None
             self.startup_error_code = ""
             self._wipe_request = request
@@ -3292,10 +3313,14 @@ class Wizard:
                 self.sound_output = sink_id
 
     def set_sounds_enabled(self, enabled: bool) -> None:
-        """Outcome sounds on/off. Silent by default; session memory only."""
+        """Outcome sounds on/off. Session memory only; an explicit choice
+        survives the next erase's default-on (#133)."""
         with self._lock:
             if type(enabled) is bool:
                 self.sounds_enabled = enabled
+                self._sounds_chosen = True
+                if not enabled:
+                    self._finish_ack = True
 
     @property
     def sound_toggle_text(self) -> str:
@@ -3308,11 +3333,20 @@ class Wizard:
         )
 
     def toggle_sounds(self) -> None:
-        """Flip outcome sounds and report the state. Session memory only."""
+        """Flip outcome sounds and report the state. Session memory only.
+
+        On Working this is "Play a sound when it's finished" (#133); it is
+        greyed and ignored there while no sound output is available.
+        """
         from beamo_wipe import copy as _copy
 
         with self._lock:
+            if self.screen == Screen.WORKING and self.audio_available is False:
+                return
             self.sounds_enabled = not self.sounds_enabled
+            self._sounds_chosen = True
+            if not self.sounds_enabled:
+                self._finish_ack = True
             self.sound_message = (
                 _copy.SOUND_TOGGLE_ON
                 if self.sounds_enabled
@@ -3341,6 +3375,7 @@ class Wizard:
 
     def _poll_audio(self) -> None:
         with self._lock:
+            self._poll_audio_probe_locked()
             request = self._audio_request
             if request is None:
                 return
@@ -3431,8 +3466,148 @@ class Wizard:
             if key == self._sound_played_for:
                 return None
             self._sound_played_for = key
+            # First finish alert (#133); _tick_finish_sound repeats it.
+            self._finish_plays = 1
+            self._finish_last_at = self.now
+            self.finish_alert_serial += 1
         # A bounded, reaped playback also gives truthful failure feedback.
         return self._queue_audio(lambda: sound.play_test(sound.kind_for_code(code)), auto=True, key=key)
+
+    # -- Finish sound (#133) ------------------------------------------------
+
+    def _begin_finish_sound_locked(self) -> None:
+        """A new erase: sound on by default, fresh availability and repeats."""
+        if not self._sounds_chosen:
+            self.sounds_enabled = True
+        self._finish_plays = 0
+        self._finish_last_at = None
+        self._finish_ack = False
+        self.audio_available = None
+        self.audio_reason = ""
+        self._audio_probe_at = None
+        if self._audio_probe is not None:
+            self._audio_probe[0].cancel()
+            self._audio_probe = None
+        self.sound_revision += 1
+
+    def begin_finish_sound(self) -> None:
+        with self._lock:
+            self._begin_finish_sound_locked()
+
+    def set_audio_availability(self, available: bool, reason: str = "") -> None:
+        """Record a finished availability check (also used by previews/tests)."""
+        with self._lock:
+            reason = "" if available else reason
+            if (self.audio_available, self.audio_reason) != (available, reason):
+                self.audio_available = available
+                self.audio_reason = reason
+                self.sound_revision += 1
+
+    @property
+    def finish_sound_toggle_enabled(self) -> bool:
+        """Greyed only when a check found no usable output."""
+        return self.audio_available is not False
+
+    @property
+    def walk_away_text(self) -> str:
+        """Promise the beep only for a found, unmuted output with sound on."""
+        if self.audio_available is False:
+            return C.WALK_AWAY_NO_SOUND
+        if self.audio_available and self.sounds_enabled:
+            return C.WALK_AWAY_BEEP
+        return C.WALK_AWAY_QUIET
+
+    @property
+    def finish_sound_reason(self) -> str:
+        return self.audio_reason if self.audio_available is False else ""
+
+    def set_finish_sound(self, enabled: bool) -> None:
+        """The Working check box (#133). Same setting as toggle_sounds, but
+        no status message: the box itself shows the state."""
+        with self._lock:
+            if type(enabled) is not bool:
+                return
+            if self.screen == Screen.WORKING and self.audio_available is False:
+                return
+            self.sounds_enabled = enabled
+            self._sounds_chosen = True
+            if not enabled:
+                self._finish_ack = True
+            self.sound_revision += 1
+
+    def acknowledge_finish_sound(self) -> None:
+        """Someone is back: stop repeating the finish sound."""
+        with self._lock:
+            if self.screen == Screen.DONE and self._finish_plays:
+                self._finish_ack = True
+
+    def _tick_finish_sound(self) -> None:
+        """Availability checks on Working; capped repeats on the result.
+
+        Everything audible or slow runs on the audio worker; this only
+        decides and queues, so it never blocks the interface thread.
+        """
+        from beamo_wipe import sound
+        from beamo_wipe.audio_jobs import worker
+
+        replay = None
+        with self._lock:
+            now = self.now
+            if self.screen == Screen.WORKING:
+                wait = AUDIO_PROBE_RETRY_S if self.audio_available is None else AUDIO_PROBE_S
+                if (
+                    self._audio_probe is None
+                    and self._audio_request is None
+                    and (self._audio_probe_at is None or now - self._audio_probe_at >= wait)
+                ):
+                    self._audio_probe_at = now
+                    ticket = worker.submit(sound.output_status, background=True)
+                    self._audio_probe = (ticket, self._screen_epoch)
+            elif (
+                self.screen == Screen.DONE
+                and not self.preview
+                and self.wipe_result is not None
+                and self.sounds_enabled
+                and not self._finish_ack
+                and 1 <= self._finish_plays < FINISH_PLAYS_MAX
+                and self._finish_last_at is not None
+                and now - self._finish_last_at >= FINISH_REPEAT_S
+                and self._audio_request is None
+                and not self._finishing
+                and not self._evidence_saving
+            ):
+                code = self.result_view.code
+                key = (self._result_evidence_key(self.wipe_result), code)
+                if key == self._sound_played_for:
+                    self._finish_plays += 1
+                    self._finish_last_at = now
+                    self.finish_alert_serial += 1
+                    if self.audio_available is not False:
+                        replay = (code, key)
+        if replay is not None:
+            code, key = replay
+            self._queue_audio(
+                lambda: sound.play_test(sound.kind_for_code(code)), auto=True, key=key
+            )
+
+    def _poll_audio_probe_locked(self) -> None:
+        probe = self._audio_probe
+        if probe is None:
+            return
+        ticket, epoch = probe
+        if self.screen != Screen.WORKING or self._screen_epoch != epoch:
+            ticket.cancel()
+            self._audio_probe = None
+            return
+        ready, result = ticket.poll()
+        if not ready:
+            return
+        self._audio_probe = None
+        from beamo_wipe.sound import SoundResult
+
+        if isinstance(result, SoundResult):
+            self.set_audio_availability(result.ok, result.message)
+        # A withdrawn or failed check keeps the last answer; it retries later.
 
     def maybe_play_outcome_sound(self):
         """Auto-play the final outcome's earcon at most once. Silent rules:

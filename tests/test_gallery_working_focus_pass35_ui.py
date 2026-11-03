@@ -50,10 +50,13 @@ const P = {
   journey: ['Prepare','Erase','Result'], methods: {everyday: {summary:'Summary'}},
   titles: {working:'Working'}, eraseProgress:'Progress', previewBanner:'Preview',
   stop: {ask:'Stop erase'}, sounds: {toggleOff:'Enable sounds', toggleOn:'Disable sounds', hear:'Hear sounds'},
+  finishSound: {toggle:'Play a sound', beep:'Beep', quiet:'Quiet', none:'None', reasonPreview:'Preview'},
+  powerKeep: 'Laptop',
   hints: {default:'Hint', working:'Working hint'},
 };
 let screen = 'working', renderedScreen = null, showMore = false;
 let selected = {path:'/dev/fake'}, method = 'everyday', soundsOn = false;
+let soundsChosen = false, audioDemo = true;
 function applyTextSize() {}
 function stepInfo() { return [2, 'Erase', 'Working']; }
 function headerCaption(info) { return info[1]; }
@@ -67,6 +70,7 @@ function esc(value) { return value; }
 function btn(label, onclick) {
   return {textContent: label, disabled:false, onclick,
     matches(selector) { return selector === '.foot button'; },
+    setAttribute() {},
     focus() { active = this; }};
 }
 """ + draw + r"""

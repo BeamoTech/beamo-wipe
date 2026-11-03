@@ -2983,3 +2983,55 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: hosted ci.yml on the stack head (owner approval); Orca check on the
   image; native translation review of progress.GLANCE_*; merge order
   #94 -> #127 -> #128 -> #129 -> #130 -> #131 -> #132.
+
+## BW-133-SOUND — Walk away; a sound when the result is ready (IMPLEMENTED LOCALLY; HOSTED GATE, REAL AUDIO/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/finish-sound-133` (stacked on
+  `feat/working-screen-132` @ d1ec2a3), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
+  (UI review item 7). Ref #168 (screen stays lit) not in this repo; not done.
+- Design: the existing design ties one session setting (`sounds_enabled`)
+  to the outcome sound, so the Working toggle "Play a sound when it's
+  finished" IS that setting (the result screen's Sounds on/off). Each erase
+  (`_arm_running_wipe` -> `_begin_finish_sound_locked`) turns it on unless
+  the person explicitly chose on/off earlier this session; the state carries
+  to the result. Availability: `sound.output_status()` (live + unmuted
+  output) runs on the audio worker as a new `background=True` submission
+  that is skipped when the worker is busy and never cancels the sound
+  dialog's or a person's request; checked when Working opens (retry 5 s
+  while unknown) and every 60 s. Copy: beep promised only when available
+  and on; otherwise "You can leave the computer and check back later." or
+  "Sound isn't available on this computer — check back later." + reason;
+  toggle greyed (Tk greyed _CheckRow, GTK insensitive + ATK description,
+  curses no O key) and ignored by the model. Laptop advice POWER_KEEP
+  follows the walk-away line once (Tk Working now shows it; GTK/curses
+  already did). Sounds per outcome unchanged: finished only for
+  "verified", attention for everything else incl. Quick zero. Repeats:
+  every 60 s, max 5 plays, stop on any key/click/control (Tk _nav/_on_key/
+  root ButtonPress, GTK button/key, curses key, plain typed answer), sounds
+  off, or leaving the result. Bell fallback: curses `curses.beep()`, plain
+  `\a` once (it blocks on input), only when no output was found.
+- Files: audio_jobs.py, sound.py, copy.py, wizard.py, gallery.py,
+  locales/{fr,de,es,it}.py, ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, docs/screens.md, docs/screen-reader.md,
+  docs/translations.md. Tests: new tests/test_finish_sound_133.py (36
+  non-Tk + 6 Tk); GTK test in test_accessible_runtime.py; updated
+  test_console_parity, test_console_pick (x2), test_tk_runtime (x2),
+  test_gallery_working_focus_pass35_ui (intended: default on, new label,
+  one redraw on first availability answer, switch button in web preview).
+- Checks (Windows-native, 2026-11-03): new 42 pass; all fail on d1ec2a3.
+  Per-file comparison of 290 related files vs d1ec2a3: new-only failures
+  were intended expectation changes (updated, pass) or test doubles without
+  the new API (UI calls now getattr-guarded; pass); two Tk results that
+  flipped pass 3/3 on both trees (Windows Tk flakes). Timed-out files run
+  per test: remaining failures identical on baseline (native launch, tmp
+  permissions, KP_Enter keysym) or the known Windows Review-extra hangs.
+  ruff (CI selections incl. S rules), mypy, compileall, node --check pass.
+  Screenshots: scratch work133-scratch-20261103 shots-before /
+  shots-final-{yes,no} / shots-after-checking (visible.txt, console.txt).
+- NOT VERIFIED: real PulseAudio output/mute detection and playback on the
+  image, Orca hearing the check box, GTK tests, terminal bell on real
+  hardware, full Linux pytest, ISO/QEMU. Bell is best-effort, never promised.
+- NEXT: hosted ci.yml on the stack head (owner approval); live audio check
+  on the image; native review of the new strings; merge order #94 -> #127 ->
+  #128 -> #129 -> #130 -> #131 -> #132 -> #133.

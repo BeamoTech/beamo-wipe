@@ -279,6 +279,9 @@ def test_working_sounds_keys_toggle_and_hear(monkeypatch):
     disk = sorted(wiz.selectable, key=lambda d: d.path)[0]
     wiz.select_disk(disk.path)
     wiz.screen = Screen.WORKING
+    # A found output (#133); no live availability check in this test.
+    wiz.set_audio_availability(True)
+    wiz._audio_probe_at = wiz.now + 3600
     shown, packed, term = _draw(
         monkeypatch, wiz, keys=[ord("o"), ord("h")]
     )
@@ -286,7 +289,7 @@ def test_working_sounds_keys_toggle_and_hear(monkeypatch):
     assert wiz.sounds_enabled is True
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     footer = _footer(term)
-    assert "O: Sounds on" in footer
+    assert f"O: {C.FINISH_SOUND_STATE_ON}" in footer
     assert "H: Hear sounds" in footer
     last = term.frames[-1]
     assert max(last) < 24

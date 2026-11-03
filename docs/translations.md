@@ -272,3 +272,9 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   time-left lines avoid agreeing with the unit (*Encore environ…*, *Tiempo
   restante: aproximadamente…*, *Tempo rimanente: circa…*). Keep `{i}` / `{n}`;
   IT uses *passata* there because `STAGE_STEP` already says *Passaggio*.
+- `copy.FINISH_SOUND_TOGGLE`, `WALK_AWAY_BEEP`, `WALK_AWAY_QUIET`,
+  `WALK_AWAY_NO_SOUND`, `FINISH_SOUND_REASON_*` and `FINISH_SOUND_STATE_*`
+  (added 2026-11-03 for #133, not yet reviewed): the Working screen's
+  finish-sound check box, walk-away line and reasons. Only `WALK_AWAY_BEEP`
+  may promise a sound. The `FINISH_SOUND_STATE_*` values must start with the
+  exact `FINISH_SOUND_TOGGLE` text (the console prints them as its state).

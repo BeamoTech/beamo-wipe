@@ -1083,6 +1083,19 @@ SOUND_PLAY_FAILED = (
 )
 SOUND_MUTED_SKIP = "Sound is muted, so nothing played."
 SOUND_NO_OUTPUT_PLAY = "No sound output was found, so nothing played."
+# Working screen finish sound (#133). The beep is promised only when an
+# unmuted output was found; the toggle is the same session sound setting
+# as "Sounds: on/off" and starts on for each erase.
+FINISH_SOUND_TOGGLE = "Play a sound when it's finished"
+WALK_AWAY_BEEP = "You can leave the computer. It will beep when it's done."
+WALK_AWAY_QUIET = "You can leave the computer and check back later."
+WALK_AWAY_NO_SOUND = "Sound isn't available on this computer — check back later."
+FINISH_SOUND_REASON_NO_OUTPUT = "No speakers or headphones were found."
+FINISH_SOUND_REASON_MUTED = "Sound is muted."
+FINISH_SOUND_REASON_PREVIEW = "This preview plays no sound."
+FINISH_SOUND_STATE_ON = "Play a sound when it's finished: on"
+FINISH_SOUND_STATE_OFF = "Play a sound when it's finished: off"
+FINISH_SOUND_STATE_UNAVAILABLE = "Play a sound when it's finished: not available"
 SOUND_OUTCOME_OFF_LIVE = (
     "Outcome sounds play on the live USB. This preview stays silent."
 )

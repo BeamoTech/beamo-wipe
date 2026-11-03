@@ -1784,6 +1784,10 @@ def test_working_timer_keeps_cancel_control_until_revision_changes(ui, monkeypat
     _drive_to(w, app, Screen.LAST_CHANCE)
     w._erase_until = 0
     w.confirm_erase()
+    # The first sound-availability answer (#133) redraws Working once;
+    # settle it here so only progress timer ticks are measured below.
+    w.set_audio_availability(False, "")
+    w._audio_probe_at = w.now + 3600
     app._draw()
     generation = app._draw_generation
     def walk(widget):
@@ -2580,13 +2584,17 @@ def test_working_sounds_toggle_and_hear(ui, size, monkeypatch):
     wiz, app = ui(size=size)
     wiz.screen = Screen.WORKING
     wiz.selected = wiz.selectable[0]
+    # An output was found (#133); no live availability check here.
+    wiz.set_audio_availability(True)
+    wiz._audio_probe_at = wiz.now + 3600
     app._draw()
     app.root.update_idletasks()
-    toggle = _button_named(app, C.SOUND_TOGGLE_OFF)
-    toggle._command()
+    # Working shows the labelled finish-sound check box, not "Sounds: off".
+    toggle = app._finish_toggle
+    assert toggle.cget("text") == C.FINISH_SOUND_TOGGLE
+    toggle.invoke()
     assert wiz.sounds_enabled is True
-    assert wiz.sound_message == C.SOUND_TOGGLE_ON
-    _button_named(app, C.SOUND_TOGGLE_ON)
+    assert bool(app._finish_toggle._variable.get()) is True
     app.root.update_idletasks()
     hear = _button_named(app, C.SOUND_HEAR)
     hear._command()

@@ -670,6 +670,15 @@ def _gallery_html_for_current_language(lang: str) -> str:
         },
         "doneOk": C.DONE_OK_PREVIEW,
         "doneFail": C.DONE_FAIL_PREVIEW,
+        # Finish sound (#133). The preview never plays, so by default it shows
+        # the honest no-sound state; #s=working&audio=1 shows the live design.
+        "finishSound": {
+            "toggle": C.FINISH_SOUND_TOGGLE,
+            "beep": C.WALK_AWAY_BEEP,
+            "quiet": C.WALK_AWAY_QUIET,
+            "none": C.WALK_AWAY_NO_SOUND,
+            "reasonPreview": C.FINISH_SOUND_REASON_PREVIEW,
+        },
         "sounds": {
             "toggleOff": C.SOUND_TOGGLE_OFF,
             "toggleOn": C.SOUND_TOGGLE_ON,
@@ -1052,6 +1061,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .progress-card { padding: 20px 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); }
   .progress-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; letter-spacing: .02em; }
   .progress-timing { white-space: pre-wrap; font-size: 16px; margin-top: 14px; color: var(--muted); }
+  .walk-away { font-size: 16px; font-weight: 600; margin: 12px 0 2px; }
   .glance-time { font-size: 20px; font-weight: 700; margin: 12px 0 0; }
   .glance-step { font-size: 18px; margin: 4px 0 0; }
   .glance-stale { white-space: pre-wrap; font-size: 16px; margin: 10px 0 0; padding: 8px 12px; color: var(--warn); background: var(--warn-bg); border-radius: 12px; }
@@ -1254,6 +1264,8 @@ function updatePower(value) {
 }
 let screen = "splash";
 let soundsOn = false;
+let soundsChosen = false;
+let audioDemo = false;
 let renderedScreen = null;
 let reportWanted = false;
 let reportShareRedacted = false;
@@ -1900,6 +1912,9 @@ function draw() {
       ${state.stepLine ? `<p class="glance-step" id="step-line">${esc(state.stepLine)}</p>` : ""}
       ${state.staleBlock ? `<p class="glance-stale" id="stale" role="status">${esc(state.staleBlock)}</p>` : ""}
       ${state.notes.length ? `<p class="glance-notes" id="notes">${esc(state.notes.join("\n"))}</p>` : ""}
+      <p class="walk-away" id="walk-away">${esc(!audioDemo ? P.finishSound.none : soundsOn ? P.finishSound.beep : P.finishSound.quiet)}</p>
+      ${audioDemo ? "" : `<p class="small muted" id="finish-reason">${esc(P.finishSound.reasonPreview)}</p>`}
+      <p class="small"><strong>${P.powerKeep}</strong></p>
       <div id="power-status" role="status" aria-live="polite" class="small muted">${powerText()}</div>
       <p class="small muted">${m.summary}</p>
       <p class="small muted" id="soundsNote" role="status"></p></div></div></div>`;
@@ -1907,11 +1922,17 @@ function draw() {
     btnsL.append(btn(P.stop.ask, () => {
       if (screen === "working") { screen = "stop_confirm"; draw(); }
     }));
-    btnsL.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
-      soundsOn = !soundsOn;
-      this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
-      document.getElementById("soundsNote").textContent = this.textContent;
-    }, "ghost"));
+    // "Play a sound when it's finished" (#133): a switch button, so redraws
+    // keep its keyboard focus like the other footer controls; greyed while
+    // no sound can play, with the reason as its description.
+    const finishOn = audioDemo && soundsOn;
+    const finish = btn((finishOn ? "☑ " : "☐ ") + P.finishSound.toggle, () => {
+      soundsOn = !soundsOn; soundsChosen = true; draw();
+    }, "ghost finish-toggle", !audioDemo);
+    finish.setAttribute("role", "switch");
+    finish.setAttribute("aria-checked", finishOn ? "true" : "false");
+    if (!audioDemo) finish.setAttribute("aria-describedby", "finish-reason");
+    btnsL.append(finish);
     btnsL.append(btn(P.sounds.hear, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
     }, "ghost"));
@@ -2103,6 +2124,8 @@ function currentProgress() {
 }
 function startWork() {
   screen = "working";
+  // #133: each erase plays a finish sound unless the person chose otherwise.
+  if (!soundsChosen) soundsOn = true;
   progressKey = "";
   demoPct = null;
   demoFrac = null;
@@ -2159,6 +2182,7 @@ function applyHash() {
     }
   }
   if (q.get("more") === "1") showMore = true;
+  if (q.get("audio") === "1") audioDemo = true;
   reportWanted = q.get("report") === "1";
   reportShareRedacted = q.get("share") === "1";
   if (s === "disk_help") { selected = null; token = ""; tLeft = 5; }

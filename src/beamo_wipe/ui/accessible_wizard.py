@@ -125,6 +125,10 @@ class AccessibleWizard:
             self.progress_label = None
             self.progress_bar = None
             self.progress_announcer = ProgressAnnouncer()
+            self.walk_away_label = None
+            self.finish_reason_label = None
+            self.finish_toggle = None
+            self._rendered_sound_message = ""
             self.countdown_label = None
             self.error_label = None
             self.shown = None
@@ -262,6 +266,7 @@ class AccessibleWizard:
             # A queued AT-SPI or key action from a replaced screen is stale.
             if self.closed or generation != self.generation or not widget.get_sensitive():
                 return
+            getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
             action()
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self.close()
@@ -362,6 +367,10 @@ class AccessibleWizard:
         self.primary = self.progress_label = self.countdown_label = None
         self.progress_bar = None
         self.progress_announcer = ProgressAnnouncer()
+        self.walk_away_label = None
+        self.finish_reason_label = None
+        self.finish_toggle = None
+        self._rendered_sound_message = self.w.sound_message
         self.power_label = None
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
@@ -722,6 +731,21 @@ class AccessibleWizard:
             self.progress_bar = Gtk.ProgressBar()
             self.progress_bar.get_accessible().set_name(C.ERASE_PROGRESS_LABEL)
             self.body.pack_start(self.progress_bar, False, False, 4)
+            # Walk away (#133): the beep is promised only when it can play.
+            # The laptop power/lid advice follows at the end of this screen.
+            self.walk_away_label = self.label(self.w.walk_away_text, focusable=True)
+            self.finish_reason_label = self.label(self.w.finish_sound_reason)
+            self.finish_reason_label.set_no_show_all(True)
+            finish = Gtk.CheckButton.new_with_label(C.FINISH_SOUND_TOGGLE)
+            finish.get_child().set_line_wrap(True)
+            finish.get_child().set_max_width_chars(65)
+            self.body.pack_start(finish, False, False, 4)
+            self.finish_toggle = finish
+            self._sync_finish_sound()
+            finish.connect(
+                "toggled",
+                lambda widget: self._finish_toggled(widget, generation),
+            )
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -1049,6 +1073,50 @@ class AccessibleWizard:
             if changed and message:
                 self.error_label.grab_focus()
 
+    def _finish_toggled(self, widget, generation) -> None:
+        if (
+            generation != self.generation
+            or self.w.screen != Screen.WORKING
+            or getattr(self, "_syncing_finish", False)
+        ):
+            return
+        self.w.set_finish_sound(widget.get_active())
+        self._sync_finish_sound()
+
+    def _sync_finish_sound(self) -> bool:
+        """Update the walk-away line and toggle in place (#133).
+
+        Returns False when a full render is needed instead (another sound
+        message to show). In-place updates keep focus where it is.
+        """
+        toggle = self.finish_toggle
+        if toggle is None or self.w.screen != Screen.WORKING:
+            return False
+        if self.w.sound_message != self._rendered_sound_message:
+            return False
+        enabled = self.w.finish_sound_toggle_enabled
+        active = bool(self.w.sounds_enabled and enabled)
+        if toggle.get_active() != active:
+            # set_active emits "toggled"; this is not a person's choice.
+            self._syncing_finish = True
+            try:
+                toggle.set_active(active)
+            finally:
+                self._syncing_finish = False
+        toggle.set_sensitive(enabled)
+        reason = self.w.finish_sound_reason
+        toggle.get_accessible().set_description(reason)
+        for label, text in (
+            (self.walk_away_label, self.w.walk_away_text),
+            (self.finish_reason_label, reason),
+        ):
+            if label is not None and label.get_text() != text:
+                label.set_text(text)
+        if self.finish_reason_label is not None:
+            self.finish_reason_label.set_visible(bool(reason))
+        self.sound_revision = getattr(self.w, "sound_revision", 0)
+        return True
+
     def _show_glance(self, view, spoken: str) -> None:
         label = self.progress_label
         if label is None:
@@ -1138,6 +1206,11 @@ class AccessibleWizard:
             self.close()
             return False
         if (
+            self.shown == self.w.screen == Screen.WORKING
+            and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0)
+        ):
+            self._sync_finish_sound()
+        if (
             self.shown != self.w.screen
             or self.report_revision != self.w.report_view.revision
             or (self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
@@ -1181,6 +1254,8 @@ class AccessibleWizard:
     def _key_press(self, _window, event):
         if getattr(self, "closed", False):
             return True
+        # Someone is back (#133): stop repeating the finish sound.
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()
         if self._remember_key_press(event):
             return True
         key = event.keyval
