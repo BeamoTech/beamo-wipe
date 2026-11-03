@@ -3035,3 +3035,78 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: hosted ci.yml on the stack head (owner approval); live audio check
   on the image; native review of the new strings; merge order #94 -> #127 ->
   #128 -> #129 -> #130 -> #131 -> #132 -> #133.
+
+## BW-134-RESULT — Plain result headline and a short "What next" checklist (BLOCKED: OWNER COPY APPROVAL; NOTHING IMPLEMENTED)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/plain-result-134` (stacked on
+  `feat/finish-sound-133` @ 572d35d), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
+  (UI review item 8). The task requires owner approval of the exact copy
+  before implementing; only this proposal is recorded. Refs #170/#171/#172
+  are coordination only (not in this repo's backlog record; not done).
+- Baseline (572d35d): heading = `ResultView.message` from outcomes.py
+  ("Erase completed; verification passed" / "Erase completed; verification
+  was not performed" / failure messages); success shows one paragraph
+  (NEXT_VERIFIED_LEAD or NEXT_UNVERIFIED_LEAD + AFTERCARE_SUCCESS) plus the
+  separate POST_ERASE_BOOT note; failures show What happened / What it means
+  for your disk / What to do next + "Technical details: Result code: X".
+  `message` is also the "Result:" line of the photo record (QR), the saved
+  report, the evidence `presentation` that sharing copies must match, and
+  the screen-reader announcement. Screenshots/text: scratch
+  `work134-scratch-20261103/shots-before` (10 outcomes at 800x600, verified
+  Three overwrites, 1280x820, large/extra; visible.txt; console.txt curses).
+- Proposed design: keep `message` unchanged as the technical status line
+  (evidence, report, QR record, support codes and saved-report validation
+  unchanged); add a separate plain headline + one-line note + "What next"
+  checklist for the screen only (Tk, GTK/Orca, curses, plain console, web
+  preview). Success: the checklist replaces the paragraph and the separate
+  POST_ERASE_BOOT note (no duplication). The technical line moves under the
+  result screen's existing Show more ("Technical status: <message> (result
+  code: <code>)"). Failures keep the three sections; What happened keeps the
+  exact technical message. Sounds, report status, photo record unchanged.
+- PROPOSED COPY (awaiting approval; checked against docs/claims.md — no
+  certificate, no "impossible to recover", SSD limits kept, Quick zero never
+  "checked"/"verified"):
+  - verified (Everyday, Three overwrites): headline "Done — this disk was
+    erased and checked". Note: "The check read the disk back after the last
+    overwrite. It covers the storage the disk shows; on an SSD, the drive's
+    controller decides what remains. Other disks were not erased."
+  - unverified (Quick zero only): headline "Done — this disk was overwritten
+    with zeros (not checked)". Note: "Quick zero does not read the disk
+    back, so nothing confirms the overwrite reached every part. On an SSD,
+    the drive's controller decides what remains. Other disks were not
+    erased."
+  - What next (both successes): 1 "Press Shut down when you have finished."
+    2 "When the computer is off, remove the Beamo USB." 3 "Keeping this
+    computer? If this was its main disk, install an operating system before
+    you use it again." 4 verified (option A, recommended): "Giving it away
+    or selling it? This disk is ready to pass on." / (option B): A plus
+    "For very sensitive data on an SSD, follow the drive maker's guidance
+    or use a destruction service." 4 Quick zero: "Giving it away or selling
+    it? Erase it again with Everyday first — it checks its work."
+  - Failure headlines (option F2, recommended; F1 = keep today's
+    headings): verification_failed "Not confirmed — the check after the
+    erase failed"; engine_failed "Not finished — the disk reported an
+    error"; process_failed "Not finished — the erase ended with an error";
+    completion_missing "Not confirmed — the erase may not have finished";
+    indeterminate "Not confirmed — the result is unknown"; interrupted "Not
+    finished — the erase was interrupted"; cancelled "Stopped — you stopped
+    the erase before it finished"; occupied "Not finished — the disk was in
+    use"; open_failed "Nothing erased — the disk could not be opened";
+    geometry_unusable "Nothing erased — the disk could not be used safely";
+    start_failed "Nothing erased — the erase could not start";
+    stop_unconfirmed "Not confirmed — the erase may still be running";
+    preview unchanged. No checklist on failures (their What to do next
+    stays).
+- NEXT: owner approves/edits the copy (decisions: item 4 option A/B;
+  failure headlines F1/F2; Quick zero item 4). Then implement on this
+  branch: copy in outcomes.py (or a new result-presentation helper) + fr/de/
+  es/it drafts (native review pending), Tk/GTK/curses/plain/gallery
+  rendering, Show more technical line, docs/screens.md + screen-reader.md,
+  per-outcome unit + rendered tests (fail before/pass after), forbidden-claim
+  test for Quick zero, 800x600/1280x820 at every text size, keyboard order,
+  curses 80x24; then the per-file baseline comparison, ruff/mypy, record
+  the approved wording here.
+- Blockers: owner copy approval (required by the task). Same unverified
+  scope as #127-#133 (no WSL/Linux run, GTK/Orca, ISO/QEMU; hosted gate
+  needs owner approval).
