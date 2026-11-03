@@ -76,6 +76,8 @@ written to evidence. A kiosk restart returns to the shipped US QWERTY default.
 
 The keyboard check (#140) is guided and optional: "press the key labelled Z". The active layout turns that physical key into a character (Tk and GTK read the X keysym; the consoles compare the produced character). Z sits in a different place on QWERTY, QWERTZ and AZERTY keyboards, so one key tells them apart; within the QWERTY family letters and unshifted digits are the same, which is what the typed confirmation needs. Results: "✓ Letters and numbers match <layout>.", "That looks like <layout>. Switch to it?" with a one-click switch (curses F3, plain console SWITCH), or a hint when another key was pressed. It never switches by itself and never blocks Continue. GTK reads the prompt as the box's name and moves focus to the result (an alert) so Orca speaks it.
 
+The layout fine print ("Only the layouts listed here are offered. The change lasts until this USB restarts. It does not change firmware or BIOS keyboards.") sits behind the shared **Show more** control under the chosen layout's note (#141): Tab reaches it between the layouts and the check box, and focus stays on it when it opens. GTK uses a collapsed expander named Show more with a focusable label inside; the web preview uses the same Show more link. The consoles have no disclosure control, so they print it after the layout list instead of before it.
+
 The keyboard screen also offers Standard, Large, and Extra large text. The
 screen has three labelled parts in the order people need them (#139):
 **Language**, then **Text size**, then **Check your keyboard** (layouts and

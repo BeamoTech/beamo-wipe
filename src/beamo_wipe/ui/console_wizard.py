@@ -955,13 +955,13 @@ def _plain_loop_body(wizard: Wizard) -> int:
             if notice:
                 print(notice)
             print(C.KEYBOARD_LEAD)
-            print(C.KEYBOARD_LIMITS)
             print(_keyboard.CONSOLE_DEAD_KEYS)
             for i, layout_id in enumerate(LAYOUT_ORDER, 1):
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 mark = ">" if wizard.keyboard_layout == layout_id else " "
                 print(f"{mark} {i} {layout_spec.title}")
                 print(layout_spec.note)
+            print(C.KEYBOARD_LIMITS)  # #141: fine print after the layouts
             if wizard.error:
                 _print_error_recovery(wizard.error)
                 if error_needs_support(wizard.error):
@@ -1524,8 +1524,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     y += 1
             lead: list[str] = []
             # #139: text size (graphical only) before the keyboard part.
-            for text in (C.TEXT_SIZE_CONSOLE, C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS,
-                         _keyboard.CONSOLE_DEAD_KEYS):
+            for text in (C.TEXT_SIZE_CONSOLE, C.KEYBOARD_LEAD, _keyboard.CONSOLE_DEAD_KEYS):
                 lead.extend(_lines(text, w))
             lines = []
             if y + len(lead) + 1 + KEYBOARD_MIN_LIST_ROWS <= y_max:
@@ -1543,6 +1542,9 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 star = ">" if wizard.keyboard_layout == layout_id else " "
                 lines.extend(_lines(f"{star} {layout_spec.title}: {layout_spec.note}", w))
                 lines.append("")
+            # #141: the layout fine print follows the layouts (paged, Up/Down).
+            lines.extend(_lines(C.KEYBOARD_LIMITS, w))
+            lines.append("")
             if wizard.error:
                 lines.extend(_lines(_error_recovery_text(wizard.error), w))
                 if error_needs_support(wizard.error):

@@ -1678,7 +1678,7 @@ function draw() {
       <div class="textsizes">${sizes}</div><p class="small muted">${P.textSizeLead}</p></section>
       <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>${layoutNotice}
       <div class="cz"><div class="czc">${layouts}
-      <p class="small muted">${P.keyboardLimits}</p>
+      ${moreLink("keyboard-limits")}<div id="keyboard-limits">${showMore ? `<p class="small muted">${P.keyboardLimits}</p>` : ""}</div>
       <p class="small">${P.keyboardCheck}</p>
       <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value="" aria-label="${P.keyboardCheck}"></div>
       <p class="small" id="kbresult" role="status" aria-live="polite"></p><div id="kbswitch"></div>
@@ -1726,6 +1726,7 @@ function draw() {
       });
     }
     btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
+    bindMore();
     renderHint(P.hints.keyboard);
     btnsR.append(btn(P.buttons.continue, () => { screen = "owner"; draw(); }, "primary"));
   } else if (screen === "owner") {

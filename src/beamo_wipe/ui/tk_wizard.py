@@ -3411,7 +3411,9 @@ class TkWizard:
                 zone, f"{chosen.title}: {chosen.note}", font=self.font_s, fg=MUTED,
             ).pack(fill=tk.X, pady=(8, 0))
         # About the layouts above: which are offered and how long it lasts.
-        self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
+        # Fine print behind the shared Show more control (#141).
+        if self._more_link(zone):
+            self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:

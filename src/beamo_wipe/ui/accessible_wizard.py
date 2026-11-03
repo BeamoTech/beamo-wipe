@@ -503,7 +503,17 @@ class AccessibleWizard:
                     in_body=True,
                 )
                 self.label(spec.note)
-            self.label(C.KEYBOARD_LIMITS)
+            # #141: layout fine print behind Show more (an expander).
+            limits = Gtk.Expander.new(C.BTN_MORE)
+            limits.set_expanded(False)
+            limits_text = Gtk.Label(label=C.KEYBOARD_LIMITS)
+            limits_text.set_line_wrap(True)
+            limits_text.set_xalign(0)
+            limits_text.set_max_width_chars(70)
+            limits_text.set_can_focus(True)
+            limits_text.set_selectable(True)
+            limits.add(limits_text)
+            self.body.pack_start(limits, False, False, 4)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:

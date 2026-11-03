@@ -3426,3 +3426,32 @@ another very thorough and comprehensive pass of this." Repo
   at 72 DPI, ISO/QEMU, native review.
 - NEXT: comparison, push; live-ISO keyboard check per layout in the QEMU
   worker (owner approval for hosted gate).
+
+## BW-141-FINEPRINT — Keyboard-layout fine print behind Show more (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-fineprint-141`
+  (stacked on `feat/keyboard-check-140` @ 7865ea1), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
+  review item 15); Ref #50 (shared Show more).
+- WHAT CHANGED: `copy.KEYBOARD_LIMITS` (wording unchanged) is no longer in
+  the keyboard screen's main view. Tk: behind the shared `_more_link` Show
+  more control under the chosen layout's note (Tab: layouts -> Show more ->
+  check box; focus stays on it when toggled). GTK: collapsed Gtk.Expander
+  "Show more" with a focusable, selectable label (Orca: "Show more,
+  collapsed"). Web preview: the same `moreLink` disclosure. Curses/plain
+  console (no disclosure control): printed after the layout list instead of
+  before it; curses first 80x24 page no longer shows it, Up/Down reaches it.
+  Docs screens.md, screen-reader.md.
+- MEASURED (800x600 body height, before -> after): standard 613 -> 623
+  (+10: the Show more control is taller than the one-line text it hides),
+  large 815 -> 809, extra 864 -> 855. Less text either way; nothing clipped.
+- TESTS: new tests/test_keyboard_fineprint_141.py (wording unchanged; plain
+  and curses order/paging; GTK expander source; web preview disclosure; Tk
+  hidden, Show more reveals and keeps focus, Tab order, 800x600 open and
+  closed at all sizes). On 7865ea1 all fail except the unchanged-wording
+  guard.
+- CHECKS: 10 pass (4 non-Tk + 6 one by one); ruff, mypy --platform linux,
+  node --check. Screens: scratch work141-scratch-20261103 shots-before
+  (7865ea1) / shots-after (+report.txt). Related-file comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
+- NEXT: comparison, push after #140.

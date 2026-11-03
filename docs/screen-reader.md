@@ -94,6 +94,9 @@ On the keyboard screen, the check box is named "Optional check: press the key
 labelled Z here…" (#140). Press Z: focus moves to the result, an alert Orca
 reads ("✓ Letters and numbers match …" or "That looks like …. Switch to it?");
 Tab reaches the Switch button. The check is optional and never blocks Continue.
+Before the check box, a collapsed **Show more** expander holds the layout fine
+print (which layouts are offered, that the change lasts until restart and does
+not change firmware or BIOS keyboards) (#141).
 
 After the report panel, Finished has a **Keep a record without a USB**
 heading. The QR code below it is an image a sighted helper can photograph; it
