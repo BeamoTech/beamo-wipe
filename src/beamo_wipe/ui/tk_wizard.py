@@ -3325,24 +3325,12 @@ class TkWizard:
         # the rest in a language they did not choose. The label names the
         # control in every offered language; each language in its own name.
         self._language_picker(col)
+        # #139: one job per section, in the order people need them:
+        # language, then text size, then the keyboard (layout and check).
+        # Visual order is creation order, so Tab follows it.
+        self._text_size_section(col)
         self._title_block(col, C.TITLE_KEYBOARD, C.KEYBOARD_LEAD)
         zone = self._center_zone(col)
-        self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X)
-        self._p(zone, C.TEXT_SIZE_LEAD, font=self.font_s, fg=INK).pack(fill=tk.X, pady=(10, 4))
-        # Segmented control: one gray track, the chosen size a filled pill.
-        size_row = _Box(zone, radius=PILL, fill=TRACK, outline=None, ow=0, padx=2, pady=0)
-        size_row.pack(anchor="w", pady=(0, 8))
-        for size_id, label in C.TEXT_SIZE_LABELS.items():
-            selected = self.w.text_size == size_id
-            _Button(
-                size_row.inner,
-                text=label,
-                font=self.font_s_bold,
-                command=partial(self._apply_text_size, size_id),
-                variant="primary" if selected else "segment",
-                compact=True,
-            ).pack(side=tk.LEFT)
-        size_row.fit_now()
         notice = C.keyboard_layout_notice(self.w)
         if notice:
             # What choosing the language did to the layout, with the way to
@@ -3422,6 +3410,8 @@ class TkWizard:
             self._p(
                 zone, f"{chosen.title}: {chosen.note}", font=self.font_s, fg=MUTED,
             ).pack(fill=tk.X, pady=(8, 0))
+        # About the layouts above: which are offered and how long it lasts.
+        self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -3486,6 +3476,31 @@ class TkWizard:
 
     def _remember_keyboard_focus(self, target: tuple, _event: object = None) -> None:
         self._kbd_focus = target
+
+    def _text_size_section(self, parent: tk.Widget) -> None:
+        """Text size, second on the setup screen (#139): label, choices, hint.
+
+        Segmented control: one gray track, the chosen size a filled pill.
+        """
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(14, 0))
+        tk.Label(
+            block, text=C.TEXT_SIZE_UTILITY, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        size_row = _Box(block, radius=PILL, fill=TRACK, outline=None, ow=0, padx=2, pady=0)
+        size_row.pack(anchor="w")
+        for size_id, label in C.TEXT_SIZE_LABELS.items():
+            selected = self.w.text_size == size_id
+            _Button(
+                size_row.inner,
+                text=label,
+                font=self.font_s_bold,
+                command=partial(self._apply_text_size, size_id),
+                variant="primary" if selected else "segment",
+                compact=True,
+            ).pack(side=tk.LEFT)
+        size_row.fit_now()
+        self._p(block, C.TEXT_SIZE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
 
     def _language_picker(self, parent: tk.Widget) -> None:
         """Language chips, first on the keyboard screen (#131).

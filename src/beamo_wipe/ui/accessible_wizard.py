@@ -477,8 +477,10 @@ class AccessibleWizard:
                 if self.w.language == code:
                     chosen_language = language_button
             self.label(C.LANGUAGE_LEAD)
-            self.label(C.KEYBOARD_LEAD)
-            self.label(C.KEYBOARD_LIMITS)
+            # #139: language, then text size, then the keyboard; each part
+            # starts with a heading Orca can jump to.
+            size_heading = self.label(C.TEXT_SIZE_UTILITY, focusable=True)
+            size_heading.get_accessible().set_role(Atk.Role.HEADING)
             self.label(C.TEXT_SIZE_LEAD)
             for size_id, label in C.TEXT_SIZE_LABELS.items():
                 state = C.ACCESSIBLE_SELECTED if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
@@ -487,6 +489,8 @@ class AccessibleWizard:
                     lambda sid=size_id: self.w.set_text_size(sid),
                     in_body=True,
                 )
+            keyboard_heading = self.label(C.KEYBOARD_LEAD, focusable=True)
+            keyboard_heading.get_accessible().set_role(Atk.Role.HEADING)
             notice = C.keyboard_layout_notice(self.w)
             if notice:
                 self.label(notice)
@@ -499,6 +503,7 @@ class AccessibleWizard:
                     in_body=True,
                 )
                 self.label(spec.note)
+            self.label(C.KEYBOARD_LIMITS)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:

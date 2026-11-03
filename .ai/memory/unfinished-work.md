@@ -3348,3 +3348,38 @@ another very thorough and comprehensive pass of this." Repo
   review.
 - NEXT: run the comparison, push; hosted gate on the stack head (owner
   approval); merge after #137.
+
+## BW-139-SETUP — Setup screen order: language, text size, keyboard (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/setup-order-139` (stacked on
+  `feat/stage-names-138` @ 126bd2a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
+  review item 13); #131/#140/#141/#142 coordination only (not changed).
+- BASELINE (126bd2a): Tk showed language picker, then the "Check your
+  keyboard" heading, lead and limits, then text size, then layouts and the
+  check. Tab order was already language -> size -> layouts -> check, but
+  visually text size sat inside the keyboard part. 800x600 body 585 px in a
+  457 px view (standard), 830/437 (extra): the screen scrolls.
+- CHOICE: reorder in one screen, not split. A split adds a seventh
+  Preparation step and an extra Continue for everyone, renumbers the #130
+  step bar and #138 roadmap, and reworks the Keyboard-layout detour; the
+  reorder gives each job its own labelled section with matching Tab order.
+- WHAT CHANGED: Tk `_text_size_section` (bold "Text size", segmented
+  choices, hint) between the language picker and the keyboard title;
+  KEYBOARD_LIMITS moved under the layout cards it describes. GTK: Text size
+  and keyboard lead become focusable ATK headings in that order; limits
+  after the layouts. Curses/plain: text-size note (graphical only) before
+  the keyboard part; the console no longer prints "Choose a size... You can
+  change it later." (it cannot). Web preview: same three sections. No copy
+  added or translated. Docs screens.md.
+- TESTS: new tests/test_setup_order_139.py (plain, curses, web preview, GTK
+  source order; Tk section positions, Tab order, 800x600 fit at all three
+  sizes). On 126bd2a all fail except Tab order (already correct there).
+- CHECKS: new tests 10 pass (4 non-Tk + 6 one by one); ruff, mypy
+  --platform linux. Screens: scratch work139-scratch-20261103 shots-before /
+  shots-after (800x600 standard/large/extra incl. -bottom, 1280x820;
+  report.txt with body height and Tab order: after 613/457 standard,
+  extra scrolls as before, footer intact). Per-file comparison of 52
+  related files vs 126bd2a: PENDING (queued after #136-#138).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
+- NEXT: comparison, push; hosted gate on the stack head (owner approval).

@@ -75,6 +75,13 @@ another map. The typing-check box is not a password, is not logged, and is not
 written to evidence. A kiosk restart returns to the shipped US QWERTY default.
 
 The keyboard screen also offers Standard, Large, and Extra large text. The
+screen has three labelled parts in the order people need them (#139):
+**Language**, then **Text size**, then **Check your keyboard** (layouts and
+the typing check). Tab follows the same order on Tk; GTK marks Text size and
+the keyboard part as headings; the consoles explain that text size applies
+only to the graphical screens before the keyboard part. One screen rather
+than two: a split would add a seventh Preparation step and an extra Continue
+for everyone, and the reorder already gives each job its own section. The
 choice stays for this USB session. Tk still pins `tk scaling 1.0` so display
 DPI cannot enlarge type on its own. Extra large wraps and scrolls; footer
 actions stay reachable at 800×600. The 80×24 console cannot grow glyphs.

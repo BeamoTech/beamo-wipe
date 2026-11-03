@@ -940,14 +940,15 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 mark = ">" if wizard.language == code else " "
                 print(f"{mark} L{index} {LANGUAGE_NAMES[code]}")
             print(C.LANGUAGE_LEAD)
+            # #139: language, then text size, then the keyboard.
+            print(C.TEXT_SIZE_UTILITY)
+            print(C.TEXT_SIZE_CONSOLE)
+            print(C.TITLE_KEYBOARD)
             notice = C.keyboard_layout_notice(wizard)
             if notice:
                 print(notice)
-            print(C.TITLE_KEYBOARD)
             print(C.KEYBOARD_LEAD)
             print(C.KEYBOARD_LIMITS)
-            print(C.TEXT_SIZE_LEAD)
-            print(C.TEXT_SIZE_CONSOLE)
             print(_keyboard.CONSOLE_DEAD_KEYS)
             for i, layout_id in enumerate(LAYOUT_ORDER, 1):
                 layout_spec = _keyboard.LAYOUTS[layout_id]
@@ -1502,8 +1503,9 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     _add(stdscr, y, 0, line)
                     y += 1
             lead: list[str] = []
-            for text in (C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS, C.TEXT_SIZE_LEAD,
-                         C.TEXT_SIZE_CONSOLE, _keyboard.CONSOLE_DEAD_KEYS):
+            # #139: text size (graphical only) before the keyboard part.
+            for text in (C.TEXT_SIZE_CONSOLE, C.KEYBOARD_LEAD, C.KEYBOARD_LIMITS,
+                         _keyboard.CONSOLE_DEAD_KEYS):
                 lead.extend(_lines(text, w))
             lines = []
             if y + len(lead) + 1 + KEYBOARD_MIN_LIST_ROWS <= y_max:

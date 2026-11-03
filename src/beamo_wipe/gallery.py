@@ -1642,11 +1642,11 @@ function draw() {
     const layoutNotice = layoutChosen ? "" : `<p class="small"><strong>${P.layoutNotice}</strong></p>`;
     main.innerHTML = `<section class="language-first" aria-label="${P.languagePicker}"><p class="small"><strong>${P.languagePicker}</strong></p>
       <p>${langs}</p><p class="small muted">${P.languageLead}</p></section>
-      <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>
-      <p class="small muted">${P.keyboardLimits}</p>
-      <p class="small">${P.textSizeLead}</p>
-      <div class="textsizes">${sizes}</div>${layoutNotice}
+      <section class="text-size" aria-label="${P.textSizeUtility}"><p class="small"><strong>${P.textSizeUtility}</strong></p>
+      <div class="textsizes">${sizes}</div><p class="small muted">${P.textSizeLead}</p></section>
+      <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>${layoutNotice}
       <div class="cz"><div class="czc">${layouts}
+      <p class="small muted">${P.keyboardLimits}</p>
       <p class="small">${P.keyboardCheck}</p>
       <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value=""></div>
       </div></div>`;
