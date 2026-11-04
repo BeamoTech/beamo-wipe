@@ -3595,3 +3595,8 @@ another very thorough and comprehensive pass of this." Repo
   comparison: PENDING.
 - NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
   native review.
+- 2026-11-03 FOLLOW-UP: tests/test_translation_consistency_20261027.py
+  paired REPORT_MEDIA_WHAT with REPORT_HELP_TITLE ("Need a report?"). The
+  one-line text no longer cites that title (its Learn more link opens it,
+  covered by test_report_teaser_145), so the pair is removed; 4 cases had
+  failed on 7c0a793 (found by the #147 checks).

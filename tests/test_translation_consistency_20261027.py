@@ -41,7 +41,6 @@ CITED_LABELS = (
     ("copy", "CON_REFRESH_ENTER", "copy", "BTN_REFRESH"),
     ("recovery", "NEXT_BLOCKED_REFRESH", "copy", "BTN_REFRESH"),
     ("copy", "ADVANCED_LOG_TAIL", "copy", "REPORT_HELP_TITLE"),
-    ("copy", "REPORT_MEDIA_WHAT", "copy", "REPORT_HELP_TITLE"),
     ("copy", "CON_REPORT_HELP", "copy", "REPORT_HELP_TITLE"),
     ("copy", "CON_REPORT_HINT", "copy", "REPORT_HELP_TITLE"),
     ("copy", "MEDIA_STEP_REPORT", "copy", "SHUTDOWN_KEEP"),
