@@ -143,7 +143,8 @@ def test_pick_keeps_selection_and_action_visible_with_long_list(monkeypatch):
     wiz.selected = many[-1]
     shown, packed, term = _draw(monkeypatch, wiz)
     last = term.frames[-1]
-    assert many[-1].serial in packed
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    assert many[-1].serial in packed.replace("[", "").replace("]", "")
     assert ">" in shown
     assert "Up/Down then Enter" in _footer(term)
     assert all(len(line) < 80 for line in last.values())
@@ -158,6 +159,9 @@ def test_pick_page_keys_reveal_later_disk_identity(monkeypatch):
     all_packed = "".join(
         "".join(frame.get(y, "") for y in sorted(frame)) for frame in term.frames
     )
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    all_packed = all_packed.replace("[", "").replace("]", "")
+    packed = packed.replace("[", "").replace("]", "")
     assert any(disk.serial in all_packed for disk in many[1:])
     assert C.CON_MORE_DISKS_ABOVE in packed or C.CON_MORE_DISKS_BELOW in all_packed or many[0].serial in packed
 

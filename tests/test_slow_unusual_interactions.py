@@ -381,7 +381,8 @@ def test_console_wraps_long_identifiers_inside_80_columns(monkeypatch):
     console._loop(term, wiz)
     last = term.frames[-1]
     packed = "".join(last[y] for y in sorted(last))
-    assert wiz.selected.serial in packed
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    assert wiz.selected.serial in packed.replace("[", "").replace("]", "")
     assert all(len(line) < 80 for line in last.values())
     assert max(last) < 24
 
