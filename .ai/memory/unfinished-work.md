@@ -3252,8 +3252,20 @@ another very thorough and comprehensive pass of this." Repo
   (41 non-Tk, 11 Tk run one by one); on 05161a5 all fail except the Pick-
   unchanged guard (passes on both by design). ruff (CI selections), mypy
   --platform linux, node --check of the gallery script and git diff --check
-  pass. Per-file comparison of 264 related test files vs 05161a5: RUNNING at
-  commit time; result recorded in a follow-up commit before push.
+  pass. Per-file comparison of 264 related test files vs 05161a5 (finished):
+  34 files had new failures; triaged one by one, none a product bug. Almost
+  all exercised exactly what #136 changed (direct `refresh_disks()` from
+  Review/Confirm, now refused; rescans from Owner, now not offered; a second
+  F5 or Enter accepting from Review). Those tests were moved to the dialog or
+  to Pick so each still checks its original property, and several now prove
+  the guard (direct rescan from Review returns False and changes nothing; F5
+  never accepts the guarded dialog in Tk, GTK fakes and the web preview; a
+  fresh Enter in the curses guarded dialog cancels). Fakes gained
+  refresh_offered/refresh_guarded. Web preview: REFRESH_OFFERED moved inside
+  the sliced script region and inlined in draw(). Also fixed: ES/FR/DE/IT
+  "clears" used the erase verb (c856f2b). After the fixes the remaining
+  failures in those files match 05161a5 (Windows tmp PermissionError,
+  sparse docs/evidence), and the Tk/Tcl ones pass one by one.
 - SCREENSHOTS: scratch `work136-scratch-20261103` shots-before (05161a5) and
   shots-after (owner/pick/confirm/review/dialog-from-pick/dialog-from-
   review at 800x600 and 1280x820, visible.txt with focus).

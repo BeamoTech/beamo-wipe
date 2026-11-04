@@ -39,6 +39,8 @@ def test_accessible_interrupted_worker_start_releases_refresh_claim(monkeypatch)
     module = _headless_accessible_module(monkeypatch)
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     calls = []
     wizard._rediscover = lambda: calls.append("scan") or discovery_for_scenario("happy")
@@ -85,6 +87,8 @@ def test_accessible_interrupted_launch_never_runs_abandoned_scan(monkeypatch):
     module = _headless_accessible_module(monkeypatch)
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     calls = []
     wizard._rediscover = lambda: calls.append("scan") or discovery_for_scenario("happy")

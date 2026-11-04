@@ -28,6 +28,8 @@ def test_curses_escape_requires_quiet_before_second_action(
         can_open_keyboard=False,
         can_open_report_help=False,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
         error="",
         progress_view=ProgressView("Writing", 40.0, 60),
         operation_disk=None,

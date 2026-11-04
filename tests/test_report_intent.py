@@ -81,7 +81,11 @@ def test_intent_retained_on_refresh_but_all_confirmation_is_required(wanted, cha
         else old
     )
     w._rediscover = lambda: fresh
-    assert w.refresh_disks()
+    # #136: rescans are not offered from help; back on Method, the guarded
+    # dialog is the way.
+    assert not w.open_refresh_confirm()
+    w.close_report_help()
+    assert w.open_refresh_confirm() and w.confirm_refresh()
     assert w.report_wanted is wanted
     assert w.screen == Screen.OWNER and w._report_help_from is None
     assert (

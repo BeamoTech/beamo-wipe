@@ -578,7 +578,7 @@ def test_refresh_after_changed_media_clears_authorization(change):
         old, disks=tuple(disks), selectable=tuple(targets), boot=boot, excluded=()
     )
     wiz._rediscover = lambda: fresh
-    assert wiz.refresh_disks()
+    assert wiz.open_refresh_confirm() and wiz.confirm_refresh()  # #136
     assert wiz.screen == Screen.OWNER
     assert wiz.selected is None
     assert not wiz.owner_ok and not wiz.confirm_input

@@ -165,7 +165,11 @@ def test_refresh_invalidates_last_chance_authorization():
     wiz.continue_confirm()
     wiz.continue_method()
     assert wiz.screen == Screen.LAST_CHANCE
-    assert wiz.refresh_disks()
+    # #136: a direct rescan from Review is refused and changes nothing...
+    assert wiz.refresh_disks() is False
+    assert wiz.confirm_input != "" and wiz.screen == Screen.LAST_CHANCE
+    # ...the guarded dialog is the way, and it clears as before.
+    assert wiz.open_refresh_confirm() and wiz.confirm_refresh()
     assert wiz.confirm_input == ""
     assert wiz._erase_until is None
     assert wiz._authorized_operation is None

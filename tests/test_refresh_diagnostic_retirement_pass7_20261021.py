@@ -76,6 +76,8 @@ def test_failed_refresh_retires_despite_optional_logging(
     escaped = None
     try:
         if entry == "confirmed":
+            wizard.set_owner(True)
+            wizard.continue_owner()  # #136: the dialog is offered from Pick
             assert wizard.open_refresh_confirm()
             assert wizard.confirm_refresh()
         elif entry == "completion":

@@ -31,6 +31,8 @@ def test_plain_confirm_accepts_token_matching_utility_word(monkeypatch, token):
         can_open_report_help=True,
         can_open_diagnostic=True,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
     )
     opened = []
     wizard.open_report_help = lambda: opened.append("report")

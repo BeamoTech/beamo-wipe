@@ -83,12 +83,14 @@ if (method !== 'extra') throw Error('valid method lost');
 
 
 @pytest.mark.parametrize(
-    "screen,repeat,expected_refreshes",
-    (("owner", True, 0), ("working", False, 0),
-     ("owner", False, 1), ("refresh_confirm", False, 1)),
+    "screen,repeat,expected_refreshes,refresh_from",
+    (("owner", True, 0, "owner"), ("working", False, 0, "owner"),
+     ("owner", False, 1, "owner"), ("refresh_confirm", False, 1, "pick"),
+     # #136: a second F5 never accepts the guarded dialog (from Review).
+     ("refresh_confirm", False, 0, "last")),
 )
 def test_f5_never_reloads_browser_or_repeats_inventory_action(
-    screen, repeat, expected_refreshes
+    screen, repeat, expected_refreshes, refresh_from
 ):
     node = shutil.which("node")
     if node is None:
@@ -103,7 +105,8 @@ let refreshes=0;
 const requestRefresh=()=>{refreshes += 1;};
 const refreshPreview=()=>{refreshes += 1;};
 const draw=()=>{};
-let refreshFrom='owner', shutdownFrom='owner', reportHelpFrom='owner';
+let refreshFrom=""" + json.dumps(refresh_from) + """, shutdownFrom='owner', reportHelpFrom='owner';
+const refreshGuarded=()=>!['pick','empty','blocked','disk_help'].includes(refreshFrom);
 let event={key:'F5', repeat:""" + json.dumps(repeat) + """, defaultPrevented:false,
   preventDefault(){this.defaultPrevented=true;}};
 document.addEventListener("keydown", e => {""" + listener + "\n});\n" + """

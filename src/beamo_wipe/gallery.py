@@ -1542,17 +1542,17 @@ function diskCard(d) {
     </div>
   </div>`;
 }
-// #136: not on What/Owner (no disk list yet); guarded after Pick.
-const REFRESH_OFFERED = ["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"];
-const REFRESH_DIRECT = ["pick", "empty", "blocked", "disk_help"];
-function refreshGuarded() { return !REFRESH_DIRECT.includes(refreshFrom); }
 function requestRefresh() {
+  // #136: not on What/Owner (no disk list yet); guarded after Pick.
   if (!REFRESH_OFFERED.includes(screen)) return;
   if (screen === "last" && timer) { clearInterval(timer); timer = null; }
   refreshFrom = screen;
   screen = "refresh_confirm";
   draw();
 }
+const REFRESH_OFFERED = ["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"];
+const REFRESH_DIRECT = ["pick", "empty", "blocked", "disk_help"];
+function refreshGuarded() { return !REFRESH_DIRECT.includes(refreshFrom); }
 function cancelRefresh() {
   screen = refreshFrom;
   if (screen === "last") { tLeft = 5; startCount(); }
@@ -2026,7 +2026,8 @@ function draw() {
   if (["what", "owner", "method", "advanced"].includes(screen)) {
     utilities.append(btn(P.reportHelpTitle, () => { reportHelpFrom = screen; screen = "report_help"; draw(); }, "ghost"));
   }
-  if (REFRESH_OFFERED.includes(screen)) {
+  // #136: same list as REFRESH_OFFERED (inline: draw() stays self-contained).
+  if (["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"].includes(screen)) {
     utilities.prepend(btn(P.refreshUtility, requestRefresh, "ghost"));
   }
   if (screen === "method") {
