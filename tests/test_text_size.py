@@ -54,5 +54,9 @@ def test_tk_still_pins_dpi_scaling():
     assert 'tk.call("tk", "scaling", 1.0)' in src
     assert "_apply_text_size" in inspect.getsource(tkui.TkWizard)
     keyboard = inspect.getsource(tkui.TkWizard._keyboard)
-    assert "TEXT_SIZE_LEAD" in keyboard
-    assert "TEXT_SIZE_LABELS" in keyboard
+    # #139: the keyboard screen draws text size through its own section,
+    # between the language and the keyboard layouts.
+    assert "self._text_size_section(" in keyboard
+    section = inspect.getsource(tkui.TkWizard._text_size_section)
+    assert "TEXT_SIZE_LEAD" in section
+    assert "TEXT_SIZE_LABELS" in section
