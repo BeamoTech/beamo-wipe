@@ -257,6 +257,20 @@ WHAT_BULLETS = (
     "Not Apple Silicon Macs. Not Chromebooks.",
 )
 
+
+# #146: once the wizard runs, the PC has already started from this USB, so
+# the platform bullet (compat_story.PLATFORMS) is pre-boot guidance. Launchers,
+# the helper pages and docs keep it up front; the live Owner screen shows it
+# under Show more. Read at render time: a language switch replaces the tuple.
+def owner_bullets() -> tuple[str, ...]:
+    """WHAT_BULLETS for the Owner screen's main view (without the platforms)."""
+    return tuple(WHAT_BULLETS[:-1])
+
+
+def owner_platforms_line() -> str:
+    """The platform bullet, shown on Owner only under Show more."""
+    return WHAT_BULLETS[-1]
+
 POWER_REMINDER = (
     "If this computer has a battery, plug it into wall power before you erase. "
     "Keep the lid open. "

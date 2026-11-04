@@ -560,7 +560,7 @@ def test_accessible_screen_reads_one_erase_warning_before_the_action(ui, screen,
     order = list(widgets(app.window))
     if screen == Screen.OWNER:
         bullets = next(w for w in order if isinstance(w, Gtk.Label)
-                       and w.get_text() == "\n".join(C.WHAT_BULLETS))
+                       and w.get_text() == "\n".join(C.owner_bullets()))
         action = next(w for w in order if isinstance(w, Gtk.CheckButton))
     else:
         warning = wizard.warning_text() if screen == Screen.CONFIRM else wizard.erase_label()

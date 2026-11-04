@@ -253,7 +253,7 @@ Preview/dry-run cannot exec real `NwipeRunner`: `test_confirm_erase_refuses_real
 
 ### Unsupported (honest)
 
-- **Apple Silicon Macs (M1/M2/M3)** — `amd64` ISO only, per `docs/claims.md` and every screen subtitle. Intel Macs *may* show USB in boot picker; not supported.
+- **Apple Silicon Macs (M1/M2/M3)** — `amd64` ISO only, per `docs/claims.md`, the launchers, the offline helper and boot card, and the live Owner screen's Show more (#146). Intel Macs *may* show USB in boot picker; not supported.
 - **Chromebooks, Android, RAID controllers** (`megaraid`, `aacraid`, `dm-raid` not enumerated), **Apple T2** internal storage via special driver — not listed, not tested, not claimed.
 - **Network/remote storage:** `nbd`, `iscsi`, `fc`/`fcoe`, `nvmeof` — hidden via `REMOTE_BUS_TOKENS` + `WHOLE_DISK_RE`; never offered (correct).
 - **In-OS wipe from Windows/macOS:** Not a wiper from inside a running OS (`app.require_live_or_dry_run`).

@@ -1012,7 +1012,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.TITLE_OWNER)
             print(C.SPLASH_TAGLINE)
             print(C.WHAT_LEAD)
-            for b in C.WHAT_BULLETS:
+            for b in C.owner_bullets():
                 print(" -", b)
             print(C.this_usb_line())
             print(C.REPORT_MEDIA_WHAT)
@@ -1023,6 +1023,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             ident = _support_identity_text(wizard)
             if ident:
                 print(ident)
+            print(C.owner_platforms_line())  # #146: fine print, not a bullet
             print(C.OWNER_LEAD)
             print(C.OWNER_CHECKBOX)
             ans = _answer(wizard, C.CON_OWNER_PROMPT).strip()
@@ -1567,7 +1568,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines.extend(_lines(C.TITLE_OWNER, w))
             lines.extend(_lines(C.WHAT_LEAD, w))
             lines.append("")
-            for bullet in C.WHAT_BULLETS:
+            for bullet in C.owner_bullets():
                 lines.extend(_lines(" * " + bullet, w))
                 lines.append("")
             lines.extend(_lines(C.this_usb_line(), w))
@@ -1579,6 +1580,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             ident = _support_identity_text(wizard)
             if ident:
                 lines.extend(_lines(ident, w))
+            lines.extend(_lines(C.owner_platforms_line(), w))  # #146: fine print
             lines.append("")
             lines.extend(_lines(C.OWNER_LEAD, w))
             lines.extend(_lines(C.OWNER_CHECKBOX, w))

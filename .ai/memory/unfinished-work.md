@@ -3600,3 +3600,46 @@ another very thorough and comprehensive pass of this." Repo
   one-line text no longer cites that title (its Learn more link opens it,
   covered by test_report_teaser_145), so the pair is removed; 4 cases had
   failed on 7c0a793 (found by the #147 checks).
+
+## BW-146-PLATFORMS — Platform bullet under Show more on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/compat-showmore-146` (stacked
+  on `feat/report-teaser-145` @ 7c0a793), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
+- WHY: in the live wizard the PC has already started from this USB, so
+  "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. Not
+  Apple Silicon Macs. Not Chromebooks." is pre-boot guidance. docs/claims.md
+  checked: it is Amazon/pack listing copy (title + allowed bullet still say
+  "Not Apple Silicon. Not Chromebooks."), with no rule placing it on any
+  wizard screen; unchanged.
+- WHAT CHANGED: copy.WHAT_BULLETS unchanged (still 3 items, still equals
+  compat_story.PLATFORMS last, so translations/sweeps/helper injection are
+  untouched). New render-time helpers copy.owner_bullets() (first two) and
+  copy.owner_platforms_line() (the last), read at render time so a language
+  switch follows. Tk: main box shows two bullets; the line leads the Show
+  more panel's detail text. GTK: two-bullet label + a collapsed "Show more"
+  Gtk.Expander with a focusable, selectable label (same pattern as #141).
+  Curses/plain (no disclosure control): the line follows the supporting
+  notes, just before "Check the box, then continue."; no longer a bullet.
+  Web preview: payload `what` is two bullets, `platforms` leads Show more.
+  Kept up front: helper/*.html (5 languages), desktop/web/index.html,
+  desktop/main.go, desktop/readiness.go, docs/boot-card.md, README,
+  docs/claims.md. Docs: screens.md row + Owner row; compatibility-matrix.md
+  "every screen subtitle" corrected.
+- TESTS: new tests/test_owner_platforms_146.py (split keeps all bullets and
+  follows 4 languages; pre-boot pages/launchers/docs keep it; claims has no
+  screen rule; curses + plain order; GTK expander source; web payload and
+  Show more; Tk main view hides it at 800x600 and 1280x820, Show more by
+  keyboard reveals it and keeps focus on the control, no clipping at all 3
+  text sizes with Show more closed and open). Updated test_tk_runtime
+  (min-size Owner: two bullets shown, platform line not) and
+  test_accessible_runtime (bullet label text). On 7c0a793 the new file has
+  9 failures (copy split, languages, consoles, web); pre-boot guards pass.
+- CHECKS: new file 28 pass (18 non-Tk + 10 Tk one by one); ruff clean; mypy
+  --platform linux: same 6 env-only errors as 7c0a793 (qrcode stubs, gi).
+  Screens: scratch work146-scratch-20261103 shots-base / shots-new (en,
+  800x600 standard/large/extra + 1280x820, main view and Show more scrolled).
+  Related-file comparison (150 files vs 7c0a793): RUNNING
+  (work146-scratch-20261103 pf-new-0x / pf-base-0x).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native translation review (no new strings).

@@ -3691,9 +3691,10 @@ class TkWizard:
             explain.inner, text=C.TITLE_WHAT, font=self.font_s_bold, fg=INK, bg=SURFACE,
             anchor="w",
         ).pack(fill=tk.X, pady=(0, 8))
-        for i, bullet in enumerate(C.WHAT_BULLETS):
+        bullets = C.owner_bullets()  # #146: platforms are under Show more
+        for i, bullet in enumerate(bullets):
             line = tk.Frame(explain.inner, bg=SURFACE)
-            line.pack(fill=tk.X, pady=(2 if i == 0 else 8, 2 if i == len(C.WHAT_BULLETS) - 1 else 0))
+            line.pack(fill=tk.X, pady=(2 if i == 0 else 8, 2 if i == len(bullets) - 1 else 0))
             marker = tk.Canvas(line, width=10, height=26, bg=SURFACE, highlightthickness=0)
             marker.create_oval(1, 9, 8, 16, fill=ACCENT, outline="")
             marker.pack(side=tk.LEFT, anchor="n")
@@ -3761,7 +3762,9 @@ class TkWizard:
                 zone,
                 kind="info",
                 text=C.this_usb_line(),
-                extra=C.SECURE_BOOT_HINT + " " + C.ENGINE_LINE + " " + C.POWER_EVENTS,
+                extra=" ".join((
+                    C.owner_platforms_line(), C.SECURE_BOOT_HINT, C.ENGINE_LINE, C.POWER_EVENTS,
+                )),
             ).pack(fill=tk.X, pady=(12, 0))
         self._support_identity_block(zone)
         row = self._footer_shell(C.HINT_OWNER)

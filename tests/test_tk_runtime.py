@@ -2072,8 +2072,9 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, Screen.OWNER, size=MIN_WINDOW)
     shown = _label_text(app)
-    for bullet in C.WHAT_BULLETS:
+    for bullet in C.owner_bullets():
         assert bullet in shown
+    assert C.owner_platforms_line() not in shown  # #146: under Show more
     assert "copies of anything you want to keep" in shown
     assert "Windows or Linux" in shown
     assert C.POWER_REMINDER in shown

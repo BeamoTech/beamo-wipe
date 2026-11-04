@@ -644,7 +644,8 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "refreshButton": C.BTN_REFRESH,
         "refreshUtility": C.BTN_REFRESH_UTILITY,
         "whatLead": C.WHAT_LEAD,
-        "what": list(C.WHAT_BULLETS),
+        "what": list(C.owner_bullets()),
+        "platforms": C.owner_platforms_line(),
         "powerReminder": C.POWER_REMINDER,
         "powerBlanking": C.POWER_BLANKING,
         "powerKeep": C.POWER_KEEP,
@@ -1773,7 +1774,7 @@ function draw() {
       <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div></div></div>
       ${moreLink("more-detail")}
       ${moreDetail(showMore ? `<div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
-      <div>${P.thisUsb}</div><div class="extra">${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
+      <div>${P.thisUsb}</div><div class="extra">${P.platforms} ${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
       </div></div>`;
     bindMore();
     main.querySelector("#report-learn-more").onclick = () => { reportHelpFrom = screen; screen = "report_help"; draw(); };
