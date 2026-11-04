@@ -668,13 +668,72 @@ def count_summary(discovery: DiscoveryResult, *, spoken: bool = False) -> str:
     return _join_count(tuple(parts), spoken=spoken)
 
 
-def serial_comparison(disk: Disk, peers: tuple[Disk, ...]) -> tuple[int, int, str]:
-    """Display-only span (Python offsets) and spoken, one-based explanation.
+def _same_char(a: str, b: str) -> bool:
+    # Per character, so the offsets stay offsets into the shown serial even
+    # when casefold() would change a string's length. Case-only differences
+    # cannot establish identity.
+    return a.casefold() == b.casefold()
 
-    Compare the existing warning's displayed-capacity group. Strip only a
-    common prefix/suffix, so the remaining portion preserves every difference.
-    Case-only differences cannot establish identity. Missing serials prevent a
-    complete comparison; duplicate serials never receive a distinguishing span.
+
+def _distinguishing(serial: str, other: str) -> set[int] | None:
+    """Offsets in ``serial`` that tell it apart from ``other`` (#152).
+
+    None when the two share nothing at either end: they do not look alike,
+    so marking every character would not help. Otherwise strip the shared
+    beginning and ending. If what remains has the same length on both
+    sides, only the characters that differ are marked; if the lengths
+    differ, every remaining character of ``serial`` is (none when ``serial``
+    is the shorter one and is wholly contained at the ends of ``other``).
+    """
+    shortest = min(len(serial), len(other))
+    prefix = 0
+    while prefix < shortest and _same_char(serial[prefix], other[prefix]):
+        prefix += 1
+    suffix = 0
+    while (suffix < shortest - prefix
+           and _same_char(serial[-suffix - 1], other[-suffix - 1])):
+        suffix += 1
+    if prefix == 0 and suffix == 0:
+        return None
+    mine = serial[prefix:len(serial) - suffix]
+    theirs = other[prefix:len(other) - suffix]
+    if len(mine) == len(theirs):
+        return {prefix + i for i, ch in enumerate(mine) if not _same_char(ch, theirs[i])}
+    return set(range(prefix, len(serial) - suffix))
+
+
+def _runs(offsets: set[int]) -> tuple[tuple[int, int], ...]:
+    runs: list[list[int]] = []
+    for offset in sorted(offsets):
+        if runs and runs[-1][1] == offset:
+            runs[-1][1] = offset + 1
+        else:
+            runs.append([offset, offset + 1])
+    return tuple((a, b) for a, b in runs)
+
+
+def _positions(runs: tuple[tuple[int, int], ...]) -> str:
+    """One-based, spoken-friendly: "character 7", "characters 7 and 11"."""
+    if len(runs) == 1:
+        a, b = runs[0]
+        return POSITION_ONE.format(n=a + 1) if b == a + 1 else POSITION_RANGE.format(a=a + 1, b=b)
+    items = [str(a + 1) if b == a + 1 else POSITION_ITEM_RANGE.format(a=a + 1, b=b) for a, b in runs]
+    listed = ", ".join(items[:-1]) + f" {POSITION_AND} " + items[-1]
+    return POSITION_MANY.format(items=listed)
+
+
+def serial_differences(
+    disk: Disk, peers: tuple[Disk, ...]
+) -> tuple[tuple[tuple[int, int], ...], str]:
+    """Display-only marks (runs of Python offsets) and a spoken explanation.
+
+    Compares the serial with every other disk of the same displayed
+    capacity (the same-size warning's group), one pair at a time (#152):
+    a disk's marks are the characters that tell it apart from each
+    look-alike, for any number of similar disks and serials of different
+    lengths. A same-size serial that shares nothing with it adds no mark.
+    Missing serials prevent a complete comparison; duplicate serials never
+    receive marks. Never changes identity, eligibility or the token.
     """
     serial = (disk.serial or "").strip()
     others = [d for d in peers if d.path != disk.path
@@ -683,29 +742,35 @@ def serial_comparison(disk: Disk, peers: tuple[Disk, ...]) -> tuple[int, int, st
     if (disk.is_boot or not others or not all(values)
             or any(serial.casefold() == (other.serial or "").strip().casefold()
                    for other in peers if other.path != disk.path)):
-        return 0, 0, ""
-    start = 0
-    shortest = min(map(len, values))
-    while start < shortest and len({v[start].casefold() for v in values}) == 1:
-        start += 1
-    suffix = 0
-    while (suffix < shortest - start
-           and len({v[-suffix - 1].casefold() for v in values}) == 1):
-        suffix += 1
-    end = len(serial) - suffix
+        return (), ""
+    marks: set[int] = set()
+    alike = 0
+    contained = False
+    for other in others:
+        theirs = (other.serial or "").strip()
+        found = _distinguishing(serial, theirs)
+        if found is None:
+            continue
+        alike += 1
+        if not found and len(theirs) > len(serial):
+            contained = True
+        marks |= found
     reminder = REMINDER_CHECK_ID
-    if start == end:
-        unit = UNIT_CHAR if len(serial) == 1 else UNIT_CHARS
-        return 0, 0, SERIAL_LONGER.format(count=len(serial), unit=unit, reminder=reminder)
-    if start == 0 and end == len(serial):
-        # Nothing is shared at either end, so a mark would only wrap the
-        # whole serial in brackets. The card already shows it once (#148).
-        return 0, 0, ""
-    position = (POSITION_ONE.format(n=start + 1) if end == start + 1
-                else POSITION_RANGE.format(a=start + 1, b=end))
-    # Positions only: the card shows the serial once, with this part
-    # marked; the note must not print the characters again (#148).
-    return start, end, COMPARE_SERIAL.format(position=position, reminder=reminder)
+    if not marks:
+        if contained:
+            unit = UNIT_CHAR if len(serial) == 1 else UNIT_CHARS
+            return (), SERIAL_LONGER.format(count=len(serial), unit=unit, reminder=reminder)
+        return (), ""
+    runs = _runs(marks)
+    if len(others) == 1:
+        template = COMPARE_SERIAL_OTHER
+    elif alike == 1:
+        template = COMPARE_SERIAL_SIMILAR_ONE
+    else:
+        template = COMPARE_SERIAL_SIMILAR_MANY
+    # Positions only: the card shows the serial once with these characters
+    # marked; the note must not print them again (#148).
+    return runs, template.format(size=disk.size_phrase, position=_positions(runs), reminder=reminder)
 
 
 REMINDER_CHECK_ID = "Check the full ID before choosing."
@@ -714,7 +779,12 @@ UNIT_CHARS = "characters"
 SERIAL_LONGER = "Serial number has {count} {unit}; other serials are longer. {reminder}"
 POSITION_ONE = "character {n}"
 POSITION_RANGE = "characters {a} to {b}"
-COMPARE_SERIAL = "Compare {position} with other disks of this size. {reminder}"
+POSITION_MANY = "characters {items}"
+POSITION_ITEM_RANGE = "{a} to {b}"
+POSITION_AND = "and"
+COMPARE_SERIAL_OTHER = "Differs from the other {size} disk at {position}. {reminder}"
+COMPARE_SERIAL_SIMILAR_ONE = "Differs from the similar {size} disk at {position}. {reminder}"
+COMPARE_SERIAL_SIMILAR_MANY = "Differs from the similar {size} disks at {position}. {reminder}"
 ENTRY_DISK = "Disk {number}"
 ENTRY_MODEL = "Model: {value}"
 ENTRY_CAPACITY = "Capacity: {value}"

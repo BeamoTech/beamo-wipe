@@ -290,11 +290,18 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
-- `inventory.COMPARE_SERIAL` (changed 2026-11-04 for #148, not yet reviewed):
-  the Pick a disk note under a serial with a marked part. It keeps
-  `{position}` (from `POSITION_ONE`/`POSITION_RANGE`) and `{reminder}` and
-  no longer has `{span}`: the note must not repeat the serial's
-  characters, which the card already shows once in [brackets].
+- `inventory.COMPARE_SERIAL_OTHER`, `COMPARE_SERIAL_SIMILAR_ONE`,
+  `COMPARE_SERIAL_SIMILAR_MANY`, `POSITION_MANY`, `POSITION_ITEM_RANGE`,
+  `POSITION_AND` (2026-11-04 for #152, replacing #148's `COMPARE_SERIAL`;
+  drafts, not yet reviewed): the Pick a disk note under a serial whose
+  differing characters are marked, also spoken by Orca. Each keeps `{size}`
+  (the capacity phrase, e.g. "256 GB"), `{position}` and `{reminder}`.
+  OTHER is used when exactly one other disk has that size ("the other 256 GB
+  disk"); SIMILAR_ONE/MANY when there are more, naming only the look-alike
+  ones. `{position}` comes from `POSITION_ONE`/`POSITION_RANGE`, or for
+  several runs `POSITION_MANY` with items such as "7", "11 to 14"
+  (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
+  never repeat the serial's characters; the card shows them once.
 - `inventory.ROLE_EFI`, `ROLE_MSR`, `ROLE_RECOVERY`, `FORMAT_UNKNOWN`,
   `FORMAT_BITLOCKER`, `FORMAT_LUKS`, `ITEM_NAMED`, `MORE_COUNT` (2026-11-03 for
   #147, not yet reviewed): the Pick a disk contents line. `ITEM_NAMED` keeps

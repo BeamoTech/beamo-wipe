@@ -48,7 +48,11 @@ def test_comparison_preserves_all_differences_and_raw_identity(serials, spans):
         # Positions only; the serial is shown once, on the card (#148).
         assert disk.serial not in view.comparison_note
         if end:
-            assert view.marked_id == disk.serial[:start] + '[' + disk.serial[start:end] + ']' + disk.serial[end:]
+            # #152: every differing run is marked, from the first to the last.
+            assert view.comparison_marks[0][0] == start and view.comparison_marks[-1][1] == end
+            assert view.marked_id.replace("[", "").replace("]", "") == disk.serial
+            if len(view.comparison_marks) == 1:
+                assert view.marked_id == disk.serial[:start] + '[' + disk.serial[start:end] + ']' + disk.serial[end:]
             assert f"character{'s' if end-start > 1 else ''} {start+1}" in view.comparison_note
             if end - start >= 3:
                 assert disk.serial[start:end] not in view.comparison_note
@@ -121,10 +125,14 @@ def test_gallery_and_console_share_comparison(monkeypatch):
         assert item['serial'] == disk.serial
         assert item['markedSerial'] == view.marked_id
         assert item['comparisonNote'] == view.comparison_note
-        assert "Compare character 6 with other disks of this size." in lines
+        assert "Differs from the other 500 GB disk at character 6." in lines
         assert f"Serial number: {view.marked_id}" in lines
     html = gallery.gallery_html()
-    assert 'if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);' in html
+    # #152: the differing characters are bold and underlined in the preview.
+    assert 'out += esc(d.serial.slice(at, a)) + \'<b class="diff">\' + esc(d.serial.slice(a, b)) + "</b>";' in html
+    for disk in peers:
+        item = next(d for d in payload if d['path'] == disk.path)
+        assert item['serialMarks'] == [list(run) for run in comparison_view(disk, peers).comparison_marks]
     assert 'd.comparisonNote' in html
 
 

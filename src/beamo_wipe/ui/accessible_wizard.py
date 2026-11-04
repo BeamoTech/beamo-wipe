@@ -682,6 +682,7 @@ class AccessibleWizard:
                 spoken = ". ".join(part for part in (text, hint, summary) if part)
                 if spoken != text:
                     select.get_accessible().set_name(spoken)
+                self._mark_serial(select, text, self.w.disk_view(disk))
                 if hint:
                     self.label(hint)
                 nested = inventory.card_nesting_text(children)
@@ -1229,6 +1230,31 @@ class AccessibleWizard:
     def _sound_closed(self, *_args):
         if self._focus_active_window() is self.window:
             self.arrival.grab_focus()
+
+    def _mark_serial(self, button, text: str, view) -> None:
+        """#152: bold and underline the differing serial characters on the button.
+
+        Visible only (Pango markup); the accessible name stays the plain
+        text, and the comparison note in it says where the serial differs
+        ("Differs from the other 256 GB disk at characters 11 to 14").
+        """
+        if not view.comparison_marks:
+            return
+        plain = f"{view.id_label}: {view.id_value}"
+        at = text.find(plain)
+        if at < 0:
+            return
+        marked = "".join(
+            f"<b><u>{_markup_escape(part)}</u></b>" if flagged else _markup_escape(part)
+            for part, flagged in view.comparison_segments
+        )
+        markup = (
+            _markup_escape(text[:at]) + _markup_escape(view.id_label) + ": " + marked
+            + _markup_escape(text[at + len(plain):])
+        )
+        child = button.get_child()
+        if child is not None and hasattr(child, "set_markup"):
+            child.set_markup(markup)
 
     def _select(self, path):
         # Activating a disk button (Enter, Space, click, Orca's press) is

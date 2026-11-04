@@ -3020,7 +3020,15 @@ class TkWizard:
                  fg=MUTED, bg=bg).pack(side=tk.LEFT, anchor="n", padx=(0, 8), pady=2)
         value = tk.Frame(identity, bg=bg)
         value.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        ident = self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
+        if view.comparison_marks and not token:
+            # #152: the serial in regular weight with the characters that
+            # differ from the similar disks bold and underlined (a shape,
+            # not only a colour). The label keeps the plain serial.
+            ident = self._wrapping_label(value, view.id_value, font=self.font_mono, bg=bg)
+            setattr(ident, "_beamo_serial_marked", True)
+            self._mark_differences(ident, view.id_value, view.comparison_marks, bg)
+        else:
+            ident = self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
         if token and view.token_end > view.token_start:
             self._mark_token(ident, view.id_value[view.token_start:view.token_end])
         for note in view.notes:
@@ -3039,6 +3047,98 @@ class TkWizard:
                 value, C.CAPACITY_UNIT_NOTE, font=self.font_s, fg=MUTED, bg=bg
             )
         return meta
+
+    def _mark_differences(
+        self, label: tk.Label, serial: str, runs: tuple[tuple[int, int], ...], bg: str
+    ) -> None:
+        """Bold and underline the characters at ``runs`` of ``serial`` in ``label`` (#152).
+
+        Same technique as the token mark: copies of those characters in the
+        bold monospace font sit exactly over them (monospace: same advance),
+        each with a 2 px underline inside its own line box. Placement follows
+        the label's wrapping. If the shown text no longer maps character for
+        character onto ``serial`` (or Tk wrapped it natively), every mark is
+        hidden: a mark must never sit on other characters.
+        """
+        base = self.font_mono
+        bold = self.font_mono_bold
+        pool: list[tuple[tk.Frame, tk.Label]] = []
+
+        def hide_all() -> None:
+            for frame, _chars in pool:
+                try:
+                    frame.place_forget()
+                except tk.TclError:
+                    pass
+
+        def segments() -> Optional[list[tuple[int, int, str]]]:
+            shown = str(label.cget("text"))
+            where: list[tuple[int, int]] = []
+            line = col = 0
+            for ch in shown:
+                if ch == "\n":
+                    line, col = line + 1, 0
+                    continue
+                if len(where) >= len(serial) or ch != serial[len(where)]:
+                    return None
+                where.append((line, col))
+                col += 1
+            if len(where) != len(serial):
+                return None
+            out: list[tuple[int, int, str]] = []
+            for a, b in runs:
+                if not (0 <= a < b <= len(serial)):
+                    return None
+                start = a
+                for i in range(a + 1, b + 1):
+                    if i == b or where[i][0] != where[start][0]:
+                        out.append((where[start][0], where[start][1], serial[start:i]))
+                        start = i
+            return out
+
+        def place(_event=None) -> None:
+            try:
+                parts = segments()
+                lines = str(label.cget("text")).split("\n")
+
+                def px(option: str) -> int:
+                    return int(round(float(label.winfo_fpixels(str(label.cget(option))))))
+
+                edge = px("bd") + px("highlightthickness")
+                linespace = base.metrics("linespace")
+                height = label.winfo_height()
+                inner = height - 2 * (edge + px("pady"))
+                if parts is None or abs(inner - linespace * len(lines)) > linespace // 2:
+                    hide_all()
+                    return
+                left = edge + px("padx")
+                top = max(edge, (height - linespace * len(lines)) // 2)
+                while len(pool) < len(parts):
+                    frame = tk.Frame(label.master, bg=bg, bd=0, highlightthickness=0)
+                    chars = tk.Label(frame, text="", font=bold, fg=INK, bg=bg,
+                                     bd=0, padx=0, pady=0, highlightthickness=0, anchor="w")
+                    chars.place(x=0, y=0, relwidth=1, relheight=1)
+                    bar = tk.Frame(frame, bg=INK, height=2, bd=0, highlightthickness=0)
+                    bar.place(x=0, rely=1, y=-2, relwidth=1, height=2)
+                    setattr(frame, "_beamo_serial_mark", True)
+                    pool.append((frame, chars))
+                for index, (frame, chars) in enumerate(pool):
+                    if index >= len(parts):
+                        frame.place_forget()
+                        continue
+                    row, col, text = parts[index]
+                    chars.configure(text=text)
+                    setattr(frame, "_beamo_mark_text", text)
+                    x = left + base.measure(lines[row][:col])
+                    y = top + linespace * row
+                    frame.place(in_=label, x=x, y=y, width=base.measure(text), height=linespace,
+                                bordermode="outside")
+                    frame.lift(label)
+            except (tk.TclError, TypeError, ValueError, IndexError):
+                hide_all()
+
+        label.bind("<Configure>", place, add="+")
+        label.after_idle(place)
 
     def _mark_token(self, label: tk.Label, tail: str) -> None:
         """Box and underline ``tail``, the end of the identifier in ``label``.

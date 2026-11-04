@@ -107,12 +107,13 @@ def test_note_names_positions_never_the_characters():
             if view.comparison_end > view.comparison_start:
                 assert disk.serial[view.comparison_start:view.comparison_end] not in note.split()
     note = wiz.disk_view(next(d for d in wiz.selectable if d.path == "/dev/sda")).comparison_note
+    # #152 wording: where it differs from the other disk of that size.
     assert note == (
-        "Compare characters 12 to 14 with other disks of this size. "
+        "Differs from the other 500 GB disk at characters 12 to 14. "
         "Check the full ID before choosing."
     )
     one = wiz.disk_view(next(d for d in wiz.selectable if d.path == "/dev/sde")).comparison_note
-    assert one.startswith("Compare character 39 with other disks of this size.")
+    assert one.startswith("Differs from the other 1 TB (1000 GB) disk at character 39.")
 
 
 def test_nothing_shared_means_no_brackets_and_no_note():
@@ -137,10 +138,12 @@ def test_announcement_reads_the_serial_once():
 
 @pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
 def test_every_language_drops_the_repeated_characters(code):
-    template = (inventory.COMPARE_SERIAL if code == "en"
-                else lang.translated(code, "inventory", "COMPARE_SERIAL"))
-    fields = {name for _, name, _, _ in string.Formatter().parse(template) if name}
-    assert fields == {"position", "reminder"}
+    # #152 split the note into three templates; none prints the serial.
+    for key in ("COMPARE_SERIAL_OTHER", "COMPARE_SERIAL_SIMILAR_ONE", "COMPARE_SERIAL_SIMILAR_MANY"):
+        template = (getattr(inventory, key) if code == "en"
+                    else lang.translated(code, "inventory", key))
+        fields = {name for _, name, _, _ in string.Formatter().parse(template) if name}
+        assert fields == {"size", "position", "reminder"}
     lang.set_language(code)
     wiz = _pick_wizard()
     for disk in wiz.selectable:
@@ -171,7 +174,7 @@ def test_only_presentation_reads_the_comparison():
     users = sorted(
         path.relative_to(ROOT / "src").as_posix()
         for path in (ROOT / "src/beamo_wipe").rglob("*.py")
-        if "serial_comparison(" in path.read_text(encoding="utf-8")
+        if "serial_differences(" in path.read_text(encoding="utf-8")  # #152 name
     )
     assert users == ["beamo_wipe/identity.py", "beamo_wipe/inventory.py"]
     for name in ("safety.py", "wizard.py", "nwipe_runner.py", "discover.py"):

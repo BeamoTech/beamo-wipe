@@ -65,8 +65,9 @@ class DiskIdentityView:
     ambiguous_note: str
     system_path: str
     confirmable: bool
-    comparison_start: int = 0
-    comparison_end: int = 0
+    # Characters that tell this serial apart from the similar disks of the
+    # same size (#152): runs of (start, end) offsets into id_value.
+    comparison_marks: tuple[tuple[int, int], ...] = ()
     comparison_note: str = ""
     # Confirmation characters (#129): the ending of id_value the owner types.
     # Offsets into id_value; equal when the token is not taken from the card.
@@ -82,11 +83,31 @@ class DiskIdentityView:
         return f"{self.id_value[:a]}[{self.id_value[a:b]}]{self.id_value[b:]}"
 
     @property
+    def comparison_start(self) -> int:
+        return self.comparison_marks[0][0] if self.comparison_marks else 0
+
+    @property
+    def comparison_end(self) -> int:
+        return self.comparison_marks[-1][1] if self.comparison_marks else 0
+
+    @property
+    def comparison_segments(self) -> tuple[tuple[str, bool], ...]:
+        """id_value as (text, marked) pieces, for bold/underline renderers."""
+        out: list[tuple[str, bool]] = []
+        at = 0
+        for a, b in self.comparison_marks:
+            if a > at:
+                out.append((self.id_value[at:a], False))
+            out.append((self.id_value[a:b], True))
+            at = b
+        if at < len(self.id_value) or not out:
+            out.append((self.id_value[at:], False))
+        return tuple(out)
+
+    @property
     def marked_id(self) -> str:
-        if self.comparison_end <= self.comparison_start:
-            return self.id_value
-        a, b = self.comparison_start, self.comparison_end
-        return f"{self.id_value[:a]}[{self.id_value[a:b]}]{self.id_value[b:]}"
+        """id_value with each differing run in [brackets] (text consoles)."""
+        return "".join(f"[{text}]" if marked else text for text, marked in self.comparison_segments)
 
     @property
     def announcement(self) -> str:
@@ -192,7 +213,7 @@ def present_disk(
 ) -> DiskIdentityView:
     """Present raw identity; pickers may opt into comparison guidance."""
     from beamo_wipe.safety import SafetyError, confirm_spec, meaningful_serial
-    from beamo_wipe.inventory import serial_comparison
+    from beamo_wipe.inventory import serial_differences
 
     listed = tuple(peers)
     kind, value = strongest_identifier(disk)
@@ -214,8 +235,8 @@ def present_disk(
         for peer in listed
         if peer.path != disk.path and peer.size_gb_label == disk.size_gb_label
     )
-    start, end, comparison = (
-        serial_comparison(disk, listed) if compare_serials and comparable else (0, 0, "")
+    marks, comparison = (
+        serial_differences(disk, listed) if compare_serials and comparable else ((), "")
     )
     confirmable = spec is not None
     token_start = token_end = 0
@@ -240,8 +261,7 @@ def present_disk(
         ambiguous_note="" if confirmable else AMBIGUOUS_IDENTITY,
         system_path=disk.path,
         confirmable=confirmable,
-        comparison_start=start,
-        comparison_end=end,
+        comparison_marks=marks,
         comparison_note=comparison,
         token_start=token_start,
         token_end=token_end,

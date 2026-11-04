@@ -105,8 +105,11 @@ def test_gallery_escapes_html():
     assert "function esc(s)" in txt
     assert 'replace(/&/g, "&amp;")' in txt
     # Pick, Confirm (#129 marked characters) and other screens escape every slice.
-    assert '<span class="mono ser">${serialText(d)}</span>' in txt
-    assert 'if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);' in txt
+    assert '<span class="mono ser${screen === "pick" && !d.isBoot && (d.serialMarks || []).length ? " compared" : ""}">${serialText(d)}</span>' in txt
+    # #152: each piece of the compared serial is escaped around the marks.
+    assert "esc(d.serial.slice(at, a))" in txt
+    assert "esc(d.serial.slice(a, b))" in txt
+    assert "return out + esc(d.serial.slice(at));" in txt
     assert "esc(d.serial.slice(0, d.tokenStart))" in txt
     assert "esc(d.serial.slice(d.tokenStart, d.tokenEnd))" in txt
     assert "esc(d.serial.slice(d.tokenEnd))" in txt

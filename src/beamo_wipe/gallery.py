@@ -159,6 +159,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "bus": view.connection,
                 "serial": view.id_value,
                 "markedSerial": view.marked_id,
+                "serialMarks": [list(run) for run in view.comparison_marks],
                 "comparisonNote": view.comparison_note,
                 "idLabel": view.id_label,
                 "connection": view.connection,
@@ -1058,6 +1059,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .meta { margin-top: 4px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 0; align-items: center; }
   .card .meta .mono { color: var(--ink); font-size: 14px; }
   .card .meta .mono.ser { font-weight: 700; }
+  /* #152: regular serial, differing characters bold and underlined. */
+  .card .meta .mono.ser.compared { font-weight: 400; }
+  .card .meta .mono.ser b.diff { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
   .card .meta .mono.dev { color: var(--muted); font-size: 13px; }
   .card .meta .dot { color: var(--border-strong); margin: 0 6px; }
   .radio { flex: none; width: 22px; height: 22px; margin-top: 1px; border: 2px solid var(--border-strong); border-radius: 50%; position: relative; background: var(--surface); }
@@ -1571,13 +1575,24 @@ function metaLine(d, opts) {
   const extra = showMore
     ? `<div class="small muted more-path"${detailId ? ` id="${detailId}"` : ""}>${esc(P.pathNote)}: ${esc(d.path)}</div><div class="small muted">${esc(P.capacityUnitNote)}</div>`
     : (detailId ? `<div id="${detailId}" hidden></div>` : "");
-  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser">${serialText(d)}</span></span>
+  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser${screen === "pick" && !d.isBoot && (d.serialMarks || []).length ? " compared" : ""}">${serialText(d)}</span></span>
     <span class="disktype">${esc(d.kindLabel)}</span>
     <div class="connection"><span class="serial-label">${esc(P.connectionLabel)}</span><span>${esc(d.connection || d.bus)}</span></div>${notes}${extra}</div>`;
 }
 function serialText(d) {
   // Pick compares serials; Confirm marks the characters to type (#129).
-  if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);
+  if (screen === "pick" && !d.isBoot) {
+    // #152: the characters that differ from the similar disks, bold and
+    // underlined (a shape, not only a colour).
+    const marks = d.serialMarks || [];
+    if (!marks.length) return esc(d.serial);
+    let out = "", at = 0;
+    for (const [a, b] of marks) {
+      out += esc(d.serial.slice(at, a)) + '<b class="diff">' + esc(d.serial.slice(a, b)) + "</b>";
+      at = b;
+    }
+    return out + esc(d.serial.slice(at));
+  }
   if (screen === "confirm" && d.tokenEnd > d.tokenStart) {
     return esc(d.serial.slice(0, d.tokenStart)) + '<mark class="token-mark">'
       + esc(d.serial.slice(d.tokenStart, d.tokenEnd)) + "</mark>" + esc(d.serial.slice(d.tokenEnd));
