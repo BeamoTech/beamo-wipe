@@ -1571,7 +1571,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(" * " + bullet, w))
                 lines.append("")
             lines.extend(_lines(C.this_usb_line(), w))
-            lines.extend(_lines(C.REPORT_MEDIA_WHAT, w))
+            lines.extend(_lines(f"{C.REPORT_MEDIA_WHAT} {C.CON_REPORT_LEARN}", w))
             lines.extend(_lines(C.POWER_REMINDER, w))
             lines.extend(_lines(C.POWER_BLANKING, w))
             # #144: the status sentence is the header badge now.

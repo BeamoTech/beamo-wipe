@@ -638,12 +638,16 @@ REPORT_INSERT = (
     "Insert one separate FAT32 or exFAT USB, then choose Save report to USB. "
     "The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence."
 )
+# Owner heads-up (#145): one line. The photo record (#127) ships, so it
+# leads; "when asked" keeps the report USB unplugged until the result
+# screen. Media details (FAT32/exFAT, one volume) are in the report help.
 REPORT_MEDIA_WHAT = (
-    "Want a record afterwards? The result screen shows a code you can photograph. "
-    "A full report needs a separate FAT32 or exFAT USB stick with one volume, "
-    "kept unplugged until the result screen asks for it; one already plugged in "
-    "cannot be used. Open Need a report? for details."
+    "Want a report? You can photograph a summary at the end, "
+    "or save it to a second USB when asked."
 )
+LEARN_MORE = "Learn more"
+LEARN_MORE_REPORT_NAME = "Learn more about saving a report"
+CON_REPORT_LEARN = "R: learn more"
 REPORT_MEDIA_WANTED = (
     "Report requested: keep the report USB unplugged until the result screen "
     "asks for it. Extra plugged-in USBs can confuse the disk list. If the "

@@ -563,6 +563,8 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "reportWanted": C.REPORT_WANTED,
         "reportShareRedacted": C.REPORT_SHARE_REDACTED,
         "reportMediaWhat": C.REPORT_MEDIA_WHAT,
+        "learnMore": C.LEARN_MORE,
+        "learnMoreReport": C.LEARN_MORE_REPORT_NAME,
         "reportMediaWanted": C.REPORT_MEDIA_WANTED,
         "anotherTitle": C.ANOTHER_TITLE,
         "anotherLoss": C.ANOTHER_LOSS,
@@ -1766,7 +1768,7 @@ function draw() {
       <p class="subtitle" style="margin-top:14px">${P.ownerLead}</p>
       <div class="ownercard${owner ? " checked" : ""}" id="own" tabindex="0" role="checkbox" aria-checked="${owner}">
         <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div>
-      <div style="margin-top:16px">${panel("info", P.reportMediaWhat, true)}</div>
+      <p class="small" style="margin-top:16px">${P.reportMediaWhat} <button type="button" class="linkbtn" id="report-learn-more" aria-label="${P.learnMoreReport}">${P.learnMore}</button></p>
       <div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
       <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div></div></div>
       ${moreLink("more-detail")}
@@ -1774,6 +1776,7 @@ function draw() {
       <div>${P.thisUsb}</div><div class="extra">${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
       </div></div>`;
     bindMore();
+    main.querySelector("#report-learn-more").onclick = () => { reportHelpFrom = screen; screen = "report_help"; draw(); };
     const card = main.querySelector("#own");
     const toggle = () => { owner = !owner; draw(); document.getElementById("own").focus(); };
     card.onclick = toggle;

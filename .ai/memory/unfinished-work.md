@@ -3563,3 +3563,35 @@ another very thorough and comprehensive pass of this." Repo
   curses "[On battery — plug in]"); the lid/power reminder is still checked.
   30 native cases one by one + console cases pass. finish_sound Tk case:
   flaky on the base only.
+
+## BW-145-TEASER — One-line report notice on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/report-teaser-145` (stacked on
+  `feat/power-badge-144` @ e6ff9c4), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
+  review item 19); Ref #127 shipped (photo option leads), #135 panel;
+  #25 confirm-before-discarding unchanged.
+- WHAT CHANGED: `copy.REPORT_MEDIA_WHAT` (same key, new text): "Want a
+  report? You can photograph a summary at the end, or save it to a second
+  USB when asked." ("when asked" keeps the stick unplugged until the result
+  screen; the full media rules stay in Need a report?). New LEARN_MORE,
+  LEARN_MORE_REPORT_NAME, CON_REPORT_LEARN (4 drafts). Tk: one muted line in
+  its own frame (no clipping at larger text) + ghost "Learn more" button
+  opening the report help (Tab after the ownership box). GTK: label + body
+  button "Learn more" named "Learn more about saving a report". Curses: the
+  line + "R: learn more" (R already opens help on Owner). Web preview: line
+  + link. Docs screens.md, translations.md.
+- TESTS: new tests/test_report_teaser_145.py (exact copy, 4 languages,
+  wanted report still confirms at shutdown, curses line and R, GTK source,
+  web preview, Tk one line at 800x600 and 1280x820, Learn more by Tab +
+  key opens help, fit at all sizes). Updated test_report_media_notice.py
+  and test_report_usb_exfat_20261027.py: media rules now asserted in the
+  report help, the Owner line asserts photo + "when asked". On e6ff9c4: 10
+  fail; 4 general guards pass (#25 confirm, R opens help, fit large/extra).
+- CHECKS: 15 pass (8 non-Tk + 7 one by one); ruff, mypy --platform linux,
+  node --check. exFAT mount tests fail identically on e6ff9c4 (Windows:
+  os.makedev, tmp perms). Screens: scratch work145-scratch-20261103
+  shots-before / shots-after (en all sizes + 1280x820; de). Related-file
+  comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native review.

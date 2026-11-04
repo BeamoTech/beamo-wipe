@@ -451,7 +451,8 @@ def test_help_names_the_refused_formats_without_exfat():
 
     assert "FAT32 or exFAT" in C.REPORT_HELP_NEED
     assert "NTFS, FAT12 and FAT16 are not supported." in C.REPORT_HELP_NEED
-    assert "FAT32 or exFAT" in C.REPORT_MEDIA_WHAT and "one volume" in C.REPORT_MEDIA_WHAT
+    # #145: the Owner line is short; the media rules are in the help.
+    assert "FAT32 or exFAT" in C.REPORT_HELP_NEED and "one writable" in C.REPORT_HELP_NEED
 
 
 @pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])

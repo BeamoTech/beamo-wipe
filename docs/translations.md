@@ -290,6 +290,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `copy.REPORT_MEDIA_WHAT` (changed), `LEARN_MORE`, `LEARN_MORE_REPORT_NAME`,
+  `CON_REPORT_LEARN` (2026-11-03 for #145, not yet reviewed): the one-line
+  Owner report notice. Keep "when asked": the report USB stays unplugged
+  until the result screen asks. `CON_REPORT_LEARN` starts with the key R.
 - `copy.KEYBOARD_CHECK_*`, `CON_KEYBOARD_CHECK_*` and the changed
   `KEYBOARD_LEAD` (2026-11-03 for #140, not yet reviewed): the guided keyboard
   check. "Z" is the key label printed on the keyboard; keep it as is. Keep

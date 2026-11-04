@@ -3734,10 +3734,23 @@ class TkWizard:
         card.bind("<FocusIn>", lambda _e: card.set_focused(True))
         card.bind("<FocusOut>", lambda _e: card.set_focused(False))
         card.focus_set()
-        # Supporting notes follow the one action on this screen.
-        self._panel(
-            zone, kind="info", text=C.REPORT_MEDIA_WHAT, compact=True
-        ).pack(fill=tk.X, pady=(16, 0))
+        # Supporting notes follow the one action on this screen. #145: the
+        # report heads-up is one line with a Learn more link to the help.
+        teaser = tk.Frame(zone, bg=BG)
+        teaser.pack(fill=tk.X, pady=(16, 0))
+        learn = _Button(
+            teaser, text=C.LEARN_MORE, command=self._nav(self.w.open_report_help),
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        learn.pack(side=tk.RIGHT, anchor="n")
+        self._report_learn_more = learn
+        # The text gets its own frame: its wrap follows that width, not the
+        # row's (which includes the link) — no clipping at larger text.
+        text_box = tk.Frame(teaser, bg=BG)
+        text_box.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8))
+        self._wrapping_label(text_box, C.REPORT_MEDIA_WHAT, font=self.font_s, bg=BG).pack(
+            fill=tk.X
+        )
         power = self._panel(
             zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
         )

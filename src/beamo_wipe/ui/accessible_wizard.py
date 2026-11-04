@@ -578,6 +578,8 @@ class AccessibleWizard:
             self.label("\n".join(C.WHAT_BULLETS))
             self.label(C.this_usb_line())
             self.label(C.REPORT_MEDIA_WHAT, focusable=True)
+            learn = self.button(C.LEARN_MORE, self.w.open_report_help, in_body=True)
+            learn.get_accessible().set_name(C.LEARN_MORE_REPORT_NAME)  # #145
             self.label(C.POWER_REMINDER)
             self.label(C.POWER_BLANKING)
             self.label(C.POWER_EVENTS, focusable=True)

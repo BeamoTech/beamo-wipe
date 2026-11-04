@@ -31,12 +31,15 @@ def _at_pick(wanted: bool):
 
 
 def test_what_notice_names_media_timing_and_refusal():
-    assert "FAT32" in C.REPORT_MEDIA_WHAT
-    assert "one volume" in C.REPORT_MEDIA_WHAT
-    assert "unplugged" in C.REPORT_MEDIA_WHAT
-    assert "asks for it" in C.REPORT_MEDIA_WHAT
-    assert "already plugged in" in C.REPORT_MEDIA_WHAT
-    assert "Need a report?" in C.REPORT_MEDIA_WHAT
+    # #145: Owner keeps one line with the timing ("when asked") and the
+    # photo option; media rules and the refusal live in Need a report?,
+    # which the line's Learn more opens.
+    assert "photograph" in C.REPORT_MEDIA_WHAT and "when asked" in C.REPORT_MEDIA_WHAT
+    assert "second USB" in C.REPORT_MEDIA_WHAT
+    help_text = C.REPORT_HELP_TEXT
+    assert "FAT32 or exFAT" in help_text and "one writable, unmounted volume" in help_text
+    assert "Keep the report USB unplugged" in help_text
+    assert "If you inserted the report USB before erasing" in help_text
 
 
 def test_pick_notice_names_unplug_remedy_and_confusion():
@@ -141,9 +144,9 @@ def test_report_media_keys_translated_in_fr_and_de():
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
         assert es_locale.STRINGS["copy"][key] != getattr(C, key)
         assert it_locale.STRINGS["copy"][key] != getattr(C, key)
-    assert "FAT32" in es_locale.STRINGS["copy"]["REPORT_MEDIA_WHAT"]
+    assert "FAT32" in es_locale.STRINGS["copy"]["REPORT_HELP_NEED"]
     assert "desconectada" in es_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
-    assert "FAT32" in it_locale.STRINGS["copy"]["REPORT_MEDIA_WHAT"]
+    assert "FAT32" in it_locale.STRINGS["copy"]["REPORT_HELP_NEED"]
     assert "scollegata" in it_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
 
 
@@ -152,8 +155,9 @@ def test_report_media_notices_follow_active_language():
 
     try:
         lang.set_language("fr")
-        assert "FAT32" in C.REPORT_MEDIA_WHAT
-        assert "débranchée" in C.REPORT_MEDIA_WHAT or "débranché" in C.REPORT_MEDIA_WHAT
+        assert "photographier" in C.REPORT_MEDIA_WHAT  # #145: one line
+        assert "FAT32" in C.REPORT_HELP_NEED
+        assert "débranchée" in C.REPORT_MEDIA_WANTED or "débranché" in C.REPORT_MEDIA_WANTED
     finally:
         lang.set_language("en")
 
