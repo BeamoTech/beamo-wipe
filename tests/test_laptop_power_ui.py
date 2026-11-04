@@ -26,7 +26,13 @@ def test_native_power_remains_readable_and_updates_without_redraw(ui, screen, si
         wizard.power.status = state
         app._tick()
         app.root.update()
-        assert state.text in str(app._power_label.cget('text'))
+        if screen in {Screen.WHAT, Screen.OWNER}:
+            # #144: Owner states power in the header badge, not a sentence.
+            header = app._header
+            texts = [header.itemcget(i, 'text') for i in header.find_all() if header.type(i) == 'text']
+            assert state.badge.display in texts
+        else:
+            assert state.text in str(app._power_label.cget('text'))
         assert app.root.focus_get() is focus
         assert app._draw_generation == generation
         assert _clipping_problems(app) == []
@@ -46,8 +52,12 @@ def test_console_pages_power_without_dropping_disk_identity(monkeypatch, screen)
     wizard.power.status = PowerStatus(ac=False, batteries=(12,), complete=True)
     _, _, terminal = _draw(monkeypatch, wizard, keys=[curses.KEY_NPAGE] * 8)
     shown = ' '.join(' '.join(frame.values()) for frame in terminal.frames)
-    assert '12%' in shown
-    assert 'Low battery' in shown
+    if screen in {Screen.WHAT, Screen.OWNER}:
+        # #144: the header badge carries the state; the reminder stays.
+        assert f'[{wizard.power_badge.display}]' in shown
+    else:
+        assert '12%' in shown
+        assert 'Low battery' in shown
     assert 'lid open' in shown
     if screen not in {Screen.WHAT, Screen.OWNER}:
         assert wizard.selected.serial in shown

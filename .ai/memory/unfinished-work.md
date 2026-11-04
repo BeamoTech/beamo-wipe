@@ -3554,3 +3554,12 @@ another very thorough and comprehensive pass of this." Repo
   readings only), GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
   review.
 - NEXT: triage the existing-test run, comparison, push after #143.
+- 2026-11-03 EXISTING-TEST RUN: the single run of 21 power-related files
+  died part-way (no summary); redone per file, e6ff9c4 vs 159dbe4.
+  One real difference: test_laptop_power_ui expected the long power
+  sentence on WHAT/OWNER (Tk label, curses "12%"/"Low battery"); those
+  screens now carry the header badge -> the WHAT/OWNER cases check the badge
+  (Tk header text, header-only redraw keeps focus and draw generation;
+  curses "[On battery — plug in]"); the lid/power reminder is still checked.
+  30 native cases one by one + console cases pass. finish_sound Tk case:
+  flaky on the base only.
