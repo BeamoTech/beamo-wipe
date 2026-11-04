@@ -3274,7 +3274,7 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: hosted ci.yml on the stack head (owner approval); native review;
   merge order #94 -> #127 -> ... -> #135 -> #136.
 
-## BW-137-START — Start screen opening line (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+## BW-137-START — Start screen opening line (IMPLEMENTED, BRANCH PUSHED; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/start-line-137` (stacked on
   `feat/refresh-guard-136` @ c856f2b), worktree
@@ -3296,8 +3296,10 @@ another very thorough and comprehensive pass of this." Repo
 - CHECKS: copy/intro/language/translation-consistency files 237 pass;
   ruff, diff --check. Screens: scratch work137-scratch-20261103
   shots-before/shots-after (en 800x600 standard/large/extra, 1280x820; de).
-  Per-file comparison of 109 splash/gallery test files vs c856f2b: RUNNING at
-  commit time; result recorded before push.
+  Per-file comparison of 109 splash/gallery test files vs c856f2b
+  (finished): no new failures from #137; the two new-only lines were
+  environmental (docs/evidence absent in this worktree; a Tcl flake that
+  passes alone).
 - NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
   review.
 - NEXT: finish comparison, push branch; hosted gate on the stack head
