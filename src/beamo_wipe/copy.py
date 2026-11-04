@@ -887,10 +887,10 @@ HINT_KEYBOARD = (
     "Tab reaches the check box. Enter continues."
 )
 HINT_DEFAULT = "Enter continues.  Esc goes back."
-HINT_PICK = "Click a disk, or use Up/Down.  Enter reviews this disk.  Esc goes back."
+HINT_PICK = "Click a disk, or use Up/Down to choose one.  Enter reviews this disk.  Esc goes back."
 HINT_OWNER = "Space checks the box.  Enter chooses a disk when it is checked."
 HINT_METHOD = "Press 1, 2, or 3 to choose. Enter reviews before erasing."
-HINT_CONFIRM = "Type exactly what we ask for, then Enter."
+HINT_CONFIRM = "Type exactly what we ask for, then press Enter to continue."
 HINT_ADVANCED = "Enter returns to methods.  Esc goes back."
 HINT_LAST_CHANCE = "Esc goes back.  Enter erases after the countdown."
 HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase now, then Enter after the countdown."

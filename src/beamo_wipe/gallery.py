@@ -1095,6 +1095,10 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .fright { margin-left: auto; }
   .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px; }
   .fhint .kbd { margin: 0 1px; }
+  /* #153: drawn arrows share the letter caps' ink and height. */
+  .kbd.kbd-arrow { padding: 2px 7px; }
+  .kbd.kbd-arrow svg { display: inline-block; vertical-align: -1px; color: var(--ink); }
+  .fhint .kbd.kbd-hug { margin-right: 0; }
   button.btn { font-size: 15px; font-weight: 600; padding: 11px 22px; border: 1px solid transparent; border-radius: var(--pill); cursor: pointer; min-width: 112px; letter-spacing: -.01em; }
   button.btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .primary { background: var(--primary); color: #fff; min-width: 160px; }
@@ -1415,6 +1419,8 @@ const EMBLEM = '__LOGO_SPLASH__';
 // Key names inside hint copy render as key-caps, mirroring _hint_bar.
 const KEY_RE = /(?<![\p{L}\p{N}])(Left\/Right|Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
 const KEY_MAP = {"Left/Right": ["←", "→"], "Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
+const ARROW_PATHS = {"↑": "M6 10.5V1.8M2.2 5.6L6 1.8l3.8 3.8", "↓": "M6 1.5v8.7M2.2 6.4L6 10.2l3.8-3.8",
+  "←": "M10.5 6H1.8M5.6 2.2L1.8 6l3.8 3.8", "→": "M1.5 6h8.7M6.4 2.2L10.2 6l-3.8 3.8"};
 function renderHint(text) {
   const el = document.getElementById("hint");
   el.innerHTML = "";
@@ -1426,10 +1432,21 @@ function renderHint(text) {
       if (i > 0) el.append(document.createTextNode(" "));
       const cap = document.createElement("span");
       cap.className = "kbd";
-      cap.textContent = k;
+      if (ARROW_PATHS[k]) {
+        // #153: arrows are drawn in the cap's ink, not a thin, tinted
+        // fallback glyph; the screen reader still hears the arrow.
+        cap.classList.add("kbd-arrow");
+        cap.setAttribute("role", "img");
+        cap.setAttribute("aria-label", k);
+        cap.innerHTML = `<svg viewBox="0 0 12 12" width="10" height="12" aria-hidden="true" focusable="false"><path d="${ARROW_PATHS[k]}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      } else {
+        cap.textContent = k;
+      }
       el.append(cap);
     });
     pos = m.index + m[0].length;
+    // #153: punctuation right after a cap sits against it.
+    if (/^[.,;:!?]/.test(text.slice(pos))) el.lastChild.classList.add("kbd-hug");
   }
   if (pos < text.length) el.append(document.createTextNode(text.slice(pos)));
 }

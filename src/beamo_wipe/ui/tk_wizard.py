@@ -216,6 +216,10 @@ _KEY_TOKEN_KEYS = {
     "Up/Down": ("↑", "↓"),
     "1, 2, or 3": ("1", "2", "3"),
 }
+# Arrow caps are drawn in INK (#153); the font glyph was thin and tinted.
+_ARROW_KEYS = {"↑": "up", "↓": "down", "←": "left", "→": "right"}
+# Punctuation that sits against the cap before it (#153).
+_HUG_PUNCTUATION = frozenset(".,;:!?")
 
 
 def _family(root: tk.Tk) -> str:
@@ -2733,9 +2737,41 @@ class TkWizard:
         """A quiet keyboard key-cap. Makes keyboard affordances scannable."""
         pad = max(2, int(round(2 * self._type_scale())))
         cap = _Box(parent, radius=8, fill=SURFACE, outline=BORDER_STRONG, ow=1, padx=8, pady=pad)
-        tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE).pack()
+        if text in _ARROW_KEYS:
+            # #153: arrows are drawn, not typed. The UI font often has no
+            # arrow glyph and the fallback came out thin and tinted (orange
+            # with subpixel smoothing) beside the bold ink letter caps.
+            self._arrow_glyph(cap.inner, _ARROW_KEYS[text]).pack()
+        else:
+            tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE).pack()
         cap.fit_now()
         return cap
+
+    def _arrow_glyph(self, parent: tk.Widget, direction: str) -> tk.Canvas:
+        """An arrow in INK sized to the cap's bold text, like the letter caps."""
+        # Same height as a letter cap's label (font line plus Tk's label
+        # border and padding), so every cap in a hint is the same size.
+        probe = tk.Label(parent, text="Mg", font=self.font_tiny)
+        line = max(self.font_tiny.metrics("linespace"), probe.winfo_reqheight())
+        probe.destroy()
+        size = max(9, self.font_tiny.metrics("linespace") - 2)
+        stroke = max(2, int(round(size / 7)))
+        canvas = tk.Canvas(parent, width=size, height=line, bg=SURFACE, bd=0,
+                           highlightthickness=0)
+        cx, cy = size / 2, line / 2
+        half = size / 2 - stroke / 2
+        ends = {
+            "up": (cx, cy + half, cx, cy - half),
+            "down": (cx, cy - half, cx, cy + half),
+            "left": (cx + half, cy, cx - half, cy),
+            "right": (cx - half, cy, cx + half, cy),
+        }[direction]
+        head = max(4, int(round(size * 0.45)))
+        canvas.create_line(*ends, fill=INK, width=stroke, arrow=tk.LAST,
+                           arrowshape=(head, head, max(3, int(round(head * 0.7)))),
+                           capstyle=tk.BUTT, tags=("glyph",))
+        setattr(canvas, "_beamo_key_glyph", direction)
+        return canvas
 
     def _hint_bar(self, parent: tk.Widget, hint: str) -> tk.Frame:
         """Hint copy with known key names rendered as key-caps."""
@@ -2747,8 +2783,13 @@ class TkWizard:
         for match in _KEY_TOKEN_RE.finditer(hint):
             if match.start() > pos:
                 self._hint_text(inner, hint[pos:match.start()])
-            for key in _KEY_TOKEN_KEYS.get(match.group(0), (match.group(0),)):
-                self._kbd(inner, key).pack(side=tk.LEFT, padx=(0, 4))
+            keys = _KEY_TOKEN_KEYS.get(match.group(0), (match.group(0),))
+            # #153: punctuation right after a cap belongs to it ("Enter."),
+            # not 4 px away where it read as a stray mark.
+            hug = hint[match.end():match.end() + 1] in _HUG_PUNCTUATION
+            for index, key in enumerate(keys):
+                last = index == len(keys) - 1
+                self._kbd(inner, key).pack(side=tk.LEFT, padx=(0, 1 if last and hug else 4))
             pos = match.end()
         if pos < len(hint):
             self._hint_text(inner, hint[pos:])

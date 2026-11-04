@@ -302,6 +302,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `copy.HINT_PICK`, `copy.HINT_CONFIRM` (2026-11-04 for #153; drafts, not yet
+  reviewed): footer hints whose key names (`Up/Down`, `Enter`, `Esc`) become
+  key-caps. No sentence may end on a key name (no `.`, `,`, `;`, `:` right
+  after it): "use Up/Down to choose one", "press Enter to continue". A test
+  checks every language.
 - `inventory.ROLE_EFI`, `ROLE_MSR`, `ROLE_RECOVERY`, `FORMAT_UNKNOWN`,
   `FORMAT_BITLOCKER`, `FORMAT_LUKS`, `ITEM_NAMED`, `MORE_COUNT` (2026-11-03 for
   #147, not yet reviewed): the Pick a disk contents line. `ITEM_NAMED` keeps
