@@ -20,7 +20,9 @@ EXCLUDED = {
         # Live re-exports, translated in their home modules.
         "STOP_WARNING", "EMPTY_STEPS", "OVERWRITE_LIMITS",
     },
-    "keyboard": {"LAYOUTS", "LIMITS", "LAYOUT_ORDER", "DEFAULT_LAYOUT"},
+    # CHECK_KEY (#140) is the physical key the guided check asks for, a
+    # rule-table value, not display copy: never translated.
+    "keyboard": {"LAYOUTS", "LIMITS", "LAYOUT_ORDER", "DEFAULT_LAYOUT", "CHECK_KEY"},
     "outcomes": {"VIEWS"},
     "inventory": {"NESTED_SILENT_REASONS"},
     "storage_limits": {"SECTIONS"},
