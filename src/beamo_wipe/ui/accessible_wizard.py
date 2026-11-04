@@ -21,6 +21,7 @@ gi.require_version("Atk", "1.0")
 from gi.repository import Atk, Gdk, GLib, Gtk, Pango  # noqa: E402
 
 from beamo_wipe import copy as C  # noqa: E402
+from beamo_wipe.disk_order import pick_order  # noqa: E402
 from beamo_wipe import diagnostic_report as D, inventory, storage_limits  # noqa: E402
 from beamo_wipe.outcomes import may_have_erased  # noqa: E402
 from beamo_wipe.recovery import (  # noqa: E402
@@ -668,7 +669,8 @@ class AccessibleWizard:
                 self.label(C.REPORT_MEDIA_WANTED, focusable=True)
             self._inventory_count()
             self._protected_boot()
-            for disk in sorted(self.w.selectable, key=lambda d: d.path):
+            # Internal disks first, then external; stable (#151).
+            for disk in pick_order(self.w.selectable):
                 text = C.ACCESSIBLE_SELECT_DISK.format(disk=self.w.disk_view(disk).announcement)
                 select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
                 hint = C.contents_hint(disk)

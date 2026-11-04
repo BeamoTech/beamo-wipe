@@ -24,6 +24,7 @@ from tkinter import font as tkfont
 from typing import Any, Callable, Iterable, List, Literal, Optional
 
 from beamo_wipe import copy as C
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import diagnostic_report as D
 from beamo_wipe.outcomes import may_have_erased
 from beamo_wipe.diagnostics import emit_serial_marker
@@ -4149,7 +4150,8 @@ class TkWizard:
                 bind_wheel(child)
 
         bind_wheel(guidance)
-        items: List = sorted(self.w.selectable, key=lambda d: d.path)
+        # Internal disks first, then external; stable for the same disks (#151).
+        items: List = list(pick_order(self.w.selectable))
         for disk in items:
             selected = self.w.selected is not None and disk.path == self.w.selected.path
             card = self._disk_row(cards, disk, selected)

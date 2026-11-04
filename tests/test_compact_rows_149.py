@@ -221,8 +221,10 @@ def test_protected_usb_keeps_its_full_card(tk_pick):
 
 
 def test_down_and_up_move_the_selection_and_expand(tk_pick):
+    from beamo_wipe.disk_order import pick_order
+
     wiz, app = tk_pick()
-    order = sorted(d.path for d in wiz.selectable)
+    order = [d.path for d in pick_order(wiz.selectable)]  # list order (#151)
     app._on_key(SimpleNamespace(keysym="Down", char=""))
     _settle(app)
     assert wiz.selected.path == order[0]
@@ -254,10 +256,13 @@ def test_selection_follows_the_disk_not_its_list_position(tk_pick):
     _settle(app)
     assert wiz.selected is chosen and wiz.selected.serial == "MX500AABBCC11"
     assert [p for p, c in app._pick_cards.items() if not _compact(c)] == ["/dev/sdc"]
-    # Rows are always in the same (path) order, whatever order discovery used.
-    assert list(app._pick_cards) == sorted(app._pick_cards)
-    # Down goes to the next disk in that order, not to "index + 1" of the
-    # reversed tuple.
+    # Rows are always in the same order (#151: internal first, then
+    # external), whatever order discovery used.
+    from beamo_wipe.disk_order import pick_order
+
+    assert list(app._pick_cards) == [d.path for d in pick_order(wiz.selectable)]
+    # Down goes to the next disk in that order (sdc -> sdd), not to
+    # "index + 1" of the reversed tuple.
     app._on_key(SimpleNamespace(keysym="Down", char=""))
     _settle(app)
     assert wiz.selected.path == "/dev/sdd"
@@ -388,7 +393,7 @@ def test_web_preview_mirrors_compact_rows_and_arrow_keys():
     row = html[html.index("function compactDiskRow(d)"):html.index("function diskCard(d)")]
     for field in ("d.path", "d.name", "details", "d.size"):
         assert f"${{esc({field})}}" in row
-    # Up/Down select by path from the rendered (path-sorted) list.
+    # Up/Down select by path from the rendered list (#151 order).
     keys = html[html.index('if (screen === "pick" && ["ArrowUp", "ArrowDown"]'):]
     keys = keys[:keys.index("return;\n  }")]
     assert "selectable().map(d => d.path)" in keys

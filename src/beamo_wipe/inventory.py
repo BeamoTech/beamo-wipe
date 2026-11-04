@@ -738,7 +738,10 @@ def comparison_entries(
     candidates = tuple(disks)
     identity_peers = tuple(peers) if peers is not None else candidates
     entries = []
-    numbered = enumerate(sorted(candidates, key=lambda d: d.path), 1)
+    from beamo_wipe.disk_order import pick_order
+
+    # "Disk N" is the disk's place in the pick list (#151 order).
+    numbered = enumerate(pick_order(candidates), 1)
     # Keep equal-capacity candidates adjacent while retaining picker numbers.
     ordered = sorted(
         numbered, key=lambda item: (item[1].size_bytes, (item[1].model or "").casefold(), item[0])

@@ -22,6 +22,7 @@ from beamo_wipe.recovery import (
 )
 from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
@@ -344,7 +345,8 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         block.extend(_identity_field_lines(view, width, indent="  "))
         block.extend(_nested_lines(wizard, wizard.protected_boot, width))
         blocks.append((None, block))
-    for disk in sorted(wizard.selectable, key=lambda d: d.path):
+    # Internal disks first, then external; stable (#151).
+    for disk in pick_order(wizard.selectable):
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
@@ -1076,9 +1078,11 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(f"{C.SEVERITY_WARNING}: {C.SAME_SIZE_HINT}")
             if wizard.report_wanted:
                 print(C.REPORT_MEDIA_WANTED)
-            numbered = sorted(wizard.selectable, key=lambda d: d.path)
-            for i, disk in enumerate(numbered, 1):
-                view = wizard.disk_view(disk)
+            # Internal disks first, then external; stable (#151). The
+            # number chooses the disk shown next to it, by path.
+            numbered = list(pick_order(wizard.selectable))
+            for i, listed in enumerate(numbered, 1):
+                view = wizard.disk_view(listed)
                 _emit(f"[{i}] {view.title}")
                 for part in (view.capacity, view.kind_chip, view.connection):
                     if part:
@@ -1087,10 +1091,10 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(f"    {view.id_label}: {view.marked_id}")
                 for note in view.notes:
                     _emit("    " + note)
-                hint = C.contents_hint(disk)
+                hint = C.contents_hint(listed)
                 if hint:
                     _emit("    " + hint)
-                nested = inventory.card_nesting_text(wizard.nested_components(disk))
+                nested = inventory.card_nesting_text(wizard.nested_components(listed))
                 if nested:
                     for line in nested.split("\n"):
                         _emit("    " + line)

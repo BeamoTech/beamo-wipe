@@ -545,7 +545,9 @@ def test_curses_enter_on_the_highlighted_disk_opens_review_once(monkeypatch):
     # Down highlights the first disk; Enter reviews it; the held Enter
     # (no key-up yet) cannot do anything on Confirm.
     _curses_run(monkeypatch, wiz, [curses.KEY_DOWN, 10, 10, 10])
-    first = sorted(d.path for d in wiz.selectable)[0]
+    from beamo_wipe.disk_order import pick_order
+
+    first = pick_order(wiz.selectable)[0].path  # first in the list (#151)
     assert wiz.screen == Screen.CONFIRM
     assert wiz.selected.path == first
     assert wiz.confirm_input == "" and not wiz.token_ok

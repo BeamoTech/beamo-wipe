@@ -14,6 +14,7 @@ from urllib.parse import quote
 
 from beamo_wipe import copy as C
 from beamo_wipe import storage_limits as limits
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe.support_contact import qr_svg as _support_qr_svg
 from beamo_wipe.support_code import (
     code_for_export_detail,
@@ -132,6 +133,8 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
     result = discovery_for_scenario(scenario)  # type: ignore[arg-type]
     peers = listed_disks(result)
     eligible_paths = {disk.path for disk in result.selectable}
+    # Pick-list place, as in the Tk/GTK/console views (#151).
+    place = {disk.path: index for index, disk in enumerate(pick_order(result.disks))}
     out = []
     for disk in result.disks:
         spec = None
@@ -147,6 +150,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
         out.append(
             {
                 "path": disk.path,
+                "order": place[disk.path],
                 "name": view.title,
                 "size": view.capacity,
                 "kind": disk.kind.value,
@@ -1454,7 +1458,8 @@ function disks() {
   if (mode === "blocked") list = [];
   else if (mode === "empty") list = P.disks.filter(d => d.isBoot);
   else list = P.disks.slice();
-  list.sort((a, b) => (a.isBoot - b.isBoot) || a.path.localeCompare(b.path));
+  // #151: internal disks first, then external, in the order Python computed.
+  list.sort((a, b) => (a.isBoot - b.isBoot) || (a.order - b.order));
   return list;
 }
 function selectable() { return disks().filter(d => d.eligible); }
@@ -2209,7 +2214,7 @@ document.addEventListener("keydown", e => {
     // #149, as in the Tk view: Up/Down move the selection by disk (path),
     // never by a stored position; the first press picks an end of the list.
     e.preventDefault();
-    const list = selectable().map(d => d.path);  // disks() sorts by path
+    const list = selectable().map(d => d.path);  // disks() is the pick-list order (#151)
     if (!list.length) return;
     const at = selected ? list.indexOf(selected.path) : -1;
     const next = at < 0 ? (e.key === "ArrowUp" ? list.length - 1 : 0)

@@ -2098,11 +2098,18 @@ class Wizard:
                     return
 
     def move_selection(self, delta: int) -> None:
-        """Move the pick-list highlight. First Up/Down chooses an edge disk."""
+        """Move the pick-list highlight. First Up/Down chooses an edge disk.
+
+        Steps through the list in its shown order (#151: internal first,
+        then external) from the selected disk's identity, never from a
+        stored position, and selects by path.
+        """
+        from beamo_wipe.disk_order import pick_order
+
         with self._lock:
             if self.screen != Screen.PICK:
                 return
-            selectable = sorted(self.selectable, key=lambda d: d.path)
+            selectable = pick_order(self.selectable)
             if not selectable:
                 return
             paths = [d.path for d in selectable]
