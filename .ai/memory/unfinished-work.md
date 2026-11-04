@@ -3729,3 +3729,33 @@ another very thorough and comprehensive pass of this." Repo
   usb_verification_docs and live_session_power receipt failures. The
   laptop_power_ui owner case is the #144 test fix (8693532), not yet in this
   tree until the restack.
+
+## BW-139..147-STACK — Restack after comparisons; branches pushed (HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Per-file comparisons (#139-#143 340
+  files, #144 power 21, #145 report 35, #146 150, #147 370) found five
+  stale tests, each fixed on the branch that caused it, then the stack was
+  rebased (record conflicts resolved by keeping both entries):
+  #139 95131db (test_text_size follows _text_size_section), #140 192be9f
+  (CHECK_KEY excluded from the language sweep), #141 6498ec7, #142 7324be0,
+  #143 8365e4e, #144 89ef7d7 (laptop_power_ui checks the badge on
+  WHAT/OWNER), #145 14e57db (stale REPORT_MEDIA_WHAT/REPORT_HELP_TITLE pair
+  dropped), #146 448b13a (80x24 check uses owner_bullets), #147 = this
+  commit's parent 7059361 + this note (demo disks are data; bare stay
+  unknown). Remaining comparison differences are environmental: worktrees
+  are sparse checkouts without docs/evidence; Windows tmp PermissionError,
+  os.makedev, Tcl init, fork limits; single-run Tk flakes pass on rerun.
+- On the restacked head: the five fixed files, the nine task test files and
+  group/pick-row files pass non-Tk; every Tk case of the task files,
+  laptop_power_ui (30) and test_text_size run one by one pass; ruff clean.
+- Branches feat/setup-order-139, feat/keyboard-check-140,
+  feat/keyboard-fineprint-141, feat/layout-badges-142,
+  feat/owner-reason-143, feat/power-badge-144, feat/report-teaser-145,
+  feat/compat-showmore-146, feat/partition-names-147 pushed (feature
+  branches; ci.yml runs only on PR/push to main, so no hosted job).
+- PENDING (owner): hosted ci.yml on the stack head before merge; GTK/Orca
+  and Linux 72 DPI runs (not available on this Windows host); native review
+  of FR/DE/ES/IT drafts; merge order #94 -> ... -> #147; nothing released.
+- HOST: C: had 0 MB free during this work; only my scratch baselines were
+  removed (about 2.5 GB free after). The rest of the 487 GB volume is not
+  mine to touch; the owner may want to review it.
