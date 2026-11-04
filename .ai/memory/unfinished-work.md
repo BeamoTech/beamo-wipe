@@ -3759,3 +3759,57 @@ another very thorough and comprehensive pass of this." Repo
 - HOST: C: had 0 MB free during this work; only my scratch baselines were
   removed (about 2.5 GB free after). The rest of the 487 GB volume is not
   mine to touch; the owner may want to review it.
+
+## BW-148-SERIALONCE — Show the serial once on Pick a disk (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-once-148` (stacked on
+  `feat/partition-names-147` @ 1a2dc42), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
+  review item 22). Ref #129 (token marks on Confirm) unchanged; #152 and
+  #177 are not in the repo or backlog: the existing [bracket] comparison
+  mark is kept as the distinguishing-characters highlight.
+- WHY: the card showed the serial (the whole serial in [brackets] when the
+  same-size serials shared nothing) and the note repeated the characters:
+  "Compare serial number characters 1 to 14: S4EVNX0N123456. Check the full
+  ID before choosing." (the demo's two 256 GB disks).
+- WHAT CHANGED (display only): inventory.serial_comparison: the note names
+  positions only, COMPARE_SERIAL = "Compare {position} with other disks of
+  this size. {reminder}" (no {span}); when nothing is shared at either end
+  there is nothing to mark: no brackets, no note (the same-size warning
+  stays). curses/plain console cards show marked_id ([brackets]) like Tk and
+  the web preview. The plain console no longer prints the whole Compare
+  disks list (which repeats every serial) before the cards: it prints
+  "Compare disks (C): read only." and shows the list on C, like curses, Tk
+  and GTK. GTK/Orca: the disk button name has the plain serial once; the
+  character-by-character reader stays in the Compare disks expander.
+  FR/DE/ES/IT COMPARE_SERIAL drafts without {span}. Docs: screens.md row,
+  translations.md.
+- TESTS: new tests/test_serial_once_148.py (22): fixture with shared-prefix
+  pair, nothing-shared pair (review case), 55-char serials differing in the
+  middle; note never prints the characters; no brackets/note when nothing
+  is shared; announcement reads the serial once; every language's template
+  has only {position}/{reminder}; display-only proofs (identity fields,
+  confirm token, targets identical with/without comparison; only identity/
+  inventory call serial_comparison; marked text never accepted as the
+  token; countdown 5); curses at 40/80 cols, plain console once + C on
+  request, preview payload, GTK source check; Tk at 800x600 x 3 text sizes
+  and 1280x820 (serial once, wraps, no clipping). 13 fail on 1a2dc42.
+  Updated test_serial_comparison.py (whole-span case), test_console_
+  fallback_complete.py, test_console_parity.py (2) and
+  test_slow_unusual_interactions.py (1) (curses search ignores the marks).
+- CHECKS (Windows-native route): new file 22/22 (Tk one by one); ruff clean;
+  mypy --platform linux same 6 env-only errors; related-file comparison 419
+  files vs 1a2dc42 (scratch work148-scratch-20261104 pf-new/pf-base,
+  cmp.txt, rerun.txt): the only real differences were the three console
+  tests above (fixed, pass); every other new-only failure passed on rerun
+  (Tk/Tcl flakes) or fails on 1a2dc42 too (sparse docs/evidence, Windows
+  tmp permissions, release_manifest). Screens: shots-before/shots-after
+  (demo + lookalike fixture with a 55-char serial, 800x600 x 3 sizes,
+  1280x820), text-before/text-after.txt (console, GTK names, Tk text, EN/FR),
+  console-after.txt (curses 80/40 cols, plain console with C).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi here), Linux 72 DPI on
+  DISPLAY=:99, ISO/QEMU, hosted ci.yml, native FR/DE/ES/IT review.
+- FOLLOW-UP (not done, for #152): the span is computed over the whole
+  same-size group, so one unrelated same-size serial removes the mark for a
+  lookalike pair (e.g. S4EVNX0N123456 / S4EVNX0N123999 / WXYZ12 at 500 GB).
+  A pairwise distinguishing span is #152's scope.
