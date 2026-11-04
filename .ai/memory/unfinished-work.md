@@ -3716,3 +3716,16 @@ another very thorough and comprehensive pass of this." Repo
 - FOLLOW-UP (not done): a whole-disk file system with no partition table
   shows no line; the full partition list behind "+N more" is not offered
   elsewhere (coordinate with #149).
+- 2026-11-04 COMPARISON (370 files, 1b17458 vs aabf550 archive): one real
+  case, test_prepare_aftercare::test_demo_disks_without_fstype_stay_unknown
+  (demo disks now carry file systems) -> now asserts demo disks are `data`
+  with the plain warning, and the same disks with FSTYPE/labels stripped
+  stay `unknown`. Reruns: compare_disks, finish_sound, language_first,
+  tk_callback_ownership pass (single-run Tk/tmp flakes);
+  release_asset hard-link test flips between runs on every tree (release
+  code untouched); release_manifest strict fails on both. Worktrees are
+  sparse checkouts without docs/evidence (core.sparseCheckout `!/docs/
+  evidence/`), which explains physical_acceptance_111,
+  usb_verification_docs and live_session_power receipt failures. The
+  laptop_power_ui owner case is the #144 test fix (8693532), not yet in this
+  tree until the restack.

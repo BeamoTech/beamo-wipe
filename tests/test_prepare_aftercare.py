@@ -432,9 +432,31 @@ def test_flat_windows_partition_rows_keep_the_windows_warning(monkeypatch, tmp_p
 
 
 def test_demo_disks_without_fstype_stay_unknown():
-    from beamo_wipe.demo import make_demo_wizard
+    import copy
+    import json
 
+    from beamo_wipe import demo
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.discover import discover
+
+    # #147: the demo disks carry file systems and labels for the contents
+    # line, but no operating-system evidence: data, with the plain warning.
     for disk in make_demo_wizard().selectable:
+        assert disk.contents == "data"
+        assert _warning_kind(disk) == "plain"
+    # Without FSTYPE (and labels) the same disks stay unknown.
+    payload = json.loads((demo.HERE / "demo_lsblk.json").read_text(encoding="utf-8"))
+    bare = copy.deepcopy(payload)
+    for node in bare["blockdevices"]:
+        for child in node.get("children") or []:
+            for key in ("fstype", "fsver", "label"):
+                child.pop(key, None)
+    result = discover(
+        lsblk_payload=bare, boot_path="/dev/sdb", mount_sources=[], cmdline="",
+        env={"BEAMO_WIPE_DRY_RUN": "1", "BEAMO_WIPE_BOOT_DEVICE": "/dev/sdb"},
+    )
+    assert result.selectable
+    for disk in result.selectable:
         assert disk.contents == "unknown"
         assert _warning_kind(disk) == "plain"
 
