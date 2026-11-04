@@ -3643,3 +3643,12 @@ another very thorough and comprehensive pass of this." Repo
   (work146-scratch-20261103 pf-new-0x / pf-base-0x).
 - NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
   native translation review (no new strings).
+- 2026-11-03 COMPARISON (150 files, aabf550 vs 7c0a793 archive): one real
+  case, test_prepare_aftercare::test_console_what_wraps_prepare_bullets_at_
+  80x24 (expected every WHAT_BULLETS word on curses page 1; the platform
+  line now follows the notes) -> test now checks owner_bullets(). Reruns:
+  modern_layout, ui_polish, language_first, owner_reason, last_chance pass
+  on both (single-run Tk flakes). laptop_power_ui native redraw fails on
+  both trees (inherited; see BW-144). physical_acceptance_111,
+  secure_boot_expectations, evidence_tiers: worktree lacks docs/evidence
+  files (environment, same as earlier tasks).

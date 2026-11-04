@@ -521,7 +521,9 @@ def test_console_what_wraps_prepare_bullets_at_80x24(monkeypatch):
     wiz.skip_intro()
     assert wiz.screen == Screen.OWNER
     shown, _ = _draw_console(monkeypatch, wiz)
-    for bullet in C.WHAT_BULLETS:
+    # #146: the platform line is fine print after the supporting notes (it
+    # may be on the next page at 80x24); the main bullets are on the first.
+    for bullet in C.owner_bullets():
         for word in bullet.split():
             assert word in shown
     assert "copies of anything you want to keep" in shown
