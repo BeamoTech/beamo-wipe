@@ -317,6 +317,8 @@ STARTUP_STILL_WORKING = (
 )
 
 OWNER_LEAD = "Check the box, then continue."
+# Next to the greyed Choose a disk (#143); gone once the box is ticked.
+OWNER_CONTINUE_REASON = "Tick the box above to continue."
 
 BOOT_USB_BANNER = "Beamo USB — protected, cannot be erased"
 BOOT_DISC_BANNER = "Beamo boot disc — protected, cannot be erased"

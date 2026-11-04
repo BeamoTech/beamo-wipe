@@ -76,6 +76,7 @@ STRINGS = {
         "STARTUP_STAGE_FINDING_HINT": "Die an diesen Computer angeschlossenen Datenträger werden aufgelistet.",
         "STARTUP_STILL_WORKING": "Läuft noch — das kann auf älteren Geräten eine Minute dauern.",
         "OWNER_LEAD": "Setzen Sie das Häkchen und fahren Sie dann fort.",
+        "OWNER_CONTINUE_REASON": "Setzen Sie oben das Häkchen, um fortzufahren.",
         "BOOT_USB_BANNER": "Beamo-USB-Stick — geschützt, kann nicht gelöscht werden",
         "BOOT_DISC_BANNER": "Beamo-Start-Disc — geschützt, kann nicht gelöscht werden",
         "SEVERITY_WARNING": "Warnung",

@@ -83,6 +83,7 @@ STRINGS = {
         "STARTUP_STAGE_FINDING_HINT": "Elenchiamo i dischi collegati a questo computer.",
         "STARTUP_STILL_WORKING": "Ancora in corso — sui computer meno recenti può richiedere un minuto.",
         "OWNER_LEAD": "Selezioni la casella, poi continui.",
+        "OWNER_CONTINUE_REASON": "Spunti la casella qui sopra per continuare.",
         "BOOT_USB_BANNER": "Chiavetta USB Beamo — protetta, non può essere cancellata",
         "BOOT_DISC_BANNER": "Disco di avvio Beamo — protetto, non può essere cancellato",
         "SEVERITY_WARNING": "Avviso",

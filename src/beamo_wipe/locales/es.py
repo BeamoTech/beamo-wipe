@@ -81,6 +81,7 @@ STRINGS = {
         "STARTUP_STAGE_FINDING_HINT": "Listando los discos conectados a este equipo.",
         "STARTUP_STILL_WORKING": "Todavía en curso — puede tardar un minuto en equipos antiguos.",
         "OWNER_LEAD": "Marque la casilla y luego continúe.",
+        "OWNER_CONTINUE_REASON": "Marque la casilla de arriba para continuar.",
         "BOOT_USB_BANNER": "Memoria USB Beamo — protegida, no se puede borrar",
         "BOOT_DISC_BANNER": "Disco de arranque Beamo — protegido, no se puede borrar",
         "SEVERITY_WARNING": "Advertencia",

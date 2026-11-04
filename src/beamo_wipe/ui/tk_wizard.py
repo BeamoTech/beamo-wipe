@@ -3725,6 +3725,16 @@ class TkWizard:
         row = self._footer_shell(C.HINT_OWNER)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok)
+        if not self.w.owner_ok:
+            # #143: a greyed button never stands without its reason. Ticking
+            # the box redraws the screen without it.
+            reason = tk.Label(
+                row._right, text=C.OWNER_CONTINUE_REASON,  # type: ignore[attr-defined]
+                font=self.font_s, fg=MUTED, bg=FOOTER_BG, justify=tk.RIGHT, anchor="e",
+                wraplength=max(140, self.lay.content_w // 3),
+            )
+            reason.pack(side=tk.RIGHT, padx=(0, 12))
+            self._owner_reason = reason
 
     def _owner_clicked(self, _event=None) -> str:
         self._owner_var.set(0 if self._owner_var.get() else 1)

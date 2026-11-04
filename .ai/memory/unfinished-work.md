@@ -3487,3 +3487,29 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca run, Linux pytest at 72 DPI, ISO/QEMU, native
   review of the hint.
 - NEXT: comparison, push after #141.
+
+## BW-143-OWNERREASON — Explain the greyed Choose a disk on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/owner-reason-143` (stacked on
+  `feat/layout-badges-142`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
+  review item 17). Ref #178 (improved disabled-button style) is not in this
+  repo: the existing DISABLED_BG/FG style is kept; adopt #178 when it lands.
+- WHAT CHANGED: new `copy.OWNER_CONTINUE_REASON` "Tick the box above to
+  continue." (4 drafts). Tk: label in the footer's right cluster, left of
+  the greyed Choose a disk, wraps at ~1/3 of the column; ticking redraws
+  without it. GTK: focusable label after the box (hidden once ticked) and
+  the button's ATK description, both synced in the toggle handler (no
+  redraw). Curses: the line above the Owner footer keys while unticked. Web
+  preview: span beside the button + aria-describedby. Gate unchanged.
+  Docs screens.md.
+- TESTS: new tests/test_owner_reason_143.py (copy, 4 languages, gate
+  unchanged, curses footer, GTK source sync, web preview, Tk beside/left of
+  the button, gone when ticked and back when cleared, 800x600 fit at all
+  sizes). On 70ffcdc: 11 fail, 3 general guards pass.
+- CHECKS: 15 pass (9 non-Tk + 6 one by one); ruff, mypy --platform linux.
+  Screens: scratch work143-scratch-20261103 shots-before / shots-after
+  (unticked/ticked; en all sizes + 1280x820; de).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native review.
+- NEXT: related-file comparison, push after #142.

@@ -399,6 +399,7 @@ class AccessibleWizard:
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
+        self.owner_reason = None  # #143: set again by the Owner screen
         self.progress_bar = None
         self.progress_announcer = ProgressAnnouncer()
         self.walk_away_label = None
@@ -572,9 +573,15 @@ class AccessibleWizard:
             check.get_child().set_max_width_chars(65)
             check.set_active(self.w.owner_ok)
             self.body.pack_start(check, False, False, 4)
+            # #143: why Choose a disk is greyed, beside the box and as the
+            # button's accessible description; hidden once the box is ticked.
+            self.owner_reason = self.label(C.OWNER_CONTINUE_REASON, focusable=True)
+            self.owner_reason.set_no_show_all(True)
+            self.owner_reason.set_visible(not self.w.owner_ok)
             self.primary = self.button(
                 C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok
             )
+            self._sync_owner_reason()
             check.connect(
                 "toggled", lambda widget: self._owner(widget.get_active(), generation)
             )
@@ -1157,6 +1164,18 @@ class AccessibleWizard:
             return
         self.w.set_owner(checked)
         self.primary.set_sensitive(self.w.owner_ok)
+        self._sync_owner_reason()
+
+    def _sync_owner_reason(self) -> None:
+        """#143: show and describe the reason only while the button is greyed."""
+        waiting = not self.w.owner_ok
+        reason = getattr(self, "owner_reason", None)
+        if reason is not None:
+            reason.set_visible(waiting)
+        if self.primary is not None:
+            self.primary.get_accessible().set_description(
+                C.OWNER_CONTINUE_REASON if waiting else ""
+            )
 
     def _token(self, text, generation):
         if generation != self.generation or self.w.screen != Screen.CONFIRM:

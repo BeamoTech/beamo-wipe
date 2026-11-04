@@ -635,6 +635,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "refresh": C.TITLE_REFRESH,
         },
         "refreshLead": C.REFRESH_LEAD,
+        "ownerReason": C.OWNER_CONTINUE_REASON,
         "refreshGuardLead": C.REFRESH_GUARD_LEAD,
         "refreshGuardHint": C.HINT_REFRESH_GUARD,
         "refreshCancel": C.BTN_REFRESH_CANCEL,
@@ -1024,6 +1025,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .row { display: flex; align-items: flex-start; gap: 14px; }
   .card .grow { flex: 1; min-width: 0; }
   .card .row > .kbd { flex: none; margin-top: 1px; }
+  .btnreason { align-self: center; margin-right: 12px; max-width: 16em; text-align: right; }
   /* #142: layout number badges only while the list has keyboard focus. */
   .layout-cards .card .row > .kbd { visibility: hidden; }
   .layout-cards:focus-within .card .row > .kbd { visibility: visible; }
@@ -1754,7 +1756,16 @@ function draw() {
     card.onkeydown = (e) => { if (e.key === " ") { e.preventDefault(); if (!e.repeat) toggle(); } };
     btnsL.append(btn(P.buttons.back, () => { screen = "keyboard"; draw(); }));
     renderHint(P.hints.owner);
-    btnsR.append(btn(P.buttons.chooseDisk, () => { if (owner) { if (mode==="blocked") screen="blocked"; else if (!selectable().length) screen="empty"; else screen="pick"; draw(); } }, "primary", !owner));
+    if (!owner) {
+      // #143: the reason beside the greyed button, also its description.
+      const reason = document.createElement("span");
+      reason.className = "small muted btnreason"; reason.id = "owner-reason";
+      reason.textContent = P.ownerReason;
+      btnsR.append(reason);
+    }
+    const choose = btn(P.buttons.chooseDisk, () => { if (owner) { if (mode==="blocked") screen="blocked"; else if (!selectable().length) screen="empty"; else screen="pick"; draw(); } }, "primary", !owner);
+    if (!owner) choose.setAttribute("aria-describedby", "owner-reason");
+    btnsR.append(choose);
   } else if (screen === "blocked") {
     main.innerHTML = `<div class="centerstage"><div class="badgehalo danger">${badge("danger", 51)}</div>
       <h1>${P.titles.blocked}</h1>${recoveryHtml(P.blockedRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.blocked)}</p>${supportCodeBlock(P.sampleBlockedCode)}</div>`;

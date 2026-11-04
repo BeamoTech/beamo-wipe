@@ -76,6 +76,7 @@ STRINGS = {
         "STARTUP_STAGE_FINDING_HINT": "Liste des disques connectés à cet ordinateur.",
         "STARTUP_STILL_WORKING": "Toujours en cours — cela peut prendre une minute sur les machines anciennes.",
         "OWNER_LEAD": "Cochez la case, puis continuez.",
+        "OWNER_CONTINUE_REASON": "Cochez la case ci-dessus pour continuer.",
         "BOOT_USB_BANNER": "Clé USB Beamo — protégée, ne peut pas être effacée",
         "BOOT_DISC_BANNER": "Disque de démarrage Beamo — protégé, ne peut pas être effacé",
         "SEVERITY_WARNING": "Avertissement",

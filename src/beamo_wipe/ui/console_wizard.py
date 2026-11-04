@@ -511,7 +511,10 @@ def _primary_footer(
         lines.append(C.CON_INPUT_PREFIX + wizard.typing_check)
         return lines
     if screen in (Screen.WHAT, Screen.OWNER):
-        return [C.CON_OWNER_FOOTER, C.CON_READ_MORE]
+        lines = [C.CON_OWNER_FOOTER, C.CON_READ_MORE]
+        if not wizard.owner_ok:
+            lines.insert(0, C.OWNER_CONTINUE_REASON)  # #143: why Enter waits
+        return lines
     if screen == Screen.PICK:
         return [C.CON_PICK_NAV, C.CON_DISK_HELP.format(label=C.DISK_HELP_BUTTON)]
     if screen == Screen.PICK_EMPTY:
