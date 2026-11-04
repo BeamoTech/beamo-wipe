@@ -3813,3 +3813,77 @@ another very thorough and comprehensive pass of this." Repo
   same-size group, so one unrelated same-size serial removes the mark for a
   lookalike pair (e.g. S4EVNX0N123456 / S4EVNX0N123999 / WXYZ12 at 500 GB).
   A pairwise distinguishing span is #152's scope.
+
+## BW-149-COMPACTROWS — One-line disk rows that expand when selected (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/compact-rows-149` (stacked on
+  `feat/serial-once-148` @ 0b54fa4), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
+  review item 23). Coordinates with #147 (summary on the collapsed row),
+  #148 (serial once, on the expanded card); #150/#151 not implemented.
+- WHY: at 800x600 only about 1.5 disk cards were visible (six-disk fake
+  fixture: 1 of 6 whole at every text size; 2 at 1280x820).
+- WHAT CHANGED: Tk `_compact_disk_row`: an unselected eligible disk is one
+  line (radio, model, "kind · connection · contents hint · contents summary",
+  capacity), labels wrap to their grid cell and never clip (no label
+  border/padding; long tokens soft-broken). `_disk_row` keeps the full card
+  for the selected disk and the protected Beamo USB (banner unchanged,
+  Ref #61). The selected card gains a Compare disks link on its heading line
+  when another eligible disk has the same displayed size; it opens the
+  existing read-only comparison (`_comparison_opener`) and focuses its first
+  reader. `_disk_heading` returns (row, model column). Selection logic is
+  unchanged (wizard.select_disk / move_selection by path; rows in path
+  order). Web preview: `compactDiskRow` for unselected disks and Up/Down on
+  Pick moving the selection by path (its hint already showed the arrows).
+  Status tags: the protected USB keeps its banner; not-selectable devices
+  stay in Other detected devices with their reasons (no new strings).
+  GTK/Orca and curses/plain consoles unchanged: every disk keeps its full
+  identity (Orca reads one button at a time; the console pages), same
+  path-based selection. Docs: screens.md #149 row (visible-row numbers),
+  #148 row now says the serial is on the selected card.
+- VISIBLE WHOLE ROWS (six eligible + same-size warning, nothing selected):
+  800x600 Standard 6, Large 5, Extra large 4 (FR 6/4/2); 1280x820 6 at every
+  size (FR Extra large 5). Selected at 800x600 Standard: 4-5; the fullest
+  card (same-size note, hint, partitions, link) still leaves 3 while the
+  warning is in view.
+- TESTS: new tests/test_compact_rows_149.py (16): collapsed rows without
+  serial; expanded card with serial/notes/partitions; protected USB full
+  card; Down/Up select and expand; selection follows the disk after the
+  discovery order is reversed, Down goes to the next path; click selects;
+  boot USB never chosen; Compare link only with a same-size peer and opens
+  the reader by keyboard; 6 rows visible / >=4 with a typical selection;
+  long model wraps without clipping at 800x600 x 3 sizes and 1280x820;
+  web preview source checks. 7 fail on 717322e (the other 9 are guards that
+  also hold before). Updated: test_serial_once_148 (Tk), test_pick_row_fit
+  (arrival = compact facts, roomy row = selected), test_ui_fit (first disk,
+  contents hint), test_tk_runtime (serial marks/label on the selected card),
+  test_design_runtime (identity on the expanded row; compact model wraps),
+  test_group_partitions (partitions on the selected card),
+  test_adaptive_layout helper (links inside the scrolling Pick list are
+  exempt like the scrolling body; footer actions still checked).
+- CHECKS (Windows-native route): new file 16/16 one by one; every changed
+  Tk case one by one (ui_fit 50, pick_row_fit 24, serial_once 4, tk_runtime
+  7, canvas_layout 1, group_partitions 1, design_runtime 2); per-case Pick
+  subsets of adaptive_layout (42 pass), reflow (2 hangs on Last chance/
+  Working, the known local hang), ui_fit, tk_runtime; 20 focused Pick files
+  and 30 further Pick-touching files compared with #148: no difference
+  (tk_input_scroll_pass13, warning_success, ui_polish also identical but
+  one Tcl init glitch on a Method case);
+  preview files: failures identical on #148/#147 (symlink, macOS, tmp
+  permissions, hosted JS gate path); node --check on the preview script;
+  ruff clean; mypy same 6 env-only errors. Environmental, fail on #148 too:
+  tk_runtime pick_list_keeps_scroll_position_on_click (restore window
+  closes before the canvas has a height on this loaded host),
+  canvas_layout progress/modern_polish links (flow stops at Last chance),
+  design_runtime result tab order (tmp PermissionError), ui_rework review,
+  accessibility_lowres (2). Screens: scratch work149-scratch-20261104
+  shots-before / shots-before-sel / shots-after (demo + six-disk fixture,
+  nothing selected and nvme0n1/sda/sdc selected, 800x600 x 3 sizes,
+  1280x820, FR) with visible.txt counts; web/ (headless Chrome 900x1100,
+  before/after, nothing selected and first disk selected).
+- NOT VERIFIED: Linux 72 DPI on DISPLAY=:99, GTK/Orca runtime, ISO/QEMU,
+  hosted ci.yml, a browser keyboard run of the preview's Up/Down.
+- FOLLOW-UP (not done): curses could use the same collapsed rows at 80x24;
+  the preview's "ConnectionNVMe" (missing gap between label and value) is
+  pre-existing (same on #148); with the selected card in view, Tk's
+  ensure-visible can scroll earlier rows out (by design).
