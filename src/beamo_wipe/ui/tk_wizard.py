@@ -20,7 +20,7 @@ from functools import partial
 import tkinter as tk
 from pathlib import Path
 from tkinter import font as tkfont
-from typing import Callable, Iterable, List, Literal, Optional
+from typing import Any, Callable, Iterable, List, Literal, Optional
 
 from beamo_wipe import copy as C
 from beamo_wipe import diagnostic_report as D
@@ -3834,7 +3834,7 @@ class TkWizard:
         base = max(200, self.lay.wrap - 120)
         # No label border/padding: requested width is then exactly the wrap
         # width that fit() computes for the grid cell.
-        flat = {"bd": 0, "padx": 0, "pady": 0, "highlightthickness": 0}
+        flat: dict[str, Any] = {"bd": 0, "padx": 0, "pady": 0, "highlightthickness": 0}
         title = tk.Label(row, text=view.title, font=self.font_bold, fg=INK, bg=fill,
                          anchor="w", justify=tk.LEFT, wraplength=int(base * 0.45), **flat)
         title.grid(row=0, column=1, sticky="nw", padx=(10, 12))

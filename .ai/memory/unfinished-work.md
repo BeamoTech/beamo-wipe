@@ -3871,7 +3871,12 @@ another very thorough and comprehensive pass of this." Repo
   one Tcl init glitch on a Method case);
   preview files: failures identical on #148/#147 (symlink, macOS, tmp
   permissions, hosted JS gate path); node --check on the preview script;
-  ruff clean; mypy same 6 env-only errors. Environmental, fail on #148 too:
+  ruff clean. CORRECTION (2026-11-04, found during #150): c3117cb added
+  28 mypy arg-type errors (untyped **flat options to tk.Label in
+  _compact_disk_row); the earlier "mypy same 6" was wrong. Fixed by the
+  typing-only follow-up commit on this branch (flat: dict[str, Any]);
+  mypy --platform linux is back to the same 6 env-only errors (gi,
+  qrcode stubs). Environmental, fail on #148 too:
   tk_runtime pick_list_keeps_scroll_position_on_click (restore window
   closes before the canvas has a height on this loaded host),
   canvas_layout progress/modern_polish links (flow stops at Last chance),
