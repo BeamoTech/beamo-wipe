@@ -329,7 +329,9 @@ def _pick_disk_header(wizard: Wizard, disk, width: int):
     meta = "  ".join(part for part in (view.capacity, view.kind_chip, view.connection) if part)
     if meta:
         block.extend(_lines(f"  {meta}", width))
-    block.extend(_lines(f"  {view.id_label}: {view.id_value}", width))
+    # The one serial on the card, with the part to compare in [brackets]
+    # like the Tk card and web preview (#148); the note gives positions only.
+    block.extend(_lines(f"  {view.id_label}: {view.marked_id}", width))
     return view, block
 
 
@@ -1066,9 +1068,6 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(wizard.inventory_count)
             if wizard.protected_boot_text:
                 print(wizard.protected_boot_text)
-            if len(wizard.selectable) > 1:
-                print(inventory.COMPARE_TITLE)
-                print(inventory.comparison_text(wizard.selectable, peers=wizard.listed_disks))
             if wizard.other_devices:
                 print(inventory.TITLE)
                 print(inventory.full_text(wizard.other_devices))
@@ -1084,7 +1083,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 for part in (view.capacity, view.kind_chip, view.connection):
                     if part:
                         _emit(f"    {part}")
-                _emit(f"    {view.id_label}: {view.id_value}")
+                # One serial per disk, part to compare in [brackets] (#148).
+                _emit(f"    {view.id_label}: {view.marked_id}")
                 for note in view.notes:
                     _emit("    " + note)
                 hint = C.contents_hint(disk)
@@ -1094,10 +1094,21 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 if nested:
                     for line in nested.split("\n"):
                         _emit("    " + line)
+            # The read-only comparison repeats every serial, so it is on
+            # request (C), as in curses, Tk and GTK; the cards show each
+            # serial once (#148).
+            compare = len(wizard.selectable) > 1
+            if compare:
+                print(C.CON_COMPARE)
             print(C.CON_DISK_HELP.format(label=C.DISK_HELP_BUTTON))
             choice = _answer(wizard, C.CON_PICK_PROMPT).strip()
             if choice.upper() == "U":
                 wizard.open_disk_help()
+                continue
+            if compare and choice.upper() == "C":
+                print(inventory.COMPARE_TITLE)
+                print(inventory.comparison_text(wizard.selectable, peers=wizard.listed_disks))
+                _answer(wizard, C.CON_PRESS_ENTER)
                 continue
             try:
                 idx = int(choice) - 1

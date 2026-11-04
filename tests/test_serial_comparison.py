@@ -28,7 +28,9 @@ def disks(*serials):
     (("ABC", "ABXC"), ((0, 0), (2, 3))),
     (("A" * 240 + "X" + "Z" * 80, "A" * 240 + "Y" + "Z" * 80),
      ((240, 241), (240, 241))),
-    (("ABCD", "WXYZ"), ((0, 4), (0, 4))),
+    # Nothing shared at either end: no mark, no note; the card shows the
+    # serial once (#148).
+    (("ABCD", "WXYZ"), ((0, 0), (0, 0))),
     (("aBC1", "AbC2"), ((3, 4), (3, 4))),
 ])
 def test_comparison_preserves_all_differences_and_raw_identity(serials, spans):
@@ -38,11 +40,18 @@ def test_comparison_preserves_all_differences_and_raw_identity(serials, spans):
         view = comparison_view(disk, peers)
         assert (view.comparison_start, view.comparison_end) == (start, end)
         assert view.id_value == disk.serial
+        if serials == ("ABCD", "WXYZ"):
+            assert view.comparison_note == "" and view.marked_id == disk.serial
+            continue
         assert view.comparison_note in view.notes
         assert view.comparison_note in view.announcement
+        # Positions only; the serial is shown once, on the card (#148).
+        assert disk.serial not in view.comparison_note
         if end:
             assert view.marked_id == disk.serial[:start] + '[' + disk.serial[start:end] + ']' + disk.serial[end:]
             assert f"character{'s' if end-start > 1 else ''} {start+1}" in view.comparison_note
+            if end - start >= 3:
+                assert disk.serial[start:end] not in view.comparison_note
         else:
             assert view.marked_id == disk.serial
             assert f"Serial number has {len(disk.serial)} character" in view.comparison_note
@@ -112,7 +121,8 @@ def test_gallery_and_console_share_comparison(monkeypatch):
         assert item['serial'] == disk.serial
         assert item['markedSerial'] == view.marked_id
         assert item['comparisonNote'] == view.comparison_note
-        assert "Compare serial number character 6:" in lines
+        assert "Compare character 6 with other disks of this size." in lines
+        assert f"Serial number: {view.marked_id}" in lines
     html = gallery.gallery_html()
     assert 'if (screen === "pick" && !d.isBoot) return esc(d.markedSerial || d.serial);' in html
     assert 'd.comparisonNote' in html

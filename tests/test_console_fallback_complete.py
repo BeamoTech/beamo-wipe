@@ -185,6 +185,8 @@ def test_many_disks_paginate_without_hiding_later_serials(monkeypatch):
     all_packed = "".join(
         "".join(frame.get(y, "") for y in sorted(frame)) for frame in term.frames
     )
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    all_packed = all_packed.replace("[", "").replace("]", "")
     assert many[0].serial in all_packed
     assert any(disk.serial in all_packed for disk in many[6:])
     assert C.CON_MORE_DISKS_BELOW in all_packed or many[-1].serial in all_packed

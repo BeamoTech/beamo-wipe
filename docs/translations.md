@@ -290,6 +290,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   IT: *non vérifié*, *nicht geprüft*, *sin comprobar*, *non controllato*);
   nothing may promise data cannot be recovered. `NEXT_ITEM_GIVE_UNVERIFIED`
   keeps `{method}` (the Everyday name), quoted in each language's style.
+- `inventory.COMPARE_SERIAL` (changed 2026-11-04 for #148, not yet reviewed):
+  the Pick a disk note under a serial with a marked part. It keeps
+  `{position}` (from `POSITION_ONE`/`POSITION_RANGE`) and `{reminder}` and
+  no longer has `{span}`: the note must not repeat the serial's
+  characters, which the card already shows once in [brackets].
 - `inventory.ROLE_EFI`, `ROLE_MSR`, `ROLE_RECOVERY`, `FORMAT_UNKNOWN`,
   `FORMAT_BITLOCKER`, `FORMAT_LUKS`, `ITEM_NAMED`, `MORE_COUNT` (2026-11-03 for
   #147, not yet reviewed): the Pick a disk contents line. `ITEM_NAMED` keeps

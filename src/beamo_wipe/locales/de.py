@@ -592,7 +592,7 @@ STRINGS = {
         "SERIAL_LONGER": "Die Seriennummer hat {count} {unit}; andere Seriennummern sind länger. {reminder}",
         "POSITION_ONE": "Zeichen {n}",
         "POSITION_RANGE": "Zeichen {a} bis {b}",
-        "COMPARE_SERIAL": "Seriennummer {position} vergleichen: {span}. {reminder}",
+        "COMPARE_SERIAL": "Seriennummer ({position}) mit anderen Datenträgern dieser Größe vergleichen. {reminder}",
         "ENTRY_DISK": "Datenträger {number}",
         "ENTRY_MODEL": "Modell: {value}",
         "ENTRY_CAPACITY": "Kapazität: {value}",

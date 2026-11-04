@@ -697,9 +697,15 @@ def serial_comparison(disk: Disk, peers: tuple[Disk, ...]) -> tuple[int, int, st
     if start == end:
         unit = UNIT_CHAR if len(serial) == 1 else UNIT_CHARS
         return 0, 0, SERIAL_LONGER.format(count=len(serial), unit=unit, reminder=reminder)
+    if start == 0 and end == len(serial):
+        # Nothing is shared at either end, so a mark would only wrap the
+        # whole serial in brackets. The card already shows it once (#148).
+        return 0, 0, ""
     position = (POSITION_ONE.format(n=start + 1) if end == start + 1
                 else POSITION_RANGE.format(a=start + 1, b=end))
-    return start, end, COMPARE_SERIAL.format(position=position, span=serial[start:end], reminder=reminder)
+    # Positions only: the card shows the serial once, with this part
+    # marked; the note must not print the characters again (#148).
+    return start, end, COMPARE_SERIAL.format(position=position, reminder=reminder)
 
 
 REMINDER_CHECK_ID = "Check the full ID before choosing."
@@ -708,7 +714,7 @@ UNIT_CHARS = "characters"
 SERIAL_LONGER = "Serial number has {count} {unit}; other serials are longer. {reminder}"
 POSITION_ONE = "character {n}"
 POSITION_RANGE = "characters {a} to {b}"
-COMPARE_SERIAL = "Compare serial number {position}: {span}. {reminder}"
+COMPARE_SERIAL = "Compare {position} with other disks of this size. {reminder}"
 ENTRY_DISK = "Disk {number}"
 ENTRY_MODEL = "Model: {value}"
 ENTRY_CAPACITY = "Capacity: {value}"

@@ -592,7 +592,7 @@ STRINGS = {
         "SERIAL_LONGER": "Le numéro de série a {count} {unit} ; les autres numéros sont plus longs. {reminder}",
         "POSITION_ONE": "caractère {n}",
         "POSITION_RANGE": "caractères {a} à {b}",
-        "COMPARE_SERIAL": "Comparez le numéro de série {position} : {span}. {reminder}",
+        "COMPARE_SERIAL": "Comparez le numéro de série ({position}) avec les autres disques de cette taille. {reminder}",
         "ENTRY_DISK": "Disque {number}",
         "ENTRY_MODEL": "Modèle : {value}",
         "ENTRY_CAPACITY": "Capacité : {value}",
