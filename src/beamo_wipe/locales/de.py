@@ -633,6 +633,11 @@ STRINGS = {
         "INCOMPLETE": "Einige Strominformationen sind nicht verfügbar.",
         "LOW_BATTERY": "Akku schwach. Prüfen Sie jetzt den Netzstrom.",
         "CONNECT_WALL": "Schließen Sie jetzt das Netzteil an.",
+        "BADGE_PLUGGED": "Angeschlossen",
+        "BADGE_BATTERY": "Akkubetrieb — Netzteil anschließen",
+        "BADGE_UNKNOWN": "Strom: unbekannt",
+        "BADGE_MAINS": "Netzstrom",
+        "BADGE_SPOKEN": "Strom: {state}",
     },
     "progress": {
         "PHASE_WRITING": "Schreiben",

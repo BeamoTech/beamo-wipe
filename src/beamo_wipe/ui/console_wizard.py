@@ -246,21 +246,27 @@ def _chrome_lines(wizard: Wizard, width: int) -> list[str]:
     stage = C.journey_step_caption(wizard)
     short = C.journey_step_short(wizard)
     room = max(8, width - 2)
+    # #144: the power badge in words (no ✓: console fonts may lack it).
+    badge = getattr(wizard, "power_badge", None)
+    power = f"[{badge.text}]" if badge is not None else ""
+
+    def with_power(text: str) -> str:
+        return f"{text}  {power}" if power else text
+
     if title and title != C.APP_NAME:
         with_stage = f"{C.APP_NAME} — {stage} — {title}" if stage else f"{C.APP_NAME} — {title}"
         with_short = f"{C.APP_NAME} — {short} — {title}" if short else with_stage
         without_stage = f"{C.APP_NAME} — {title}"
-        if _display_cols(with_stage) <= room:
-            lines = _lines(with_stage, width)
-        elif _display_cols(with_short) <= room:
-            lines = _lines(with_short, width)
-        elif _display_cols(without_stage) <= room:
-            lines = _lines(without_stage, width)
+        for candidate in (with_power(with_stage), with_power(with_short),
+                          with_power(without_stage), with_stage, with_short, without_stage):
+            if _display_cols(candidate) <= room:
+                lines = _lines(candidate, width)
+                break
         else:
             lines = _lines(C.APP_NAME, width) + _lines(title, width)
     else:
         brand = f"{C.APP_NAME} — {stage}" if stage else C.APP_NAME
-        lines = _lines(brand, width)
+        lines = _lines(with_power(brand) if _display_cols(with_power(brand)) <= room else brand, width)
     if wizard.preview:
         lines.extend(_lines(C.PREVIEW_BANNER, width))
     return lines
@@ -1013,7 +1019,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.POWER_REMINDER)
             print(C.POWER_BLANKING)
             print(C.POWER_EVENTS)
-            print(wizard.power_text)
+            print(wizard.power_badge.spoken)  # #144: the short state
             ident = _support_identity_text(wizard)
             if ident:
                 print(ident)
@@ -1568,7 +1574,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines.extend(_lines(C.REPORT_MEDIA_WHAT, w))
             lines.extend(_lines(C.POWER_REMINDER, w))
             lines.extend(_lines(C.POWER_BLANKING, w))
-            lines.extend(_lines(wizard.power_text, w))
+            # #144: the status sentence is the header badge now.
             lines.extend(_lines(C.POWER_EVENTS, w))
             ident = _support_identity_text(wizard)
             if ident:

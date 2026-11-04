@@ -647,6 +647,17 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "powerBlanking": C.POWER_BLANKING,
         "powerKeep": C.POWER_KEEP,
         "powerEvents": C.POWER_EVENTS,
+        "powerBadges": {
+            key: {"kind": status.badge.kind, "display": status.badge.display,
+                  "spoken": status.badge.spoken}
+            for key, status in {
+                "unknown": PowerStatus(),
+                "ac": PowerStatus(ac=True, batteries=(80,), complete=True),
+                "battery": PowerStatus(ac=False, batteries=(55,), complete=True),
+                "low": PowerStatus(ac=False, batteries=(12,), complete=True),
+                "desktop": PowerStatus(complete=True),
+            }.items()
+        },
         "powerScenarios": {
             "unknown": PowerStatus().text,
             "ac": PowerStatus(ac=True, batteries=(80,), complete=True).text,
@@ -1025,6 +1036,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .row { display: flex; align-items: flex-start; gap: 14px; }
   .card .grow { flex: 1; min-width: 0; }
   .card .row > .kbd { flex: none; margin-top: 1px; }
+  .powerbadge { margin-left: 12px; padding: 2px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); background: var(--surface-alt); color: var(--muted); white-space: nowrap; }
+  .powerbadge.power-ok { background: #E7F2EB; border-color: #9CC3AB; color: #17703F; font-weight: 600; }
+  .powerbadge.power-warn { background: #FBF1D5; border-color: #E3CE96; color: #7A5200; font-weight: 600; }
   .btnreason { align-self: center; margin-right: 12px; max-width: 16em; text-align: right; }
   /* #142: layout number badges only while the list has keyboard focus. */
   .layout-cards .card .row > .kbd { visibility: hidden; }
@@ -1278,7 +1292,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   </div>
   <div class="shell">
     <div class="preview-stripe" id="stripe"></div>
-    <div class="hdr"><div class="brandrow"><span class="brandchip">__LOGO_HEADER__</span><div id="brand"></div></div><ol class="journey" id="journey" aria-label="__GALLERY_ERASE_STEPS__"></ol><span class="steptext" id="step"></span></div>
+    <div class="hdr"><div class="brandrow"><span class="brandchip">__LOGO_HEADER__</span><div id="brand"></div></div><ol class="journey" id="journey" aria-label="__GALLERY_ERASE_STEPS__"></ol><span class="steptext" id="step"></span><span class="powerbadge" id="power-badge" role="status" aria-live="polite"></span></div>
     <div class="strip" id="sfill"></div>
     <div class="body" id="body"><div class="col" id="main"></div></div>
     <div class="foot" id="foot"><div class="assist" id="assist" role="region" aria-label="__ASSIST_LABEL__"><div class="utilities" id="utilities"></div><div class="fhint" id="hint"></div></div><div class="footrow" role="navigation" aria-label="__NAV_LABEL__"><div class="fleft" id="btnsL"></div><div class="fright" id="btnsR"></div></div></div>
@@ -1291,10 +1305,20 @@ function powerText() { return P.chrome.previewPower + P.powerScenarios[powerChoi
 function powerPanel(reminder=true) {
   return `<div class="panel info"><div>${reminder ? `<div>${P.powerKeep}</div>` : ""}<div id="power-status" role="status" aria-live="polite">${powerText()}</div></div></div>`;
 }
+// #144: the header power badge, from the same fake scenarios.
+function renderPowerBadge() {
+  const el = document.getElementById("power-badge");
+  if (!el) return;
+  const b = P.powerBadges[powerChoice] || P.powerBadges.unknown;
+  el.textContent = b.display;
+  el.setAttribute("aria-label", b.spoken);
+  el.className = "powerbadge power-" + b.kind;
+}
 function updatePower(value) {
   powerChoice = Object.hasOwn(P.powerScenarios, value) ? value : "unknown";
   const status = document.getElementById("power-status");
   if (status) status.textContent = powerText();
+  renderPowerBadge();
 }
 let screen = "splash";
 let soundsOn = false;
@@ -1630,6 +1654,7 @@ function draw() {
     && document.activeElement.id === "more";
   if (screen === "what") screen = "owner";
   const info = stepInfo();
+  renderPowerBadge();
   const stepEl = document.getElementById("step");
   document.getElementById("journey").innerHTML = info[0]
     ? P.journey.map((label, index) =>
@@ -1743,8 +1768,7 @@ function draw() {
         <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div>
       <div style="margin-top:16px">${panel("info", P.reportMediaWhat, true)}</div>
       <div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
-      <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div>
-      <div id="power-status" role="status" aria-live="polite">${powerText()}</div></div></div>
+      <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div></div></div>
       ${moreLink("more-detail")}
       ${moreDetail(showMore ? `<div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
       <div>${P.thisUsb}</div><div class="extra">${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}

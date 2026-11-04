@@ -182,6 +182,9 @@ class AccessibleWizard:
             #beamo-accessible label {{ font-size: {body}px; }}
             #beamo-accessible .screen-heading {{ font-size: {heading}px; font-weight: bold; color: #12202E; }}
             #beamo-accessible .preview-notice {{ background: #E6A817; color: #0A1B34; padding: 8px; }}
+            #beamo-accessible .power-ok {{ color: #17703F; font-weight: bold; }}
+            #beamo-accessible .power-warn {{ color: #7A5200; font-weight: bold; }}
+            #beamo-accessible .power-neutral {{ color: #4A5A6A; }}
             #beamo-accessible .disk-identity {{ background: #F0F5FA; color: #12202E; padding: 16px 20px; border: 1px solid #1C4A73; border-radius: 12px; }}
             #beamo-accessible button {{ padding: 10px 20px; border-radius: 999px; }}
             #beamo-accessible button.primary-action {{ background-image: none; background-color: #1C4A73; color: #FFFFFF; }}
@@ -431,6 +434,18 @@ class AccessibleWizard:
         shell.pack_start(scroll, True, True, 0)
         self.body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         scroll.add(self.body)
+        # #144: the power badge, on every screen, before the page. Focusable
+        # so Orca reads it; its name says "Power: ...".
+        badge = self.w.power_badge
+        self.power_badge_label = Gtk.Label(label=badge.display)
+        self.power_badge_label.set_xalign(1)
+        self.power_badge_label.set_can_focus(True)
+        self.power_badge_label.set_selectable(True)
+        self.power_badge_label.get_accessible().set_name(badge.spoken)
+        self.power_badge_label.get_style_context().add_class(f"power-{badge.kind}")
+        self._shown_power_badge = badge
+        shell.pack_start(self.power_badge_label, False, False, 0)
+        shell.reorder_child(self.power_badge_label, 0)
         self.footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         self.footer.get_style_context().add_class("screen-actions")
         shell.pack_start(self.footer, False, False, 0)
@@ -1029,9 +1044,10 @@ class AccessibleWizard:
             Screen.ADVANCED,
         } or (screen == Screen.KEYBOARD and self.w._keyboard_from):
             self.button(C.BTN_BACK, self.w.back)
-        if screen in {Screen.WHAT, Screen.OWNER, Screen.LAST_CHANCE, Screen.CHECKING, Screen.WORKING, Screen.STOPPING}:
-            if screen not in {Screen.WHAT, Screen.OWNER}:
-                self.label(C.POWER_KEEP)
+        if screen in {Screen.LAST_CHANCE, Screen.CHECKING, Screen.WORKING, Screen.STOPPING}:
+            # Erase-time power warnings stay (#165/#183); Owner relies on
+            # the power badge above (#144).
+            self.label(C.POWER_KEEP)
             self.power_label = self.label(self.w.power_text, focusable=True)
         self._style_tree(self.window)
         self.window.show_all()
@@ -1209,6 +1225,17 @@ class AccessibleWizard:
     def update_status(self):
         if self.power_label and self.power_label.get_text() != self.w.power_text:
             self.power_label.set_text(self.w.power_text)
+        badge = self.w.power_badge
+        label = getattr(self, "power_badge_label", None)
+        if label is not None and badge != getattr(self, "_shown_power_badge", None):
+            # #144: live, in place; the old state class goes, the new one comes.
+            previous = getattr(self, "_shown_power_badge", None)
+            if previous is not None:
+                label.get_style_context().remove_class(f"power-{previous.kind}")
+            label.get_style_context().add_class(f"power-{badge.kind}")
+            label.set_text(badge.display)
+            label.get_accessible().set_name(badge.spoken)
+            self._shown_power_badge = badge
         if self.countdown_label:
             text = (
                 f"{self.w.countdown_display} {C.COUNTDOWN_CAPTION}"

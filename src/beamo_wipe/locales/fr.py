@@ -633,6 +633,11 @@ STRINGS = {
         "INCOMPLETE": "Certaines informations d’alimentation sont indisponibles.",
         "LOW_BATTERY": "Batterie faible. Vérifiez le secteur maintenant.",
         "CONNECT_WALL": "Branchez le secteur maintenant.",
+        "BADGE_PLUGGED": "Branché",
+        "BADGE_BATTERY": "Sur batterie — branchez le secteur",
+        "BADGE_UNKNOWN": "Alimentation : inconnue",
+        "BADGE_MAINS": "Secteur",
+        "BADGE_SPOKEN": "Alimentation : {state}",
     },
     "progress": {
         "PHASE_WRITING": "Écriture",

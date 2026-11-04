@@ -1028,6 +1028,12 @@ class Wizard:
             self._finish(should_finish)
 
     @property
+    def power_badge(self):
+        """Header power badge for every screen (#144), from the cached
+        monitor reading; reading never blocks the UI."""
+        return self.power.status.badge
+
+    @property
     def power_text(self) -> str:
         prefix = PREVIEW_POWER_PREFIX if self.dry_run else ""
         return prefix + self.power.status.text

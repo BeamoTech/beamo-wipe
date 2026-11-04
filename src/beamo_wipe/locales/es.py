@@ -638,6 +638,11 @@ STRINGS = {
         "INCOMPLETE": "Parte de la información de alimentación no está disponible.",
         "LOW_BATTERY": "Batería baja. Compruebe ahora la conexión a la corriente.",
         "CONNECT_WALL": "Conecte ahora el equipo a la corriente.",
+        "BADGE_PLUGGED": "Enchufado",
+        "BADGE_BATTERY": "Con batería — conéctelo a la corriente",
+        "BADGE_UNKNOWN": "Alimentación: desconocida",
+        "BADGE_MAINS": "Corriente eléctrica",
+        "BADGE_SPOKEN": "Alimentación: {state}",
     },
     "progress": {
         "PHASE_WRITING": "Escribiendo",

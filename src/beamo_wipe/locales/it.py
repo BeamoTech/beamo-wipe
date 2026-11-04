@@ -629,6 +629,11 @@ STRINGS = {
         "INCOMPLETE": "Alcune informazioni sull’alimentazione non sono disponibili.",
         "LOW_BATTERY": "Batteria scarica. Controlli subito il collegamento alla corrente.",
         "CONNECT_WALL": "Colleghi subito il computer alla corrente.",
+        "BADGE_PLUGGED": "Collegato alla corrente",
+        "BADGE_BATTERY": "A batteria — colleghi la corrente",
+        "BADGE_UNKNOWN": "Alimentazione: sconosciuta",
+        "BADGE_MAINS": "Alimentazione di rete",
+        "BADGE_SPOKEN": "Alimentazione: {state}",
     },
     "progress": {
         "PHASE_WRITING": "Scrittura",

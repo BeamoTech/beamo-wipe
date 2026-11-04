@@ -3513,3 +3513,44 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
   native review.
 - NEXT: related-file comparison, push after #142.
+
+## BW-144-POWERBADGE — Power status as a header badge (IMPLEMENTED LOCALLY; EXISTING-TEST RUN, COMPARISON, HOSTED GATE, GTK/ORCA, REAL HARDWARE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/power-badge-144` (stacked on
+  `feat/owner-reason-143`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
+  review item 18); Ref #165/#183 (erase-time power warnings) unchanged;
+  Ref #175 coordination only.
+- WHAT CHANGED: `power.PowerStatus.badge` -> PowerBadge(kind, text) with
+  display (✓ only when plugged in) and spoken ("Power: …"): ac True ->
+  ok "Plugged in"; ac False with a battery -> warn "On battery — plug in";
+  ac None, no battery, complete -> neutral "Mains power"; anything else ->
+  neutral "Power: unknown" (never plugged in when unknown). 5 strings, 4
+  language drafts. `Wizard.power_badge` reads the cached monitor status
+  (existing worker; never blocks). Tk: rounded badge after the brand in the
+  header canvas; step caption/stepper start after it; header redrawn only
+  when the badge changes. GTK: focusable label above the page on every
+  screen, ATK name "Power: …", CSS class per state, updated in
+  update_status. Curses: "[text]" appended to the header line when it fits
+  (falls back to the short step form, never a second row). Plain console
+  Owner prints the spoken badge. Web preview: header badge from the fake
+  power scenarios. Owner (Tk, GTK, curses, plain, web preview) no longer
+  shows the long power sentence; Review/Checking/Working/Stopping keep
+  POWER_KEEP + the sentence. Splash: no header, no badge.
+- TESTS: new tests/test_power_badge_144.py (9 power states, never plugged
+  when unknown, text/spoken, 4 languages, monitor transition plugged ->
+  battery with a slow driver not blocking, stale -> unknown, wizard
+  follows monitor, curses header 80 cols, curses/plain Owner, GTK source,
+  web preview payload, Tk badge per state, on Pick/Confirm/Method/Review,
+  live unplug, Owner drops sentence while Review keeps its warning, header
+  fits 800x600 at all sizes).
+- CHECKS: 39 pass (25 non-Tk + 14 one by one); ruff, mypy --platform linux,
+  node --check. Screens: scratch work144-scratch-20261103 shots-before /
+  shots-after (owner per state at 800x600 and 1280x820; battery at
+  large/extra). Existing power-related test files: RUNNING at commit time.
+- KNOWN (from #140): keyboard.CHECK_KEY trips test_language_selection's
+  swept-surface check; fix on #140 (EXCLUDED) and restack.
+- NOT VERIFIED: real /sys power_supply on laptops and desktops (fake
+  readings only), GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: triage the existing-test run, comparison, push after #143.

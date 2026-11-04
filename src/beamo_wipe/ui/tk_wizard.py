@@ -1811,6 +1811,9 @@ class TkWizard:
         # wipe percent.
         stage = C.journey_stage(self.w.screen)
         brand_end = text_x + self.font_brand.measure(C.APP_NAME)
+        # #144: power at a glance on every screen with a header.
+        brand_end = self._draw_power_badge(cv, brand_end + 16, mid)
+        self._header_left_end = brand_end
         label = self.header_step_label(width, brand_end)
         if stage and label == C.JOURNEY_LABELS[stage - 1]:
             # The stepper names this stage; repeat it only without a stepper.
@@ -1825,6 +1828,29 @@ class TkWizard:
                 width - 24, mid, anchor="e",
                 text=label, font=self.font_meta, fill=MUTED,
             )
+
+    def _draw_power_badge(self, cv: tk.Canvas, x: float, mid: float) -> float:
+        """Draw the power badge (#144); return where it ends.
+
+        Text always carries the state (✓ only when plugged in); colour only
+        adds to it: green-tint plugged in, amber on battery, neutral else.
+        """
+        badge = self.w.power_badge
+        fill, outline, fg = {
+            "ok": (OK_TINT, OK_BORDER, OK),
+            "warn": (WARN_BG, WARN_BORDER, WARN),
+        }.get(badge.kind, (SURFACE_ALT, BORDER, MUTED))
+        text = badge.display
+        pad = 10
+        width = self.font_meta.measure(text) + 2 * pad
+        line = self.font_meta.metrics("linespace")
+        top, bottom = mid - line / 2 - 4, mid + line / 2 + 4
+        _round_rect(cv, x, top, x + width, bottom, (bottom - top) / 2,
+                    fill=fill, outline=outline, width=1, tags="power_badge")
+        cv.create_text(x + pad, mid, anchor="w", text=text, font=self.font_meta,
+                       fill=fg, tags="power_badge")
+        self._shown_power_badge = badge
+        return x + width
 
     def header_step_label(self, width: int, brand_end: float) -> str:
         """Longest step caption that fits right of the brand, whole.
@@ -1848,7 +1874,8 @@ class TkWizard:
         # Three named stages, never eight equal pages or success badges.
         if not step or width < 1000:
             return 0.0
-        start, end = 260, min(width - 150, right or width)
+        start = max(260.0, getattr(self, "_header_left_end", 0.0) + 24)
+        end = min(width - 150, right or width)
         gap = (end - start) / len(C.JOURNEY_LABELS)
         widest = max(self.font_meta.measure(name) for name in C.JOURNEY_LABELS)
         if gap < widest + 24:
@@ -2356,6 +2383,8 @@ class TkWizard:
             power_label = getattr(self, "_power_label", None)
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
+            if self.w.power_badge != getattr(self, "_shown_power_badge", None):
+                self._draw_header()  # #144: unplugging shows at once
             # In-place updates above can shrink a scrolled body without any
             # Configure event reaching it (see _sync_body_scroll).
             self._sync_body_scroll()
@@ -3713,7 +3742,7 @@ class TkWizard:
             zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
         )
         power.pack(fill=tk.X, pady=(12, 0))
-        self._power_notice(power.inner, reminder=False, bg=power._fill, indent=40)
+        # #144: the status sentence moved to the header badge.
         if self._more_link(zone):
             self._panel(
                 zone,
