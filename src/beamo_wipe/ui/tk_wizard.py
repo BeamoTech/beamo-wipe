@@ -16,6 +16,7 @@ import gc
 import re
 import sys
 import threading
+import time
 from functools import partial
 import tkinter as tk
 from pathlib import Path
@@ -122,6 +123,30 @@ PILL = 999  # _rr_points clamps to half the shape: fully rounded ends
 BAR_H = 8
 SHADOW_H = 8
 HALO_INSET = 5  # canvas margin a haloed _Box reserves for its glow
+# Double-click on a disk row = Review this disk (#150). Two presses on the
+# same disk within this time and distance; afterwards pointer presses are
+# ignored for the same time so the double-click cannot press a control on
+# the next screen.
+DOUBLE_CLICK_MS = 500
+DOUBLE_CLICK_SLOP = 8
+
+
+def _pointer_ms(event) -> int:
+    """The event's server time in ms, or a monotonic clock when it has none."""
+    value = getattr(event, "time", None)
+    if isinstance(value, int) and value > 0:
+        return value
+    return int(time.monotonic() * 1000)
+
+
+def _pointer_quiet(widget: tk.Misc, event) -> bool:
+    """True while the press is the tail of a double-click that changed screen."""
+    try:
+        app = getattr(widget.winfo_toplevel(), "_tk_wizard", None)
+    except tk.TclError:
+        return False
+    check = getattr(app, "_pointer_quiet", None)
+    return bool(check(event)) if callable(check) else False
 
 # Countdown ring on the last-chance screen.
 RING_SIZE = 64
@@ -852,6 +877,8 @@ class _Button(tk.Canvas):
         self.itemconfigure(self._label, fill=fg)
 
     def _press(self, _event=None) -> str:
+        if _pointer_quiet(self, _event):
+            return "break"  # the tail of a disk double-click (#150)
         if self._enabled:
             # A disabled button never takes focus: on gated screens (confirm
             # entry, owner card) the keyboard input must stay where it is.
@@ -1191,6 +1218,8 @@ class _CheckRow(tk.Frame):
         self._paint()
 
     def _press(self, _event=None) -> str:
+        if _pointer_quiet(self, _event):
+            return "break"  # the tail of a disk double-click (#150)
         self.focus_set()
         self._held = True
         self._pressed = True
@@ -1585,6 +1614,11 @@ class TkWizard:
             self._pick_gen = 0
             # Opens Compare disks from the selected card's link (#149).
             self._comparison_opener: Optional[Callable[[], None]] = None
+            # Double-click a disk = Review this disk (#150): the last press on
+            # a disk row (path, time, root x, root y), and the time until
+            # which pointer presses are the tail of an accepted double-click.
+            self._disk_press: Optional[tuple[str, int, int, int]] = None
+            self._pointer_quiet_until: Optional[int] = None
             self._refresh_lock = threading.Lock()
             self._refresh_results: dict = {}
             self._refresh_threads: dict = {}
@@ -3874,9 +3908,9 @@ class TkWizard:
 
         row.bind("<Configure>", fit, add="+")
 
-        def _click(_e, p=disk.path):
-            self._click_disk(p)
-            return "break"
+        def _click(e, p=disk.path):
+            # Click selects; a double-click on the same disk reviews it (#150).
+            return self._press_disk(p, e)
 
         self._bind_tree(card, _click)
         card.configure(cursor="hand2")
@@ -3940,9 +3974,9 @@ class TkWizard:
         if disk.is_boot:
             return card
 
-        def _click(_e, p=disk.path):
-            self._click_disk(p)
-            return "break"
+        def _click(e, p=disk.path):
+            # Click selects; a double-click on the same disk reviews it (#150).
+            return self._press_disk(p, e)
 
         self._bind_tree(card, _click)
         card.configure(cursor="hand2")
@@ -4394,6 +4428,69 @@ class TkWizard:
         )
         self._pick_ensure_visible = visible and old_limits != new_limits
         self._draw()
+
+    def _press_disk(self, path: str, event=None) -> str:
+        """A press on an eligible disk row: select it; a double-click reviews it.
+
+        The double-click is recognised by disk identity, not by position: both
+        presses must land on the same disk (by path), close together in time
+        and place, and the first press must have selected it. A second press
+        that lands on another disk (rows move when the chosen one expands)
+        only selects that disk. Review is the same command as the footer's
+        Review this disk, so every later gate (token, method, countdown,
+        Erase now) is still required (#150).
+        """
+        when = _pointer_ms(event)
+        x = getattr(event, "x_root", None)
+        y = getattr(event, "y_root", None)
+        rx = x if isinstance(x, int) else 0
+        ry = y if isinstance(y, int) else 0
+        last = self._disk_press
+        self._disk_press = (path, when, rx, ry)
+        selected = self.w.selected
+        if (
+            last is not None
+            and last[0] == path
+            and 0 <= when - last[1] <= DOUBLE_CLICK_MS
+            and abs(rx - last[2]) <= DOUBLE_CLICK_SLOP
+            and abs(ry - last[3]) <= DOUBLE_CLICK_SLOP
+            and self.w.screen == Screen.PICK
+            and selected is not None
+            and selected.path == path
+        ):
+            self._disk_press = None
+            self._review_disk(path, when)
+            return "break"
+        self._click_disk(path)
+        return "break"
+
+    def _review_disk(self, path: str, when: int) -> None:
+        """Double-click on the selected disk: press Review this disk (#150)."""
+        primary = self._primary
+        selected = self.w.selected
+        if (
+            self.w.screen != Screen.PICK
+            or selected is None
+            or selected.path != path
+            or primary is None
+            or not primary._enabled
+        ):
+            return
+        primary._command()  # the footer action itself: _nav(wizard.continue_pick)
+        if self.w.screen != Screen.PICK:
+            # The rest of this double-click (and a quick third click) must
+            # not press a control on the next screen.
+            self._pointer_quiet_until = when + DOUBLE_CLICK_MS
+
+    def _pointer_quiet(self, event) -> bool:
+        until = self._pointer_quiet_until
+        if until is None:
+            return False
+        when = _pointer_ms(event)
+        if until - DOUBLE_CLICK_MS <= when <= until:
+            return True
+        self._pointer_quiet_until = None
+        return False
 
     def _unbind_support_copy(self) -> None:
         if not getattr(self, "_support_copy_bound", False):

@@ -1338,6 +1338,10 @@ let shutdownFrom = "owner";
 let anotherPending = false;
 let owner = false;
 let selected = null;
+// #150: the last press on a disk card, and the end of the window in which
+// pointer events are the rest of a double-click that opened Review.
+let diskPress = null;
+let pointerQuietUntil = 0;
 let token = "";
 let keyboardLayout = P.languageLayout;
 let layoutChosen = false;
@@ -1481,6 +1485,20 @@ function supportBlock() {
 function supportCodeBlock(code, extra) {
   const save = extra ? `<p class="row"><span class="k">${esc(P.supportSaveLabel)}</span><span class="v">${esc(extra)}</span></p>` : "";
   return `<div class="support-code" tabindex="0"><p class="row"><span class="k">${esc(P.supportCodeLabel)}</span><span class="v">${esc(code)}</span></p>${save}<p class="row"><span class="k">${esc(P.supportBuildLabel)}</span><span class="v">${esc(P.sampleBuild)}</span></p><p class="hint">${esc(P.supportCodeHint)}</p></div>`;
+}
+// #150: Review this disk, as the footer button. A double-click also ignores
+// the rest of its pointer events, so it cannot press a Confirm control.
+function reviewDisk(pointer) {
+  if (screen !== "pick" || !selected || selected.isBoot) return;
+  screen = "confirm"; token = ""; draw();
+  if (pointer) pointerQuietUntil = performance.now() + 500;
+}
+for (const type of ["mousedown", "mouseup", "click", "dblclick"]) {
+  document.addEventListener(type, (e) => {
+    if (!pointerQuietUntil) return;
+    if (e.timeStamp <= pointerQuietUntil) { e.preventDefault(); e.stopPropagation(); }
+    else pointerQuietUntil = 0;
+  }, true);
 }
 function btn(label, fn, cls, disabled) {
   const b = document.createElement("button");
@@ -1851,12 +1869,27 @@ function draw() {
         Array.from(main.querySelectorAll(".card.pickable"))
           .find(card => card.dataset.path === selected.path).focus();
       };
-      el.onclick = pick;
-      el.onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); pick(); } };
+      // Click selects. A double-click on the same disk (by path, not by
+      // position: rows move when the chosen one expands) and Enter open
+      // Review this disk; Space only selects (#150).
+      el.onclick = (e) => {
+        const path = el.dataset.path, last = diskPress;
+        diskPress = {path, t: e.timeStamp, x: e.clientX, y: e.clientY};
+        if (last && last.path === path && e.timeStamp - last.t <= 500
+            && Math.abs(e.clientX - last.x) <= 8 && Math.abs(e.clientY - last.y) <= 8
+            && selected && selected.path === path) {
+          diskPress = null; reviewDisk(true); return;
+        }
+        pick();
+      };
+      el.onkeydown = (e) => {
+        if (e.key === " ") { e.preventDefault(); pick(); }
+        else if (e.key === "Enter") { e.preventDefault(); if (!e.repeat) { pick(); reviewDisk(false); } }
+      };
     });
     renderHint(P.hints.pick);
     btnsL.append(btn(P.buttons.back, () => { screen = "owner"; draw(); }));
-    btnsR.append(btn(P.buttons.reviewDisk, () => { if (selected && !selected.isBoot) { screen = "confirm"; token=""; draw(); } }, "primary", !(selected && !selected.isBoot)));
+    btnsR.append(btn(P.buttons.reviewDisk, () => reviewDisk(false), "primary", !(selected && !selected.isBoot)));
   } else if (screen === "confirm") {
     const d = selected;
     main.innerHTML = `<h1>${P.titles.confirm}</h1><div class="cz"><div class="czc">

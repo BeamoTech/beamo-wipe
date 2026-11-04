@@ -108,6 +108,43 @@ def _find_by_text(root, text: str):
     return None
 
 
+# A disk button opens Review this disk on one click (#150); the rest of a
+# double-click must not press a control on the next screen. Same window as
+# the Tk view's DOUBLE_CLICK_MS.
+DOUBLE_CLICK_MS = 500
+_POINTER_EVENTS = (
+    "BUTTON_PRESS", "BUTTON_RELEASE", "_2BUTTON_PRESS", "_3BUTTON_PRESS",
+    "DOUBLE_BUTTON_PRESS", "TRIPLE_BUTTON_PRESS", "TOUCH_BEGIN", "TOUCH_END",
+)
+
+
+def _pointer_event_time():
+    """Server time (ms) of the pointer event behind this activation.
+
+    None for keyboard and AT-SPI activations: Enter, Space and Orca's
+    "press" are never treated as the tail of a double-click.
+    """
+    try:
+        event = Gtk.get_current_event()
+    except Exception:  # noqa: BLE001 - unknown: no extra guard; every wizard gate still applies
+        return None
+    if event is None:
+        return None
+    kind = getattr(event, "type", None)
+    if kind is None and hasattr(event, "get_event_type"):
+        kind = event.get_event_type()
+    types = getattr(Gdk, "EventType", None)
+    pointer = {getattr(types, name, None) for name in _POINTER_EVENTS} - {None}
+    if kind not in pointer:
+        return None
+    try:
+        when = event.get_time() if hasattr(event, "get_time") else getattr(event, "time", None)
+    except Exception:  # noqa: BLE001
+        when = None
+    # A synthetic event without a time uses a monotonic clock, as in Tk.
+    return when if isinstance(when, int) and when > 0 else int(time.monotonic() * 1000)
+
+
 class AccessibleWizard:
     def __init__(self, wizard: Wizard, fullscreen: bool = False):
         self.w = wizard
@@ -303,6 +340,8 @@ class AccessibleWizard:
             # A queued AT-SPI or key action from a replaced screen is stale.
             if self.closed or generation != self.generation or not widget.get_sensitive():
                 return
+            if self._pointer_quiet(_pointer_event_time()):
+                return  # the second click of a disk double-click (#150)
             getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
             action()
             if self.w.wants_shutdown or self.w.wants_new_session:
@@ -1190,8 +1229,25 @@ class AccessibleWizard:
             self.arrival.grab_focus()
 
     def _select(self, path):
+        # Activating a disk button (Enter, Space, click, Orca's press) is
+        # Review this disk for that disk: the GTK equivalent of a list's
+        # row-activated (#150). continue_pick keeps every gate: a disk it
+        # cannot confirm stays on Pick with the reason shown.
         self.w.select_disk(path)
         self.w.continue_pick()
+        when = _pointer_event_time()
+        if when is not None and self.w.screen != Screen.PICK:
+            self._pointer_quiet_until = when + DOUBLE_CLICK_MS
+
+    def _pointer_quiet(self, when) -> bool:
+        """True for a pointer click that is the tail of a disk double-click."""
+        until = getattr(self, "_pointer_quiet_until", None)
+        if until is None or when is None:
+            return False
+        if until - DOUBLE_CLICK_MS <= when <= until:
+            return True
+        self._pointer_quiet_until = None
+        return False
 
     def _owner(self, checked, generation):
         if generation != self.generation or self.w.screen not in {Screen.WHAT, Screen.OWNER}:
