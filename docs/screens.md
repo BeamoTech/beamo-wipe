@@ -78,6 +78,8 @@ The keyboard check (#140) is guided and optional: "press the key labelled Z". Th
 
 The layout fine print ("Only the layouts listed here are offered. The change lasts until this USB restarts. It does not change firmware or BIOS keyboards.") sits behind the shared **Show more** control under the chosen layout's note (#141): Tab reaches it between the layouts and the check box, and focus stays on it when it opens. GTK uses a collapsed expander named Show more with a focusable label inside; the web preview uses the same Show more link. The consoles have no disclosure control, so they print it after the layout list instead of before it.
 
+Layout cards show their 1–7 number badges only while a card has keyboard focus, or once Up/Down or a digit has chosen a layout on this visit (#142); the cards keep their height either way. The shortcuts always work, the footer hint says "Up/Down or 1–7 chooses a layout", and GTK's button names keep the number ("1 QWERTY (US) (selected)"). The web preview hides them until the list has focus.
+
 The keyboard screen also offers Standard, Large, and Extra large text. The
 screen has three labelled parts in the order people need them (#139):
 **Language**, then **Text size**, then **Check your keyboard** (layouts and

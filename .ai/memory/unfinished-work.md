@@ -3455,3 +3455,35 @@ another very thorough and comprehensive pass of this." Repo
   (7865ea1) / shots-after (+report.txt). Related-file comparison: PENDING.
 - NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
 - NEXT: comparison, push after #140.
+
+## BW-142-BADGES — Layout number badges only with keyboard focus (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/layout-badges-142` (stacked on
+  `feat/keyboard-fineprint-141` @ a27ea6f), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
+  review item 16); Ref #174 (keyboard-shortcuts help) not built in this repo,
+  so the shortcut is documented in the screen's key hint and docs.
+- WHAT CHANGED: Tk builds a 1-7 key-cap per layout card but packs it only
+  while a layout card has keyboard focus (FocusIn shows; FocusOut re-checks
+  where focus went), or once Up/Down or a digit chose a layout on this
+  visit; reset on the next visit. Toggled in place (no redraw); card height
+  unchanged. Fixed in passing: the card's existing FocusOut binding lacked
+  add="+", which would have replaced the new one. HINT_KEYBOARD: "Up/Down or
+  1–7 chooses a layout" (4 language drafts; "1–7" renders as a key-cap).
+  Shortcuts unchanged and always active (digits outside the check box).
+  GTK button names keep "1 QWERTY (US) (selected)". Web preview: CSS hides
+  `.kbd` until `.layout-cards:focus-within`. Consoles unchanged (their
+  numbers are the typed commands). Docs screens.md.
+- TESTS: new tests/test_layout_badges_142.py (hint in 5 languages; GTK name
+  source; preview CSS; Tk hidden by default, shown on card focus and hidden
+  when focus moves to the check box, no height jump, each digit 1-7 still
+  selects and reveals, Up/Down reveals, reset next visit, 800x600 fit with
+  and without at all sizes). On a27ea6f: 19 fail, 1 guard passes (GTK
+  names), 2 skipped.
+- CHECKS: 22 pass (6 non-Tk + 16 one by one); ruff, mypy --platform linux.
+  Screens: scratch work142-scratch-20261103 shots-before / shots-after
+  (default and focused; report.txt counts mapped badges). Related-file
+  comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run, Linux pytest at 72 DPI, ISO/QEMU, native
+  review of the hint.
+- NEXT: comparison, push after #141.

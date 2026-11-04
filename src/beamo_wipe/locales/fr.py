@@ -209,7 +209,7 @@ STRINGS = {
         "BTN_REFRESH": "Vérifier à nouveau les disques",
         "BTN_REFRESH_UTILITY": "Vérifier à nouveau les disques (F5)",
         "PREVIEW_BANNER": "APERÇU sur cet ordinateur — faux disques — rien n’est effacé",
-        "HINT_KEYBOARD": "Left/Right choisit une langue. Up/Down choisit une disposition. Tab mène à la zone de test. Enter continue.",
+        "HINT_KEYBOARD": "Left/Right choisit une langue. Up/Down ou 1–7 choisit une disposition. Tab mène à la zone de test. Enter continue.",
         "HINT_DEFAULT": "Enter continue.  Esc revient en arrière.",
         "HINT_PICK": "Cliquez sur un disque, ou utilisez Up/Down.  Enter vérifie ce disque.  Esc revient en arrière.",
         "HINT_OWNER": "Space coche la case.  Enter choisit un disque une fois la case cochée.",

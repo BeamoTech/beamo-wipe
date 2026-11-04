@@ -209,7 +209,7 @@ STRINGS = {
         "BTN_REFRESH": "Datenträger erneut prüfen",
         "BTN_REFRESH_UTILITY": "Datenträger erneut prüfen (F5)",
         "PREVIEW_BANNER": "VORSCHAU auf diesem Computer — simulierte Datenträger — nichts wird gelöscht",
-        "HINT_KEYBOARD": "Left/Right wählt eine Sprache. Up/Down wählt ein Layout. Tab führt zum Prüffeld. Enter fährt fort.",
+        "HINT_KEYBOARD": "Left/Right wählt eine Sprache. Up/Down oder 1–7 wählt ein Layout. Tab führt zum Prüffeld. Enter fährt fort.",
         "HINT_DEFAULT": "Enter fährt fort.  Esc geht zurück.",
         "HINT_PICK": "Klicken Sie einen Datenträger an oder verwenden Sie Up/Down.  Enter prüft diesen Datenträger.  Esc geht zurück.",
         "HINT_OWNER": "Space aktiviert das Kästchen.  Enter wählt einen Datenträger, wenn es aktiviert ist.",

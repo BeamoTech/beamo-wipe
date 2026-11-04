@@ -2397,6 +2397,7 @@ class TkWizard:
         if self.w.screen != Screen.KEYBOARD:
             # Each visit to the keyboard screen starts on the language (#131).
             self._kbd_focus: Optional[tuple] = None
+            self._layout_keys_used = False  # #142
         assert self._body is not None and self._footer is not None
         self._done_refocus = ""
         if self.w.screen == Screen.DONE and getattr(self, "_shown", None) == Screen.DONE:
@@ -3319,6 +3320,9 @@ class TkWizard:
 
     def _keyboard(self) -> None:
         self._keyboard_layout_cards = {}
+        # #142: number badges (1-7) appear only while a layout card has
+        # keyboard focus, or once a layout key was used on this visit.
+        self._layout_badges: list[tuple[_Box, tk.Widget]] = []
         self._keyboard_language_cards: dict[str, _Box] = {}
         col = self._column(self._body, fill_height=True)
         # #131: language comes first, in focus and on screen, so nobody reads
@@ -3359,9 +3363,10 @@ class TkWizard:
             icon = _icon_radio(top, selected, 22)
             icon.configure(bg=fill)
             icon.pack(side=tk.LEFT, anchor="n", pady=1)
-            self._kbd(top, str(index)).pack(side=tk.RIGHT, anchor="n")
+            badge = self._kbd(top, str(index))
             text_col = tk.Frame(top, bg=fill)
             text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 8))
+            self._layout_badges.append((badge, text_col))
             self._p(
                 text_col, spec.title, font=self.font_bold, fg=INK, bg=fill,
             ).pack(fill=tk.X)
@@ -3380,7 +3385,9 @@ class TkWizard:
             card.configure(cursor="hand2", takefocus=1)
             card.bind("<FocusIn>", partial(self._remember_keyboard_focus, ("layout", layout_id)), add="+")
             card.bind("<FocusIn>", partial(self._keyboard_option_focus, card=card, focused=True), add="+")
-            card.bind("<FocusOut>", partial(self._keyboard_option_focus, card=card, focused=False))
+            card.bind("<FocusIn>", lambda _e: self._show_layout_badges(True), add="+")
+            card.bind("<FocusOut>", lambda _e: self.root.after_idle(self._sync_layout_badges), add="+")
+            card.bind("<FocusOut>", partial(self._keyboard_option_focus, card=card, focused=False), add="+")
             card.bind("<space>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
             card.bind("<Return>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
             card.bind("<KP_Enter>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
@@ -3392,6 +3399,7 @@ class TkWizard:
                     partial(card.set_style, fill=SURFACE_ALT),
                     partial(card.set_style, fill=SURFACE),
                 )
+        self._sync_layout_badges()
         # Fixed per layout class: a window resize that changes self.lay
         # redraws this screen, so no <Configure> reflow (it flip-flopped
         # the body height mid-layout and stranded the scroll position).
@@ -3508,6 +3516,36 @@ class TkWizard:
 
     def _keyboard_option_focus(self, _event: object, *, card: _Box, focused: bool) -> None:
         card.set_focused(focused)
+
+    def _layout_badges_wanted(self) -> bool:
+        """Badges show while a layout card has focus, or after layout keys."""
+        if getattr(self, "_layout_keys_used", False):
+            return True
+        memory = getattr(self, "_kbd_focus", None)
+        try:
+            focused = self.root.focus_get()
+        except (KeyError, tk.TclError):
+            focused = None
+        cards = getattr(self, "_keyboard_layout_cards", {}).values()
+        if focused is not None:
+            return any(focused is card for card in cards)
+        return bool(memory and memory[0] == "layout")
+
+    def _sync_layout_badges(self) -> None:
+        if getattr(self, "_ui_dead", False) or self.w.screen != Screen.KEYBOARD:
+            return
+        self._show_layout_badges(self._layout_badges_wanted())
+
+    def _show_layout_badges(self, visible: bool) -> None:
+        for badge, text_col in getattr(self, "_layout_badges", ()):
+            try:
+                shown = bool(badge.winfo_manager())
+                if visible and not shown:
+                    badge.pack(side=tk.RIGHT, anchor="n", before=text_col)
+                elif not visible and shown:
+                    badge.pack_forget()
+            except tk.TclError:
+                continue
 
     def _remember_keyboard_focus(self, target: tuple, _event: object = None) -> None:
         self._kbd_focus = target
@@ -6010,6 +6048,7 @@ class TkWizard:
             # The one-line check box has no use for Up/Down, so they choose
             # the layout even while it has focus; digits type there instead.
             if event.keysym in ("Up", "Down") and not isinstance(focused, _Scrollbar):
+                self._layout_keys_used = True  # #142: show the 1-7 badges
                 layouts = list(LAYOUT_ORDER)
                 current = (layouts.index(self.w.keyboard_layout)
                            if self.w.keyboard_layout in layouts else 0)
@@ -6021,6 +6060,7 @@ class TkWizard:
                 return None
             keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             if event.keysym in keyboard_mapping:
+                self._layout_keys_used = True  # #142: show the 1-7 badges
                 self.w.set_keyboard_layout(keyboard_mapping[event.keysym])
                 self._draw()
                 return "break"

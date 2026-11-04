@@ -1024,6 +1024,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .row { display: flex; align-items: flex-start; gap: 14px; }
   .card .grow { flex: 1; min-width: 0; }
   .card .row > .kbd { flex: none; margin-top: 1px; }
+  /* #142: layout number badges only while the list has keyboard focus. */
+  .layout-cards .card .row > .kbd { visibility: hidden; }
+  .layout-cards:focus-within .card .row > .kbd { visibility: visible; }
   .card .title { font-size: 16px; font-weight: 700; }
   .card .title .chip { margin-left: 10px; }
   .card .size { font-size: 20px; font-weight: 700; white-space: nowrap; }
@@ -1677,7 +1680,7 @@ function draw() {
       <section class="text-size" aria-label="${P.textSizeUtility}"><p class="small"><strong>${P.textSizeUtility}</strong></p>
       <div class="textsizes">${sizes}</div><p class="small muted">${P.textSizeLead}</p></section>
       <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>${layoutNotice}
-      <div class="cz"><div class="czc">${layouts}
+      <div class="cz"><div class="czc"><div class="layout-cards">${layouts}</div>
       ${moreLink("keyboard-limits")}<div id="keyboard-limits">${showMore ? `<p class="small muted">${P.keyboardLimits}</p>` : ""}</div>
       <p class="small">${P.keyboardCheck}</p>
       <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value="" aria-label="${P.keyboardCheck}"></div>

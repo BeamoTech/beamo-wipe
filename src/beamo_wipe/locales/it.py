@@ -210,7 +210,7 @@ STRINGS = {
         "BTN_REFRESH": "Ricontrolla i dischi",
         "BTN_REFRESH_UTILITY": "Ricontrolla i dischi (F5)",
         "PREVIEW_BANNER": "ANTEPRIMA su questo computer — dischi fittizi — non viene cancellato nulla",
-        "HINT_KEYBOARD": "Left/Right sceglie una lingua. Up/Down sceglie un layout. Tab porta alla casella di prova. Enter continua.",
+        "HINT_KEYBOARD": "Left/Right sceglie una lingua. Up/Down o 1–7 sceglie un layout. Tab porta alla casella di prova. Enter continua.",
         "HINT_DEFAULT": "Enter continua.  Esc torna indietro.",
         "HINT_PICK": "Faccia clic su un disco o usi Up/Down.  Enter controlla questo disco.  Esc torna indietro.",
         "HINT_OWNER": "Space seleziona la casella.  Enter sceglie un disco quando è selezionata.",
