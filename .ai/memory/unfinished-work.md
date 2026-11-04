@@ -3305,7 +3305,7 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: finish comparison, push branch; hosted gate on the stack head
   (owner approval); merge after #136.
 
-## BW-138-STAGES — One stage vocabulary for the start roadmap and header (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+## BW-138-STAGES — One stage vocabulary for the start roadmap and header (IMPLEMENTED, BRANCH PUSHED; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/stage-names-138` (stacked on
   `feat/start-line-137` @ 57bac5a), worktree
@@ -3340,8 +3340,10 @@ another very thorough and comprehensive pass of this." Repo
 - CHECKS: stage/step/journey/language/translation files 258 pass non-Tk;
   Tk cases 22 pass one by one; ruff, mypy --platform linux. Screens:
   scratch work138-scratch-20261103 shots-before (57bac5a) / shots-after (en
-  800x600 all sizes, 1280x820; de). Per-file comparison vs 57bac5a:
-  PENDING (queued after the #136/#137 comparisons).
+  800x600 all sizes, 1280x820; de). Per-file comparison of 180 related
+  files vs 57bac5a (finished): no new failures from #138; the two new-only
+  lines were environmental (docs/evidence absent in this worktree; a Tcl
+  flake that passes alone).
 - NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
   review.
 - NEXT: run the comparison, push; hosted gate on the stack head (owner
