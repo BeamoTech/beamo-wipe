@@ -27,7 +27,9 @@
                "path": "/dev/sdb1",
                "size": 15500000000,
                "type": "part",
-               "label": "BEAMO_WIPE"
+               "label": "BEAMO_WIPE",
+               "fstype": "vfat",
+               "fsver": "FAT32"
             }
          ]
       },
@@ -45,13 +47,17 @@
                "name": "nvme0n1p1",
                "path": "/dev/nvme0n1p1",
                "size": 536870912,
-               "type": "part"
+               "type": "part",
+               "fstype": "vfat",
+               "fsver": "FAT32"
             },
             {
                "name": "nvme0n1p2",
                "path": "/dev/nvme0n1p2",
                "size": 255523643392,
-               "type": "part"
+               "type": "part",
+               "fstype": "ntfs",
+               "label": "Work"
             }
          ]
       },
@@ -69,7 +75,9 @@
                "name": "sda1",
                "path": "/dev/sda1",
                "size": 1000204886016,
-               "type": "part"
+               "type": "part",
+               "fstype": "ntfs",
+               "label": "Photos"
             }
          ]
       },
@@ -87,7 +95,8 @@
                "name": "sdd1",
                "path": "/dev/sdd1",
                "size": 256060514304,
-               "type": "part"
+               "type": "part",
+               "fstype": "ext4"
             }
          ]
       }

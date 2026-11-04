@@ -66,11 +66,7 @@ def _row_facts(wiz, disk):
     children = wiz.nested_components(disk)
     if children:
         facts.append(inventory.NESTED_INTRO)
-        for child in children:
-            facts.append(inventory.nested_heading(child))
-            reason = inventory.nested_reason_text(child)
-            if reason:
-                facts.append(reason)
+        facts.append(inventory.contents_summary(children))  # #147: one line
     return facts
 
 
@@ -130,9 +126,11 @@ def test_tall_windows_keep_the_roomy_row(tk_app, code, size):  # noqa: F811
     disks = sorted(wiz.selectable, key=lambda d: d.path)
     first = disks[0]
     card = app._pick_cards[first.path]
-    # One line per nested component; Compare follows the disks at every size.
-    nested = inventory.card_nesting_text(wiz.nested_components(first))
-    assert nested.count("\n") >= 2
+    # The intro on its own line, then the compact contents line (#147);
+    # Compare follows the disks at every size.
+    children = wiz.nested_components(first)
+    nested = inventory.card_nesting_text(children)
+    assert nested == f"{inventory.NESTED_INTRO}\n{inventory.contents_summary(children)}"
     assert nested in _texts(card)
     compare = next(
         w for w in _descendants(canvas)

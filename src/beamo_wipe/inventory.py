@@ -2,10 +2,11 @@
 """Display-only explanations; eligibility remains owned by safety.py."""
 
 import os
+import unicodedata
 from dataclasses import replace
-from typing import Iterable
+from typing import Any, Iterable, Mapping, Optional
 
-from beamo_wipe.models import Disk, DiscoveryResult, ExcludedDevice
+from beamo_wipe.models import Disk, DiscoveryResult, ExcludedDevice, VolumeFacts
 
 
 TITLE = "Other detected devices"
@@ -39,6 +40,20 @@ KIND_ROM = "Optical disc"
 KIND_RAID = "RAID volume"
 KIND_DISK = "Disk"
 KIND_TECHNICAL = "Technical component"
+
+# Partition names and file systems on a disk card (#147). Display only:
+# built from the lsblk JSON discovery already read (LABEL, PARTLABEL,
+# FSTYPE, FSVER, PARTTYPE, PARTTYPENAME); nothing is mounted or probed.
+ROLE_EFI = "EFI system"
+ROLE_MSR = "Microsoft reserved"
+ROLE_RECOVERY = "Recovery"
+FORMAT_UNKNOWN = "Unknown format"
+FORMAT_BITLOCKER = "BitLocker encrypted"
+FORMAT_LUKS = "LUKS encrypted"
+# A volume name is untrusted text. It is always quoted and followed by the
+# format and size, so it cannot pass for a role, a reason or a banner.
+ITEM_NAMED = '"{name}" ({format}) {size}'
+MORE_COUNT = "+{count} more"
 
 
 def _build_kind_labels() -> dict[str, str]:
@@ -97,6 +112,7 @@ def excluded_device(
     capacity_unknown: bool = False,
     parent_path: str = "",
     node_type: str = "",
+    node: Optional[Mapping[str, Any]] = None,
 ) -> ExcludedDevice:
     from beamo_wipe.safety import (
         SafetyError,
@@ -155,6 +171,9 @@ def excluded_device(
         parent_path=parent_path,
         kind_label=kind,
         summary=component_summary(disk, kind),
+        # Display only (#147): computed after every reason above, from facts
+        # that never reach eligibility or identity.
+        volume=volume_facts(node, disk) if node is not None else None,
     )
 
 
@@ -228,6 +247,9 @@ def current_identity(identity: str) -> str:
 
 
 def nested_heading(device: ExcludedDevice) -> str:
+    item = _volume_item(device)
+    if item:
+        return item
     if not device.summary:
         return current_identity(device.identity)
     kind, sep, rest = device.summary.partition(" · ")
@@ -260,16 +282,224 @@ def nested_under(
 
 
 def card_nesting_text(children: Iterable[ExcludedDevice]) -> str:
+    """The intro, then one compact line naming what is on the disk (#147)."""
+    summary = contents_summary(children)
+    if not summary:
+        return ""
+    return f"{NESTED_INTRO}\n{summary}"
+
+
+# --- Partition names and file systems (#147). Display only. -------------------
+
+_LABEL_MAX = 24
+# Quote marks inside a name would let it close its own quotes.
+_QUOTES = str.maketrans(
+    {ch: "'" for ch in '"\u201c\u201d\u201e\u201f\u00ab\u00bb\u2039\u203a\u300c\u300d'}
+)
+_FORMAT_NAMES = {
+    "ntfs": "NTFS", "exfat": "exFAT", "ext2": "ext2", "ext3": "ext3", "ext4": "ext4",
+    "xfs": "XFS", "btrfs": "Btrfs", "f2fs": "F2FS", "apfs": "APFS", "hfsplus": "HFS+",
+    "hfs": "HFS", "swap": "Swap", "refs": "ReFS", "udf": "UDF", "iso9660": "ISO 9660",
+    "zfs_member": "ZFS", "lvm2_member": "LVM", "linux_raid_member": "RAID member",
+}
+_FAT_VERSIONS = {"fat12": "FAT12", "fat16": "FAT16", "fat32": "FAT32"}
+# Partition types the OS set, from PARTTYPE (GPT GUID or MBR id) or the
+# name lsblk derives from it. PARTLABEL is owner text and never a role.
+_ROLE_TYPES = (
+    ("efi", frozenset({"c12a7328-f81f-11d2-ba4b-00a0c93ec93b", "0xef"}),
+     frozenset({"efi system"})),
+    ("msr", frozenset({"e3c9e316-0b5c-4db8-817d-f92df00215ae"}),
+     frozenset({"microsoft reserved"})),
+    ("recovery", frozenset({"de94bba4-06d1-4d40-a16a-bfd50179d6ac", "0x27"}),
+     frozenset({"windows recovery environment"})),
+)
+# Default GPT names that say nothing an owner would recognise.
+_GENERIC_PARTLABELS = frozenset({
+    "basic data partition", "microsoft basic data", "msftdata", "msftres",
+    "microsoft reserved partition", "efi system partition", "efi system", "esp",
+    "primary", "logical", "extended", "linux", "linux filesystem",
+    "linux filesystem data", "linux swap",
+})
+_ROLE_WINDOWS = "Windows"  # product name, never translated
+_SUMMARY_SHOWN = 2
+
+
+def clean_volume_text(value: Any, limit: int = _LABEL_MAX) -> str:
+    """Untrusted volume text, safe to show as one short line on every surface.
+
+    Normalises Unicode (NFKC), drops control, format (bidi overrides,
+    zero-width) and line/paragraph separator characters, collapses spaces,
+    replaces quote marks, limits stacked combining marks and caps the
+    length with an ellipsis. Toolkits still escape it (HTML preview).
+    """
+    if not isinstance(value, str):
+        return ""
+    text = unicodedata.normalize("NFKC", value)
+    out = []
+    marks = 0
+    for ch in text:
+        if ch.isspace():  # tabs, newlines, line separators: one space
+            marks = 0
+            out.append(" ")
+            continue
+        category = unicodedata.category(ch)
+        if category.startswith("C"):
+            continue
+        if category == "Mn":
+            marks += 1
+            if marks > 2:
+                continue
+        else:
+            marks = 0
+        out.append(ch)
+    text = " ".join("".join(out).split()).translate(_QUOTES)
+    if len(text) > limit:
+        text = text[: limit - 1].rstrip() + "\u2026"
+    return text
+
+
+def volume_facts(
+    node: Optional[Mapping[str, Any]], disk: Optional[Disk] = None
+) -> VolumeFacts:
+    """Display facts for one lsblk node. Never raises; never mounts."""
+    if not isinstance(node, Mapping):
+        node = {}
+
+    def raw(key: str) -> str:
+        return clean_volume_text(node.get(key), 128)
+
+    return VolumeFacts(
+        node_type=raw("type").casefold(),
+        fstype=raw("fstype").casefold(),
+        fsver=raw("fsver").casefold(),
+        label=clean_volume_text(node.get("label")),
+        partlabel=clean_volume_text(node.get("partlabel")),
+        parttype=raw("parttype").casefold(),
+        parttypename=raw("parttypename"),
+        size_bytes=disk.size_bytes if disk is not None else 0,
+        size_gb_label=disk.size_gb_label if disk is not None else "",
+    )
+
+
+def _role(volume: VolumeFacts) -> str:
+    typename = volume.parttypename.casefold()
+    for role, types, names in _ROLE_TYPES:
+        if volume.parttype in types or typename in names:
+            return role
+    return ""
+
+
+def _role_text(role: str) -> str:
+    return {"efi": ROLE_EFI, "msr": ROLE_MSR, "recovery": ROLE_RECOVERY}.get(role, "")
+
+
+def format_name(volume: VolumeFacts) -> str:
+    """Friendly file-system name; FORMAT_UNKNOWN when missing or unrecognised."""
+    fstype = volume.fstype
+    if fstype == "vfat":
+        return _FAT_VERSIONS.get(volume.fsver, "FAT")
+    if fstype == "bitlocker":
+        return FORMAT_BITLOCKER
+    if fstype == "crypto_luks":
+        return FORMAT_LUKS
+    return _FORMAT_NAMES.get(fstype, FORMAT_UNKNOWN)
+
+
+def _volume_name(volume: VolumeFacts) -> str:
+    if volume.label:
+        return volume.label
+    name = volume.partlabel
+    generic = name.casefold() in _GENERIC_PARTLABELS or (
+        name.casefold() == volume.parttypename.casefold()
+    )
+    return "" if generic else name
+
+
+def _size_text(volume: VolumeFacts) -> str:
+    from beamo_wipe.models import capacity_phrase
+
+    # Same rule as Disk.size_phrase: a positive size never reads as 0 GB.
+    if volume.size_bytes > 0 and (volume.size_gb_label or "").strip() == "0":
+        return "under 1 GB"
+    return capacity_phrase(volume.size_gb_label)
+
+
+def _is_windows_candidate(volume: VolumeFacts) -> bool:
+    return (
+        volume.fstype in {"ntfs", "bitlocker"}
+        and not _role(volume)
+        and not _volume_name(volume)
+    )
+
+
+def _volume_item(device: ExcludedDevice, *, windows: bool = False) -> str:
+    """One component as "Name (format) size"; "" without lsblk facts."""
+    volume = device.volume
+    if volume is None or volume.node_type in {"", "disk"}:
+        return ""
+    size = _size_text(volume)
+    if volume.node_type != "part":
+        # Opened encrypted, LVM or RAID volumes: the kind is the format,
+        # with the file system inside when lsblk reported one.
+        kind = kind_label_for_type(volume.node_type)
+        inner = _FORMAT_NAMES.get(volume.fstype, "")
+        desc = f"{kind}, {inner}" if inner else kind
+        name = _volume_name(volume)
+        if name:
+            return ITEM_NAMED.format(name=name, format=desc, size=size)
+        return f"{desc} {size}"
+    role = _role_text(_role(volume))
+    if role:
+        return f"{role} {size}"
+    fmt = format_name(volume)
+    if windows:
+        return f"{_ROLE_WINDOWS} ({fmt}) {size}"
+    name = _volume_name(volume)
+    if name:
+        return ITEM_NAMED.format(name=name, format=fmt, size=size)
+    return f"{fmt} {size}"
+
+
+def contents_summary(children: Iterable[ExcludedDevice]) -> str:
+    """Compact, recognisable contents line for a disk card. Display only.
+
+    Largest first, two shown and "+N more" for the rest (all shown when only
+    one more would be hidden). A component with a reason (mounted,
+    protected) is never folded away. The single unnamed NTFS or BitLocker
+    partition beside a Microsoft reserved or Windows recovery partition is
+    named Windows, from the same partition-type evidence discovery uses.
+    """
     items = tuple(children)
     if not items:
         return ""
-    lines = [NESTED_INTRO]
-    for child in items:
-        lines.append(nested_heading(child))
-        extra = nested_reason_text(child)
-        if extra:
-            lines.append(extra)
-    return "\n".join(lines)
+    volumes = [child.volume for child in items]
+    windows_marks = any(
+        v is not None and v.node_type == "part" and _role(v) in {"msr", "recovery"}
+        for v in volumes
+    )
+    candidates = [
+        i for i, v in enumerate(volumes)
+        if v is not None and v.node_type == "part" and _is_windows_candidate(v)
+    ]
+    windows_index = candidates[0] if windows_marks and len(candidates) == 1 else -1
+    entries = []
+    for index, child in enumerate(items):
+        text = _volume_item(child, windows=index == windows_index) or nested_heading(child)
+        reason = nested_reason_text(child)
+        size = child.volume.size_bytes if child.volume is not None else 0
+        entries.append((f"{text} ({reason})" if reason else text, bool(reason), size))
+    order = sorted(range(len(items)), key=lambda i: (-entries[i][2], i))
+    if len(order) > _SUMMARY_SHOWN + 1:
+        shown = order[:_SUMMARY_SHOWN] + [
+            i for i in order[_SUMMARY_SHOWN:] if entries[i][1]
+        ]
+    else:
+        shown = order
+    parts = [entries[i][0] for i in shown]
+    hidden = len(items) - len(shown)
+    if hidden:
+        parts.append(MORE_COUNT.format(count=hidden))
+    return " \u00b7 ".join(parts)
 
 
 def _indent(text: str, prefix: str = "  ") -> str:

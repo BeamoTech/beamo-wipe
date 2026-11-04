@@ -633,12 +633,17 @@ class AccessibleWizard:
                 text = C.ACCESSIBLE_SELECT_DISK.format(disk=self.w.disk_view(disk).announcement)
                 select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
                 hint = C.contents_hint(disk)
+                children = self.w.nested_components(disk)
+                summary = inventory.contents_summary(children)
+                # Factual contents lines: shown under the row and spoken with
+                # it, so Orca users hear what sighted owners see (#147: the
+                # partition names and formats too).
+                spoken = ". ".join(part for part in (text, hint, summary) if part)
+                if spoken != text:
+                    select.get_accessible().set_name(spoken)
                 if hint:
-                    # Factual contents line: shown under the row and spoken
-                    # with it, so Orca users hear what sighted owners see.
-                    select.get_accessible().set_name(f"{text}. {hint}")
                     self.label(hint)
-                nested = inventory.card_nesting_text(self.w.nested_components(disk))
+                nested = inventory.card_nesting_text(children)
                 if nested:
                     self.label(nested, focusable=True)
             if len(self.w.selectable) > 1:

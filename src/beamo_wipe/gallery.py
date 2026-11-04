@@ -141,13 +141,9 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
             except SafetyError:
                 spec = None
         view = _identity.present_disk(disk, peers, compare_serials=True)
-        components = [
-            {
-                "heading": inventory.nested_heading(child),
-                "reason": inventory.nested_reason_text(child),
-            }
-            for child in inventory.nested_under(disk.path, result.excluded)
-        ]
+        contents_summary = inventory.contents_summary(
+            inventory.nested_under(disk.path, result.excluded)
+        )
         out.append(
             {
                 "path": disk.path,
@@ -174,7 +170,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "tokenStart": view.token_start,
                 "tokenEnd": view.token_end,
                 "warning": "" if disk.is_boot else C.confirm_warning(disk),
-                "components": components,
+                "contentsSummary": contents_summary,
                 "contents": disk.contents,
                 "contentsHint": "" if disk.is_boot else C.contents_hint(disk),
                 "eraseLabel": "" if disk.is_boot else C.erase_now_label(disk, peers),
@@ -1567,11 +1563,10 @@ function summaryCard(d) {
   </div>`;
 }
 function nestedComponents(d) {
-  const items = d.components || [];
-  if (!items.length) return "";
+  if (!d.contentsSummary) return "";
   return `<div class="nested">
     <div class="nested-intro">${esc(P.nestedIntro)}</div>
-    ${items.map(c => `<div class="nested-item"><div>${esc(c.heading)}</div>${c.reason ? `<div>${esc(c.reason)}</div>` : ""}</div>`).join("")}
+    <div class="nested-item">${esc(d.contentsSummary)}</div>
   </div>`;
 }
 function diskCard(d) {

@@ -2329,6 +2329,9 @@ def parse_lsblk_json(
                 capacity_unknown=node.get("size") not in (0, "0") and inventory_disk.size_bytes <= 0,
                 parent_path=parent_path,
                 node_type=_node_type(node),
+                # Display only (#147): partition name and file system for the
+                # disk card. Read after selectable/eligible_paths are fixed.
+                node=node,
             ))
         except ValueError:
             excluded.append(ExcludedDevice(IDENTITY_UNAVAILABLE, (IDENTITY_UNCONFIRMED,)))

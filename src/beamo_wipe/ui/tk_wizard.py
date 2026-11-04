@@ -640,17 +640,13 @@ class _Box(tk.Canvas):
 def _nesting_line(children: Iterable[ExcludedDevice]) -> str:
     """Nested components as one wrapped paragraph for a dense picker row.
 
-    Same facts as ``inventory.card_nesting_text`` (intro, every component
-    and its reasons), without a line per component. Display only.
+    Same facts as ``inventory.card_nesting_text`` (the intro and the
+    compact contents summary, #147) on one line. Display only.
     """
-    parts = []
-    for child in children:
-        heading = inventory.nested_heading(child)
-        reason = inventory.nested_reason_text(child)
-        parts.append(f"{heading} ({reason})" if reason else heading)
-    if not parts:
+    summary = inventory.contents_summary(children)
+    if not summary:
         return ""
-    return f"{inventory.NESTED_INTRO} " + "; ".join(parts)
+    return f"{inventory.NESTED_INTRO} {summary}"
 
 
 def _soft_break_tokens(

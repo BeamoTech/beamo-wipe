@@ -3652,3 +3652,67 @@ another very thorough and comprehensive pass of this." Repo
   both trees (inherited; see BW-144). physical_acceptance_111,
   secure_boot_expectations, evidence_tiers: worktree lacks docs/evidence
   files (environment, same as earlier tasks).
+
+## BW-147-PARTNAMES — Partition names and file systems on Pick a disk (IMPLEMENTED LOCALLY, safety: commit; COMPARISON, HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/partition-names-147` (stacked
+  on `feat/compat-showmore-146` @ aabf550), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
+  review item 21); coordinates with #149 (one-line rows: the summary is one
+  line) and #154 (BitLocker/LUKS named "BitLocker encrypted"/"LUKS
+  encrypted"; nothing else of #154 implemented).
+- WHY: cards said "Partition · 1 GB; Partition · 256 GB". lsblk already
+  returns LABEL, PARTLABEL, FSTYPE, FSVER, PARTTYPE, PARTTYPENAME
+  (LSBLK_COLUMNS unchanged), but only LABEL reached the screen.
+- WHAT CHANGED (display only): models.VolumeFacts + ExcludedDevice.volume.
+  discover.py: one kwarg, `node=node`, passed to inventory.excluded_device in
+  the exclusion loop after selectable/eligible_paths are fixed (safety:
+  commit). inventory: clean_volume_text (NFKC, drop C* incl. bidi/zero-width,
+  whitespace -> space, quote marks -> ', <=2 stacked marks, 24-char cap with
+  …), volume_facts, format_name, roles from PARTTYPE/PARTTYPENAME only (EFI
+  system, Microsoft reserved, Recovery; PARTLABEL never a role; default GPT
+  names ignored), "Windows" for the single unnamed NTFS/BitLocker partition
+  beside MSR/WinRE, contents_summary (largest first, 2 shown + "+N more",
+  3 shown when only one would hide, components with reasons never folded).
+  card_nesting_text = intro + one summary line; Tk dense line likewise; GTK
+  adds the summary to the disk button's accessible name (plain-text label
+  kept, focusable); curses/plain via card_nesting_text; web preview payload
+  key `contentsSummary` (escaped with esc(); payload "<" escaped). 8 new
+  inventory strings, FR/DE/ES/IT drafts. Demo fixture demo_lsblk.json gains
+  fstype/fsver/labels ("Work"/"Photos" NTFS, FAT32, ext4) that classify only
+  as `data` (no visible contents hint or warning change). Docs: screens.md
+  row, translations.md.
+- TESTS: new tests/test_partition_names_147.py: fixtures with Windows
+  (EFI/MSR/NTFS/WinRE) -> "Windows (NTFS) 237 GB · Recovery 1 GB · +2 more",
+  BitLocker + LUKS, ext4/swap/EFI, unlabeled no-FS -> "Unknown format 32 GB",
+  boot USB; every role/format; Windows only with evidence and one candidate;
+  reasons never folded; FR/DE strings; 13 clean_volume_text cases; 8 hostile
+  labels quoted and still a normal target; control/bidi labels still drop
+  the disk as before; preview escaping; GTK plain text; display-only proofs
+  (volume_facts blanked -> identical error/boot/selectable/disks/excluded
+  reasons; labels/formats removed -> same targets; safety/identity/runner/
+  wizard never read the facts; nested components never selectable);
+  rendering runs no command and inventory has no mount/blkid/subprocess;
+  curses (<=80 cols), plain console, GTK accessible name, preview payload,
+  Tk at 800x600 + 1280x820 and fit at all 3 sizes. Updated
+  test_group_partitions.py, test_pick_row_fit_20261028.py (pinned a line per
+  partition). On aabf550 the new file errors at collection (VolumeFacts).
+- CHECKS: new file 52 pass (45 non-Tk + 7 Tk one by one); group/pick-row/
+  contents-hint/snapshot-language files pass; ruff clean; mypy --platform
+  linux same 6 env-only errors as baseline; node --check on preview script.
+  Eligibility probe (4 lsblk fields x 13 hostile/edge labels incl. bidi,
+  zero-width, newline, imitation, 60-char, HTML) on aabf550 vs new with the
+  same fixture: byte-identical (error, boot, selectable, disks, excluded
+  reasons). Screens: scratch work147-scratch-20261103 shots-before (demo) /
+  shots-after (demo + rich fixture with hostile label, 800x600 all sizes,
+  1280x820, scrolled); curses-after.txt. Related-file comparison (370 files
+  vs aabf550): QUEUED. test_language_selection CHECK_KEY failure is the
+  known BW-140 item (same on aabf550). test_translation_consistency
+  REPORT_MEDIA_WHAT/REPORT_HELP_TITLE fails on aabf550 too: a #145
+  regression, fix pending on the #145 branch (see BW-145).
+- NOT VERIFIED: GTK/Orca run and speech (no gi on this host), Linux pytest at
+  72 DPI / DISPLAY=:99, ./preview --web in a browser, ISO/QEMU, real lsblk
+  on hardware (root FSTYPE availability), native translation review.
+- FOLLOW-UP (not done): a whole-disk file system with no partition table
+  shows no line; the full partition list behind "+N more" is not offered
+  elsewhere (coordinate with #149).
