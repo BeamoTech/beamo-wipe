@@ -2144,6 +2144,9 @@ def test_serial_number_label_is_visible_without_show_more(ui, size):
     wiz, app = ui(size=size)
     wiz.screen = Screen.PICK
     app._show_more = False
+    # #149: unselected disks are one-line rows; the selected disk's card
+    # shows "Serial number" and the value without Show more.
+    wiz.select_disk("/dev/nvme0n1")
     app._draw()
     app.root.update()
     shown = _label_text(app)
@@ -2265,6 +2268,10 @@ def test_serial_comparison_markers_wrap_and_leave_controls_visible(size, long):
         app.root.geometry(f"{size[0]}x{size[1]}+40+40")
         _drive_to(wiz, app, Screen.PICK, size=size)
         for disk in wiz.selectable:
+            # #149: the serial and its marks are on the selected disk's card.
+            wiz.select_disk(disk.path)
+            app._draw()
+            app.root.update()
             labels = []
             def visit(widget):
                 if isinstance(widget, tk.Label):

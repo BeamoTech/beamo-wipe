@@ -357,6 +357,14 @@ def test_tk_nested_rows_are_not_independent_targets():
         app.root.update()
         assert wiz.screen == Screen.PICK
         assert wiz.selected is None
+        nvme = next(d for d in wiz.selectable if d.path == "/dev/nvme0n1")
+        # A partition path is never a target, and the row does not expand.
+        wiz.select_disk("/dev/nvme0n1p1")
+        assert wiz.selected is None
+        # #149: the full partition list is on the selected (expanded) card.
+        app._click_disk(nvme.path)
+        app.root.update()
+        assert wiz.selected is not None and wiz.selected.path == nvme.path
         nested = []
 
         def visit(widget):
@@ -379,11 +387,7 @@ def test_tk_nested_rows_are_not_independent_targets():
         assert NESTED_INTRO in blob
         assert '"Work" (NTFS)' in blob  # #147
         assert "BEAMO_WIPE" in blob
-        nvme = next(d for d in wiz.selectable if d.path == "/dev/nvme0n1")
         wiz.select_disk("/dev/nvme0n1p1")
-        assert wiz.selected is None
-        app._click_disk(nvme.path)
-        app.root.update()
         assert wiz.selected is not None and wiz.selected.path == nvme.path
         assert not wiz.runner.started
         reader_text = []

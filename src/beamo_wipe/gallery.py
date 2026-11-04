@@ -1045,6 +1045,12 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .title { font-size: 16px; font-weight: 700; }
   .card .title .chip { margin-left: 10px; }
   .card .size { font-size: 20px; font-weight: 700; white-space: nowrap; }
+  /* #149: unselected eligible disks are one line; the selected one expands. */
+  .card.compact { padding-top: 8px; padding-bottom: 8px; }
+  .card.compact .row { align-items: baseline; gap: 12px; }
+  .card.compact .title { flex: 0 1 auto; overflow-wrap: anywhere; }
+  .card.compact .compact-details { flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; }
+  .card.compact .size { font-size: 16px; }
   .card .meta { margin-top: 4px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 0; align-items: center; }
   .card .meta .mono { color: var(--ink); font-size: 14px; }
   .card .meta .mono.ser { font-weight: 700; }
@@ -1569,8 +1575,20 @@ function nestedComponents(d) {
     <div class="nested-item">${esc(d.contentsSummary)}</div>
   </div>`;
 }
+function compactDiskRow(d) {
+  // #149: model, kind and connection, contents hint and summary, capacity.
+  const details = [d.kindLabel, d.connection || d.bus, d.contentsHint, d.contentsSummary].filter(Boolean).join(" · ");
+  return `<div class="card pickable compact" data-path="${esc(d.path)}" tabindex="0" role="button" aria-pressed="false">
+    <div class="row"><span class="radio"></span>
+      <div class="title">${esc(d.name)}</div>
+      <div class="small muted compact-details">${esc(details)}</div>
+      <div class="size">${esc(d.size)}</div>
+    </div>
+  </div>`;
+}
 function diskCard(d) {
   const sel = selected && selected.path === d.path;
+  if (screen === "pick" && !d.isBoot && !sel) return compactDiskRow(d);
   const cls = d.isBoot ? "card boot" : ("card pickable" + (sel ? " sel" : ""));
   const icon = d.isBoot ? `<span class="radio" style="border:0;background:none">${ICON_NO}</span>` : `<span class="radio"></span>`;
   // Use esc for attribute to prevent `"` breakout
@@ -2152,6 +2170,23 @@ document.addEventListener("keydown", e => {
   if (screen === "splash" && !e.repeat && !e.altKey && !e.ctrlKey && !e.metaKey
       && !e.target?.closest?.(".scenarios")) {
     e.preventDefault(); screen = "keyboard"; draw(); return;
+  }
+  if (screen === "pick" && ["ArrowUp", "ArrowDown"].includes(e.key)
+      && !e.target?.closest?.("details, textarea, .other-devices")) {
+    // #149, as in the Tk view: Up/Down move the selection by disk (path),
+    // never by a stored position; the first press picks an end of the list.
+    e.preventDefault();
+    const list = selectable().map(d => d.path);  // disks() sorts by path
+    if (!list.length) return;
+    const at = selected ? list.indexOf(selected.path) : -1;
+    const next = at < 0 ? (e.key === "ArrowUp" ? list.length - 1 : 0)
+      : Math.max(0, Math.min(list.length - 1, at + (e.key === "ArrowUp" ? -1 : 1)));
+    selected = selectable().find(d => d.path === list[next]);
+    draw();
+    const card = Array.from(main.querySelectorAll(".card.pickable"))
+      .find(el => el.dataset.path === selected.path);
+    if (card) { card.focus(); card.scrollIntoView({block: "nearest"}); }
+    return;
   }
   if (screen === "keyboard" && ["ArrowUp", "ArrowDown"].includes(e.key)) {
     // As in the Tk view: Up/Down choose a layout even from the check box.

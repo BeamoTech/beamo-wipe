@@ -1583,6 +1583,8 @@ class TkWizard:
             self._pick_applied_geometry: Optional[tuple[float, float]] = None
             self._pick_after_ids: list[str] = []
             self._pick_gen = 0
+            # Opens Compare disks from the selected card's link (#149).
+            self._comparison_opener: Optional[Callable[[], None]] = None
             self._refresh_lock = threading.Lock()
             self._refresh_results: dict = {}
             self._refresh_threads: dict = {}
@@ -2942,9 +2944,10 @@ class TkWizard:
         label.pack(fill=tk.X)
         return label
 
-    def _disk_heading(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+    def _disk_heading(self, parent: tk.Widget, disk: Disk, bg: str) -> tuple[tk.Frame, tk.Frame]:
         # Reserve capacity before the expandable model column; long names
-        # must not push the capacity or type out of the card.
+        # must not push the capacity or type out of the card. Returns the
+        # heading row and its model column (#149 adds a link between them).
         view = self.w.disk_view(disk)
         top = tk.Frame(parent, bg=bg)
         top.pack(fill=tk.X)
@@ -2953,6 +2956,7 @@ class TkWizard:
         name = tk.Frame(top, bg=bg)
         name.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self._wrapping_label(name, view.title, font=self.font_bold, bg=bg)
+        return top, name
 
     def _meta_line(self, parent: tk.Widget, disk: Disk, bg: str, *, token: bool = False) -> tk.Frame:
         """Model, capacity, connection, and strongest identifier. Path is not identity.
@@ -3798,7 +3802,97 @@ class TkWizard:
         if self.w.owner_ok:
             emit_serial_marker("BEAMO_WIPE_OWNER_CHECKED")
 
+    def _compact_disk_row(self, parent: tk.Widget, disk: Disk) -> _Box:
+        """An unselected eligible disk as one line (#149).
+
+        Model, kind and connection, the contents summary (#147) and capacity,
+        so several disks fit at 800x600. Choosing it (click, Up/Down) expands
+        it into the full card with the serial, notes and partitions. Text is
+        wrapped, never cut: a long model or summary takes another line.
+        """
+        view = self.w.disk_view(disk)
+        dense = self.lay.short
+        fill = SURFACE
+        card = _Box(
+            parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1,
+            padx=12 if dense else 16, pady=4 if dense else 6, halo=False,
+        )
+        card.pack(fill=tk.X, pady=(0, 6 if dense else 8), padx=4)
+        setattr(card, "_beamo_compact_row", True)
+        row = tk.Frame(card.inner, bg=fill)
+        row.pack(fill=tk.X)
+        icon = _icon_radio(row, False, 22)
+        icon.configure(bg=fill)
+        icon.grid(row=0, column=0, sticky="nw")
+        summary = inventory.contents_summary(self.w.nested_components(disk))
+        # The contents hint ("Windows found on this disk") stays on the
+        # collapsed row too: it is how an owner recognises the PC's own disk.
+        details_text = " · ".join(
+            part for part in (view.kind_chip, view.connection, C.contents_hint(disk), summary)
+            if part
+        )
+        base = max(200, self.lay.wrap - 120)
+        # No label border/padding: requested width is then exactly the wrap
+        # width that fit() computes for the grid cell.
+        flat = {"bd": 0, "padx": 0, "pady": 0, "highlightthickness": 0}
+        title = tk.Label(row, text=view.title, font=self.font_bold, fg=INK, bg=fill,
+                         anchor="w", justify=tk.LEFT, wraplength=int(base * 0.45), **flat)
+        title.grid(row=0, column=1, sticky="nw", padx=(10, 12))
+        details = tk.Label(row, text=details_text, font=self.font_s, fg=MUTED, bg=fill,
+                           anchor="w", justify=tk.LEFT, wraplength=int(base * 0.4), **flat)
+        details.grid(row=0, column=2, sticky="nwe", pady=(1, 0))
+        size = tk.Label(row, text=view.capacity, font=self.font_bold, fg=INK, bg=fill,
+                        anchor="e", **flat)
+        size.grid(row=0, column=3, sticky="ne", padx=(12, 0))
+        row.columnconfigure(2, weight=1)
+        setattr(details, "_beamo_compact_details", True)
+
+        def broken(text: str, font, width: int) -> str:
+            # Space-only Tk wrapping cannot split a long serial-like token.
+            if all(font.measure(token) <= width for token in text.split()):
+                return text
+            return _soft_break_tokens(text, font.measure, width)
+
+        def fit(event) -> None:
+            try:
+                # Grid pads: title 10 + 12, size 12; 4 px slack for rounding.
+                avail = int(event.width) - icon.winfo_reqwidth() - 10 - size.winfo_reqwidth() - 12 - 4
+                avail = max(160, avail)
+                title_w = max(100, min(self.font_bold.measure(view.title) + 2, int(avail * 0.45)))
+                details_w = max(80, avail - title_w - 12)
+                for label, text, font, width in (
+                    (title, view.title, self.font_bold, title_w),
+                    (details, details_text, self.font_s, details_w),
+                ):
+                    shown = broken(text, font, width)
+                    if shown != str(label.cget("text")):
+                        label.configure(text=shown)
+                    if int(float(label.cget("wraplength") or 0)) != width:
+                        label.configure(wraplength=width)
+            except (tk.TclError, TypeError, ValueError):
+                return
+
+        row.bind("<Configure>", fit, add="+")
+
+        def _click(_e, p=disk.path):
+            self._click_disk(p)
+            return "break"
+
+        self._bind_tree(card, _click)
+        card.configure(cursor="hand2")
+        card.inner.configure(cursor="hand2")
+        self._bind_hover(
+            card,
+            partial(card.set_style, fill=SURFACE_ALT),
+            partial(card.set_style, fill=SURFACE),
+        )
+        return card
+
     def _disk_row(self, parent: tk.Widget, disk: Disk, selected: bool) -> _Box:
+        # Unselected eligible disks are one-line rows (#149); the selected
+        # disk and the protected Beamo USB keep the full card.
+        if not disk.is_boot and not selected:
+            return self._compact_disk_row(parent, disk)
         # Short windows (800x600 safe video, 1024x600, 720p): a whole row
         # must fit the picker viewport without scrolling. Same facts, compact
         # panel pads, tighter gaps, and nested components on one wrapped line.
@@ -3830,7 +3924,7 @@ class TkWizard:
             self._p(title_col, banner, font=self.font_s_bold, bg=fill).pack(
                 fill=tk.X, pady=(0, 2 if dense else 6)
             )
-        self._disk_heading(title_col, disk, fill)
+        heading, model_col = self._disk_heading(title_col, disk, fill)
         self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(2 if dense else 4, 0))
         if not disk.is_boot:
             self._contents_line(title_col, disk, fill)
@@ -3859,7 +3953,27 @@ class TkWizard:
                 partial(card.set_style, fill=SURFACE_ALT),
                 partial(card.set_style, fill=SURFACE),
             )
+        elif any(
+            other.path != disk.path and other.size_gb_label == disk.size_gb_label
+            for other in self.w.selectable
+        ):
+            # Similar-disk link (#149): opens the read-only Compare disks
+            # panel below the list. Added after the row click binding so
+            # pressing it does not re-select (and rebuild) the card. It sits
+            # on the heading line, before the capacity, to keep the card short.
+            link = _Button(
+                heading, text=inventory.COMPARE_TITLE, command=self._open_comparison,
+                font=self.font_s_bold, variant="ghost", compact=True,
+            )
+            link.pack(side=tk.RIGHT, anchor="n", padx=(8, 0), before=model_col)
+            setattr(link, "_beamo_compare_link", True)
         return card
+
+    def _open_comparison(self) -> None:
+        """Open the Compare disks panel and move focus into it (#149)."""
+        opener = self._comparison_opener
+        if opener is not None:
+            opener()
 
     def _contents_line(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
         """What the partitions show (Windows, another system, none): helps an
@@ -3873,6 +3987,7 @@ class TkWizard:
         setattr(line, "_beamo_contents_hint", True)
 
     def _pick(self) -> None:
+        self._comparison_opener = None  # set by _comparison (#149 link)
         col = self._column(self._body, fill_height=True)
         self._title_block(col, C.TITLE_PICK, C.pick_subtitle())
         # One row above the list: the inventory count, then "I'm not sure
@@ -4115,6 +4230,25 @@ class TkWizard:
             for i, cell in enumerate(cells):
                 cell.grid(row=i // columns, column=i % columns, sticky="nsew", padx=6, pady=6)
         grid.bind("<Configure>", reflow)
+
+        def open_panel() -> None:
+            # The selected card's Compare disks link (#149). Opens the panel
+            # and focuses its first reader, which scrolls it into view.
+            if not opened.get():
+                opened.set(True)
+                toggle()
+            try:
+                content.update_idletasks()
+                first = next(
+                    (w for cell in cells for w in cell.winfo_children()
+                     if getattr(w, "_beamo_comparison", False)),
+                    None,
+                )
+                (first or toggle_button).focus_set()
+            except tk.TclError:
+                return
+
+        self._comparison_opener = open_panel
 
     def _protected_boot(self, parent):
         if self.w.protected_boot is not None:

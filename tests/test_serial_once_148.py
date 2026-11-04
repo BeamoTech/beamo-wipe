@@ -318,14 +318,21 @@ def test_tk_cards_show_each_serial_once_unclipped(tk_pick, size, text_size):
     from test_tk_runtime import _clipping_problems, _off_window_problems
 
     wiz, app = tk_pick(text_size, size)
+    # #149: unselected rows are one line without the serial; the selected
+    # disk's card shows it once. Check the long, wrapping serial expanded.
+    wiz.select_disk("/dev/sde")
+    app._draw()
+    app.root.update()
     for disk in wiz.selectable:
         view = wiz.disk_view(disk)
         labels = _labels(app._pick_cards[disk.path])
         texts = [str(label.cget("text")) for label in labels]
-        assert sum(_serial_count(text, disk.serial) for text in texts) == 1, disk.path
-        assert any(text.replace("\n", "") == view.marked_id for text in texts)
+        expected = 1 if disk.path == "/dev/sde" else 0
+        assert sum(_serial_count(text, disk.serial) for text in texts) == expected, disk.path
+        if expected:
+            assert any(text.replace("\n", "") == view.marked_id for text in texts)
         for label in labels:
             assert label.winfo_reqwidth() <= label.winfo_width() + 2
     assert _clipping_problems(app) == []
     assert not _off_window_problems(app)
-    assert wiz.selected is None and not wiz.runner.started
+    assert wiz.selected.path == "/dev/sde" and not wiz.runner.started

@@ -87,8 +87,8 @@ def _buttons(app):
     return found
 
 
-def _inside_body_canvas(app, widget) -> bool:
-    canvas = getattr(app, "_body_canvas", None)
+def _inside_body_canvas(app, widget, attr="_body_canvas") -> bool:
+    canvas = getattr(app, attr, None)
     if canvas is None:
         return False
     node = widget
@@ -109,9 +109,11 @@ def _assert_actions_on_window(app):
     buttons = [b for b in _buttons(app) if b.winfo_ismapped()]
     assert buttons, "no mapped actions"
     for btn in buttons:
-        if _inside_body_canvas(app, btn):
+        if _inside_body_canvas(app, btn) or _inside_body_canvas(app, btn, "_pick_canvas"):
             # Combined intro (and other tall screens) scroll Show more in
-            # the body. Footer Back/Continue must still sit on the window.
+            # the body; the selected disk's Compare disks link (#149)
+            # scrolls with the disk list. Footer Back/Continue must still
+            # sit on the window.
             continue
         x = btn.winfo_rootx() - app.root.winfo_rootx()
         y = btn.winfo_rooty() - app.root.winfo_rooty()

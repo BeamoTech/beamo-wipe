@@ -53,8 +53,18 @@ def _texts(widget):
     return [str(w.cget("text")) for w in _labels(widget)]
 
 
+def _compact_facts(wiz, disk):
+    """An unselected row (#149): model, capacity, kind, connection, contents."""
+    view = wiz.disk_view(disk)
+    summary = inventory.contents_summary(wiz.nested_components(disk))
+    details = " · ".join(
+        part for part in (view.kind_chip, view.connection, C.contents_hint(disk), summary) if part
+    )
+    return [view.title, view.capacity, details]
+
+
 def _row_facts(wiz, disk):
-    """Every fact a picker row shows, in the current language."""
+    """Every fact the selected (expanded) row shows, in the current language."""
     view = wiz.disk_view(disk)
     facts = [view.title, view.capacity, view.id_label, view.marked_id, *view.notes]
     chip = " · ".join(part for part in (view.kind_chip, view.connection) if part)
@@ -95,8 +105,13 @@ def test_first_disk_row_is_whole_without_scrolling(tk_app, code, size, selected)
     for label in _labels(card):
         label_top, label_bottom = _extent(label, canvas)
         assert 0 <= label_top and label_bottom <= view, (str(label.cget("text"))[:40], view)
-    facts = _row_facts(wiz, first)
-    assert len(facts) >= 8  # name, capacity, serial label/value, note, chip, contents, nesting
+    if selected:
+        facts = _row_facts(wiz, first)
+        assert len(facts) >= 8  # name, capacity, serial label/value, note, chip, contents, nesting
+    else:
+        facts = _compact_facts(wiz, first)
+        assert getattr(card, "_beamo_compact_row", False)
+        assert first.serial not in "".join("".join(_texts(card)).split())
     missing = [fact for fact in facts if not _shown(card, fact)]
     assert missing == [], (code, size, missing)
     # The same-size warning still comes before the disks; Compare follows them.
@@ -120,7 +135,8 @@ def test_first_disk_row_is_whole_without_scrolling(tk_app, code, size, selected)
 @pytest.mark.parametrize("code", ("en", "de"))
 def test_tall_windows_keep_the_roomy_row(tk_app, code, size):  # noqa: F811
     wiz, app = tk_app(size=size, code=code, contents=CONTENTS)
-    _open_pick(wiz, app, selected=False)
+    # #149: the selected disk's card is the roomy, expanded one.
+    _open_pick(wiz, app, selected=True)
     assert not app.lay.short
     canvas = app._pick_canvas
     disks = sorted(wiz.selectable, key=lambda d: d.path)

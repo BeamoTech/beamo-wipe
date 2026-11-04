@@ -311,8 +311,12 @@ def test_first_disk_starts_visibly_on_the_picker(tk_app, code, size, selected, p
     card = app._pick_cards[first.path]
     disk_view = wiz.disk_view(first)
     assert _extent(card, canvas)[0] >= 0
-    # Its name, capacity and identifier are readable without scrolling.
-    for text in (disk_view.title, disk_view.capacity, disk_view.marked_id):
+    # Its name, capacity and (once selected, #149) identifier are readable
+    # without scrolling. Unselected, it is a one-line row without the serial.
+    if not selected:
+        assert getattr(card, "_beamo_compact_row", False)
+    texts = (disk_view.title, disk_view.capacity) + ((disk_view.marked_id,) if selected else ())
+    for text in texts:
         top, bottom = _extent(_label(card, text), canvas)
         assert 0 <= top and bottom <= view, (text, top, bottom, view)
     # The protected boot USB is still listed, never selectable.
@@ -467,9 +471,12 @@ def test_pick_rows_show_what_each_disk_holds(tk_app, code, size):
         card = app._pick_cards[disk.path]
         shown = [str(w.cget("text")) for w in _descendants(card) if w.winfo_class() == "Label"]
         expected = hints[CONTENTS[disk.path]]
+        # #149: unselected rows are one line; the hint is part of the
+        # collapsed row's details, once.
+        flat = [" ".join(text.split()) for text in shown]
         if expected:
-            assert shown.count(expected) == 1, (disk.path, shown)
-        assert not (named - {expected}) & set(shown)
+            assert sum(text.count(expected) for text in flat) == 1, (disk.path, shown)
+        assert not any(other in text for other in named - {expected} for text in flat)
     boot = next(w for w in _descendants(app._pick_canvas) if getattr(w, "_beamo_protected_boot", False))
     boot_text = [str(w.cget("text")) for w in _descendants(boot) if w.winfo_class() == "Label"]
     assert not named & set(boot_text)
