@@ -350,20 +350,20 @@ def test_tk_shows_the_typed_value_and_problem_after_a_wrong_entry(size, text_siz
         app._draw()
         for _ in range(6):
             app.root.update()
-        typed, problem = app._token_typed, app._token_problem
-        assert not typed.winfo_manager() and not problem.winfo_manager()
+        # #157: the status line under the entry carries the feedback.
+        status = app._match_label
+        assert "You typed:" not in str(status.cget("text"))
         token = wiz.confirm.token
         wrong = ("Z" if token[0].upper() != "Z" else "Y") + token[1:]
         app._confirm_var.set(wrong)
         for _ in range(6):
             app.root.update()
-        assert typed.winfo_manager() == "pack" and problem.winfo_manager() == "pack"
-        assert str(typed.cget("text")) == "You typed: " + " ".join([f"[{wrong[0]}]", *token[1:]])
-        assert str(problem.cget("text")) == "Character 1 doesn't match."
-        assert typed.winfo_ismapped()
-        # Order: typed value, problem, then the #155 keyboard sentence.
-        ys = [typed.winfo_y(), problem.winfo_y(), app._layout_sentence.winfo_y()]
-        assert ys == sorted(ys)
+        typed_line, problem_line = str(status.cget("text")).split("\n")
+        assert typed_line == "You typed: " + " ".join([f"[{wrong[0]}]", *token[1:]])
+        assert problem_line == "Character 1 doesn't match."
+        assert status.winfo_ismapped()
+        # Order: the status (typed value, problem), then the #155 keyboard sentence.
+        assert app._match_pill.winfo_y() < app._layout_hint.winfo_y()
         app._confirm_var.set(token)
         for _ in range(4):
             app.root.update()

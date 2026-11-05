@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_token_typed', '_token_problem', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1610,8 +1610,7 @@ class TkWizard:
             self._match_pill: Optional[_Box] = None
             self._layout_hint: Optional[tk.Frame] = None  # #155
             self._layout_sentence: Optional[tk.Label] = None  # #156
-            self._token_typed: Optional[tk.Label] = None  # #156
-            self._token_problem: Optional[tk.Label] = None  # #156
+            self._confirm_card: Optional[tk.Widget] = None  # #157
             self._shown: Optional[Screen] = None
             self._shown_report_revision = -1
             self._shown_sound_revision = -1
@@ -2168,13 +2167,18 @@ class TkWizard:
 
         canvas.after_idle(reveal)
 
-    def _apply_body_reveal(self, canvas: tk.Canvas, widget: tk.Misc, *, layout: bool) -> None:
+    def _apply_body_reveal(self, canvas: tk.Canvas, widget: tk.Misc, *, layout: bool,
+                           limit: Optional[float] = None) -> None:
         self._sync_body_scroll(canvas)
         target = self._body_reveal_top(canvas, widget, settle=layout)
         if not layout:
             self._body_follow_focus = True
         if target is None:
             return
+        if limit is not None:
+            # Never scroll past ``limit`` (#157: the top of a widget that
+            # must stay in view).
+            target = min(target, max(0.0, limit))
         bounds = canvas.bbox("all")
         if not bounds:
             return
@@ -2186,8 +2190,12 @@ class TkWizard:
         if abs(float(canvas.canvasy(0)) - target) > 0.5:
             canvas.yview_moveto(target / max(1, content + self._body_slack))
 
-    def _reveal_in_body(self, widget: tk.Misc) -> None:
-        """Scroll the body so ``widget`` is fully visible, focus or not (#155)."""
+    def _reveal_in_body(self, widget: tk.Misc, *, keep: Optional[tk.Misc] = None) -> None:
+        """Scroll the body so ``widget`` is fully visible, focus or not (#155).
+
+        With ``keep`` the view never scrolls past that widget's top (#157:
+        Confirm's disk card and warning stay in view on short windows).
+        """
         canvas = self._body_canvas
         if canvas is None:
             return
@@ -2199,7 +2207,16 @@ class TkWizard:
                 # The newly packed widget must be in the scroll region first.
                 canvas.update_idletasks()
                 self._sync_body_scroll(canvas)
-                self._apply_body_reveal(canvas, widget, layout=False)
+                limit = None
+                if keep is not None and keep.winfo_exists():
+                    limit = 0.0
+                    node: Optional[tk.Misc] = keep
+                    while node is not None and node is not self._body_inner:
+                        limit += node.winfo_y()
+                        node = node.master
+                    if node is None:
+                        limit = None
+                self._apply_body_reveal(canvas, widget, layout=False, limit=limit)
                 # Like an owner's scroll: layout settling must not pull the
                 # view back to the focused entry and hide the help again.
                 self._body_follow_focus = False
@@ -2559,8 +2576,7 @@ class TkWizard:
         self._match_pill = None
         self._layout_hint = None
         self._layout_sentence = None
-        self._token_typed = None
-        self._token_problem = None
+        self._confirm_card = None
         self._power_label: Optional[tk.Label] = None
         screen = self.w.screen
         first_review_draw = screen == Screen.LAST_CHANCE and getattr(self, "_shown", None) != Screen.LAST_CHANCE
@@ -2843,7 +2859,10 @@ class TkWizard:
         text: str,
         extra: Optional[str] = None,
         compact: bool = False,
+        tight: bool = False,
     ) -> _Box:
+        # ``compact`` also uses the small font; ``tight`` (#157) only trims
+        # the padding, so the text keeps its full size.
         colors = {
             "warn": (WARN_BG, WARN_BORDER),
             "danger": (DANGER_TINT, DANGER_BORDER),
@@ -2861,7 +2880,7 @@ class TkWizard:
         }
         bg, border = colors[kind]
         box = _Box(parent, radius=RADIUS, fill=bg, outline=border, ow=1,
-                   padx=16, pady=8 if compact else 13)
+                   padx=16, pady=8 if (compact or tight) else 13)
         row = tk.Frame(box.inner, bg=bg)
         row.pack(fill=tk.X)
         icon = _icon_alert(row, kind, 28)
@@ -5064,20 +5083,30 @@ class TkWizard:
             self._pick()
             return
         col = self._column(self._body, fill_height=True)
+        # #157: a scrolling body (short windows, larger text) trims Confirm's
+        # gaps so the disk card, the #128 warning, the entry and its status
+        # fit together; a roomy window balances the space instead (below).
+        tight = self.lay.short or self._body_canvas is not None
+        spacer = tk.Frame(col, bg=BG, height=0)
+        spacer.pack(fill=tk.X)
+        setattr(spacer, "_beamo_confirm_spacer", True)
         self._title_block(col, C.TITLE_CONFIRM)
         zone = self._center_zone(col)
         # Details share the summary's caption row, not a row of their own.
-        self._disk_summary(zone, disk, more=True, token=True).pack(fill=tk.X)
-        self._panel(zone, kind="warn", text=self.w.warning_text()).pack(fill=tk.X, pady=(12, 0))
+        summary = self._disk_summary(zone, disk, more=True, token=True)
+        summary.pack(fill=tk.X)
+        self._confirm_card = summary
+        self._panel(zone, kind="warn", text=self.w.warning_text(), tight=tight).pack(
+            fill=tk.X, pady=(8 if tight else 12, 0))
         # A card token's prompt names the field, never the characters (#129).
         # The older fallback prompt can carry a full serial as the token: same
         # character-level wrapping as identity labels, never a clipped tail.
         self._wrapping_label(zone, C.confirm_prompt(spec), font=self.font_b, bg=BG).pack(
-            fill=tk.X, pady=(14, 8)
+            fill=tk.X, pady=(8, 6) if tight else (14, 8)
         )
         shell = _Box(
             zone, radius=RADIUS, fill=SURFACE, outline=BORDER_STRONG, ow=1,
-            padx=16, pady=10, ring=True, shadow=False,
+            padx=16, pady=6 if tight else 10, ring=True, shadow=False,
         )
         shell.pack(fill=tk.X)
         entry = tk.Entry(
@@ -5095,7 +5124,7 @@ class TkWizard:
             cursor="xterm",
         )
         self._confirm_var.set(self.w.confirm_input)
-        entry.pack(fill=tk.X, ipady=4)
+        entry.pack(fill=tk.X, ipady=2 if tight else 4)
         entry.bind("<FocusIn>", lambda _e: shell.set_focused(True))
         entry.bind("<FocusOut>", lambda _e: shell.set_focused(False))
         shell.set_focused(True)
@@ -5107,12 +5136,15 @@ class TkWizard:
             zone, radius=PILL, fill=SURFACE, outline=BORDER, ow=1,
             padx=12, pady=6,
         )
-        pill.pack(anchor="w", pady=(12, 0))
+        pill.pack(anchor="w", pady=(8 if tight else 12, 0))
         self._match_pill = pill
         self._match_icon = tk.Canvas(
             pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE
         )
-        self._match_icon.pack(side=tk.LEFT)
+        self._match_icon.pack(side=tk.LEFT, anchor="n")
+        # #156/#157: after a wrong entry this status line itself shows what
+        # was typed (wrong characters in [brackets]) and which positions are
+        # wrong, right under the entry, instead of further down the screen.
         self._match_label = tk.Label(
             pill.inner,
             text="",
@@ -5120,31 +5152,22 @@ class TkWizard:
             fg=MUTED,
             bg=SURFACE,
             anchor="w",
+            justify=tk.LEFT,
         )
         self._match_label.pack(side=tk.LEFT, padx=(8, 0))
+
+        def _wrap_status(event, label=self._match_label) -> None:
+            # Icon, gaps and the pill's own padding sit beside the text.
+            try:
+                label.configure(wraplength=max(160, int(event.width) - 22 - 8 - 2 * 12 - 12))
+            except tk.TclError:
+                return
+
+        zone.bind("<Configure>", _wrap_status, add="+")
         self._paint_match()
         # #155: keyboard-layout help only after a wrong entry, with Change.
         hint = tk.Frame(zone, bg=BG)
         setattr(hint, "_beamo_layout_hint", True)
-        # #156: what was typed, with the wrong characters in [brackets], and
-        # which positions are wrong. Never the expected characters.
-        # Packed by _sync_layout_hint only while there is something to say.
-        typed = tk.Label(hint, text="", font=self.font_mono_bold, fg=INK, bg=BG,
-                         anchor="w", justify=tk.LEFT)
-        setattr(typed, "_beamo_token_typed", True)
-        problem = tk.Label(hint, text="", font=self.font_s_bold, fg=INK, bg=BG,
-                           anchor="w", justify=tk.LEFT)
-        setattr(problem, "_beamo_token_problem", True)
-
-        def _wrap_feedback(event, labels=(typed, problem)) -> None:
-            for label in labels:
-                try:
-                    label.configure(wraplength=max(120, int(event.width) - 4))
-                except tk.TclError:
-                    return
-
-        hint.bind("<Configure>", _wrap_feedback, add="+")
-        self._token_typed, self._token_problem = typed, problem
         # The sentence wraps to the row's real width and Change sits under
         # it, so neither is clipped at any text size or language.
         self._layout_sentence = self._wrapping_label(
@@ -5157,13 +5180,74 @@ class TkWizard:
         change.pack(anchor="w", pady=(2, 0))
         setattr(change, "_beamo_layout_change", True)
         self._layout_hint = hint
+        self._layout_hint_gap = 6 if tight else 10
         self._sync_layout_hint()
         row = self._footer_shell(C.HINT_CONFIRM)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok)
+        # Also in the scrolling body: a short-but-wide window (1280x720) or
+        # larger text at 1280x820 can still have room to spare; with none,
+        # the spacer stays at zero.
+        self._balance_confirm(col, spacer, zone, pill, hint)
+        if self._body_canvas is not None:
+            # Short windows: the status under the entry belongs in view with
+            # it; scroll just enough, never past the disk card (#157).
+            def _reveal_status() -> None:
+                self._reveal_in_body(pill, keep=summary)
+
+            pill.after_idle(_reveal_status)
+
+    def _balance_confirm(self, col: tk.Frame, spacer: tk.Frame, content: tk.Frame,
+                         pill: tk.Widget, hint: tk.Frame) -> None:
+        """#157: on a roomy window, centre Confirm's block vertically.
+
+        The block is measured as if the wrong-entry help were showing (the
+        status line's second line and the keyboard help), so it never moves
+        when that help appears: the space below the status is where it
+        appears. Only the spacer above the title changes.
+        """
+        sentence = C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title)
+        change = next((w for w in hint.winfo_children() if getattr(w, "_beamo_layout_change", False)), None)
+
+        def fit(_event=None) -> None:
+            try:
+                if not spacer.winfo_exists() or not col.winfo_exists():
+                    return
+                title = content.master.winfo_y() - spacer.winfo_height()
+                # The status line counted as one line, whatever it shows now,
+                # and the help computed from the fonts and the real width:
+                # the same total before and after a wrong entry, so nothing
+                # moves when the help appears.
+                line = self.font_s_bold.metrics("linespace")
+                label = self._match_label
+                lines = str(label.cget("text")).count("\n") + 1 if label is not None else 1
+                block = pill.winfo_y() + pill.winfo_reqheight() - (lines - 1) * line
+                width = max(200, content.winfo_width())
+                sentence_lines = max(1, -(-self.font_s.measure(sentence) // width))
+                reserve = (line + self._layout_hint_gap
+                           + sentence_lines * self.font_s.metrics("linespace")
+                           + (change.winfo_reqheight() if change is not None else line) + 2)
+                # In the scrolling body the column is only as tall as its
+                # content: measure against the visible view instead.
+                canvas = self._body_canvas
+                avail = canvas.winfo_height() if canvas is not None else col.winfo_height()
+                free = avail - (title + 4 + block + reserve)
+                top = max(0, free // 2)
+                if int(float(spacer.cget("height"))) != top:
+                    spacer.configure(height=top)
+            except (tk.TclError, TypeError, ValueError):
+                return
+
+        col.bind("<Configure>", fit, add="+")
+        content.bind("<Configure>", fit, add="+")
+        if self._body_canvas is not None:
+            # The view gets its real height after the first layout pass.
+            self._body_canvas.bind("<Configure>", fit, add="+")
+        col.after_idle(fit)
 
     def _sync_layout_hint(self) -> None:
         """Show the #155 layout hint only while wizard.confirm_layout_hint."""
+        self._paint_match()  # the status line carries the #156 feedback
         hint = getattr(self, "_layout_hint", None)
         if hint is None:
             return
@@ -5172,26 +5256,14 @@ class TkWizard:
                 self._layout_hint = None
                 return
             shown = bool(hint.winfo_manager())
-            # #156: refresh the typed value and its problems on every change.
-            fb = self.w.confirm_feedback
-            anchor = getattr(self, "_layout_sentence", None)
-            for label, text, pady in (
-                (getattr(self, "_token_typed", None), fb.display if fb else "", (0, 0)),
-                (getattr(self, "_token_problem", None), fb.message if fb else "", (2, 6)),
-            ):
-                if label is None or not label.winfo_exists():
-                    continue
-                if str(label.cget("text")) != text:
-                    label.configure(text=text)
-                if text and not label.winfo_manager():
-                    label.pack(fill=tk.X, pady=pady, before=anchor)
-                elif not text and label.winfo_manager():
-                    label.pack_forget()
             if self.w.confirm_layout_hint and not shown:
-                hint.pack(fill=tk.X, pady=(10, 0))
+                hint.pack(fill=tk.X, pady=(getattr(self, "_layout_hint_gap", 10), 0))
                 # Short windows and large text put it below the fold: bring
-                # it into view once its layout settles (the entry keeps focus).
-                hint.after_idle(lambda h=hint: self._reveal_in_body(h))
+                # it into view once its layout settles (the entry keeps
+                # focus), but never so far that the disk card and the #128
+                # warning leave the view (#157).
+                hint.after_idle(lambda h=hint: self._reveal_in_body(
+                    h, keep=getattr(self, "_confirm_card", None)))
             elif not self.w.confirm_layout_hint and shown:
                 hint.pack_forget()
         except tk.TclError:
@@ -5212,6 +5284,18 @@ class TkWizard:
                 fill="#FFFFFF", width=3, capstyle="round", joinstyle="round",
             )
             self._match_label.configure(text=C.CONFIRM_MATCH_OK, fg=OK, bg=OK_TINT)
+        elif self.w.confirm_feedback is not None:
+            # #156/#157: after a wrong entry: what was typed (wrong
+            # characters in [brackets]) and which positions, with a "!" mark
+            # and a warning outline (a shape and words, not only colour).
+            fb = self.w.confirm_feedback
+            if self._match_pill is not None:
+                self._match_pill.set_style(fill=SURFACE, outline=WARN_BORDER)
+            cv.configure(bg=SURFACE)
+            cv.create_oval(2, 2, 20, 20, outline=WARN, width=2)
+            cv.create_line(11, 6, 11, 12.5, fill=WARN, width=3, capstyle="round")
+            cv.create_oval(9.5, 14.5, 12.5, 17.5, fill=WARN, outline="")
+            self._match_label.configure(text=f"{fb.display}\n{fb.message}", fg=INK, bg=SURFACE)
         else:
             if self._match_pill is not None:
                 self._match_pill.set_style(fill=SURFACE, outline=BORDER)
