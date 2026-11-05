@@ -5042,3 +5042,40 @@ another very thorough and comprehensive pass of this." Repo
 - SCREENS: work169-scratch-20261105/before and after (Tk result screen,
   preview and live, 1280x820; metrics.txt has the hint text).
 - NOT VERIFIED: Linux 72 DPI, hosted ci.yml, native review of the drafts.
+
+## BW-170-REPORTNOTICE — 'Saving a report does not change the result' only after a failed save (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/report-notice-170` (stacked on
+  `fix/result-hints-169` @ 0db2331; commit 4c6213a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
+  review item 44). Ref #96 (separation), #135 (report panel).
+- BASELINE (work170-scratch-20261105/before): every report panel state
+  (ready, failed/unavailable, saved) showed "Saving or checking a report
+  does not change the erase result." (plus the unsaved-report warning when
+  not saved); the web preview's report panel showed it too.
+- DECISION: show it only after a failed save (report export or evidence
+  save), where it reassures, rather than under Show more: it is one line
+  and only useful at that moment. Not shown twice when the failure text
+  (recovery.MEANING_REPORT_ONLY) already says it.
+- WHAT CHANGED: report_panel.build_report_panel composes the notice: the
+  reassurance only for failed / evidence / unavailable-after-error panels
+  without that sentence already, the unsaved-report warning whenever not
+  saved. Tk, GTK and curses already render panel.notice, so all follow; the
+  web preview drops the line. Erase result and report panel stay separate.
+- FILES: src/beamo_wipe/{report_panel,gallery}.py,
+  tests/test_report_notice_170.py (new, 9),
+  tests/test_separate_report_status.py (now expects the line only after a
+  failed save).
+- TESTS: absent from ready/saving/saved/unavailable views; the unsaved
+  warning kept except when saved; after a failed report save (with and
+  without Save offered) and an evidence failure it is said exactly once;
+  preview panel has no notice; every surface renders panel.notice. OLD-CODE
+  (#169 @ 0db2331): 7/9 fail.
+- CHECKS (Windows-native route): 9/9; ruff clean; mypy --platform linux
+  clean; test_separate_report_status passes except
+  test_export_failure_then_retry_preserves_erase (Windows tmp
+  PermissionError, pre-existing).
+- SCREENS: work170-scratch-20261105/before and after (verified result,
+  report idle / failed / saved, 800x600 and 1280x820; metrics.txt).
+- NOT VERIFIED: Orca reading of the failure panel, Linux 72 DPI, hosted
+  ci.yml.
