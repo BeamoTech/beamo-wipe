@@ -4369,3 +4369,55 @@ another very thorough and comprehensive pass of this." Repo
   short + Enter at 800x600 x 3 sizes and 1280x820; FR Extra large).
 - NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
   hosted ci.yml, native review of the drafts.
+
+## BW-157-CONFIRMSPACE — Balance Confirm and keep its card and warning in view (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/confirm-spacing-157` (stacked
+  on `feat/token-feedback-156` @ 5680c3e), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
+  review item 31). Ref #128 (warning), #155 (help after a wrong entry),
+  #156 (feedback).
+- BASELINE (work157-scratch-20261104/before, metrics.txt): on roomy windows
+  Confirm's block sat at the top with a large empty area under the entry
+  (gap under the status 190 px at 1280x820, 391 px at 1920x1080, 16 px above
+  the title); at 800x600 Extra large a wrong entry scrolled the #155 help
+  into view and the #128 warning out of it.
+- WHAT CHANGED (Tk only; no token, countdown, gate or copy change):
+  Confirm centres its block on roomy windows with a spacer measured as if
+  the wrong-entry help were showing, so nothing moves when it appears; short
+  windows and larger text use tighter gaps (the warning keeps its full-size
+  text); the #156 feedback moved into the status line right under the entry
+  (a "!" mark and warning outline, not colour alone); the #155 reveal never
+  scrolls the disk card or the warning out of view (`_reveal_in_body(keep=)`).
+  Commit d55220e. FOLLOW-UP COMMIT (a123294): the status line kept a wrap
+  length at the zone's full width although its pill shrinks to the text;
+  test_reflow_large_text's card-wrap check failed on both Confirm sizes
+  (passes on #156). It now wraps only when the text is wider than the room
+  beside the icon.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, tests/test_confirm_spacing_157.py
+  (new, 15 cases; 12 fail on 5680c3e), tests/test_token_feedback_156.py (Tk
+  case reads the status line), docs/screens.md.
+- CHECKS (Windows-native route): test_confirm_spacing_157 15/15;
+  test_token_feedback_156, test_confirm_layout_hint_155 pass; ruff clean;
+  mypy --platform linux clean. RELATED-FILE COMPARISON (#157 vs #156, 32
+  files whole plus the Confirm cases of 6 big files, work157-scratch-20261104
+  pf-*.txt / each-*.txt): only-on-#157 failures were
+  test_card_token_129 Tcl-mark and test_refresh_guard_136 pick dialog (both
+  pass alone), test_ui_rework review safe default (also fails alone on #156:
+  the 5 s countdown ends during the slow test under load) and
+  test_reflow_large_text Confirm x2 (real; fixed by the follow-up, which
+  passes the reflow case plus #155/#156/#157 files; with the fix, Confirm
+  cases one by one: ui_fit 42/42, reflow 2/2, single_erase_warning_128
+  33/33, card_token_129 2/2, tk_runtime 18/19 with the pre-existing
+  refresh-from-Confirm case; work159-scratch-20261105/fix157-each.txt).
+  Pre-existing on both: tk_runtime refresh-from-Confirm.
+- KNOWN, NOT CAUSED HERE: on this Windows host Review before erasing at
+  800x600 Extra large never settles in Tk's idle loop (draws in 0.4 s, then
+  root.update() does not return) on #156 and #157 alike — the recorded
+  "Windows Tk idle-loop hangs (Review extra 800x600)". Linux 72 DPI not
+  checked here.
+- SCREENS: work157-scratch-20261104/before and after (Confirm empty / wrong
+  at 800x600 x3 text sizes, 1024x600, 1024x768, 1280x720, 1280x820 x3,
+  1280x1024, 1920x1080), metrics.txt.
+- NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
+  Not pushed to main; merge order #94 -> ... -> #156 -> #157.
