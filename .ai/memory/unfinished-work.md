@@ -5007,3 +5007,38 @@ another very thorough and comprehensive pass of this." Repo
   this host (AGENTS.md), so it is pending. Hosted ci.yml not run.
 - SCREENS: work168-scratch-20261105/before and after (Owner at 800x600,
   1280x820, 1280x820 Large; metrics.txt shows the note before/after).
+
+## BW-169-RESULTHINTS — Result-screen key hints say exactly what happens (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/result-hints-169` (stacked on
+  `feat/screen-awake-168` @ eb07f50; commit 58ef52d), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
+  review item 43). Ref #174.
+- BEHAVIOUR DOCUMENTED (before): Tk preview result: Enter runs the preview
+  again (accept_done_keyboard -> reset_for_preview), Esc does nothing
+  (back() is a no-op on DONE), hint "Enter continues. Esc goes back."; Tk
+  live: Enter requests shutdown, Esc nothing, hint "Enter requests
+  shutdown."; web preview result: default hint, Enter did nothing unless a
+  button had focus; curses: "Enter: run again    C: close" (preview) /
+  "Enter: shut down" (live), Esc nothing; GTK shows no key hints.
+- WHAT CHANGED: copy.HINT_DONE_PREVIEW "Enter runs the preview again."
+  (FR/DE/ES/IT drafts); Tk preview result uses it; the web preview result
+  shows it and Enter (not on a focused control) runs the preview again,
+  like its Run again button and the Tk preview; the stopped preview screen
+  keeps its own hint. Live unchanged. No result screen offers Esc or a way
+  back into a completed erase. Docs: screens.md.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, tests/test_result_hints_169.py (new, 8), docs/screens.md.
+- TESTS: copy in every language starts with Enter and never mentions Esc;
+  back() is a no-op on a result (preview and live); preview Enter runs
+  again, live Enter requests shutdown; curses footers; web preview hint and
+  Enter handler (ignores focused controls); Tk preview/live hint rendered.
+  OLD-CODE (#168 @ eb07f50): 3/8 fail (copy, web, Tk preview); the others
+  pin behaviour that was already right.
+- CHECKS (Windows-native route): 8/8 (Tk one by one); ruff clean; mypy
+  --platform linux clean; preview/gallery/translation/language/ui_system/
+  console/result/erase-another files: failure set identical to #168 (36
+  pre-existing Windows/env cases).
+- SCREENS: work169-scratch-20261105/before and after (Tk result screen,
+  preview and live, 1280x820; metrics.txt has the hint text).
+- NOT VERIFIED: Linux 72 DPI, hosted ci.yml, native review of the drafts.
