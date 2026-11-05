@@ -5317,3 +5317,34 @@ another very thorough and comprehensive pass of this." Repo
   by one); ruff and mypy --platform linux clean.
 - NOT DONE: no new screenshots (rendering of the shown hint is unchanged);
   Linux 72 DPI, hosted ci.yml not run.
+
+## BW-172-BALANCE — Balance the result screen (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, GTK, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/result-balance-172` (stacked
+  on `fix/layout-hint-build-155` @ 2e5c3e7; commit a00a936), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
+  (UI review item 46). Ref #134, #135, #171.
+- BASELINE (work172-scratch-20261105/before, before-preview): every live
+  result scrolls (content 1,165–1,708 px in a 403–855 px view, 800x600 to
+  1920x1080, every text size); the preview result just fits at 1920x1080.
+  "Empty space below" no longer reproduces; the top-heavy part was the
+  72 px badge + gaps (~180 px) pushing the summary and What next down.
+- WHAT CHANGED (Tk): badge 56 px (48 short), tighter heading/elapsed gaps;
+  a top spacer (_balance_result) centres the result when it fits the view
+  and stays 0 when it scrolls. GTK (native scrolled list), curses and the
+  web preview have no fixed-height hero: unchanged. docs/screens.md.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, docs/screens.md,
+  tests/test_result_balance_172.py (new, 7).
+- TESTS / CHECKS: new 7/7 pass, 7/7 fail on 2e5c3e7 (one by one); ruff,
+  mypy --platform linux clean; related Tk result tests one by one:
+  test_result_card_171 3/3, test_report_panel_135 24/24,
+  test_report_notice_170 9/9, test_ui_rework 6/6; test_tk_runtime "done"
+  83 cases, 69 fail — every one already failing on #175 (recorded
+  after_failed.txt: Windows tmp PermissionError, Windows erase start,
+  older Done expectations), none new.
+- SCREENS: work172-scratch-20261105/{before,after-shots172} (4 outcomes ×
+  800x600 std/large/extra, 1280x820 std/extra, 1920x1080) and
+  {before-preview,after-shots172p}; 800x600 first view now reaches the
+  third What next step.
+- NOT VERIFIED: displays taller than 1080 (Windows screen limit here),
+  Linux 72 DPI, hosted ci.yml.
