@@ -4349,12 +4349,12 @@ another very thorough and comprehensive pass of this." Repo
   never advances; countdown 5 and separate Erase now unchanged; only the
   wizard imports the module and token_ok never consults it; plain console,
   curses, GTK source, preview source; Tk at 800x600 Standard/Extra large
-  and 1280x820. The file fails at import on 05aba30 (new module).
+  and 1280x820. The file fails at import on #155 (9ca6e1a; 05aba30 before the rebase), the module being new.
 - CHECKS (Windows-native route): 40/40 one by one; test_card_token_129,
   test_confirm_layout_hint_155, test_console_confirm_repeat pass;
   test_wizard_flow happy_path fails on #150 too (Windows tmp
   PermissionError); its path-order test was a #151 leftover, fixed on
-  feat/disk-order-151 (897461e); ruff clean; mypy 6 env-only; node --check;
+  feat/disk-order-151 (b370508); ruff clean; mypy 6 env-only; node --check;
   Python/JS parity 72/72.
   RELATED-FILE COMPARISON: 109 Confirm-related files (related-156.txt)
   per file on #156 and #154 (cmp.txt): the only failure only on #156 is
