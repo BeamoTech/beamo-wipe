@@ -5464,17 +5464,9 @@ class TkWizard:
         # #155: keyboard-layout help only after a wrong entry, with Change.
         hint = tk.Frame(zone, bg=BG)
         setattr(hint, "_beamo_layout_hint", True)
-        # The sentence wraps to the row's real width and Change sits under
-        # it, so neither is clipped at any text size or language.
-        self._layout_sentence = self._wrapping_label(
-            hint,
-            C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
-            font=self.font_s, fg=INK, bg=BG,
-        )
-        change = _Button(hint, text=C.CONFIRM_LAYOUT_CHANGE, command=self._nav(self.w.open_keyboard),
-                         font=self.font_s_bold, variant="ghost", compact=True)
-        change.pack(anchor="w", pady=(2, 0))
-        setattr(change, "_beamo_layout_change", True)
+        # Its sentence and Change button are built only while it shows
+        # (_sync_layout_hint): a hidden row must hold no unmapped control.
+        self._layout_sentence = None
         self._layout_hint = hint
         self._layout_hint_gap = 6 if tight else 10
         self._sync_layout_hint()
@@ -5553,6 +5545,8 @@ class TkWizard:
                 return
             shown = bool(hint.winfo_manager())
             if self.w.confirm_layout_hint and not shown:
+                if not hint.winfo_children():
+                    self._build_layout_hint(hint)
                 hint.pack(fill=tk.X, pady=(getattr(self, "_layout_hint_gap", 10), 0))
                 # Short windows and large text put it below the fold: bring
                 # it into view once its layout settles (the entry keeps
@@ -5562,8 +5556,26 @@ class TkWizard:
                     h, keep=getattr(self, "_confirm_card", None)))
             elif not self.w.confirm_layout_hint and shown:
                 hint.pack_forget()
+            if not self.w.confirm_layout_hint:
+                # BW-155B: no hidden Change button stays behind.
+                for child in hint.winfo_children():
+                    child.destroy()
+                self._layout_sentence = None
         except tk.TclError:
             return
+
+    def _build_layout_hint(self, hint: tk.Frame) -> None:
+        """#155 row contents: the sentence wraps to the row's real width and
+        Change sits under it, so neither is clipped at any size or language."""
+        self._layout_sentence = self._wrapping_label(
+            hint,
+            C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
+            font=self.font_s, fg=INK, bg=BG,
+        )
+        change = _Button(hint, text=C.CONFIRM_LAYOUT_CHANGE, command=self._nav(self.w.open_keyboard),
+                         font=self.font_s_bold, variant="ghost", compact=True)
+        change.pack(anchor="w", pady=(2, 0))
+        setattr(change, "_beamo_layout_change", True)
 
     def _fit_match_wrap(self) -> None:
         """Wrap the status line only when it is wider than the room for it.
