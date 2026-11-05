@@ -4133,3 +4133,59 @@ another very thorough and comprehensive pass of this." Repo
   remainder is marked (e.g. A9B2C3D8 vs A1B2C3D4X marks 2-8); the
   same-size warning text ("Two disks are the same size") is pre-existing
   and unchanged with several same-size groups.
+
+## BW-153-KEYHINTS — Arrow key-caps in ink, no stray period in hints (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `fix/key-hints-153` (stacked on
+  `feat/serial-diff-152`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
+  review item 27). Ref #174 (not implemented here).
+- BASELINE (scratch work153-scratch-20261104/before, web-before-*.png,
+  web-hint-before-zoom.png): Tk (roomy windows) and the web preview render
+  hint key names as caps. The ↑ ↓ caps used a font glyph: the UI font lacks
+  it and the fallback came out thin and tinted orange (CSS colour was ink;
+  Tk fg INK), unlike the bold ink Enter/Esc caps. HINT_PICK "Click a disk,
+  or use Up/Down.  Enter ..." left a period 4 px after the ↓ cap in Tk ("use
+  ↑ ↓ ."); HINT_CONFIRM "... then Enter." had the same. The scan of every
+  HINT_* plus the other Tk footer texts in all five languages found only
+  these two.
+- WHAT CHANGED (696af15, not safety: copy/styling only): Tk _kbd draws
+  arrow caps (↑ ↓ ← →) on a canvas in INK, height matched to a letter cap's
+  label; _hint_bar packs a cap followed by punctuation with 1 px instead of
+  4 px. Web preview renderHint draws arrow caps as currentColor SVG (role
+  img, aria-label = the arrow) and marks a cap followed by punctuation
+  kbd-hug (no margin). Copy: HINT_PICK "Click a disk, or use Up/Down to
+  choose one.  Enter reviews this disk.  Esc goes back.", HINT_CONFIRM
+  "Type exactly what we ask for, then press Enter to continue."; FR/DE/ES/IT
+  drafts with no sentence ending on a key. GTK and consoles show key names
+  as text (unchanged). Docs: screens.md #153 row; translations.md note.
+- TESTS: new tests/test_key_hints_153.py (13): every language's hints and
+  footer texts never put punctuation right after a key name; exact EN copy;
+  Tk arrow caps are drawn canvases filled INK, letter caps INK, no typed
+  arrow, equal cap heights; Keyboard hint draws left/right/up/down; Pick
+  hint has no piece starting with "."; punctuation after a cap sits within
+  1 px, a word keeps its gap; preview source (paths, currentColor, aria,
+  hug, CSS); Playwright run (skips here). 11 fail on 33a324f (the 2
+  Playwright cases skip).
+- CHECKS (Windows-native route): new file 13/13 one by one (2 skipped);
+  ruff clean; mypy 6 env-only errors; node --check; headless Chrome DOM
+  probe: after, ↑ ↓ are SVG caps, same computed colour as Enter/Esc, no
+  text node starting with "." after a cap.
+  RELATED-FILE COMPARISON: 13 hint/footer/keyboard test files
+  (related-153c.txt) per file on #153 and #152: identical results (no
+  failure only on #153); failures common to both are environmental (see
+  pf-new.txt / pf-base.txt). test_ui_fit_20261027 and test_adaptive_layout
+  timed out as whole files on both trees, so they were run case by case on
+  #153 (each-fit.txt): ui_fit 262/262; adaptive_layout 93/94, the one case
+  (test_extra_large_text_keeps_actions_at_800x600) hangs on #152 too (the
+  known local Last chance/Working hang), not from #153.
+- SCREENS: before/ and after/ (Tk 1280x820 EN/FR Owner, Pick, Confirm,
+  Method + zoomed hint crops, hints.txt piece lists for all languages),
+  web-before/after-pick|confirm|keyboard.png, web-hint-before-zoom.png.
+- NOT VERIFIED: Linux 72 DPI with DejaVu (the Tk arrows no longer depend on
+  the font), hosted ci.yml (Playwright), native review of the FR/DE/ES/IT
+  hint drafts, keyboard hint at 800x600 (plain text there, by design).
+- PRE-EXISTING (not from #153): test_keyboard_layout::test_keyboard_hints_
+  name_every_layout_shortcut fails on #149 54f8c81, #152, #153, #154 and
+  #155 alike ("1–" in HINT_KEYBOARD, the language-neutral 1–7 cap). Needs
+  its own item: either the test or the hint is out of date.
