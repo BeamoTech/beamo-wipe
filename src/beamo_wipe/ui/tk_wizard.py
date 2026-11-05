@@ -141,12 +141,19 @@ def _pointer_ms(event) -> int:
 
 def _pointer_quiet(widget: tk.Misc, event) -> bool:
     """True while the press is the tail of a double-click that changed screen."""
+    # A button without a live wizard (destroyed, or a test double) is never
+    # quiet: the guard only ever ignores the tail of an accepted double-click.
     try:
         app = getattr(widget.winfo_toplevel(), "_tk_wizard", None)
-    except tk.TclError:
+    except (tk.TclError, AttributeError):
         return False
     check = getattr(app, "_pointer_quiet", None)
-    return bool(check(event)) if callable(check) else False
+    if not callable(check):
+        return False
+    try:
+        return check(event) is True
+    except (tk.TclError, AttributeError, TypeError):
+        return False
 
 # Countdown ring on the last-chance screen.
 RING_SIZE = 64
