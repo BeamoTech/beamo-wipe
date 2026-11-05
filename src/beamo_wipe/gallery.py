@@ -501,7 +501,6 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "app": C.APP_NAME,
         "reportStatusTitle": C.REPORT_STATUS_TITLE,
         "reportPreview": C.REPORT_PREVIEW,
-        "reportStatusNotice": C.REPORT_STATUS_NOTICE,
         "journey": C.JOURNEY_LABELS,
         "selectedDisk": C.SELECTED_DISK,
         "serialLabel": C.SERIAL_LABEL,
@@ -2298,7 +2297,7 @@ function draw() {
       <div style="width:100%;margin-top:12px">${summaryCard(selected)}</div>
       <section aria-labelledby="report-status-heading">
       <h2 id="report-status-heading">${P.reportStatusTitle}</h2>
-      <p>${P.reportPreview}</p><p class="small">${P.reportStatusNotice}</p></section>
+      <p>${P.reportPreview}</p></section>
       ${recordBlock(result)}
       <p class="small muted" id="soundsNote" role="status"></p>
       ${moreLink("more-detail")}</div>`;

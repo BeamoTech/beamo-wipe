@@ -132,10 +132,22 @@ def build_report_panel(
     panel = _build(report, preview=preview, usb=usb, evidence_warning=evidence_warning)
     if panel.kind == "preview":
         return panel
-    notice = C.REPORT_STATUS_NOTICE
+    # #170: "Saving or checking a report does not change the erase result."
+    # reassures only when a save failed; elsewhere it is noise. The erase
+    # result and the report panel stay separate either way (Ref #96). Not
+    # repeated when the failure text already says it. The unsaved-report
+    # warning stays whenever the report is not saved.
+    from beamo_wipe.recovery import MEANING_REPORT_ONLY
+
+    parts = []
+    failed = panel.kind in ("failed", "evidence") or (
+        panel.kind == "unavailable" and report.status == "error"
+    )
+    if failed and MEANING_REPORT_ONLY not in (panel.detail or ""):
+        parts.append(C.REPORT_STATUS_NOTICE)
     if panel.kind != "saved":
-        notice += " " + C.REPORT_VOLATILE
-    return replace(panel, notice=notice)
+        parts.append(C.REPORT_VOLATILE)
+    return replace(panel, notice=" ".join(parts))
 
 
 def _build(
