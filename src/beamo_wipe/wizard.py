@@ -4122,6 +4122,12 @@ class Wizard:
         return METHODS[self.method].operation_summary
 
     @property
+    def review_method_line(self) -> str:
+        """#164: the one method line on Review: name, overwrites, verification."""
+        spec = METHODS[self.method]
+        return C.REVIEW_METHOD_LINE.format(method=spec.title, operation=spec.operation_summary)
+
+    @property
     def method_result(self) -> str:
         return self.result_view.message
 

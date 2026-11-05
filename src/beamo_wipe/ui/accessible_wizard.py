@@ -885,14 +885,13 @@ class AccessibleWizard:
             heading.set_text(C.TITLE_LAST)
             self.label(C.LAST_LEAD)
             self.identity()
-            self.label(self.w.operation_summary)
+            self.label(self.w.review_method_line)  # #164: the one method line
             # Orca reads a label's actual text, even when its accessible name
             # differs. Focus the full warning notice so arrival still speaks
             # the destructive consequence, without an oversized heading.
             arrival = self.label(f"{C.SEVERITY_WARNING}: {self.w.erase_label()}", focusable=True)
             arrival.get_style_context().add_class("erase-warning")
             arrival.get_accessible().set_role(Atk.Role.ALERT)
-            self.label(self.w.method_summary)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:

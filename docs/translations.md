@@ -302,6 +302,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `copy.REVIEW_METHOD_LINE` (2026-11-05 for #164; drafts, not yet reviewed):
+  Review's one method line, `{method}` (the method title) and `{operation}`
+  (`methods.OPERATION_*`, which already say whether verification follows).
+  Keep both placeholders; French spaces the colon ("{method} : {operation}").
 - `copy.COUNTDOWN_READY_WORD`, `copy.COUNTDOWN_AVAILABLE` (2026-11-05 for #163;
   drafts, not yet reviewed): the Review ready state, "Ready" beside the
   ring's check mark and "Erase now is available." spoken by Orca.

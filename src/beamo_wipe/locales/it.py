@@ -126,6 +126,7 @@ STRINGS = {
         "TIME_RANGE_MIXED": "da {low} a {high}",
         "LAST_LEAD": "Controlli il disco e il metodo selezionati. La cancellazione inizia solo quando preme Cancella ora.",
         "AUTHORIZATION_STALE": "Il disco o il metodo è cambiato. Confermi di nuovo.",
+        "REVIEW_METHOD_LINE": "{method}: {operation}",
         "ADVANCED_LEAD": "Questi sono i nomi usati da nwipe. Per i tecnici. Le altre schermate restano semplici.",
         "REPORT_HELP_TITLE": "Serve un rapporto?",
         "REPORT_WANTED": "Voglio salvare un rapporto",

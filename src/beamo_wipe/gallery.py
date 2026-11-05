@@ -796,6 +796,10 @@ def _gallery_html_for_current_language(lang: str) -> str:
                 "nwipe": METHODS[mid].nwipe_method,
                 "summary": METHODS[mid].summary,
                 "operation": METHODS[mid].operation_summary,
+                # #164: Review's one method line.
+                "reviewLine": C.REVIEW_METHOD_LINE.format(
+                    method=METHODS[mid].title, operation=METHODS[mid].operation_summary
+                ),
                 "stages": [
                     _progress.stage_label(stage)
                     for stage in _progress.plan_stages(
@@ -2189,7 +2193,7 @@ function draw() {
     const frac = ready ? 1 : Math.max(0, Math.min(1, tLeft / 5));
     const ringColor = "var(--primary)";
     main.innerHTML = `<h1 class="sub">${P.titles.last}</h1><p class="subtitle">${P.lastLead}</p>
-      <div class="review-grid"><div>${summaryCard(selected)}<p style="font-weight:700;margin-bottom:2px">${esc(P.methods[method].operation)}</p><p class="small muted" style="margin-top:0">${P.methods[method].summary}</p><div class="erase-callout" role="alert">${badge("erase", 24)}<p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p></div></div><div class="ringwrap"><div style="position:relative;width:64px;height:64px;flex:none">
+      <div class="review-grid"><div>${summaryCard(selected)}<p class="review-method" style="font-weight:700;margin-bottom:2px">${esc(P.methods[method].reviewLine)}</p><div class="erase-callout" role="alert">${badge("erase", 24)}<p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p></div></div><div class="ringwrap"><div style="position:relative;width:64px;height:64px;flex:none">
         <svg width="64" height="64" viewBox="0 0 190 190">
           <circle cx="95" cy="95" r="81" fill="none" stroke="var(--track)" stroke-width="11"/>
           ${ready ? `<circle cx="95" cy="95" r="81" fill="none" stroke="var(--primary)" stroke-width="11"/>` :

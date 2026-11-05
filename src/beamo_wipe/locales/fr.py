@@ -125,6 +125,7 @@ STRINGS = {
         "TIME_RANGE_MIXED": "{low} à {high}",
         "LAST_LEAD": "Vérifiez le disque et la méthode choisis. L’effacement ne commence que lorsque vous appuyez sur Effacer maintenant.",
         "AUTHORIZATION_STALE": "Le disque ou la méthode a changé. Confirmez à nouveau.",
+        "REVIEW_METHOD_LINE": "{method} : {operation}",
         "ADVANCED_LEAD": "Ce sont les noms nwipe. Pour les techniciens. Les autres écrans restent simples.",
         "REPORT_HELP_TITLE": "Besoin d’un rapport ?",
         "REPORT_WANTED": "Je veux enregistrer un rapport",

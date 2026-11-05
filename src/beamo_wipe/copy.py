@@ -485,6 +485,9 @@ LAST_LEAD = (
     "Erase now."
 )
 AUTHORIZATION_STALE = "The disk or method changed. Confirm again."
+# #164: Review states the method once: its name and the operation
+# summary (overwrites and whether verification follows, #33).
+REVIEW_METHOD_LINE = "{method}: {operation}"
 
 def _method_cards() -> dict:
     return {

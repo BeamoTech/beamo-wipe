@@ -125,6 +125,7 @@ STRINGS = {
         "TIME_RANGE_MIXED": "{low} bis {high}",
         "LAST_LEAD": "Prüfen Sie den gewählten Datenträger und die Methode. Das Löschen beginnt erst, wenn Sie Jetzt löschen drücken.",
         "AUTHORIZATION_STALE": "Datenträger oder Methode hat sich geändert. Bestätigen Sie erneut.",
+        "REVIEW_METHOD_LINE": "{method}: {operation}",
         "ADVANCED_LEAD": "Das sind die nwipe-Namen. Für Techniker. Die anderen Bildschirme bleiben einfach.",
         "REPORT_HELP_TITLE": "Bericht nötig?",
         "REPORT_WANTED": "Ich möchte einen Bericht speichern",

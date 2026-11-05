@@ -1287,6 +1287,10 @@ def test_method_facts_render_for_every_choice(ui, method, screen):
         for spec in METHODS.values():
             assert spec.overwrite_description in text
             assert spec.verification_description in text
+    elif screen == Screen.LAST_CHANCE:
+        # #164: Review states the method once (name + operation summary).
+        assert wiz.review_method_line in text
+        assert METHODS[method].summary not in text
     else:
         assert METHODS[method].summary in text
     if screen == Screen.DONE:

@@ -200,10 +200,9 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
     assert view.title in shown
     assert view.id_value in shown
     assert view.kind_chip in shown
-    assert (
-        METHODS[method].overwrite_description.split(":")[0] in shown
-        or METHODS[method].summary in shown
-    )
+    # #164: Review states the method once (name, overwrites, verification).
+    assert wiz.review_method_line in shown
+    assert METHODS[method].summary not in shown
     assert "Check the selected disk and method." in shown
     assert "Erasing starts only when you press Erase now." in shown  # #162
     footer = _footer(term)

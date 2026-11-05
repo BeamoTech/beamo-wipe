@@ -5735,12 +5735,10 @@ class TkWizard:
             self._disk_summary(details, self.w.selected).pack(fill=tk.X)
         # The red callout below is this screen's one erase warning (#128);
         # it already names any Windows or operating system on the disk.
+        # #164: one method line (name, overwrites, verification yes/no).
         self._wrapping_label(
-            details, self.w.operation_summary, font=self.font_bold, bg=surface
+            details, self.w.review_method_line, font=self.font_bold, bg=surface
         ).pack_configure(pady=(10 if stacked else 12, 0))
-        if not stacked:
-            self._wrapping_label(details, self.w.method_summary, font=self.font_s,
-                                 fg=MUTED, bg=surface).pack_configure(pady=(2, 0))
         # Stacked windows (800x600 and 1024x600, with or without the preview
         # stripe): the warning and countdown sit no lower than the plain red
         # line did, so the ring stays above the fold. The method line and
@@ -5759,9 +5757,6 @@ class TkWizard:
                              font=self.font_bold, bg=DANGER_TINT, fg=DANGER)
         zone = tk.Frame(details, bg=surface)
         zone.pack(fill=tk.X, pady=(6 if stacked else 14, 4), anchor="n")
-        if stacked:
-            self._wrapping_label(details, self.w.method_summary, font=self.font_s,
-                                 fg=MUTED, bg=surface).pack_configure(pady=(4, 0))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:

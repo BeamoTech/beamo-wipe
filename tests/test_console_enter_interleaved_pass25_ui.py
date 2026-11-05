@@ -17,6 +17,7 @@ def test_interleaved_key_does_not_rearm_enter_on_final_review(monkeypatch):
     wizard.power_text = ""
     wizard.operation_summary = ""
     wizard.method_summary = ""
+    wizard.review_method_line = ""  # #164
     wizard.preview = False
     wizard.can_open_diagnostic = False
     wizard.can_refresh = False
