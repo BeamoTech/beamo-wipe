@@ -859,10 +859,12 @@ def test_tk_report_help_return_restores_origin_focus():
         app._draw()
         app.root.update()
         assert wiz.screen == Screen.OWNER
+        app._open_help_menu()  # #175: report help is in Help & settings
+        app.root.update()
         link = next(
             x
             for x in _descendants(app.root)
-            if isinstance(x, _Button) and x.itemcget(x._label, "text") == C.REPORT_HELP_TITLE
+            if isinstance(x, _Button) and x.itemcget(x._label, "text") == C.MENU_REPORT_HELP
         )
         link._command()
         app.root.update()

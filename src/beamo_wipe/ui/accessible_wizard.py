@@ -530,6 +530,8 @@ class AccessibleWizard:
         self.utilities.get_accessible().set_name(C.ASSIST_LABEL)
         self._utility_count = 0
         self.footer.pack_start(self.utilities, False, False, 0)
+        # #175: Help & settings first, in the same place on every screen.
+        self._help_menu_button()
         self.navigation = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         self.navigation.get_accessible().set_role(Atk.Role.PANEL)
         self.navigation.get_accessible().set_name(C.NAV_LABEL)
@@ -850,7 +852,7 @@ class AccessibleWizard:
                 more.add(note_text)
                 self.body.pack_start(more, False, False, 4)
             self.button(storage_limits.BUTTON, self.w.open_limits, utility=True)
-            self.button(C.BTN_ADVANCED, self.w.open_advanced, utility=True)
+            # #175: Advanced is in Help & settings (still from Method only).
             self.button(C.primary_action(Screen.METHOD), self.w.continue_method)
         elif screen == Screen.DISK_HELP:
             heading.set_text(C.DISK_HELP_TITLE)
@@ -1144,24 +1146,10 @@ class AccessibleWizard:
             self.button(C.SOUND_CHECK_BUTTON, self.open_sound_check, utility=True)
         if self.w.can_open_diagnostic:
             self.button(C.DIAGNOSTIC_TITLE, self.w.open_diagnostic, utility=True)
-        if self.w.can_open_report_help:
-            self.button(C.REPORT_HELP_TITLE, self.w.open_report_help, utility=True)
+        # #175: report help, keyboard and text size are in Help & settings.
         if self.w.refresh_offered:
             # #136: not on What/Owner; guarded from Confirm, Method, Review.
             self.button(C.BTN_REFRESH_UTILITY, self.w.open_refresh_confirm, utility=True)
-        if self.w.can_open_keyboard and screen != Screen.KEYBOARD:
-            self.button(C.KEYBOARD_UTILITY, self.w.open_keyboard, utility=True)
-        if screen not in {
-            Screen.SPLASH, Screen.KEYBOARD, Screen.WORKING, Screen.STOPPING,
-            Screen.CHECKING, Screen.REFRESHING, Screen.DONE, Screen.SHUTDOWN_CONFIRM,
-            Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED, Screen.LIMITS,
-            Screen.DISK_HELP, Screen.REPORT_HELP,
-        }:
-            self.button(
-                f"{C.TEXT_SIZE_UTILITY}: {C.TEXT_SIZE_LABELS.get(self.w.text_size, C.TEXT_SIZE_STANDARD)}",
-                self.w.cycle_text_size,
-                utility=True,
-            )
         if screen in {
             Screen.WHAT,
             Screen.OWNER,
@@ -1205,7 +1193,126 @@ class AccessibleWizard:
         spoken_stage = C.journey_step_announcement(self.w)
         if spoken_stage:
             heading.get_accessible().set_description(spoken_stage)
+        reopen = getattr(self, "_help_reopen", "")
+        self._help_reopen = ""
+        if reopen and self.w.screen == screen:
+            # #175: a setting (text size, sounds) keeps the menu open on it.
+            self._show_help_menu(reopen)
         emit_serial_marker(f"BEAMO_WIPE_ACCESSIBLE_SCREEN_{screen.name}")
+
+    def _help_menu_button(self) -> None:
+        """#175: Help & settings, first among the footer tools.
+
+        A menu button with a popover. Items that apply here are buttons; an
+        item that does not is a focusable label that carries its reason, so
+        Orca reads why instead of skipping it. Esc closes the popover and
+        focus returns to the menu button. Nothing here starts, confirms or
+        stops an erase: items call the wizard's guarded actions only.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        generation = self.generation
+        button = Gtk.MenuButton()
+        button.set_label(C.MENU_TITLE)
+        button.set_can_default(False)
+        button.set_receives_default(False)
+        button.get_accessible().set_name(C.MENU_TITLE)
+        button.get_style_context().add_class("utility-action")
+        popover = Gtk.Popover.new(button)
+        popover.set_position(Gtk.PositionType.TOP)
+        popover.set_modal(True)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        box.set_border_width(10)
+        box.get_accessible().set_role(Atk.Role.PANEL)
+        box.get_accessible().set_name(C.MENU_TITLE)
+        title = Gtk.Label(label=C.MENU_TITLE)
+        title.set_xalign(0)
+        title.get_accessible().set_role(Atk.Role.HEADING)
+        box.pack_start(title, False, False, 0)
+        self._help_items: dict = {}
+        for item in self.w.help_menu():
+            if item.key == _menu.SHORTCUTS:
+                widget = Gtk.Expander.new(item.label)
+                text = Gtk.Label(label="\n".join(self._help_shortcut_lines()))
+                text.set_line_wrap(True)
+                text.set_xalign(0)
+                text.set_max_width_chars(48)
+                text.set_can_focus(True)
+                text.set_selectable(True)
+                widget.add(text)
+            elif item.enabled:
+                widget = Gtk.Button.new_with_label(item.label)
+                widget.set_can_default(False)
+                widget.set_receives_default(False)
+                widget.connect(
+                    "clicked",
+                    lambda _b, key=item.key: self._help_activate(key, generation),
+                )
+            else:
+                widget = Gtk.Label(label=item.spoken)
+                widget.set_line_wrap(True)
+                widget.set_xalign(0)
+                widget.set_max_width_chars(48)
+                widget.set_can_focus(True)
+                widget.set_selectable(True)
+                widget.get_style_context().add_class("dim-label")
+            box.pack_start(widget, False, False, 0)
+            self._help_items[item.key] = widget
+        close = Gtk.Button.new_with_label(C.MENU_CLOSE)
+        close.set_can_default(False)
+        close.connect("clicked", lambda _b: popover.popdown())
+        box.pack_start(close, False, False, 4)
+        box.show_all()
+        popover.add(box)
+        button.set_popover(popover)
+        popover.connect("closed", lambda _p: self._help_closed(generation))
+        self.utilities.attach(button, 0, 0, 1, 1)
+        self._utility_count += 1
+        self.help_button = button
+        self.help_popover = popover
+
+    def _help_shortcut_lines(self) -> list[str]:
+        lines = [C.MENU_SHORTCUTS_COMMON]
+        if self.w.refresh_offered:
+            lines.append(C.MENU_SHORTCUTS_REFRESH)
+        lines.append(C.MENU_SHORTCUTS_MENU)
+        return lines
+
+    def _show_help_menu(self, focus_key: str = "") -> None:
+        popover = getattr(self, "help_popover", None)
+        if popover is None:
+            return
+        popover.popup()
+        items = getattr(self, "_help_items", {})
+        target = items.get(focus_key)
+        if target is None:
+            target = next((w for w in items.values() if w.get_can_focus()), None)
+        if target is not None:
+            target.grab_focus()
+
+    def _help_closed(self, generation: int) -> None:
+        # Focus returns to the menu button unless an item moved on.
+        if self.closed or generation != self.generation:
+            return
+        button = getattr(self, "help_button", None)
+        if button is not None:
+            button.grab_focus()
+
+    def _help_activate(self, key: str, generation: int) -> None:
+        from beamo_wipe import help_menu as _menu
+
+        if self.closed or generation != self.generation:
+            return
+        if not self.w.activate_help_item(key):
+            return
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        self._help_reopen = key if key in _menu.STAYS_OPEN else ""
+        popover = getattr(self, "help_popover", None)
+        if popover is not None:
+            # Leaving: do not pull focus back to the old button.
+            self.generation += 1
+            popover.popdown()
+        self.render()
 
     def _protected_boot(self):
         if self.w.protected_boot_text:
@@ -1654,6 +1761,21 @@ class AccessibleWizard:
         if self._remember_key_press(event):
             return True
         key = event.keyval
+        popover = getattr(self, "help_popover", None)
+        if popover is not None and key == Gdk.KEY_F10:
+            # #175: F10 opens or closes Help & settings on every screen.
+            if popover.get_visible():
+                popover.popdown()
+            else:
+                self._show_help_menu()
+            return True
+        if popover is not None and popover.get_visible():
+            # The open menu owns the keyboard: Esc closes it; Tab, arrows,
+            # Enter and Space act inside it and never on the screen behind.
+            if key == Gdk.KEY_Escape:
+                popover.popdown()
+                return True
+            return False
         if key in (Gdk.KEY_l, Gdk.KEY_L) and self.w.screen == Screen.METHOD:
             self.w.open_limits()
             self.render()

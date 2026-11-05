@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons', '_help_popup', '_help_button')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1662,6 +1662,18 @@ class TkWizard:
             # #159: method cards whose details are open (view only).
             self._method_more: set[MethodId] = set()
             self._method_more_buttons: dict[MethodId, _Button] = {}
+            # #175: Help & settings menu. View state only; opening it never
+            # changes the wizard.
+            self._help_open = False
+            self._help_view = "menu"
+            self._help_screen: Optional[Screen] = None
+            self._help_popup: Optional[tk.Frame] = None
+            self._help_button: Optional[_Button] = None
+            self._help_keep_focus = ""
+            self._help_prior_focus = ""
+            self._help_focus_key = ""
+            self._help_pos: Optional[tuple] = None
+            self._footer_hint = ""
             self._body_inner: Optional[tk.Frame] = None
             self._body_canvas: Optional[tk.Canvas] = None
             self._body_follow_focus = True
@@ -2524,6 +2536,8 @@ class TkWizard:
             self._kbd_focus: Optional[tuple] = None
             self._layout_keys_used = False  # #142
         assert self._body is not None and self._footer is not None
+        self._help_prior_focus = self._help_focused_key()
+        self._footer_hint = C.HINT_SPLASH if self.w.screen == Screen.SPLASH else ""
         self._done_refocus = ""
         if self.w.screen == Screen.DONE and getattr(self, "_shown", None) == Screen.DONE:
             # Live report-USB status (#135) redraws Done on its own; keep the
@@ -2635,8 +2649,13 @@ class TkWizard:
             self._diagnostic(diagnostic_view)
         else:
             dispatch[screen]()
+        if not self._footer.winfo_children():
+            # #175: splash and the short status screens have no footer;
+            # Help & settings still sits in the same place.
+            self._help_footer()
         self._draw_header()
         self._draw_strip()
+        self._sync_help_menu()
         _drain_retired_native()
         self._shown = screen
         self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
@@ -3357,6 +3376,7 @@ class TkWizard:
         row: Back/secondary left and the primary action right.
         Buttons pack into ``row._left`` / ``row._right``."""
         assert self._footer is not None
+        self._footer_hint = hint
         col = self._column(self._footer, fill_height=False, bg=FOOTER_BG)
         assist = tk.Frame(col, bg=FOOTER_BG)
         assist.pack(fill=tk.X, pady=(0, 4))
@@ -3367,7 +3387,7 @@ class TkWizard:
         tool_row.pack(anchor="w")
         tool_width = 0
 
-        def utility(text: str, command: Callable[[], None]) -> None:
+        def utility(text: str, command: Callable[[], None]) -> _Button:
             nonlocal tool_row, tool_width
             button = _Button(tool_row, text=text, font=self.font_s, command=command,
                              variant="quiet", compact=True)
@@ -3383,36 +3403,25 @@ class TkWizard:
                                  variant="quiet", compact=True)
             button.pack(side=tk.LEFT, padx=(0, 4))
             tool_width += width
+            return button
 
-        if self.w.screen == Screen.METHOD:
-            utility(C.BTN_ADVANCED, self._nav(self.w.open_advanced))
-        if self.w.can_open_keyboard and self.w.screen != Screen.KEYBOARD:
-            utility(C.KEYBOARD_UTILITY, self._nav(self.w.open_keyboard))
-        if self.w.screen not in {
-            Screen.SPLASH, Screen.KEYBOARD, Screen.WORKING, Screen.STOPPING,
-            Screen.CHECKING, Screen.REFRESHING, Screen.DONE, Screen.SHUTDOWN_CONFIRM,
-            Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED, Screen.LIMITS,
-            Screen.DISK_HELP, Screen.REPORT_HELP,
-        }:
-            utility(
-                f"{C.TEXT_SIZE_UTILITY}: {C.TEXT_SIZE_LABELS.get(self.w.text_size, C.TEXT_SIZE_STANDARD)}",
-                self._cycle_text_size,
-            )
+        # #175: Help & settings first, in the same place on every screen.
+        # Text size, language and keyboard, sounds, report help and Advanced
+        # live in it instead of coming and going in this strip.
+        self._help_button = utility(C.MENU_TITLE, self._toggle_help_menu)
+        self._help_button._beamo_help_menu = True  # type: ignore[attr-defined]
         if self.w.refresh_offered:
             # #136: not on What/Owner (no disk list yet); guarded from
             # Confirm, Method and Review by the Check disks again dialog.
             utility(C.BTN_REFRESH_UTILITY, self._click_refresh)
         if self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM:
-            if self.w.can_open_report_help:
-                utility(C.REPORT_HELP_TITLE, self._nav(self.w.open_report_help))
             if sys.platform.startswith("linux"):
                 utility(C.SCREEN_READER_VIEW, self._click_accessible)
         if self.w.can_open_diagnostic:
             utility(C.DIAGNOSTIC_TITLE, self._nav(self.w.open_diagnostic))
         if self.w.screen == Screen.DONE:
-            # Settings for this screen (#135): sounds live with the other
-            # utilities, reachable by Tab like every footer control.
-            utility(self.w.sound_toggle_text, self._nav(self.w.toggle_sounds))
+            # #135: hear the result again beside the footer tools; the
+            # Sounds on/off setting is in Help & settings (#175).
             utility(C.SOUND_HEAR_AGAIN, self._nav(self.w.request_hear_outcome_sound))
         if self.w.screen == Screen.DONE and not self.w.preview:
             reason = self.w.done_actions_reason
@@ -5096,6 +5105,267 @@ class TkWizard:
                           self._click_diagnostic_action,
                           enabled=not view.busy)
 
+    # -- Help & settings (#175) ----------------------------------------------
+
+    def _help_footer(self) -> None:
+        """Footerless screens (splash, short status screens): just the menu."""
+        assert self._footer is not None
+        col = self._column(self._footer, fill_height=False, bg=FOOTER_BG)
+        row = tk.Frame(col, bg=FOOTER_BG)
+        row.pack(fill=tk.X, pady=(4, 4))
+        button = _Button(row, text=C.MENU_TITLE, font=self.font_s,
+                         command=self._toggle_help_menu, variant="quiet", compact=True)
+        button._beamo_help_menu = True  # type: ignore[attr-defined]
+        button.pack(side=tk.LEFT)
+        self._help_button = button
+
+    def _toggle_help_menu(self) -> None:
+        if getattr(self, "_help_open", False):
+            self._close_help_menu()
+        else:
+            self._open_help_menu()
+
+    def _open_help_menu(self, focus_key: str = "") -> None:
+        """Open over the current screen. Reads the menu; changes nothing."""
+        if getattr(self, "_ui_dead", False):
+            return
+        self._help_open = True
+        self._help_view = "menu"
+        self._help_screen = self.w.screen
+        self._build_help_menu(focus_key)
+
+    def _close_help_menu(self, *, refocus: bool = True) -> None:
+        popup = getattr(self, "_help_popup", None)
+        self._help_popup = None
+        self._help_open = False
+        self._help_view = "menu"
+        self._help_pos = None
+        self._help_focus_key = ""
+        if popup is not None:
+            try:
+                popup.destroy()
+            except tk.TclError:
+                pass
+        if refocus:
+            # Focus returns to the control that opened the menu.
+            button = getattr(self, "_help_button", None)
+            try:
+                if button is not None and button.winfo_exists():
+                    button.focus_set()
+            except tk.TclError:
+                pass
+
+    def _help_back(self) -> None:
+        self._help_view = "menu"
+        from beamo_wipe import help_menu as _menu
+
+        self._build_help_menu(_menu.SHORTCUTS)
+
+    def _in_help_menu(self, widget) -> bool:
+        popup = getattr(self, "_help_popup", None)
+        while widget is not None and popup is not None:
+            if widget is popup:
+                return True
+            widget = getattr(widget, "master", None)
+        return False
+
+    def _help_controls(self) -> list:
+        popup = getattr(self, "_help_popup", None)
+        found: list = []
+
+        def visit(widget) -> None:
+            if isinstance(widget, _Button) and widget._enabled:
+                found.append(widget)
+            for child in widget.winfo_children():
+                visit(child)
+
+        if popup is not None:
+            try:
+                visit(popup)
+            except tk.TclError:
+                return []
+        return found
+
+    def _help_focused_key(self) -> str:
+        # Tracked by the items' own FocusIn: Tk reports focus late on some
+        # window managers, and a redraw must not move it to the first item.
+        if not getattr(self, "_help_open", False):
+            return ""
+        return str(getattr(self, "_help_focus_key", ""))
+
+    def _remember_help_focus(self, key: str, _event: object = None) -> None:
+        self._help_focus_key = key
+
+    def _help_key(self, event) -> str:
+        """Keys while the menu is open: move within it; nothing else acts."""
+        controls = self._help_controls()
+        keysym = event.keysym
+        if keysym in ("Up", "Down", "Tab", "ISO_Left_Tab", "Home", "End") and controls:
+            try:
+                focused = self.root.focus_get()
+            except (KeyError, tk.TclError):
+                focused = None
+            index = next((i for i, c in enumerate(controls) if c is focused), -1)
+            if keysym == "Home":
+                index = 0
+            elif keysym == "End":
+                index = len(controls) - 1
+            else:
+                back = keysym in ("Up", "ISO_Left_Tab") or (
+                    keysym == "Tab" and bool(getattr(event, "state", 0) & 0x1)
+                )
+                index = (index + (-1 if back else 1)) % len(controls) if index >= 0 else 0
+            controls[index].focus_set()
+        return "break"
+
+    def _help_shortcut_lines(self) -> list[str]:
+        lines = []
+        hint = getattr(self, "_footer_hint", "")
+        if hint:
+            lines.append(hint)
+        lines.append(C.MENU_SHORTCUTS_COMMON)
+        if self.w.refresh_offered:
+            lines.append(C.MENU_SHORTCUTS_REFRESH)
+        if sys.platform.startswith("linux") and self.w.can_refresh:
+            lines.append(C.MENU_SHORTCUTS_READER)
+        lines.append(C.MENU_SHORTCUTS_MENU)
+        return lines
+
+    def _build_help_menu(self, focus_key: str = "") -> None:
+        old = getattr(self, "_help_popup", None)
+        if old is not None:
+            try:
+                old.destroy()
+            except tk.TclError:
+                pass
+        popup = tk.Frame(self.root, bg=SURFACE, bd=0, highlightthickness=1,
+                         highlightbackground=BORDER_STRONG, highlightcolor=BORDER_STRONG)
+        popup._beamo_help_popup = True  # type: ignore[attr-defined]
+        self._help_popup = popup
+        inner = tk.Frame(popup, bg=SURFACE)
+        inner.pack(fill=tk.BOTH, padx=14, pady=(8, 10))
+        wrap = max(220, min(440, self.lay.content_w - 120))
+        targets: dict = {}
+        if getattr(self, "_help_view", "menu") == "shortcuts":
+            tk.Label(inner, text=C.MENU_SHORTCUTS, font=self.font_bold, fg=INK, bg=SURFACE,
+                     anchor="w").pack(fill=tk.X)
+            for line in self._help_shortcut_lines():
+                self._p(inner, line, font=self.font_s, bg=SURFACE, wraplength=wrap,
+                        flow=False).pack(fill=tk.X, pady=(4, 0))
+            back = _Button(inner, text=C.MENU_BACK, command=self._help_back,
+                           font=self.font_s_bold, variant="secondary", compact=True)
+            back._beamo_help_item = "back"  # type: ignore[attr-defined]
+            back.pack(anchor="w", pady=(10, 0))
+            targets["back"] = back
+        else:
+            tk.Label(inner, text=C.MENU_TITLE, font=self.font_bold, fg=INK, bg=SURFACE,
+                     anchor="w").pack(fill=tk.X)
+            for item in self.w.help_menu():
+                button = _Button(inner, text=item.label, command=partial(self._help_activate, item.key),
+                                 font=self.font_s_bold, variant="ghost", compact=True,
+                                 enabled=item.enabled)
+                button._beamo_help_item = item.key  # type: ignore[attr-defined]
+                button.pack(anchor="w", pady=(2, 0))
+                targets[item.key] = button
+                if not item.enabled and item.reason:
+                    reason = self._p(inner, item.reason, font=self.font_meta, fg=MUTED, bg=SURFACE,
+                                     wraplength=wrap, flow=False)
+                    reason._beamo_help_reason = item.key  # type: ignore[attr-defined]
+                    reason.pack(fill=tk.X, padx=(12, 0))
+            close = _Button(inner, text=C.MENU_CLOSE, command=self._close_help_menu,
+                            font=self.font_s_bold, variant="secondary", compact=True)
+            close._beamo_help_item = "close"  # type: ignore[attr-defined]
+            close.pack(anchor="w", pady=(8, 0))
+            targets["close"] = close
+        for key, control in targets.items():
+            control.bind("<FocusIn>", partial(self._remember_help_focus, key), add="+")
+        popup.bind("<Configure>", lambda _e: self._place_help_menu(), add="+")
+        self._help_pos = None
+        self._place_help_menu()
+        try:
+            self.root.after_idle(self._place_help_menu)
+        except tk.TclError:
+            pass
+        target = targets.get(focus_key)
+        if target is None or not target._enabled:
+            target = next((c for c in targets.values() if c._enabled), None)
+        if target is not None:
+            self._help_focus_key = str(getattr(target, "_beamo_help_item", ""))
+            target.focus_set()
+
+            def refocus(control=target) -> None:
+                # A screen redraw may queue its own focus; the open menu keeps it.
+                try:
+                    if (getattr(self, "_help_open", False) and control.winfo_exists()
+                            and self._in_help_menu(control)):
+                        control.focus_set()
+                except tk.TclError:
+                    pass
+
+            try:
+                self.root.after_idle(refocus)
+            except tk.TclError:
+                pass
+
+    def _place_help_menu(self) -> None:
+        """Above the Help & settings button, kept inside the window."""
+        popup = getattr(self, "_help_popup", None)
+        if popup is None:
+            return
+        try:
+            root_w, root_h = self.root.winfo_width(), self.root.winfo_height()
+            req_w, req_h = popup.winfo_reqwidth(), popup.winfo_reqheight()
+            button = getattr(self, "_help_button", None)
+            if button is not None and button.winfo_exists() and button.winfo_ismapped():
+                x = button.winfo_rootx() - self.root.winfo_rootx()
+                top = button.winfo_rooty() - self.root.winfo_rooty()
+            else:
+                x = max(8, (root_w - self.lay.content_w) // 2)
+                top = root_h - 8
+            x = max(8, min(x, root_w - req_w - 8))
+            y = max(8, top - 6 - req_h)
+            if (x, y) != getattr(self, "_help_pos", None):
+                self._help_pos = (x, y)
+                popup.place(x=x, y=y)
+            popup.lift()
+        except tk.TclError:
+            pass
+
+    def _sync_help_menu(self) -> None:
+        """After a redraw: keep the open menu current, or close it when the
+        screen changed under it."""
+        if not getattr(self, "_help_open", False):
+            return
+        if self.w.screen != getattr(self, "_help_screen", None):
+            self._close_help_menu(refocus=False)
+            return
+        key = getattr(self, "_help_keep_focus", "") or getattr(self, "_help_prior_focus", "")
+        self._help_keep_focus = ""
+        self._build_help_menu(key)
+
+    def _help_activate(self, key: str) -> None:
+        from beamo_wipe import help_menu as _menu
+
+        if not getattr(self, "_help_open", False) or getattr(self, "_ui_dead", False):
+            return
+        if key == _menu.SHORTCUTS:
+            self._help_view = "shortcuts"
+            self._build_help_menu("back")
+            return
+        if not self.w.activate_help_item(key):
+            self._build_help_menu(key)
+            return
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        if key in _menu.STAYS_OPEN:
+            # A setting: the menu stays open on the same item.
+            self._help_keep_focus = key
+            if key == _menu.TEXT_SIZE:
+                self._sync_layout()
+            self._draw()
+            return
+        self._close_help_menu(refocus=False)
+        self._draw()
+
     def _click_diagnostic_action(self) -> None:
         self.w.diagnostic_action(background=True)
 
@@ -6352,6 +6622,14 @@ class TkWizard:
             return "break"
         self._escape_held = True
         self._escape_release_time = None
+        if getattr(self, "_help_open", False):
+            # #175: Esc closes the menu (or its shortcuts page) and nothing
+            # else; it never goes back or opens Stop from here.
+            if getattr(self, "_help_view", "menu") == "shortcuts":
+                self._help_back()
+            else:
+                self._close_help_menu()
+            return "break"
         if self.w.screen == Screen.SPLASH:
             self.w.skip_splash()
             self._draw()
@@ -6521,6 +6799,14 @@ class TkWizard:
     def _on_return(self, _event=None) -> str:
         # The same physical Enter must never advance several safety screens.
         if not self._claim_return_press(_event):
+            return "break"
+        if getattr(self, "_help_open", False):
+            # #175: Enter presses only a menu control with focus. It never
+            # reaches the screen's primary action while the menu is open.
+            focused = self.root.focus_get()
+            if (isinstance(focused, _Button) and focused._enabled
+                    and self._in_help_menu(focused)):
+                focused._command()
             return "break"
         screen = self.w.screen
         before = screen
@@ -6751,6 +7037,11 @@ class TkWizard:
 
     def _on_key(self, event) -> Optional[str]:
         getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        if event.keysym == "F10":
+            self._toggle_help_menu()  # #175: on every screen, splash included
+            return "break"
+        if getattr(self, "_help_open", False):
+            return self._help_key(event)
         if event.keysym == "F8" and sys.platform.startswith("linux") and self.w.can_refresh:
             self._click_accessible()
             return "break"

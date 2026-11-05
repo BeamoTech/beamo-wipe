@@ -377,6 +377,16 @@ def journey_step_for(
     return None
 
 
+# Screens that may open the keyboard screen or report help (no erase
+# requested yet). Shared with the preview's Help & settings rules (#175).
+KEYBOARD_OPEN_SCREENS = frozenset({
+    Screen.KEYBOARD, Screen.WHAT, Screen.OWNER, Screen.PICK, Screen.PICK_EMPTY,
+    Screen.PICK_BLOCKED, Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE,
+    Screen.ADVANCED, Screen.LIMITS, Screen.REPORT_HELP, Screen.DISK_HELP,
+})
+REPORT_HELP_SCREENS = frozenset({Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.ADVANCED})
+
+
 class Wizard:
     @property
     def screen(self) -> Screen:
@@ -1102,27 +1112,75 @@ class Wizard:
     @property
     def can_open_keyboard(self) -> bool:
         return (
-            self.screen
-            in {
-                Screen.KEYBOARD,
-                Screen.WHAT,
-                Screen.OWNER,
-                Screen.PICK,
-                Screen.PICK_EMPTY,
-                Screen.PICK_BLOCKED,
-                Screen.CONFIRM,
-                Screen.METHOD,
-                Screen.LAST_CHANCE,
-                Screen.ADVANCED,
-                Screen.LIMITS,
-                Screen.REPORT_HELP,
-                Screen.DISK_HELP,
-            }
+            self.screen in KEYBOARD_OPEN_SCREENS
             and self._wipe_request is None
             and not self.wants_shutdown
             and not self._startup_blocked
             and not self._diagnostic_busy
         )
+
+    @property
+    def can_open_advanced(self) -> bool:
+        """Advanced opens from the method step only, before an erase is
+        requested. #175 keeps this limit for the Help & settings menu."""
+        return (
+            self.screen == Screen.METHOD
+            and self._wipe_request is None
+            and not self.wants_shutdown
+        )
+
+    def help_menu(self, *, text_size_supported: bool = True):
+        """#175: the Help & settings items for this screen, in fixed order.
+
+        Reading the menu changes nothing. Items that do not apply here are
+        disabled with a reason instead of disappearing.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        with self._lock:
+            return _menu.items(
+                screen=self.screen,
+                text_size=self.text_size,
+                sounds_label=self.sound_toggle_text,
+                can_open_keyboard=self.can_open_keyboard,
+                can_open_report_help=self.can_open_report_help,
+                can_open_advanced=self.can_open_advanced,
+                sound_available=not (
+                    self.screen == Screen.WORKING and self.audio_available is False
+                ),
+                after_erase_started=(
+                    self._wipe_request is not None or self.wipe_result is not None
+                ),
+                text_size_supported=text_size_supported,
+            )
+
+    def activate_help_item(self, key: str, *, text_size_supported: bool = True) -> bool:
+        """Run one enabled Help & settings item; True when it acted.
+
+        Only the existing guarded actions are reachable (text size, the
+        keyboard screen, sounds, report help, Advanced); none of them can
+        start, confirm or stop an erase. A disabled or stale item does
+        nothing. Keyboard shortcuts and High contrast change no state.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        with self._lock:
+            item = _menu.find(self.help_menu(text_size_supported=text_size_supported), key)
+            if item is None or not item.enabled:
+                return False
+            if key == _menu.TEXT_SIZE:
+                self.cycle_text_size()
+            elif key == _menu.LANGUAGE:
+                self.open_keyboard()
+            elif key == _menu.SOUNDS:
+                self.toggle_sounds()
+            elif key == _menu.REPORT_HELP:
+                self.open_report_help()
+            elif key == _menu.ADVANCED:
+                self.open_advanced()
+            else:
+                return False
+            return True
 
     def open_keyboard(self) -> None:
         with self._lock:
@@ -3675,7 +3733,7 @@ class Wizard:
 
     @property
     def can_open_report_help(self) -> bool:
-        return self.screen in {Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.ADVANCED} and self._wipe_request is None
+        return self.screen in REPORT_HELP_SCREENS and self._wipe_request is None
 
     def open_report_help(self) -> None:
         with self._lock:

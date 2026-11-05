@@ -123,7 +123,9 @@ every sound card. No test uses host disks or audio-device passthrough.
 
 ## Sound check
 
-The actions footer on every screen starts with a Sound check button. It
+The actions footer on every screen starts with the Help & settings menu
+button (#175; F10 opens it; unavailable items are focusable labels that
+say why), then a Sound check button. Sound check
 opens a dialog that lists the sound outputs in plain words (Speakers,
 Headphones, HDMI sound, and so on, with the technical device name kept
 as each choice's screen-reader description), shows the volume and mute

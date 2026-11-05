@@ -1524,7 +1524,9 @@ def test_report_help_rendered_preference_and_layout(ui, wanted, size, origin):
         for child in widget.winfo_children():
             yield from widgets(child)
 
-    link = _button_named(app, C.REPORT_HELP_TITLE)
+    app._open_help_menu()  # #175: report help is in Help & settings
+    app.root.update_idletasks()
+    link = _button_named(app, C.MENU_REPORT_HELP)
     link._command()
     app.root.update_idletasks()
     reader = next(w for w in widgets(app.root) if isinstance(w, tk.Text))
@@ -2649,8 +2651,12 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         _await_sound(wiz)
     assert calls == [sound_module.KIND_ATTENTION]
     assert wiz.result_view.message == message_before
-    _button_named(app, C.SOUND_TOGGLE_ON)
+    # #175: Sounds on/off is in Help & settings; Hear again stays.
     replay = _button_named(app, C.SOUND_HEAR_AGAIN)
+    app._open_help_menu()
+    app.root.update_idletasks()
+    _button_named(app, C.SOUND_TOGGLE_ON)
+    app._close_help_menu()
     with patch.object(
         sound_module, "play_test",
         lambda kind: calls.append(("hear", kind))

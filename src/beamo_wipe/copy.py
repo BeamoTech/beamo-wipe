@@ -238,6 +238,34 @@ TEXT_SIZE_UTILITY = "Text size"
 TEXT_SIZE_CONSOLE = (
     "Text size is for the graphical screens. This text console stays this size."
 )
+
+# #175: one fixed Help & settings menu on every screen. Items that do not
+# apply here stay listed, disabled, with one of the reasons below.
+MENU_TITLE = 'Help & settings'
+MENU_LANGUAGE = 'Language and keyboard'
+MENU_HIGH_CONTRAST = 'High contrast'
+MENU_REPORT_HELP = 'Report help'
+MENU_SHORTCUTS = 'Keyboard shortcuts'
+MENU_CLOSE = 'Close'
+MENU_BACK = 'Back to the menu'
+MENU_REASON_HERE = 'This screen is open now.'
+MENU_REASON_FINAL_CHECK = 'Not on the final check. Go back to change it.'
+MENU_REASON_BUSY = 'Wait for this step to finish.'
+MENU_REASON_LANGUAGE_NEXT = 'The next screen sets the language and keyboard.'
+MENU_REASON_LANGUAGE_BEFORE = 'Only before an erase starts.'
+MENU_REASON_NOT_HERE = 'Not available on this screen.'
+MENU_REASON_NO_SOUND = 'No sound output was found.'
+MENU_REASON_NOT_YET = 'Not available in this version.'
+MENU_REASON_REPORT_HELP = 'Opens from the first screens or the method step, before an erase.'
+MENU_REASON_ADVANCED = 'Opens from the method step.'
+MENU_KEY = 'F10: Help & settings'
+MENU_SHORTCUTS_COMMON = 'Tab moves between controls. Enter or Space presses the one with focus.'
+MENU_SHORTCUTS_MENU = 'F10 opens or closes this menu. Esc closes it.'
+MENU_SHORTCUTS_REFRESH = 'F5 checks disks again.'
+MENU_SHORTCUTS_READER = 'F8 opens the screen-reader view.'
+CON_MENU_KEYS = 'Up/Down or 1–7 chooses. Enter selects. Esc closes.'
+CON_MENU_HINT = 'Type MENU for Help & settings.'
+CON_MENU_PROMPT = 'Number (Enter closes): '
 TEXT_SIZE_LABELS = {
     "standard": TEXT_SIZE_STANDARD,
     "large": TEXT_SIZE_LARGE,

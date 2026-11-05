@@ -630,9 +630,9 @@ def test_tk_footer_has_two_actions_in_every_result_state(done_ui, tk_case, state
     assert [_text(b) for b in footer] == [C.BTN_ERASE_ANOTHER, C.BTN_SHUTDOWN]
     texts = [_text(b) for b in _buttons(app, app._footer)]
     assert C.BTN_SAVE_REPORT not in texts and C.RETRY_SAVE not in texts
-    # Sounds live with the footer's settings utilities, not as actions.
+    # #175: Help & settings (with Sounds on/off) and Hear again are tools.
     utilities = [b for b in _buttons(app, app._footer) if b._variant == "quiet"]
-    assert [_text(b) for b in utilities] == [wiz.sound_toggle_text, C.SOUND_HEAR_AGAIN]
+    assert [_text(b) for b in utilities] == [C.MENU_TITLE, C.SOUND_HEAR_AGAIN]
     # Every greyed control has its reason on screen.
     labels = _mapped_labels(app)
     for button in _buttons(app):
@@ -705,13 +705,16 @@ def test_tk_sounds_are_reachable_by_tab_and_keep_focus_when_toggled(done_ui, tk_
             break
         if hasattr(current, "_label"):
             seen.append(_text(current))
-    assert wiz.sound_toggle_text in seen and C.SOUND_HEAR_AGAIN in seen
-    toggle = next(b for b in _buttons(app, app._footer) if _text(b) == wiz.sound_toggle_text)
-    toggle.focus_force()
+    # #175: Sounds on/off is in Help & settings, reached by Tab like Hear again.
+    assert C.MENU_TITLE in seen and C.SOUND_HEAR_AGAIN in seen
+    app._open_help_menu("sounds")
     app.root.update()
+    toggle = app.root.focus_lastfor()
+    assert _text(toggle) == wiz.sound_toggle_text
     before = wiz.sounds_enabled
     toggle._command()
-    app.root.update()
+    for _ in range(4):
+        app.root.update()
     assert wiz.sounds_enabled is not before
     assert _text(app.root.focus_lastfor()) == wiz.sound_toggle_text
 

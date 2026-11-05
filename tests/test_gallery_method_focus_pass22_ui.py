@@ -90,26 +90,23 @@ def test_text_size_utility_keeps_focus():
     if node is None:
         pytest.skip("Node.js unavailable")
     (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
-    start = script.index('  if (!["splash", "keyboard", "working"')
-    end = script.index('  if (screen === "last") {\n    const focused', start)
+    # #175: text size is in Help & settings; the redraw keeps focus on it.
+    start = script.index("let helpOpen = false")
+    end = script.index("function renderHelpTrigger", start)
     handler = script[start:end]
     program = """
 const P = {textSizes: [{id: 'standard', label: 'Standard'},
-  {id: 'large', label: 'Large'}], textSizeUtility: 'Text size'};
-let screen = 'owner', textSize = 'standard', active = {id: 'body'};
-let oldButton;
-const newButton = {focus() { active = this; }};
-const utilities = {append(button) { oldButton = button; }};
-const document = {getElementById(id) {
-  return id === 'text-size-utility' ? newButton : null;
-}};
-function btn(_label, onclick) { return {onclick, focus() { active = this; }}; }
-function draw() { active = {id: 'body'}; }
+  {id: 'large', label: 'Large'}], textSizeUtility: 'Text size',
+  sounds: {toggleOn: 'Sounds: on', toggleOff: 'Sounds: off'},
+  helpMenu: {states: {owner: [{key: 'text_size', label: 'Text size: Standard', enabled: true, reason: ''}]}}};
+let screen = 'owner', textSize = 'standard', soundsOn = false;
+let keyboardFrom = null, reportHelpFrom = 'owner';
+function draw() {}
 """ + handler + """
-oldButton.focus();
-oldButton.onclick();
-if (textSize !== 'large' || active !== newButton)
-  throw Error('text-size utility lost keyboard focus');
+openHelp();
+activateHelp('text_size');
+if (textSize !== 'large' || !helpOpen || helpFocus !== 'text_size')
+  throw Error('text size did not keep the menu open on its item');
 """
     result = subprocess.run([node, "-e", program], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr

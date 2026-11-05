@@ -134,7 +134,8 @@ def test_what_keeps_enter_action_on_80x24(monkeypatch):
     assert C.OWNER_CHECKBOX in all_text or "written permission" in all_text
     # #136: no Check disks again before there is a disk list.
     assert "F5: Check disks again" not in shown
-    assert "R: Need a report?" in shown
+    # #175: report help is in Help & settings (F10); R still opens it.
+    assert C.MENU_KEY in shown
 
 
 def test_pick_keeps_selection_and_action_visible_with_long_list(monkeypatch):
@@ -182,7 +183,7 @@ def test_method_screen_shows_overwrite_and_verification(method, monkeypatch):
         assert spec.description in shown
     assert "L: limits" in shown
     assert "F5: Check disks again" in shown
-    assert "R: Need a report?" in shown
+    assert C.MENU_KEY in shown  # #175: report help is in Help & settings
 
 
 @pytest.mark.parametrize("method", list(METHODS))

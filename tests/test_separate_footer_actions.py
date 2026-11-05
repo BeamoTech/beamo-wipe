@@ -27,10 +27,8 @@ def test_tk_footer_keeps_hints_out_of_the_action_row():
     assert "_hint_bar(mid" not in source
     assert "assist" in source
     for marker in (
-        "BTN_ADVANCED",
-        "KEYBOARD_UTILITY",
+        "MENU_TITLE",  # #175: Advanced, keyboard and report help are in it
         "BTN_REFRESH_UTILITY",
-        "REPORT_HELP_TITLE",
         "SCREEN_READER_VIEW",
         "DIAGNOSTIC_TITLE",
         "ANOTHER_HINT",
@@ -54,7 +52,7 @@ def test_gallery_hint_lives_in_assist_not_action_row():
     assert 'id="btnsR"' in footrow_html
     assert re.search(r"\.footrow\s*\{[^}]*justify-content:\s*space-between", html)
     assert ".fhint { order: 3" not in html
-    assert "utilities.prepend(btn(P.buttons.advanced" in html
+    assert "renderHelpTrigger(utilities);" in html  # #175: Advanced is in the menu
     assert 'id="adv"' not in html
     # Recovery/support chrome on main stays in the gallery body, not flattened.
     assert "stop_confirm" in html
@@ -199,13 +197,15 @@ def test_method_assist_keeps_advanced_refresh_and_report_help(ui):  # noqa: F811
     wiz, app = ui()
     _drive_to(wiz, app, Screen.METHOD)
     app.root.update()
-    advanced = _button_named(app, C.BTN_ADVANCED)
+    # #175: Advanced and report help are in Help & settings on Method.
+    menu = _button_named(app, C.MENU_TITLE)
     refresh = _button_named(app, C.BTN_REFRESH_UTILITY)
-    report = _button_named(app, C.REPORT_HELP_TITLE)
     back = _button_named(app, C.BTN_BACK)
     primary = app._primary
     assert primary is not None
-    for control in (advanced, refresh, report):
+    enabled = {item.key for item in wiz.help_menu() if item.enabled}
+    assert {"advanced", "report_help"} <= enabled
+    for control in (menu, refresh):
         assert control.winfo_ismapped()
         assert control.winfo_rooty() + control.winfo_height() <= back.winfo_rooty() + 2
     nxt = back.tk_focusNext()

@@ -92,7 +92,7 @@ def test_footer_is_a_white_bar_with_quiet_tools(tk_app):  # noqa: F811
     buttons = [w for w in _descendants(app._footer) if isinstance(w, tkui._Button)]
     tools = [b for b in buttons if b._variant == "quiet"]
     assert tools and any(
-        b.itemcget(b._label, "text") == C.KEYBOARD_UTILITY for b in tools
+        b.itemcget(b._label, "text") == C.MENU_TITLE for b in tools  # #175
     )
     # The primary action keeps its strong fill.
     assert any(b._variant == "primary" for b in buttons)

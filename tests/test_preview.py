@@ -183,9 +183,10 @@ def test_advanced_button_redraws_via_nav():
 
     from beamo_wipe.ui.tk_wizard import TkWizard
 
-    source = inspect.getsource(TkWizard._footer_shell)
-    assert "self.w.screen == Screen.METHOD" in source
-    assert "_nav(self.w.open_advanced)" in source
+    # #175: Advanced opens from Help & settings, which redraws after it.
+    source = inspect.getsource(TkWizard._help_activate)
+    assert "self.w.activate_help_item(key)" in source
+    assert "self._draw()" in source
 
 
 def test_last_chance_hint_does_not_say_enter_continues():

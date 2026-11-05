@@ -436,16 +436,143 @@ def _keep_selected_visible(
 
 
 def _chrome_extra(wizard: Wizard) -> list[str]:
+    # #175: report help and the keyboard are in Help & settings (F10); their
+    # R and K keys still work and are listed under Keyboard shortcuts there.
     bits = []
     if wizard.can_open_diagnostic:
         bits.append(C.CON_DIAGNOSTIC)
-    if wizard.can_open_report_help:
-        bits.append(C.CON_REPORT_HELP)
     if wizard.refresh_offered:
         bits.append(C.CON_REFRESH.format(note=C.REFRESH_UTILITY_NOTE))
-    if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
-        bits.append(C.CON_KEYBOARD)
     return bits
+
+
+def _help_menu_lines(wizard: Wizard, menu, index: int, view: str, width: int) -> list[str]:
+    """#175: the Help & settings page (or its shortcuts page) as text."""
+    if view == "shortcuts":
+        keys = list(_primary_footer(wizard, False)) + _chrome_extra(wizard)
+        if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
+            keys.append(C.CON_KEYBOARD)
+        if wizard.can_open_report_help:
+            keys.append(C.CON_REPORT_HELP)
+        keys.append(C.MENU_SHORTCUTS_MENU)
+        lines = _lines(C.MENU_SHORTCUTS, width) + [""]
+        for line in keys:
+            lines.extend(_lines(line, width) or [""])
+        lines.append("")
+        lines.extend(_lines(f"Enter/Esc: {C.MENU_BACK}", width))
+        return lines
+    lines = _lines(C.MENU_TITLE, width) + [""]
+    for number, item in enumerate(menu, 1):
+        mark = ">" if number - 1 == index else " "
+        wrapped = _lines(f"{number}. {item.spoken}", max(10, width - 5)) or [""]
+        # Continuation lines stay indented under the item, not like a new item.
+        lines.extend([f"{mark} {wrapped[0]}"] + [f"     {line}" for line in wrapped[1:]])
+    lines.append("")
+    lines.extend(_lines(C.CON_MENU_KEYS, width))
+    return lines
+
+
+def _help_menu(stdscr, wizard: Wizard) -> int:
+    """#175: Help & settings over the current screen until it is closed.
+
+    Returns the key that closed it (Esc, F10, Enter or a digit), or -1 when
+    the screen changed underneath. Items call the wizard's guarded actions
+    only; a disabled item shows its reason and does nothing. The wizard
+    keeps ticking, so an erase in progress is never paused by the menu.
+    """
+    from beamo_wipe import help_menu as _menu
+
+    _curses_opt("noecho")
+    _curses_opt("curs_set", 0)
+    stdscr.timeout(100)
+    screen = wizard.screen
+    index = 0
+    view = "menu"
+    try:
+        while not wizard.wants_shutdown and not wizard.wants_new_session:
+            wizard.tick()
+            if wizard.screen != screen:
+                return -1
+            menu = wizard.help_menu(text_size_supported=False)
+            index = min(index, len(menu) - 1)
+            stdscr.erase()
+            h, w = stdscr.getmaxyx()
+            h, w = max(2, h), max(20, w)
+            for y, line in enumerate(_help_menu_lines(wizard, menu, index, view, w)[:h]):
+                _add(stdscr, y, 0, line, curses.A_BOLD if y == 0 else curses.A_NORMAL)
+            stdscr.refresh()
+            ch = stdscr.getch()
+            if ch in (-1, KEY_RESIZE):
+                continue
+            if view == "shortcuts":
+                if ch == curses.KEY_F10:
+                    return ch
+                if ch in (27, curses.KEY_ENTER, 10, 13):
+                    view = "menu"
+                continue
+            if ch in (27, curses.KEY_F10):
+                return ch
+            if ch in (curses.KEY_UP, curses.KEY_BTAB):
+                index = (index - 1) % len(menu)
+                continue
+            if ch in (curses.KEY_DOWN, 9):
+                index = (index + 1) % len(menu)
+                continue
+            if ord("1") <= ch < ord("1") + len(menu):
+                index = ch - ord("1")
+            elif ch not in (curses.KEY_ENTER, 10, 13):
+                continue
+            item = menu[index]
+            if not item.enabled:
+                continue
+            if item.key == _menu.SHORTCUTS:
+                view = "shortcuts"
+                continue
+            if wizard.activate_help_item(item.key, text_size_supported=False) and not item.stays_open:
+                return ch
+        return -1
+    finally:
+        stdscr.nodelay(True)
+
+
+def _help_menu_holds(closed_by: int, enter_held: bool, escape_held: bool) -> tuple[bool, bool]:
+    """The key that closed the menu is still down: hold it like any other."""
+    if closed_by in (curses.KEY_ENTER, 10, 13):
+        enter_held = True
+    if closed_by == 27:
+        escape_held = True
+    return enter_held, escape_held
+
+
+def _plain_help_menu(wizard: Wizard) -> None:
+    """#175: Help & settings for the line console (type MENU)."""
+    from beamo_wipe import help_menu as _menu
+
+    menu = wizard.help_menu(text_size_supported=False)
+    print(C.MENU_TITLE)
+    for number, item in enumerate(menu, 1):
+        print(f"{number}. {item.spoken}")
+    answer = input(C.CON_MENU_PROMPT).strip()
+    _acknowledge_finish_sound(wizard)
+    if not answer.isdigit() or not 1 <= int(answer) <= len(menu):
+        return
+    item = menu[int(answer) - 1]
+    if not item.enabled:
+        print(item.reason)
+        return
+    if item.key == _menu.SHORTCUTS:
+        print(C.MENU_SHORTCUTS)
+        if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
+            print(C.CON_KEYBOARD)
+        if wizard.can_open_report_help:
+            print(C.CON_REPORT_HINT)
+        if wizard.can_open_diagnostic:
+            print(C.CON_DIAGNOSTIC_HINT)
+        if wizard.refresh_offered:
+            print(C.CON_REFRESH_HINT)
+        print(C.CON_MENU_HINT)
+        return
+    wizard.activate_help_item(item.key, text_size_supported=False)
 
 
 def _sounds_footer(wizard: Wizard, hear: str) -> str:
@@ -659,6 +786,9 @@ def _footer_lines(
     for line in _assist_footer(wizard, inventory_open):
         assist.extend(_lines(line, width) or [""])
     extra: list[str] = []
+    # #175: F10 opens Help & settings on every screen; its hint comes first
+    # so it is the last optional line to drop on a short terminal.
+    bits = [C.MENU_KEY]
     if not inventory_open and wizard.screen not in {
         Screen.WORKING,
         Screen.CHECKING,
@@ -669,9 +799,8 @@ def _footer_lines(
         Screen.CONFIRM,
         Screen.KEYBOARD,
     }:
-        joined = "    ".join(_chrome_extra(wizard))
-        if joined:
-            extra.extend(_lines(joined, width))
+        bits.extend(_chrome_extra(wizard))
+    extra.extend(_lines("    ".join(bits), width))
     min_body = 8 if height >= 14 else 2
     if len(actions) > height - 1:
         actions = actions[-(height - 1):]
@@ -786,6 +915,8 @@ def _answer(wizard: Wizard, prompt: str) -> str:
         print(C.CON_DIAGNOSTIC_HINT)
     if wizard.can_open_report_help and confirm_word != "report":
         print(C.CON_REPORT_HINT)
+    if confirm_word != "menu":
+        print(C.CON_MENU_HINT)  # #175
     answer = input(prompt)
     _acknowledge_finish_sound(wizard)
     keyboard_command = answer.strip().upper()
@@ -803,6 +934,9 @@ def _answer(wizard: Wizard, prompt: str) -> str:
         raise _InventoryRefreshed
     if wizard.can_open_report_help and keyboard_command == "REPORT" and not names_confirm_token:
         wizard.open_report_help()
+        raise _InventoryRefreshed
+    if keyboard_command == "MENU" and not names_confirm_token:
+        _plain_help_menu(wizard)  # #175: never erases; guarded actions only
         raise _InventoryRefreshed
     if wizard.can_open_diagnostic and keyboard_command == "DIAGNOSTIC" and not names_confirm_token:
         wizard.open_diagnostic()
@@ -1851,6 +1985,12 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 }[ch]
                 limits_offset = max(0, limits_offset + delta)
                 continue
+            if ch == curses.KEY_F10:
+                # #175: Help & settings; typed token characters are untouched.
+                closed_by = _help_menu(stdscr, wizard)
+                enter_held, escape_held = _help_menu_holds(closed_by, enter_held, escape_held)
+                enter_quiet_since = escape_quiet_since = None
+                continue
             if ch == curses.KEY_F2 and wizard.can_open_keyboard:
                 # #155: Change on the layout hint. Typed keys stay the token.
                 wizard.open_keyboard()
@@ -2137,6 +2277,14 @@ def _loop(stdscr, wizard: Wizard) -> int:
             ):
                 wizard.arm_done_keyboard()
             time.sleep(0.08)
+            continue
+        if ch == curses.KEY_F10:
+            # #175: Help & settings on every screen. Its Enter or Esc stays
+            # held, so the same press cannot act on the screen behind it.
+            closed_by = _help_menu(stdscr, wizard)
+            enter_held, escape_held = _help_menu_holds(closed_by, enter_held, escape_held)
+            enter_quiet_since = escape_quiet_since = None
+            inventory_open = False
             continue
         if wizard.screen == Screen.SHUTDOWN_CONFIRM and ch in (ord("d"), ord("D")):
             _confirm_report_discard(stdscr, wizard)

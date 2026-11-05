@@ -438,6 +438,51 @@ def _progress_preview_payload() -> dict:
     return {"states": states, "demo": demo}
 
 
+# Preview screen names and the wizard screen whose menu rules they follow.
+_HELP_MENU_SCREENS = {
+    "splash": Screen.SPLASH, "keyboard": Screen.KEYBOARD, "what": Screen.WHAT,
+    "owner": Screen.OWNER, "pick": Screen.PICK, "empty": Screen.PICK_EMPTY,
+    "blocked": Screen.PICK_BLOCKED, "disk_help": Screen.DISK_HELP,
+    "confirm": Screen.CONFIRM, "method": Screen.METHOD, "advanced": Screen.ADVANCED,
+    "limits": Screen.LIMITS, "last": Screen.LAST_CHANCE, "working": Screen.WORKING,
+    "stop_confirm": Screen.WORKING, "stopping": Screen.STOPPING,
+    "stop_unconfirmed": Screen.DONE, "stopped": Screen.DONE, "done": Screen.DONE,
+    "shutdown_confirm": Screen.SHUTDOWN_CONFIRM, "refresh_confirm": Screen.REFRESH_CONFIRM,
+    "report_help": Screen.REPORT_HELP,
+}
+
+
+def _help_menu_payload() -> dict:
+    """#175: the same Help & settings items and rules as the live wizard."""
+    from beamo_wipe import help_menu as _menu
+    from beamo_wipe.wizard import KEYBOARD_OPEN_SCREENS, REPORT_HELP_SCREENS
+
+    states = {}
+    for name, screen in _HELP_MENU_SCREENS.items():
+        states[name] = [
+            {"key": item.key, "label": item.label, "enabled": item.enabled, "reason": item.reason}
+            for item in _menu.items(
+                screen=screen,
+                text_size="standard",
+                sounds_label=C.SOUND_TOGGLE_OFF,
+                can_open_keyboard=screen in KEYBOARD_OPEN_SCREENS,
+                can_open_report_help=screen in REPORT_HELP_SCREENS,
+                can_open_advanced=screen == Screen.METHOD,
+                after_erase_started=screen in {Screen.WORKING, Screen.STOPPING, Screen.DONE},
+            )
+        ]
+    return {
+        "title": C.MENU_TITLE,
+        "close": C.MENU_CLOSE,
+        "back": C.MENU_BACK,
+        "shortcutsTitle": C.MENU_SHORTCUTS,
+        "common": C.MENU_SHORTCUTS_COMMON,
+        "refresh": C.MENU_SHORTCUTS_REFRESH,
+        "menuKeys": C.MENU_SHORTCUTS_MENU,
+        "states": states,
+    }
+
+
 def gallery_html(lang: str = "en") -> str:
     """Render the click-through in one language (preview only)."""
     if not is_supported(lang):
@@ -656,6 +701,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "refreshCancel": C.BTN_REFRESH_CANCEL,
         "refreshButton": C.BTN_REFRESH,
         "refreshUtility": C.BTN_REFRESH_UTILITY,
+        "helpMenu": _help_menu_payload(),
         "whatLead": C.WHAT_LEAD,
         "what": list(C.owner_bullets()),
         "platforms": C.owner_platforms_line(),
@@ -1264,6 +1310,16 @@ _TEMPLATE = r"""<!DOCTYPE html>
   button.btn.ghost:disabled { background: transparent; color: var(--disabled-fg); cursor: not-allowed; }
   button.btn.ghost:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .utilities:empty { display: none; }
+  /* #175: Help & settings, above its button in the footer tools. */
+  .assist { position: relative; }
+  .helpmenu { position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 30; min-width: 260px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 120px); overflow-y: auto; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(15, 23, 42, .18); padding: 10px 14px; }
+  .helpmenu h2 { font-size: 15px; margin: 0 0 6px; }
+  .helpmenu button.btn.ghost { display: block; width: 100%; text-align: left; padding: 6px 10px; }
+  .helpmenu button[aria-disabled="true"] { color: var(--disabled-fg); cursor: not-allowed; }
+  .helpmenu button[aria-disabled="true"]:hover { background: transparent; }
+  .helpmenu .reason { display: block; font-size: 12px; color: var(--muted); margin: 0 0 4px 10px; }
+  .helpmenu p { font-size: 14px; margin: 4px 0; }
+  .helpmenu button.btn.secondary { margin-top: 8px; }
   section[aria-label] h2 { font-size: 14px; margin: 8px 0 4px; }
   .inventory-reader, .help-reader { white-space: pre-wrap; overflow: auto; padding: 12px 14px; font-size: 14px; line-height: 1.45; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); color: var(--ink); }
   .inventory-reader { max-height: 78px; margin-bottom: 10px; padding: 8px 12px; }
@@ -1842,7 +1898,10 @@ function draw() {
   const splash = screen === "splash";
   document.querySelector(".hdr").style.display = splash ? "none" : "";
   document.querySelector(".strip").style.display = splash ? "none" : "";
-  foot.style.display = splash ? "none" : "";
+  // #175: the splash footer keeps only Help & settings.
+  foot.style.display = "";
+  foot.querySelector(".footrow").style.display = splash ? "none" : "";
+  document.getElementById("hint").style.display = splash ? "none" : "";
   renderHint(P.hints.default);
   if (screen === "splash") {
     main.innerHTML = `<div class="splashwrap">
@@ -1919,7 +1978,12 @@ function draw() {
     bindMore();
     renderHint(P.hints.keyboard);
     btnsR.append(btn(P.buttons.continue, () => {
-      screen = keyboardFrom === "confirm" && selected ? "confirm" : "owner"; keyboardFrom = null; draw();
+      const from = keyboardFrom;
+      keyboardFrom = null;
+      // #175: back to the screen that opened it (Help & settings or Change).
+      screen = from === "confirm" ? (selected ? "confirm" : "owner")
+        : (from && !["keyboard", "splash", "what"].includes(from) ? from : "owner");
+      draw();
     }, "primary"));
   } else if (screen === "owner") {
     main.innerHTML = `<h1 class="sub">${P.titles.owner}</h1><p class="subtitle">${P.whatLead}</p><div class="cz"><div class="czc">
@@ -2313,12 +2377,8 @@ function draw() {
       <p class="small muted" id="soundsNote" role="status"></p>
       ${moreLink("more-detail")}</div>`;
     bindMore();
-    // #135: two footer actions; sounds sit with the settings utilities.
-    utilities.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
-      soundsOn = !soundsOn;
-      this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
-      document.getElementById("soundsNote").textContent = this.textContent;
-    }, "ghost"));
+    // #135: hear the result again in the footer tools; Sounds on/off is in
+    // Help & settings (#175).
     utilities.append(btn(P.sounds.hearAgain, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
     }, "ghost"));
@@ -2327,28 +2387,13 @@ function draw() {
     // #169: as in the Tk preview, Enter runs the preview again; no Esc here.
     renderHint(P.hints.donePreview);
   }
-  if (["what", "owner", "method", "advanced"].includes(screen)) {
-    utilities.append(btn(P.reportHelpTitle, () => { reportHelpFrom = screen; screen = "report_help"; draw(); }, "ghost"));
-  }
   // #136: same list as REFRESH_OFFERED (inline: draw() stays self-contained).
   if (["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"].includes(screen)) {
     utilities.prepend(btn(P.refreshUtility, requestRefresh, "ghost"));
   }
-  if (screen === "method") {
-    utilities.prepend(btn(P.buttons.advanced, () => { screen = "advanced"; draw(); }, "ghost"));
-  }
-  if (!["splash", "keyboard", "working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "shutdown_confirm", "refresh_confirm"].includes(screen)) {
-    const current = (P.textSizes.find(s => s.id === textSize) || P.textSizes[0]).label;
-    const sizeButton = btn(`${P.textSizeUtility}: ${current}`, () => {
-      const ids = P.textSizes.map(s => s.id);
-      const i = Math.max(0, ids.indexOf(textSize));
-      textSize = ids[(i + 1) % ids.length];
-      draw();
-      document.getElementById("text-size-utility")?.focus();
-    }, "ghost");
-    sizeButton.id = "text-size-utility";
-    utilities.append(sizeButton);
-  }
+  // #175: Help & settings first, in the same place on every screen. Text
+  // size, language and keyboard, sounds, report help and Advanced are in it.
+  renderHelpTrigger(utilities);
   if (screen === "last") {
     const focused = Array.from(foot.querySelectorAll("button"))
       .find(button => button.textContent === reviewFocus && !button.disabled);
@@ -2358,14 +2403,150 @@ function draw() {
     else if (workingFocus >= 0)
       foot.querySelectorAll("button")[workingFocus]?.focus();
   }
+  renderHelpMenu();
   renderedScreen = screen;
+}
+// #175: Help & settings. Opening it changes nothing; items use the same
+// rules as the live wizard (P.helpMenu.states) and never erase.
+let helpOpen = false, helpView = "menu", helpFocus = "", helpScreen = null;
+function helpItems() {
+  const items = (P.helpMenu.states[screen] || []).map(item => Object.assign({}, item));
+  for (const item of items) {
+    if (item.key === "text_size")
+      item.label = `${P.textSizeUtility}: ${(P.textSizes.find(s => s.id === textSize) || P.textSizes[0]).label}`;
+    if (item.key === "sounds") item.label = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
+  }
+  return items;
+}
+function openHelp(focusKey) {
+  helpOpen = true; helpView = "menu"; helpScreen = screen; helpFocus = focusKey || ""; draw();
+}
+function closeHelp() {
+  helpOpen = false; helpView = "menu"; helpFocus = ""; draw();
+  document.getElementById("help-menu-button")?.focus();
+}
+function helpShortcutLines() {
+  const lines = [];
+  const hint = document.getElementById("hint").textContent.trim();
+  if (hint && screen !== "splash") lines.push(hint);
+  lines.push(P.helpMenu.common);
+  if (typeof REFRESH_OFFERED !== "undefined" && REFRESH_OFFERED.includes(screen)) lines.push(P.helpMenu.refresh);
+  lines.push(P.helpMenu.menuKeys);
+  return lines;
+}
+function activateHelp(key) {
+  if (key === "shortcuts") { helpView = "shortcuts"; helpFocus = "back"; draw(); return; }
+  const item = helpItems().find(i => i.key === key);
+  if (!item || !item.enabled) return;
+  if (key === "text_size") {
+    const ids = P.textSizes.map(s => s.id);
+    textSize = ids[(Math.max(0, ids.indexOf(textSize)) + 1) % ids.length];
+    helpFocus = key; draw(); return;
+  }
+  if (key === "sounds") { soundsOn = !soundsOn; helpFocus = key; draw(); return; }
+  helpOpen = false; helpView = "menu";
+  if (key === "language") { keyboardFrom = screen; screen = "keyboard"; }
+  else if (key === "report_help") { reportHelpFrom = screen; screen = "report_help"; }
+  else if (key === "advanced") { screen = "advanced"; }
+  draw();
+}
+function renderHelpTrigger(utilities) {
+  if (helpOpen && helpScreen !== screen) { helpOpen = false; helpView = "menu"; }
+  const trigger = btn(P.helpMenu.title, () => helpOpen ? closeHelp() : openHelp(), "ghost");
+  trigger.id = "help-menu-button";
+  trigger.setAttribute("aria-haspopup", "dialog");
+  trigger.setAttribute("aria-expanded", helpOpen ? "true" : "false");
+  utilities.prepend(trigger);
+}
+function renderHelpMenu() {
+  document.getElementById("help-menu")?.remove();
+  if (!helpOpen) return;
+  const menu = document.createElement("div");
+  menu.id = "help-menu";
+  menu.className = "helpmenu";
+  menu.setAttribute("role", "dialog");
+  menu.setAttribute("aria-labelledby", "help-menu-title");
+  document.getElementById("help-menu-button")?.setAttribute("aria-controls", "help-menu");
+  const heading = document.createElement("h2");
+  heading.id = "help-menu-title";
+  menu.append(heading);
+  if (helpView === "shortcuts") {
+    heading.textContent = P.helpMenu.shortcutsTitle;
+    for (const line of helpShortcutLines()) {
+      const p = document.createElement("p");
+      p.textContent = line;
+      menu.append(p);
+    }
+    const back = btn(P.helpMenu.back, () => { helpView = "menu"; helpFocus = "shortcuts"; draw(); }, "secondary");
+    back.dataset.help = "back";
+    menu.append(back);
+  } else {
+    heading.textContent = P.helpMenu.title;
+    for (const item of helpItems()) {
+      const b = btn(item.label, () => activateHelp(item.key), "ghost");
+      b.dataset.help = item.key;
+      menu.append(b);
+      if (!item.enabled) {
+        // Disabled items stay listed and focusable; the reason is read with them.
+        b.setAttribute("aria-disabled", "true");
+        const why = document.createElement("span");
+        why.className = "reason";
+        why.id = `help-why-${item.key}`;
+        why.textContent = item.reason;
+        b.setAttribute("aria-describedby", why.id);
+        menu.append(why);
+      }
+    }
+    const close = btn(P.helpMenu.close, closeHelp, "secondary");
+    close.dataset.help = "close";
+    menu.append(close);
+  }
+  const assist = document.getElementById("assist");
+  assist.append(menu);
+  // Never taller than the window area above the footer tools: it scrolls.
+  const shell = document.querySelector(".shell");
+  if (shell && menu.getBoundingClientRect) {
+    const room = assist.getBoundingClientRect().top - shell.getBoundingClientRect().top - 12;
+    menu.style.maxHeight = `${Math.max(160, Math.floor(room))}px`;
+  }
+  (menu.querySelector(`[data-help="${helpFocus}"]`) || menu.querySelector("button"))?.focus();
 }
 document.addEventListener("keydown", e => {
   // A held key cannot trigger the newly focused action after navigation.
   // Last chance deliberately focuses Back when reached from Method; a repeat
   // Enter from Continue would otherwise activate that Back button.
   if (e.repeat && ["Escape", "Enter"].includes(e.key)) { e.preventDefault(); return; }
+  // #175: F10 opens or closes Help & settings on every screen. While it is
+  // open, Esc closes it and no key reaches the screen behind it.
+  if (e.key === "F10") {
+    e.preventDefault();
+    if (!e.repeat) { if (helpOpen) closeHelp(); else openHelp(); }
+    return;
+  }
+  if (helpOpen) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      if (helpView === "shortcuts") { helpView = "menu"; helpFocus = "shortcuts"; draw(); }
+      else closeHelp();
+      return;
+    }
+    const controls = Array.from(document.querySelectorAll("#help-menu button"));
+    if (["ArrowUp", "ArrowDown", "Tab", "Home", "End"].includes(e.key) && controls.length) {
+      e.preventDefault();
+      const back = e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey);
+      let at = controls.indexOf(document.activeElement);
+      if (e.key === "Home") at = 0;
+      else if (e.key === "End") at = controls.length - 1;
+      else if (at < 0) at = back ? controls.length - 1 : 0;
+      else at = (at + (back ? controls.length - 1 : 1)) % controls.length;
+      controls[at].focus();
+      return;
+    }
+    if (!e.target?.closest?.("#help-menu")) e.preventDefault();
+    return;
+  }
   if (screen === "splash" && !e.repeat && !e.altKey && !e.ctrlKey && !e.metaKey
+      && e.key !== "Tab" && !e.target?.closest?.("#foot")
       && !e.target?.closest?.(".scenarios")) {
     e.preventDefault(); screen = "keyboard"; draw(); return;
   }
