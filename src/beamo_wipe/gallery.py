@@ -778,6 +778,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "working": C.HINT_WORKING,
             "splash": C.HINT_SPLASH,
             "keyboard": C.HINT_KEYBOARD,
+            "donePreview": C.HINT_DONE_PREVIEW,
         },
         "helperHref": helper_href_for(lang),
         "methods": {
@@ -2313,6 +2314,8 @@ function draw() {
     }, "ghost"));
     btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
     btnsR.append(btn(P.buttons.runAgain, requestAnotherPreview, "primary"));
+    // #169: as in the Tk preview, Enter runs the preview again; no Esc here.
+    renderHint(P.hints.donePreview);
   }
   if (["what", "owner", "method", "advanced"].includes(screen)) {
     utilities.append(btn(P.reportHelpTitle, () => { reportHelpFrom = screen; screen = "report_help"; draw(); }, "ghost"));
@@ -2397,6 +2400,10 @@ document.addEventListener("keydown", e => {
     if (refreshFrom === "last") cancelRefresh();
     else { screen = refreshFrom; draw(); }
     return;
+  }
+  if ((screen === "done" || screen === "stopped") && e.key === "Enter"
+      && !e.target?.closest?.("button, a, input, textarea, select, summary")) {
+    e.preventDefault(); requestAnotherPreview(); return;
   }
   if (screen === "shutdown_confirm" && ["Escape", "Enter"].includes(e.key)) {
     e.preventDefault(); screen = shutdownFrom; draw(); return;

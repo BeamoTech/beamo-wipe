@@ -239,6 +239,7 @@ STRINGS = {
         "REFRESH_LEAD": "Esto anula la selección del disco, la confirmación de propiedad, la confirmación escrita, el método de borrado y la cuenta regresiva. La preparación vuelve a empezar desde el principio.",
         "REFRESH_UTILITY_NOTE": "Volver a comprobar los discos (reinicia la preparación)",
         "HINT_DONE": "Enter solicita el apagado.",
+        "HINT_DONE_PREVIEW": "Enter vuelve a iniciar la vista previa.",
         "SHUTDOWN_TITLE": "¿Apagar sin guardar?",
         "SHUTDOWN_LOSS": "Pidió guardar un informe, pero no se ha confirmado ninguna exportación verificada del informe actual. Al apagar se perderá cualquier informe no guardado que esté en la memoria. No se podrá recuperar después de apagar o de un corte de corriente.",
         "SHUTDOWN_KEEP": "Mantener la sesión abierta",

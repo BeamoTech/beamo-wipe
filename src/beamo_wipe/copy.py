@@ -937,6 +937,9 @@ REFRESH_LEAD = (
 )
 REFRESH_UTILITY_NOTE = "Check disks again (clears preparation)"
 HINT_DONE = "Enter requests shutdown."
+# #169: the preview result screen. Enter runs the preview again; Esc does
+# nothing on any result screen, so no hint offers it.
+HINT_DONE_PREVIEW = "Enter runs the preview again."
 SHUTDOWN_TITLE = "Shut down without saving?"
 SHUTDOWN_LOSS = (
     "You asked to save a report, but no verified export of the current report "

@@ -234,6 +234,7 @@ STRINGS = {
         "REFRESH_LEAD": "Ceci annule la sélection du disque, l’attestation de propriété, la confirmation tapée, la méthode d’effacement et le compte à rebours. La préparation recommence depuis le début.",
         "REFRESH_UTILITY_NOTE": "Vérifier à nouveau les disques (annule la préparation)",
         "HINT_DONE": "Enter demande l’extinction.",
+        "HINT_DONE_PREVIEW": "Enter relance l’aperçu.",
         "SHUTDOWN_TITLE": "Éteindre sans enregistrer ?",
         "SHUTDOWN_LOSS": "Vous avez demandé à enregistrer un rapport, mais aucune exportation vérifiée du rapport actuel n’est confirmée. En éteignant, vous perdrez tout rapport non enregistré en mémoire. Il ne pourra pas être récupéré après extinction ou coupure de courant.",
         "SHUTDOWN_KEEP": "Garder la session ouverte",

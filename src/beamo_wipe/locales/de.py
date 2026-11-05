@@ -234,6 +234,7 @@ STRINGS = {
         "REFRESH_LEAD": "Dies verwirft die Auswahl des Datenträgers, die Eigentumsbestätigung, die getippte Bestätigung, die Löschmethode und den Countdown. Die Vorbereitung beginnt wieder von vorn.",
         "REFRESH_UTILITY_NOTE": "Datenträger erneut prüfen (setzt die Vorbereitung zurück)",
         "HINT_DONE": "Enter fordert Herunterfahren an.",
+        "HINT_DONE_PREVIEW": "Enter startet die Vorschau neu.",
         "SHUTDOWN_TITLE": "Ohne Speichern herunterfahren?",
         "SHUTDOWN_LOSS": "Sie wollten einen Bericht speichern, aber es wurde kein geprüfter Export des aktuellen Berichts bestätigt. Beim Herunterfahren geht jeder ungespeicherte Bericht im Speicher verloren. Er kann nach Herunterfahren oder Stromausfall nicht wiederhergestellt werden.",
         "SHUTDOWN_KEEP": "Sitzung offen lassen",

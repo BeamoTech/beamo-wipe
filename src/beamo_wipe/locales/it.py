@@ -235,6 +235,7 @@ STRINGS = {
         "REFRESH_LEAD": "Questo annulla la selezione del disco, la conferma di proprietà, la conferma digitata, il metodo di cancellazione e il conto alla rovescia. La preparazione ricomincia dall’inizio.",
         "REFRESH_UTILITY_NOTE": "Ricontrolla i dischi (annulla la preparazione)",
         "HINT_DONE": "Enter chiede lo spegnimento.",
+        "HINT_DONE_PREVIEW": "Enter riavvia l’anteprima.",
         "SHUTDOWN_TITLE": "Spegnere senza salvare?",
         "SHUTDOWN_LOSS": "Ha chiesto di salvare un rapporto, ma non è stata confermata alcuna esportazione verificata del rapporto attuale. Spegnendo, ogni rapporto non salvato in memoria andrà perso. Non potrà essere recuperato dopo lo spegnimento o un’interruzione di corrente.",
         "SHUTDOWN_KEEP": "Mantieni la sessione aperta",

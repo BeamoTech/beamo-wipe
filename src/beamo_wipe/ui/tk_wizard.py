@@ -6180,7 +6180,8 @@ class TkWizard:
             )
         # Footer (#135): two actions. Sounds and Hear again sit with the
         # other settings in the assist strip; report actions are in the panel.
-        row = self._footer_shell(C.HINT_DEFAULT if self.w.preview else C.HINT_DONE)
+        # #169: say exactly what Enter does here; Esc does nothing on a result.
+        row = self._footer_shell(C.HINT_DONE_PREVIEW if self.w.preview else C.HINT_DONE)
         if self.w.preview:
             self._secondary_btn(row, C.BTN_CLOSE_PREVIEW, self._click_shutdown)
             self._primary_btn(row, C.BTN_RUN_AGAIN, self.w.reset_for_preview)
