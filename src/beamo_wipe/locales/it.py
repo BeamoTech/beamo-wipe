@@ -637,8 +637,12 @@ STRINGS = {
         "OPERATION_VERIFIED": "{overwrites}, poi una verifica.",
         "OPERATION_UNVERIFIED": "{overwrites}. Nessuna verifica.",
         "MARK_NO_CHECK": "Nessun controllo",
-        "MARK_MORE_OVERWRITES": "Più sovrascritture",
-        "EXTRA_WORK_DOD": "Il triplo delle sovrascritture del metodo {everyday}. Le passate aggiuntive non raggiungono le aree nascoste.",
+        "MARK_RARELY_NEEDED": "Raramente necessario",
+        "EXTRA_WORK_DOD": (
+            "Il triplo delle sovrascritture del metodo {everyday}, quindi richiede più tempo. "
+            "Le passate aggiuntive non raggiungono le aree nascoste. "
+            "Il metodo {everyday} è la scelta abituale. Il modello DoD non comporta alcun certificato."
+        ),
         "PLAIN_LEAD_PRNG": "Sovrascrive il disco, poi controlla il risultato.",
         "PLAIN_LEAD_DODSHORT": "Sovrascrive il disco tre volte, poi controlla il risultato.",
         "PLAIN_LEAD_ZERO": "Sovrascrive il disco con zeri. Non controlla il risultato.",

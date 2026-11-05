@@ -354,7 +354,7 @@ def test_method_tradeoffs_are_comparable():
     extra = METHODS[MethodId.EXTRA]
     quick = METHODS[MethodId.QUICK_ZERO]
     assert everyday.comparison_mark == ""
-    assert extra.comparison_mark == "More overwrites"
+    assert extra.comparison_mark == "Rarely needed"  # #161
     assert quick.comparison_mark == "No check"
     assert "hidden storage" in extra.extra_work
     assert "Everyday" in extra.extra_work
@@ -366,7 +366,7 @@ def test_method_tradeoffs_are_comparable():
     assert cards[MethodId.EVERYDAY]["checks"] is True
     html = gallery_html()
     assert "No check" in html
-    assert "More overwrites" in html
+    assert "Rarely needed" in html
     assert extra.extra_work in html
     assert "does not check the overwrite" in html
     method_src = inspect.getsource(tkui.TkWizard._method_card)

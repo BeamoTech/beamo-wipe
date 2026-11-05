@@ -302,6 +302,13 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `methods.MARK_RARELY_NEEDED` (replacing `MARK_MORE_OVERWRITES`) and
+  `methods.EXTRA_WORK_DOD` (2026-11-05 for #161; English awaiting owner
+  sign-off, translations drafts, not yet reviewed): Three overwrites' chip
+  "Rarely needed" and its Show more explanation. Keep `{everyday}` (the
+  Everyday name, used twice), "DoD" untranslated, and the sentence that it
+  is not a DoD certificate; never "DoD certified", never promise that
+  more passes reach hidden storage.
 - `copy.TIME_GUIDE_UNKNOWN` (2026-11-05 for #159; drafts, not yet reviewed):
   the method card's time line when no range can be given ("Time depends on
   the disk."). No number, no promise and no guess at a duration.

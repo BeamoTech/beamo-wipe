@@ -1172,7 +1172,6 @@ def _plain_loop_body(wizard: Wizard) -> int:
             for method, spec in METHODS.items():
                 card = C.METHOD_CARDS[method]
                 mark = f" [{card['mark']}]" if card["mark"] else ""
-                extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
                 guide = f" {C.method_time_line(method, wizard.selected)}"  # #159
                 # One logical line so overwrite + verification stay a contiguous description.
@@ -1180,14 +1179,15 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(
                     f"{card['key']} {spec.title}{mark}: "
                     f"{spec.overwrite_description} {spec.verification_description}"
-                    f"{guide}{extra}{lead}"
+                    f"{guide}{lead}"
                 )
-            # #160: the Everyday caveat follows the choices, named for its
-            # method, instead of lengthening that choice's line.
+            # #160/#161: the Everyday caveat and why Three overwrites is
+            # rarely needed follow the choices, named for their method,
+            # instead of lengthening that choice's line.
             for method, spec in METHODS.items():
-                note = C.METHOD_CARDS[method]["limits"]
-                if note:
-                    print(f"{spec.title}: {note}")
+                for note in (C.METHOD_CARDS[method]["extra"], C.METHOD_CARDS[method]["limits"]):
+                    if note:
+                        print(f"{spec.title}: {note}")
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
                 wizard.open_advanced()
@@ -1880,7 +1880,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 extra = C.METHOD_CARDS[method]["extra"]
                 if extra:
-                    lines.extend(_lines(extra, w))
+                    # #161: named for its method, like the plain console.
+                    lines.extend(_lines(f"{METHODS[method].title}: {extra}", w))
                     lines.append("")
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 card = C.METHOD_CARDS[method]

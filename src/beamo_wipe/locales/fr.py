@@ -638,10 +638,11 @@ STRINGS = {
         "OPERATION_VERIFIED": "{overwrites}, puis une vérification.",
         "OPERATION_UNVERIFIED": "{overwrites}. Vérification non effectuée.",
         "MARK_NO_CHECK": "Sans contrôle",
-        "MARK_MORE_OVERWRITES": "Plus d’écrasements",
+        "MARK_RARELY_NEEDED": "Rarement utile",
         "EXTRA_WORK_DOD": (
-            "Trois fois plus d’écrasements que la méthode {everyday}. "
-            "Les passes supplémentaires n’atteignent pas le stockage caché."
+            "Trois fois plus d’écrasements que la méthode {everyday}, donc plus long. "
+            "Les passes supplémentaires n’atteignent pas le stockage caché. "
+            "La méthode {everyday} est le choix habituel. Ce n’est pas un certificat DoD."
         ),
         "PLAIN_LEAD_PRNG": "Le disque est écrasé, puis le résultat est vérifié.",
         "PLAIN_LEAD_DODSHORT": "Le disque est écrasé trois fois, puis le résultat est vérifié.",

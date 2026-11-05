@@ -767,8 +767,8 @@ class AccessibleWizard:
                 label = spec.summary
                 if card["mark"]:
                     label = f"{label} [{card['mark']}]"
-                if card["extra"]:
-                    label = f"{label} {card['extra']}"
+                # #161: the Three overwrites explanation (why it is rarely
+                # needed) is under that method's Show more, below.
                 choice = Gtk.RadioButton.new_with_label_from_widget(group, label)
                 choice.get_child().set_line_wrap(True)
                 choice.get_child().set_max_width_chars(65)
@@ -802,8 +802,12 @@ class AccessibleWizard:
             # #160: the Everyday caveat ("checks only storage the disk
             # exposes ...") sits behind Show more (an expander, as #141 and
             # #146), named for its method; Orca reads it when expanded.
+            # #161: so does the Three overwrites explanation.
             for spec_method, note_spec in METHODS.items():
-                note = str(C.METHOD_CARDS[spec_method]["limits"] or "")
+                more_card = C.METHOD_CARDS[spec_method]
+                note = "\n".join(
+                    str(part) for part in (more_card["extra"], more_card["limits"]) if part
+                )
                 if not note:
                     continue
                 more = Gtk.Expander.new(C.BTN_MORE)

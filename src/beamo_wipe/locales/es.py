@@ -643,10 +643,11 @@ STRINGS = {
         "OPERATION_VERIFIED": "{overwrites} y después una verificación.",
         "OPERATION_UNVERIFIED": "{overwrites}. No se realiza ninguna verificación.",
         "MARK_NO_CHECK": "Sin comprobación",
-        "MARK_MORE_OVERWRITES": "Más sobrescrituras",
+        "MARK_RARELY_NEEDED": "Rara vez necesario",
         "EXTRA_WORK_DOD": (
-            "El triple de sobrescrituras que el método {everyday}. "
-            "Las pasadas adicionales no llegan al almacenamiento oculto."
+            "El triple de sobrescrituras que el método {everyday}, así que tarda más. "
+            "Las pasadas adicionales no llegan al almacenamiento oculto. "
+            "El método {everyday} es la opción habitual. El patrón DoD no supone ningún certificado."
         ),
         "PLAIN_LEAD_PRNG": "Se sobrescribe el disco y luego se comprueba el resultado.",
         "PLAIN_LEAD_DODSHORT": "Se sobrescribe el disco tres veces y luego se comprueba el resultado.",

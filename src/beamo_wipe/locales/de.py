@@ -638,10 +638,11 @@ STRINGS = {
         "OPERATION_VERIFIED": "{overwrites}, gefolgt von einer Prüfung.",
         "OPERATION_UNVERIFIED": "{overwrites}. Prüfung wird nicht durchgeführt.",
         "MARK_NO_CHECK": "Keine Prüfung",
-        "MARK_MORE_OVERWRITES": "Mehr Überschreibungen",
+        "MARK_RARELY_NEEDED": "Selten nötig",
         "EXTRA_WORK_DOD": (
-            "Dreimal so viele Überschreibungen wie die Methode {everyday}. "
-            "Zusätzliche Durchgänge erreichen keinen versteckten Speicher."
+            "Dreimal so viele Überschreibungen wie die Methode {everyday}, daher dauert es länger. "
+            "Zusätzliche Durchgänge erreichen keinen versteckten Speicher. "
+            "Die Methode {everyday} ist die übliche Wahl. Dies ist kein DoD-Zertifikat."
         ),
         "PLAIN_LEAD_PRNG": "Überschreibt den Datenträger und prüft dann das Ergebnis.",
         "PLAIN_LEAD_DODSHORT": "Überschreibt den Datenträger dreimal und prüft dann das Ergebnis.",
