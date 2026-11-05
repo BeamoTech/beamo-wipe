@@ -4800,3 +4800,72 @@ another very thorough and comprehensive pass of this." Repo
   relative form would show), #168 keep the screen on during an erase
   (xset s off around nwipe via the SleepInhibit pattern; QEMU check
   blocked without an authorized isolated VM).
+
+## BW-165-REVIEWENTERFOCUS — Enter on Review presses only the focused button on every surface (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, REAL TERMINAL, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `safety/review-enter-focus-165`
+  (stacked on `fix/review-method-once-164` @ dbe5793; commit 1603a08 safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
+  #165 (UI review item 39), SAFETY-SENSITIVE. Ref #49 (Enter activates only
+  the focused control), #162.
+- CURRENT BEHAVIOUR DOCUMENTED (before):
+  * Tk: Enter runs only the focused _Button's command; Review focuses Back;
+    Erase now has takefocus=0 until enabled, then Tab reaches it; Enter on
+    a focused disabled Erase now does nothing; with no button focused Enter
+    does nothing; held/X11-repeat Return is claimed once.
+  * GTK: on Review, Enter clicks only a focused, sensitive registered
+    action; arrival focus is the warning label (no-op); Erase now is
+    insensitive during the countdown; held Return/KP_Enter/Space repeats
+    (same server timestamp) are swallowed.
+  * curses: no focus. Once the ready frame was painted, a single Enter on
+    Review called confirm_erase() (_handle); during the countdown Enter was
+    ignored; held/repeated Enter needed a 1 s quiet gap. Footer "Ready.
+    Enter to erase."
+  * plain console: after the countdown it asks "Type ERASE to start:";
+    anything else goes back.
+- WHAT CHANGED (curses only; the wizard gate is unchanged): Review shows
+  `[> Back <]    [ Erase now ]` (focus marked with > <, not colour only)
+  and Tk's hint "Esc goes back. Tab to Erase now, then Enter after the
+  countdown." Focus starts on Back and returns there on arrival, on leaving
+  and whenever Erase now is not enabled (restarted countdown); Tab,
+  Shift-Tab, Left and Right move it; Erase now takes it only on a painted
+  ready frame. Enter presses the highlighted button: Back goes back (also
+  during the countdown, as Tk/GTK), Erase now calls confirm_erase() only on
+  a painted, enabled frame. _handle no longer erases on a bare Enter (fail
+  closed). copy.CON_LAST_ERASE ("Enter to erase.") removed with its locale
+  entries; the ready line is #163's "Ready. Erase now is available." Docs:
+  screens.md, compatibility-matrix.md KB-07.
+- FILES: src/beamo_wipe/ui/console_wizard.py, src/beamo_wipe/copy.py,
+  locales/{fr,de,es,it}.py, tests/test_review_enter_focus_165.py (new, 16),
+  tests/test_countdown_ready_163.py, tests/test_separate_footer_actions.py,
+  docs/screens.md, docs/compatibility-matrix.md.
+- TESTS: curses scripted loop (fake terminal, fake monotonic clock, erase
+  starts recorded): Enter during the countdown -> back; Enter right after
+  the countdown on default focus -> back; Tab then Enter -> one erase start;
+  Shift-Tab/Left/Right likewise; Tab twice -> back; Tab during the
+  countdown cannot reach Erase now; restarted countdown returns focus to
+  Back; _handle never erases on 10/13/KEY_ENTER; footer text; plain console
+  still needs ERASE. Tk: Enter during and right after the countdown ->
+  back, Erase now not focusable while counting, Tab-focused Erase now +
+  Enter -> erase. GTK (skips without gi): Enter on the warning or an
+  insensitive Erase now does nothing; on a sensitive focused Erase now it
+  starts. OLD-CODE (#164 @ dbe5793): the 8 curses behaviour cases fail
+  (incl. the fail-closed _handle case); BTAB/LEFT/RIGHT, plain console and
+  the Tk cases pass there by design (Tk/plain behaviour was already right).
+- UPDATED EXISTING GATE TESTS (guarantees kept, key sequence adds Tab
+  before the erasing Enter): test_curses_rendered_erase_gate_pass18 (the
+  two launch arrivals; the early/crossing arrivals still launch nothing),
+  test_curses_review_page_pass18_ui, test_curses_review_paint_pass6,
+  test_console_key_origin_pass5 (S-after-start cases), test_preview (Review
+  hint), test_countdown_ready_163 and test_separate_footer_actions
+  (footer). Removed unused copy.HINT_LAST_CHANCE and CON_LAST_ERASE.
+- CHECKS (Windows-native route): 16/16 (Tk/GTK one by one; GTK skips
+  without gi); ruff clean; mypy --platform linux clean; 46 console/review/
+  footer/gate files vs #164: no #165-only failure after the updates above
+  (one test_keyboard_layout DE fit case failed under load and passes 20/20
+  alone); Tk one by one: tk_runtime Review 23/26 with the same three
+  pre-existing cases as #163/#164, separate_footer 3/3, #163 Tk 6/6.
+- SCREENS: console-before.txt / console-after.txt (curses Review frame).
+  The Tk/GTK Review is unchanged.
+- NOT VERIFIED: GTK runtime (gi unavailable here), a real terminal's
+  KEY_BTAB/Left/Right codes, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
