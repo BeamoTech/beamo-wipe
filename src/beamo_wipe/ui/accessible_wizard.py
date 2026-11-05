@@ -726,22 +726,30 @@ class AccessibleWizard:
             arrival = self.label(f"{C.SEVERITY_WARNING}: {self.w.warning_text()}", focusable=True)
             arrival.get_style_context().add_class("erase-warning")
             arrival.get_accessible().set_role(Atk.Role.ALERT)
-            self.label(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title,
-                language=LANGUAGE_NAMES[self.w.language],
-            ))
             prompt = C.confirm_prompt(self.w.confirm) if self.w.confirm else C.ACCESSIBLE_NO_TARGET
             self.label(prompt)
             entry = Gtk.Entry()
             entry.get_accessible().set_name(prompt)
             entry.set_text(self.w.confirm_input)
             self.body.pack_start(entry, False, False, 4)
+            # #155: keyboard-layout help only after a wrong entry; focusable
+            # so Orca reads it, with a Change button to the layout screen.
+            self.layout_hint = self.label(
+                C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
+                focusable=True,
+            )
+            self.layout_change = self.button(C.CONFIRM_LAYOUT_CHANGE, self.w.open_keyboard, in_body=True)
+            for widget in (self.layout_hint, self.layout_change):
+                widget.set_no_show_all(True)
+            self._sync_layout_hint()
             self.primary = self.button(
                 C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok
             )
             entry.connect(
                 "changed", lambda widget: self._token(widget.get_text(), generation)
             )
+            # Enter in the box: a non-matching entry is a wrong entry (#155).
+            entry.connect("activate", lambda _widget: self._token_entered(generation))
         elif screen == Screen.METHOD:
             heading.set_text(C.TITLE_METHOD)
             self.identity()
@@ -1305,6 +1313,22 @@ class AccessibleWizard:
             return
         self.w.set_confirm_input(text)
         self.primary.set_sensitive(self.w.token_ok)
+        self._sync_layout_hint()
+
+    def _token_entered(self, generation) -> None:
+        """Enter in the confirmation box. Never advances on its own (#155)."""
+        if generation != self.generation or self.w.screen != Screen.CONFIRM:
+            return
+        if not self.w.token_ok:
+            self.w.continue_confirm()  # records the wrong entry; does not move
+            self._sync_layout_hint()
+
+    def _sync_layout_hint(self) -> None:
+        shown = bool(self.w.confirm_layout_hint)
+        for name in ("layout_hint", "layout_change"):
+            widget = getattr(self, name, None)
+            if widget is not None:
+                widget.set_visible(shown)
 
     def _keyboard_check_key(self, event, generation) -> bool:
         """Guided check (#140): the keysym the key printed Z produced."""

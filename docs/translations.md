@@ -302,6 +302,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `copy.CONFIRM_LAYOUT_HINT`, `CONFIRM_LAYOUT_CHANGE`, `CON_CONFIRM_LAYOUT_KEY`
+  (2026-11-04 for #155, replacing `CONFIRM_KEYBOARD_LINE`; drafts, not yet
+  reviewed): Confirm's help after a wrong entry. The hint keeps `{layout}`
+  (the layout's own title) and nothing else; the console key text keeps F2.
 - `inventory.TAG_BITLOCKER`, `inventory.TAG_LUKS` (2026-11-04 for #154; drafts,
   not yet reviewed): pick-card tags "BitLocker (Windows encryption)" and
   "Encrypted (LUKS)". Keep the product names BitLocker and LUKS; never add

@@ -1357,7 +1357,11 @@ STARTUP_STATE_DONE = "Done"
 STARTUP_STATE_WAITING = "Waiting"
 STARTUP_STATE_WORKING = "Working…"
 
-CONFIRM_KEYBOARD_LINE = "Keyboard: {layout} · Language: {language}"
+# #155: shown on Confirm only after a wrong entry, with a Change action
+# (Tk/GTK/preview button, F2 in curses, K in the plain console).
+CONFIRM_LAYOUT_HINT = "Not matching? Check your keyboard layout (currently {layout})."
+CONFIRM_LAYOUT_CHANGE = "Change"
+CON_CONFIRM_LAYOUT_KEY = "F2: Change"
 
 # Language selection. Option names are endonyms: identical in every language.
 TITLE_LANGUAGE = "Choose your language"

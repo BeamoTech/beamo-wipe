@@ -209,12 +209,32 @@ def test_confirmation_typed_after_each_auto_layout_still_compares_exactly(code):
     assert wiz.screen == Screen.METHOD
 
 
-def test_a_later_layout_change_still_clears_a_typed_confirmation():
+def test_a_later_layout_change_from_confirm_keeps_the_owner_and_disk():
+    # #155: from Confirm no authorization exists yet; the owner tick, the
+    # chosen disk and a matching entry stay, and the token does not change.
+    wiz = _keyboard_screen()
+    wiz.choose_language("fr")
+    _to_confirm(wiz)
+    token = wiz.confirm.token
+    path = wiz.selected.path
+    wiz.set_confirm_input(token)
+    assert wiz.token_ok
+    wiz.open_keyboard()
+    assert wiz.set_keyboard_layout("us")
+    assert wiz.owner_ok and wiz.selected.path == path
+    assert wiz.confirm.token == token and wiz.confirm_input == token
+    assert wiz.screen == Screen.KEYBOARD
+    wiz.accept_keyboard()
+    assert wiz.screen == Screen.CONFIRM
+
+
+def test_a_layout_change_later_than_confirm_still_clears_everything():
     wiz = _keyboard_screen()
     wiz.choose_language("fr")
     _to_confirm(wiz)
     wiz.set_confirm_input(wiz.confirm.token)
-    assert wiz.token_ok
+    wiz.continue_confirm()
+    assert wiz.screen == Screen.METHOD
     wiz.open_keyboard()
     assert wiz.set_keyboard_layout("us")
     assert wiz.confirm_input == "" and wiz.selected is None and not wiz.owner_ok

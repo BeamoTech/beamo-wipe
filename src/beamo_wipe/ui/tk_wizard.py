@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1608,6 +1608,7 @@ class TkWizard:
             self._match_label: Optional[tk.Label] = None
             self._match_icon: Optional[tk.Canvas] = None
             self._match_pill: Optional[_Box] = None
+            self._layout_hint: Optional[tk.Frame] = None  # #155
             self._shown: Optional[Screen] = None
             self._shown_report_revision = -1
             self._shown_sound_revision = -1
@@ -2157,27 +2158,52 @@ class TkWizard:
                     return
                 if layout and not getattr(self, "_body_follow_focus", True):
                     return
-                self._sync_body_scroll(canvas)
-                target = self._body_reveal_top(canvas, widget, settle=layout)
-                if not layout:
-                    self._body_follow_focus = True
-                if target is None:
-                    return
-                bounds = canvas.bbox("all")
-                if not bounds:
-                    return
-                content = bounds[3] - bounds[1]
-                self._body_slack = 0 if target <= 0 else max(
-                    0, int(round(target + canvas.winfo_height() - content))
-                )
-                self._sync_body_scroll(canvas)
-                if abs(float(canvas.canvasy(0)) - target) > 0.5:
-                    canvas.yview_moveto(target / max(1, content + self._body_slack))
+                self._apply_body_reveal(canvas, widget, layout=layout)
             except tk.TclError:
                 # A redraw can destroy the focused widget before its idle job.
                 return
 
         canvas.after_idle(reveal)
+
+    def _apply_body_reveal(self, canvas: tk.Canvas, widget: tk.Misc, *, layout: bool) -> None:
+        self._sync_body_scroll(canvas)
+        target = self._body_reveal_top(canvas, widget, settle=layout)
+        if not layout:
+            self._body_follow_focus = True
+        if target is None:
+            return
+        bounds = canvas.bbox("all")
+        if not bounds:
+            return
+        content = bounds[3] - bounds[1]
+        self._body_slack = 0 if target <= 0 else max(
+            0, int(round(target + canvas.winfo_height() - content))
+        )
+        self._sync_body_scroll(canvas)
+        if abs(float(canvas.canvasy(0)) - target) > 0.5:
+            canvas.yview_moveto(target / max(1, content + self._body_slack))
+
+    def _reveal_in_body(self, widget: tk.Misc) -> None:
+        """Scroll the body so ``widget`` is fully visible, focus or not (#155)."""
+        canvas = self._body_canvas
+        if canvas is None:
+            return
+
+        def run() -> None:
+            try:
+                if self._body_canvas is not canvas or not widget.winfo_exists():
+                    return
+                # The newly packed widget must be in the scroll region first.
+                canvas.update_idletasks()
+                self._sync_body_scroll(canvas)
+                self._apply_body_reveal(canvas, widget, layout=False)
+                # Like an owner's scroll: layout settling must not pull the
+                # view back to the focused entry and hide the help again.
+                self._body_follow_focus = False
+            except tk.TclError:
+                return
+
+        canvas.after_idle(run)
 
     def _body_reveal_top(
         self, canvas: tk.Canvas, widget: tk.Misc, *, settle: bool
@@ -2528,6 +2554,7 @@ class TkWizard:
         self._match_label = None
         self._match_icon = None
         self._match_pill = None
+        self._layout_hint = None
         self._power_label: Optional[tk.Label] = None
         screen = self.w.screen
         first_review_draw = screen == Screen.LAST_CHANCE and getattr(self, "_shown", None) != Screen.LAST_CHANCE
@@ -5036,15 +5063,6 @@ class TkWizard:
         # Details share the summary's caption row, not a row of their own.
         self._disk_summary(zone, disk, more=True, token=True).pack(fill=tk.X)
         self._panel(zone, kind="warn", text=self.w.warning_text()).pack(fill=tk.X, pady=(12, 0))
-        self._p(
-            zone,
-            C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title,
-                language=LANGUAGE_NAMES[self.w.language],
-            ),
-            font=self.font_s,
-            fg=MUTED,
-        ).pack(fill=tk.X, pady=(8, 0))
         # A card token's prompt names the field, never the characters (#129).
         # The older fallback prompt can carry a full serial as the token: same
         # character-level wrapping as identity labels, never a clipped tail.
@@ -5099,9 +5117,45 @@ class TkWizard:
         )
         self._match_label.pack(side=tk.LEFT, padx=(8, 0))
         self._paint_match()
+        # #155: keyboard-layout help only after a wrong entry, with Change.
+        hint = tk.Frame(zone, bg=BG)
+        setattr(hint, "_beamo_layout_hint", True)
+        # The sentence wraps to the row's real width and Change sits under
+        # it, so neither is clipped at any text size or language.
+        self._wrapping_label(
+            hint,
+            C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
+            font=self.font_s, fg=INK, bg=BG,
+        )
+        change = _Button(hint, text=C.CONFIRM_LAYOUT_CHANGE, command=self._nav(self.w.open_keyboard),
+                         font=self.font_s_bold, variant="ghost", compact=True)
+        change.pack(anchor="w", pady=(2, 0))
+        setattr(change, "_beamo_layout_change", True)
+        self._layout_hint = hint
+        self._sync_layout_hint()
         row = self._footer_shell(C.HINT_CONFIRM)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok)
+
+    def _sync_layout_hint(self) -> None:
+        """Show the #155 layout hint only while wizard.confirm_layout_hint."""
+        hint = getattr(self, "_layout_hint", None)
+        if hint is None:
+            return
+        try:
+            if not hint.winfo_exists():
+                self._layout_hint = None
+                return
+            shown = bool(hint.winfo_manager())
+            if self.w.confirm_layout_hint and not shown:
+                hint.pack(fill=tk.X, pady=(10, 0))
+                # Short windows and large text put it below the fold: bring
+                # it into view once its layout settles (the entry keeps focus).
+                hint.after_idle(lambda h=hint: self._reveal_in_body(h))
+            elif not self.w.confirm_layout_hint and shown:
+                hint.pack_forget()
+        except tk.TclError:
+            return
 
     def _paint_match(self) -> None:
         if self._match_icon is None or self._match_label is None:
@@ -5152,6 +5206,7 @@ class TkWizard:
         self.w.set_confirm_input(self._confirm_var.get())
         self._set_primary_enabled(self.w.token_ok)
         self._paint_match()
+        self._sync_layout_hint()
         if self.w.token_ok:
             emit_serial_marker("BEAMO_WIPE_CONFIRM_MATCHED")
 
@@ -6259,8 +6314,12 @@ class TkWizard:
                 self.w.continue_owner()
             elif screen == Screen.PICK:
                 self.w.continue_pick()
-            elif screen == Screen.CONFIRM and self.w.token_ok:
+            elif screen == Screen.CONFIRM:
+                # Moves on only when the token matches; a non-matching
+                # entry is recorded as a wrong entry and shows the #155
+                # keyboard-layout help (Confirm is not redrawn here).
                 self.w.continue_confirm()
+                self._sync_layout_hint()
             elif screen == Screen.METHOD:
                 self.w.continue_method()
             elif screen == Screen.LAST_CHANCE:

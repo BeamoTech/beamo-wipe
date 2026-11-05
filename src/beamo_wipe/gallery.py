@@ -829,7 +829,8 @@ def _gallery_html_for_current_language(lang: str) -> str:
             for code in LANGUAGE_ORDER
         ],
         # The layout in use (#131: it follows the page's language until picked).
-        "confirmKeyboard": C.CONFIRM_KEYBOARD_LINE.replace("{language}", LANGUAGE_NAMES[lang]),
+        "confirmLayoutHint": C.CONFIRM_LAYOUT_HINT,
+        "confirmLayoutChange": C.CONFIRM_LAYOUT_CHANGE,
         "steps": {str(n): C.JOURNEY_LABELS[n - 1] for n in range(1, len(C.JOURNEY_LABELS) + 1)},
         "stepPrefix": C.STEP_PREFIX,
         "stepIdentify": C.STEP_IDENTIFY,
@@ -1356,6 +1357,10 @@ let selected = null;
 // #150: the last press on a disk card, and the end of the window in which
 // pointer events are the rest of a double-click that opened Review.
 let diskPress = null;
+// #155: a wrong confirmation entry on this Confirm visit, and the screen
+// the keyboard screen returns to.
+let confirmMismatch = false;
+let keyboardFrom = null;
 let pointerQuietUntil = 0;
 let token = "";
 let keyboardLayout = P.languageLayout;
@@ -1519,7 +1524,7 @@ function supportCodeBlock(code, extra) {
 // the rest of its pointer events, so it cannot press a Confirm control.
 function reviewDisk(pointer) {
   if (screen !== "pick" || !selected || selected.isBoot) return;
-  screen = "confirm"; token = ""; draw();
+  screen = "confirm"; token = ""; confirmMismatch = false; draw();
   if (pointer) pointerQuietUntil = performance.now() + 500;
 }
 for (const type of ["mousedown", "mouseup", "click", "dblclick"]) {
@@ -1528,6 +1533,16 @@ for (const type of ["mousedown", "mouseup", "click", "dblclick"]) {
     if (e.timeStamp <= pointerQuietUntil) { e.preventDefault(); e.stopPropagation(); }
     else pointerQuietUntil = 0;
   }, true);
+}
+// #155: a layout change from Confirm keeps the owner tick and the chosen
+// disk (no authorization exists before Method) and clears only an entry
+// that does not match; from anywhere else it starts over, as before.
+function layoutChanged() {
+  if (keyboardFrom === "confirm" && selected) {
+    if (!tokenOk()) { token = ""; confirmMismatch = false; }
+    return;
+  }
+  owner = false; token = ""; selected = null; keyboardFrom = null;
 }
 function btn(label, fn, cls, disabled) {
   const b = document.createElement("button");
@@ -1792,7 +1807,7 @@ function draw() {
       const pick = (keyboard = false) => {
         keyboardLayout = el.dataset.layout;
         layoutChosen = true;
-        owner = false; token = ""; selected = null;
+        layoutChanged();
         draw();
         if (keyboard) main.querySelector(`[data-layout="${keyboardLayout}"]`)?.focus();
       };
@@ -1824,7 +1839,7 @@ function draw() {
         else if (result.kind === "other") {
           out.textContent = P.keyCheck.other.replace("{layout}", title(result.layout));
           sw.append(btn(P.keyCheck.switch.replace("{layout}", title(result.layout)), () => {
-            keyboardLayout = result.layout; layoutChosen = true; draw();
+            keyboardLayout = result.layout; layoutChosen = true; layoutChanged(); draw();
             main.querySelector("#kbcheck")?.focus();
           }, "secondary"));
         } else out.textContent = P.keyCheck.unclear.replace("{typed}", result.typed);
@@ -1833,7 +1848,9 @@ function draw() {
     btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
     bindMore();
     renderHint(P.hints.keyboard);
-    btnsR.append(btn(P.buttons.continue, () => { screen = "owner"; draw(); }, "primary"));
+    btnsR.append(btn(P.buttons.continue, () => {
+      screen = keyboardFrom === "confirm" && selected ? "confirm" : "owner"; keyboardFrom = null; draw();
+    }, "primary"));
   } else if (screen === "owner") {
     main.innerHTML = `<h1 class="sub">${P.titles.owner}</h1><p class="subtitle">${P.whatLead}</p><div class="cz"><div class="czc">
       <div class="card"><div class="title">${P.titles.what}</div>
@@ -1937,10 +1954,10 @@ function draw() {
       ${summaryCard(d)}
       ${moreLink("more-detail")}
       <div style="margin-top:12px">${panel("warn", d.warning)}</div>
-      <p class="small muted" style="margin-top:8px">${P.confirmKeyboard.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title)}</p>
       <p style="font-size:16px;margin:14px 0 8px;overflow-wrap:anywhere"><label for="tok">${esc(d.prompt)}</label></p>
       <div class="entryshell"><input class="token" id="tok" aria-describedby="match" autocomplete="off" spellcheck="false"></div>
-      <p class="match" id="match" role="status" aria-live="polite"></p></div></div>`;
+      <p class="match" id="match" role="status" aria-live="polite"></p>
+      <div class="layout-hint" id="layout-hint" hidden><span>${esc(P.confirmLayoutHint.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title))}</span> <button class="linkbtn" id="layout-change" type="button">${esc(P.confirmLayoutChange)}</button></div></div></div>`;
     bindMore();
     const inp = main.querySelector("#tok");
     const matchEl = main.querySelector("#match");
@@ -1951,9 +1968,18 @@ function draw() {
       if (cont) cont.disabled = !tokenOk();
       if (tokenOk()) { matchEl.innerHTML = MATCH_OK + "<span>" + P.matchOk + "</span>"; matchEl.className = "match ok"; }
       else { matchEl.innerHTML = MATCH_WAIT + "<span>" + P.matchWait + "</span>"; matchEl.className = "match"; }
+      // #155: a complete entry that does not match is a wrong entry.
+      if (!tokenOk() && token.trim() && token.trim().length >= (d.token || "").trim().length) confirmMismatch = true;
+      main.querySelector("#layout-hint").hidden = !(confirmMismatch && !tokenOk());
     };
     inp.oninput = sync;
-    inp.onkeydown = (e) => { if (e.key === "Enter" && tokenOk()) { e.preventDefault(); screen = "method"; draw(); } };
+    inp.onkeydown = (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      if (tokenOk()) { screen = "method"; draw(); return; }
+      if (token.trim()) { confirmMismatch = true; sync(); }
+    };
+    main.querySelector("#layout-change").onclick = () => { keyboardFrom = "confirm"; screen = "keyboard"; draw(); };
     sync();
     // The input is already attached. A deferred focus would steal focus back
     // after Show more redraws and deliberately focuses its disclosure button.
@@ -2269,7 +2295,7 @@ document.addEventListener("keydown", e => {
     const at = Math.max(0, ids.indexOf(keyboardLayout || "us"));
     keyboardLayout = ids[(at + (e.key === "ArrowUp" ? ids.length - 1 : 1)) % ids.length];
     layoutChosen = true;
-    owner = false; token = ""; selected = null;
+    layoutChanged();
     draw();
     return;
   }

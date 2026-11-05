@@ -480,6 +480,7 @@ def test_keyboard_screen_offers_languages_in_every_renderer():
 
 
 def test_confirmation_shows_active_layout_everywhere():
+    """Every view names the active layout on Confirm after a wrong entry (#155)."""
     import pathlib
 
     root = pathlib.Path(__file__).resolve().parents[1]
@@ -490,7 +491,7 @@ def test_confirmation_shows_active_layout_everywhere():
         "src/beamo_wipe/gallery.py",
     ):
         source = (root / rel).read_text()
-        assert "CONFIRM_KEYBOARD_LINE" in source, rel
+        assert "CONFIRM_LAYOUT_HINT" in source, rel
 
 
 def test_evidence_records_locale_and_layout(monkeypatch):

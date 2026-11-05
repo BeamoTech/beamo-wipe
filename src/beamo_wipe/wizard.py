@@ -460,6 +460,8 @@ class Wizard:
         self.layout_chosen = False
         self.layout_notice: Optional[str] = None
         self._keyboard_from: Optional[Screen] = None
+        # #155: a wrong confirmation entry was made on this Confirm visit.
+        self._confirm_mismatch = False
         self._apply_keyboard = apply_layout
         self.method = DEFAULT_METHOD
         self.wants_shutdown = False
@@ -1296,6 +1298,22 @@ class Wizard:
         return True
 
     def _invalidate_after_layout_change_locked(self) -> None:
+        if self._keyboard_from == Screen.CONFIRM and self.selected is not None:
+            # #155: the layout was changed from Confirm (its "Change" link or
+            # the Keyboard layout utility). No authorization exists before
+            # Method, so the owner tick and the chosen disk stay, and the
+            # token (from the disk's identity) is unchanged. Only an entry
+            # that does not match is cleared: it was typed with the old
+            # layout. Esc/Continue return to Confirm, where every later gate
+            # (method, countdown, Erase now) still applies.
+            if not self.token_ok:
+                self.confirm_input = ""
+                self._confirm_mismatch = False
+            self._erase_until = None
+            self._authorized_operation = None
+            self.typing_check = ""
+            self.keyboard_check = None
+            return
         self.owner_ok = False
         self.confirm_input = ""
         self.selected = None
@@ -2137,6 +2155,7 @@ class Wizard:
                 return
             self.error = None
             self.confirm_input = ""
+            self._confirm_mismatch = False
             self._authorized_operation = None
             self.screen = Screen.CONFIRM
 
@@ -2145,10 +2164,35 @@ class Wizard:
             if self.screen != Screen.CONFIRM:
                 return
             self.confirm_input = text
+            # #155: a complete entry that does not match is a wrong entry;
+            # from then on Confirm offers the keyboard-layout help.
+            spec = self.confirm
+            typed = (text or "").strip()
+            if spec is not None and typed and len(typed) >= len((spec.token or "").strip()):
+                if not self.token_ok:
+                    self._confirm_mismatch = True
+
+    @property
+    def confirm_layout_hint(self) -> bool:
+        """#155: show "Not matching? Check your keyboard layout" on Confirm.
+
+        Hidden until a wrong entry (a complete one that does not match, or
+        Continue/Enter on a non-matching one) and while the entry matches.
+        Display only: it never changes the token or any gate.
+        """
+        return (
+            self.screen == Screen.CONFIRM
+            and getattr(self, "_confirm_mismatch", False)
+            and not self.token_ok
+        )
 
     def continue_confirm(self) -> None:
         with self._lock:
-            if self.screen != Screen.CONFIRM or not self.token_ok:
+            if self.screen != Screen.CONFIRM:
+                return
+            if not self.token_ok:
+                if (self.confirm_input or "").strip():
+                    self._confirm_mismatch = True  # #155: a wrong entry
                 return
             self.screen = Screen.METHOD
 

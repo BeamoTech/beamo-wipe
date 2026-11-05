@@ -1146,14 +1146,15 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _print_view(wizard.disk_view(disk), token=True)
             _emit(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}")
             print(C.confirm_prompt(confirm_spec, console=True) if confirm_spec else "")
-            print(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
-                language=LANGUAGE_NAMES[wizard.language],
-            ))
+            if wizard.confirm_layout_hint:
+                # #155: after a wrong entry; K (printed by _answer) changes it.
+                print(C.CONFIRM_LAYOUT_HINT.format(
+                    layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
+                ))
             typed = _answer(wizard, C.CON_INPUT_PREFIX)
             wizard.set_confirm_input(typed)
-            if wizard.token_ok:
-                wizard.continue_confirm()
+            # Moves on only when it matches; otherwise records a wrong entry.
+            wizard.continue_confirm()
             continue
         if screen == Screen.METHOD:
             print(C.TITLE_METHOD)
@@ -1748,10 +1749,11 @@ def _loop(stdscr, wizard: Wizard) -> int:
             confirm_spec = wizard.confirm
             if confirm_spec:
                 rest.extend(_lines(C.confirm_prompt(confirm_spec, console=True), w))
-            rest.extend(_lines(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
-                language=LANGUAGE_NAMES[wizard.language],
-            ), w))
+            if wizard.confirm_layout_hint:
+                # #155: after a wrong entry, with F2 to change the layout.
+                rest.extend(_lines(
+                    C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title)
+                    + " " + C.CON_CONFIRM_LAYOUT_KEY, w))
             limits_offset = _paint_paged(stdscr, y, rest, limits_offset, y_max, w)
             _paint_footer(stdscr, footer)
             _curses_opt("echo")
@@ -1801,11 +1803,17 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 }[ch]
                 limits_offset = max(0, limits_offset + delta)
                 continue
+            if ch == curses.KEY_F2 and wizard.can_open_keyboard:
+                # #155: Change on the layout hint. Typed keys stay the token.
+                wizard.open_keyboard()
+                continue
             if ch in (curses.KEY_ENTER, 10, 13) and wizard.token_ok:
                 wizard.continue_confirm()
                 # Same physical Enter must not also fire Method → Last chance.
                 enter_held = True
                 enter_quiet_since = None
+            elif ch in (curses.KEY_ENTER, 10, 13):
+                wizard.continue_confirm()  # #155: records a wrong entry; stays
             elif ch in (27,):
                 if escape_held:
                     continue
