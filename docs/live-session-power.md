@@ -14,6 +14,7 @@ cut stops the erase. Unsaved reports are lost.
 | Event | Intended OS behavior | Notes |
 | --- | --- | --- |
 | Idle | Display may blank after 10 minutes | Xorg `BlankTime`. A key or mouse click unblanks. This is not suspend. |
+| Erase running (X) | Display stays lit (#168) | `SleepInhibit` runs `xset s off` when nwipe starts and restores the kiosk policy (`xset s 600 s blank s on`, as the launcher sets) when it stops. Only the X screensaver changes; DPMS stays off, lid/suspend handling is unchanged, and a failed xset never blocks the erase. Not on the console fallbacks, which keep the "screen may go dark" note. |
 | DPMS standby/suspend/off | Not requested | Xorg `StandbyTime`, `SuspendTime`, and `OffTime` are 0. |
 | systemd idle action | Ignore | `IdleAction=ignore` |
 | Sleep / hibernate keys | Ignore | logind `HandleSuspendKey` / `HandleHibernateKey` |

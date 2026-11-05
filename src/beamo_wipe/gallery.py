@@ -653,7 +653,6 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "what": list(C.owner_bullets()),
         "platforms": C.owner_platforms_line(),
         "powerReminder": C.POWER_REMINDER,
-        "powerBlanking": C.POWER_BLANKING,
         "powerKeep": C.POWER_KEEP,
         "powerEvents": C.POWER_EVENTS,
         "powerBadges": {
@@ -1920,7 +1919,7 @@ function draw() {
         <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div>
       <p class="small" style="margin-top:16px">${P.reportMediaWhat} <button type="button" class="linkbtn" id="report-learn-more" aria-label="${P.learnMoreReport}">${P.learnMore}</button></p>
       <div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
-      <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div></div></div>
+      <div>${P.powerReminder}</div></div></div>
       ${moreLink("more-detail")}
       ${moreDetail(showMore ? `<div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
       <div>${P.thisUsb}</div><div class="extra">${P.platforms} ${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}

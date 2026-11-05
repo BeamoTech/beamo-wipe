@@ -3996,9 +3996,9 @@ class TkWizard:
         self._wrapping_label(text_box, C.REPORT_MEDIA_WHAT, font=self.font_s, bg=BG).pack(
             fill=tk.X
         )
-        power = self._panel(
-            zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
-        )
+        # #168: the screen stays lit while erasing (SleepInhibit turns off
+        # X blanking), so the "screen may go dark" note is not shown here.
+        power = self._panel(zone, kind="info", text=C.POWER_REMINDER)
         power.pack(fill=tk.X, pady=(12, 0))
         # #144: the status sentence moved to the header badge.
         if self._more_link(zone):

@@ -287,6 +287,8 @@ POWER_EVENTS = (
     "An interrupted erase does not resume automatically; start it again from the beginning."
 )
 
+# #168: shown only by the console fallbacks; the X screen stays lit while
+# erasing, so Tk, GTK and the web preview no longer show it.
 POWER_BLANKING = (
     "The screen may go dark. Press a key or move the mouse to bring it back. "
     "That is the display, not sleep."

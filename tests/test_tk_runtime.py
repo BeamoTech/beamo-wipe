@@ -2088,7 +2088,7 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
     assert "copies of anything you want to keep" in shown
     assert "Windows or Linux" in shown
     assert C.POWER_REMINDER in shown
-    assert C.POWER_BLANKING in shown
+    assert C.POWER_BLANKING not in shown  # #168: the screen stays lit while erasing
     assert C.TITLE_OWNER in shown
     assert C.OWNER_CHECKBOX in shown
     assert C.BTN_UNDERSTAND not in shown
