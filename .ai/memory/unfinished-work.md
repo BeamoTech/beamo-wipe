@@ -5079,3 +5079,53 @@ another very thorough and comprehensive pass of this." Repo
   report idle / failed / saved, 800x600 and 1280x820; metrics.txt).
 - NOT VERIFIED: Orca reading of the failure panel, Linux 72 DPI, hosted
   ci.yml.
+
+## BW-171-RESULTCARD — One compact result card instead of the repeated method line (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/result-card-171` (stacked on
+  `fix/report-notice-170` @ f4b5cfa; commit 937da72), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
+  review item 45). Ref #127 (photo record), #134, #172.
+- BASELINE (work171-scratch-20261105/before): the result screen showed the
+  "This disk" card, then (after the report panel) the method line again
+  ("Everyday: 1 overwrite pass: …"); start/end times only in the photo
+  record; GTK and consoles printed the method line too.
+- WHAT CHANGED (presentation only; outcomes, evidence and reports
+  unchanged): erase_record.ResultCard / build_card / check_text and
+  Wizard.result_card. The card's facts are the photo record's own fields
+  (disk, capacity, serial, method, started/ended with the record's
+  clock-confidence labels "Started (clock not verified)" / "Ended (…)"),
+  plus a Check result row from the on-screen outcome: Verified / Not
+  checked (Quick zero) / Stopped (cancelled, interrupted) / Not confirmed
+  (completion_missing, indeterminate, stop_unconfirmed) / Failed (the
+  rest); preview "Preview: nothing was erased", no times. Elapsed stays
+  the line under the headline. Without a final record the card uses the
+  same disk/method facts and no times. Tk: the "This disk" box becomes the
+  "Summary" card (same identity rendering and Show more) with the fact
+  rows; the repeated method line is gone. GTK: identity, then a "Summary"
+  heading and a LIST of focusable LIST_ITEM labels. curses / plain
+  console: "Label: value" lines in place of the method line. Web preview:
+  Method and Check rows in a list. FR/DE/ES/IT drafts.
+- FILES: src/beamo_wipe/{erase_record,wizard,gallery}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py, tests/test_result_card_171.py (new, 20),
+  tests/test_console_parity.py, tests/test_method_operation_copy.py (Done
+  now expects "Method: <title>" instead of the repeated method line).
+- TESTS: for every outcome in test_result_presentations.CASES the card's
+  disk/method/time values equal the photo record's, RESULT.txt names the
+  same method, the check result maps as above and never says Verified
+  unless verified, Method precedes Check; Quick zero never reads verified;
+  preview card; check_text rules; every language; consoles show the rows
+  and not the method line; GTK source list roles; preview payload; Tk
+  card at 800x600 and 1280x820 (rows equal Wizard.result_card, no
+  clipping, no method line). OLD-CODE (#170 @ f4b5cfa): 20/20 fail.
+- CHECKS (Windows-native route): 20/20 (Tk/GTK-source one by one); ruff
+  clean; mypy --platform linux clean; 13 files that use the method line,
+  record or card vs #170: only the intended expectation changes above
+  (updated); test_ui_rework canvas controls [confirm] fails on #170 and
+  back to #155 (REGRESSION FROM #155: the hidden keyboard-help row's Change
+  button is an unmapped control) — fixed separately as BW-155B.
+- SCREENS: work171-scratch-20261105/before and after (verified result,
+  report idle / failed / saved, 800x600 and 1280x820).
+- NOT VERIFIED: Orca reading the list, Linux 72 DPI, ISO/QEMU, hosted
+  ci.yml, native review of the drafts. #172 (rebalance) builds on this.
