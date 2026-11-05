@@ -4958,3 +4958,52 @@ another very thorough and comprehensive pass of this." Repo
 - QUEUE (owner prompts received, in order): #168 keep the screen on during
   an erase, #169 result-screen key hints, #170 report-status line only on
   failure, #171 compact result summary card.
+
+## BW-168-SCREENAWAKE — Keep the screen lit while erasing (IMPLEMENTED LOCALLY; QEMU / LIVE X CHECK BLOCKED; HOSTED GATE, ISO BUILD, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/screen-awake-168` (stacked
+  on `feat/working-times-167` @ f3e6b72; commit 33a7278), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
+  review item 42). Ref #39 (SleepInhibit), #132, #133.
+- WHERE BLANKING COMES FROM: packaging/live/.../etc/X11/xorg.conf.d/
+  10-beamo.conf (ServerFlags BlankTime 10, Standby/Suspend/OffTime 0) and
+  the launcher usr/local/bin/beamo-wipe (`xset s 600 s blank s on`, `xset
+  dpms 0 0 0`). DPMS never powers the panel down; the screensaver blanks.
+- WHAT CHANGED: sleep_inhibit.SleepInhibit (the existing power helper the
+  real NwipeRunner starts/stops around nwipe) now also runs `xset s off`
+  when the erase starts and `xset s 600 s blank s on` (the launcher policy)
+  when it stops, only if it turned blanking off. Live USB only, never dry
+  run or preview, never without DISPLAY or /usr/bin/xset; DISPLAY and
+  XAUTHORITY are passed explicitly into the clean subprocess env; timeout
+  5 s; failures logged (power/display_blanking_change_failed) and never
+  block the erase. DPMS, lid, suspend, power-button handling untouched.
+  The "screen may go dark" note left Tk and GTK Owner and the web preview;
+  curses and the plain console keep it (X settings cannot keep a Linux
+  console lit). The offline helper keeps its sentence (blanking still
+  applies outside an erase). OLED burn-in: considered; the Working screen
+  changes over time (percentage, bar), and dimming is not available via
+  xset, so no dim mode was added.
+- FILES: src/beamo_wipe/sleep_inhibit.py, ui/tk_wizard.py,
+  ui/accessible_wizard.py, gallery.py, copy.py (comment),
+  tests/test_screen_awake_168.py (new, 11), tests/test_tk_runtime.py (Owner
+  no longer shows the note), docs/live-session-power.md, docs/screens.md.
+- TESTS: start runs `xset s off` with DISPLAY, stop restores the launcher
+  policy once; argv only touches the screensaver; never runs when not
+  live, in dry run, without DISPLAY or xset; xset OSError/timeout/non-zero
+  never block the erase and nothing is restored; the note only in the
+  console fallbacks and not in the preview; Tk Owner shows the power
+  reminder without the note. OLD-CODE (#167 @ f3e6b72): 7/11 fail (the 4
+  "never runs" cases pass by design).
+- CHECKS (Windows-native route): 11/11 (Tk one by one); ruff clean; mypy
+  --platform linux clean (a log_diag argument type error found and fixed);
+  power/copy/language/console files pass except pre-existing failures also
+  on #167 (test_live_session_power spawn case: Windows tmp; receipts case:
+  docs/evidence excluded from this sparse checkout) and the #144 selector
+  case; tk_runtime Owner 9/9.
+- BLOCKED / NOT VERIFIED: the acceptance check "screen stays on during a
+  long fake erase; blanking restored afterwards" needs a real X session in
+  an isolated x86_64 Linux VM with a disposable target (no host-disk
+  passthrough) and the CI image build; no isolated guest is authorized on
+  this host (AGENTS.md), so it is pending. Hosted ci.yml not run.
+- SCREENS: work168-scratch-20261105/before and after (Owner at 800x600,
+  1280x820, 1280x820 Large; metrics.txt shows the note before/after).
