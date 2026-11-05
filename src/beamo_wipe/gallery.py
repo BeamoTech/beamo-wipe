@@ -1165,7 +1165,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card, .panel, .foot, .compare-pre, .help-reader { overflow-wrap: anywhere; }
   .fleft, .fright { display: flex; gap: 12px; flex: none; }
   .fright { margin-left: auto; }
-  .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px; }
+  /* #173: starts where the footer link text starts (ghost buttons: 16 px padding + 1 px border). */
+  .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px 17px; }
   .fhint .kbd { margin: 0 1px; }
   /* #153: drawn arrows share the letter caps' ink and height. */
   .kbd.kbd-arrow { padding: 2px 7px; }

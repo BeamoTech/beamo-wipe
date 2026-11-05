@@ -281,6 +281,24 @@ def _round_rect(canvas: tk.Canvas, x0, y0, x1, y1, r, **kwargs) -> int:
 # --- Canvas icons (drawn, so they never depend on font glyph coverage) -----
 
 
+def _text_start(widget: tk.Misc) -> int:
+    """Pixels from a hint widget's left edge to its first glyph or key-cap.
+
+    A Label draws its text after its border and padding; a key-cap bar
+    starts with either a text Label or a key-cap box (drawn at its edge).
+    """
+    try:
+        if widget.winfo_class() != "Label":
+            inner = widget.winfo_children()
+            first = inner[0].winfo_children()[0] if inner and inner[0].winfo_children() else None
+            if first is None or first.winfo_class() != "Label":
+                return 0
+            widget = first
+        return int(str(widget.cget("padx"))) + int(str(widget.cget("bd")))
+    except (tk.TclError, IndexError, ValueError):
+        return 0
+
+
 def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
     cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
     pad = 1.5
@@ -798,6 +816,13 @@ class _Button(tk.Canvas):
     }
 
     _RING_GAP = 4  # canvas room below the pill so the focus ring never clips
+    _PILL_INSET = 3  # the pill is drawn 3 px inside the canvas edge
+
+    @classmethod
+    def text_inset(cls, *, compact: bool = False, large: bool = False) -> int:
+        """Pixels from the canvas's left edge to a left-most label (#173)."""
+        pad_x = 34 if large else (12 if compact else 24)
+        return cls._PILL_INSET + pad_x
 
     def __init__(
         self,
@@ -3433,26 +3458,32 @@ class TkWizard:
                                 fg=MUTED, anchor="w")
                 note.pack(side=tk.LEFT, padx=(12, 0))
             else:
+                inset = _Button.text_inset(compact=True)
                 note = tk.Label(
                     assist, text=text, font=self.font_s, bg=FOOTER_BG,
-                    fg=MUTED, wraplength=max(200, self.lay.content_w - 24), justify=tk.LEFT,
+                    fg=MUTED, wraplength=max(200, self.lay.content_w - 24 - inset), justify=tk.LEFT,
                     anchor="w",
                 )
                 # width=1 so the unwrapped sentence cannot stretch the footer
                 # past an 1024-wide window; fill=X uses the content column.
                 note.configure(width=1)
-                note.pack(fill=tk.X, pady=(4, 0))
+                # #173: aligned with the link text above, like the hint.
+                note.pack(fill=tk.X, pady=(4, 0), padx=(max(0, inset - _text_start(note)), 0))
         # One unwrapped line of key-caps must fit the column; a longer
         # translation (Spanish, Italian) wraps like the short-window hint.
         caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,))) for m in _KEY_TOKEN_RE.finditer(hint))
         too_wide = self.font_s.measure(hint) + 24 * caps > self.lay.content_w - 8
+        # #173: the hint starts where the link text above it starts (the
+        # quiet links' text sits inside their hover pill), at every size.
+        inset = _Button.text_inset(compact=True)
         if self.lay.short or self._type_scale() > 1.05 or too_wide:
             self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED, bg=FOOTER_BG,
-                                 wraplength=self.lay.content_w - 8)
+                                 wraplength=self.lay.content_w - 8 - inset)
             self._hint.configure(width=1)
         else:
             self._hint = self._hint_bar(assist, hint)
-        self._hint.pack(fill=tk.X, pady=(4, 0))
+        self._hint.pack(fill=tk.X, pady=(4, 0),
+                        padx=(max(0, inset - _text_start(self._hint)), 0))
         # No rule between the assist strip and the buttons: the white bar
         # already frames them, and spacing separates the two rows.
         row = tk.Frame(col, bg=FOOTER_BG)
