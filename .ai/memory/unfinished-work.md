@@ -3986,3 +3986,74 @@ another very thorough and comprehensive pass of this." Repo
   GTK likely similar (not run). The #150 pointer guard could be applied to
   every screen-changing pointer activation; not done here because it
   changes all footer buttons and many existing flow tests.
+
+## BW-151-DISKORDER — Disks listed internal first, then external, stable order (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/disk-order-151` (stacked on
+  `feat/review-on-activate-150`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
+  review item 25). Ref #149 (compact rows; Up/Down by disk identity).
+- BASELINE: every view sorted eligible disks by device path (Tk rows,
+  GTK buttons, curses blocks, plain console numbers, Compare disks "Disk
+  N", wizard Up/Down, web preview JS). Mixed fixture (scratch
+  fixture-mixed.json): NVMe SK hynix, USB WD Elements (/dev/sda), SATA
+  Samsung, hot-plug SATA Toshiba, USB SanDisk: the USB backup drive was
+  second, ahead of the internal SATA SSD.
+- WHAT CHANGED (safety:, 1b14bdd; test follow-ups b370508, a4f9db0): new src/beamo_wipe/disk_order.py
+  pick_order/pick_sort_key/location_group. Groups: 0 NVMe/SATA/SAS/virtio
+  not removable/hot-plug; 1 the same transports hot-plug (dock, enclosure,
+  hot-swap bay; location not guessed); 2 other eligible transports; 3 USB.
+  Within: bus rank, model (casefold), serial, WWN, capacity, path. Used by
+  Wizard.move_selection, Tk _pick, GTK pick buttons, curses _pick_blocks,
+  plain console numbering, inventory.comparison_entries numbering, and the
+  web preview (payload "order"; JS sorts by it). Selection, token and
+  authorization unchanged: select_disk by path; _operation_key uses sorted
+  identities (order-independent). Protected Beamo USB keeps its place.
+  #149/#150 tests that assumed path order now use pick_order.
+  Docs: screens.md #151 row; #149 row "device order" -> shown order.
+  After (mixed fixture): NVMe SK hynix, SATA Samsung, hot-plug SATA
+  Toshiba, USB SanDisk, USB WD Elements, identical in Tk (all sizes),
+  curses, plain console, Compare numbers and Up/Down; same with lsblk
+  order reversed. Demo: nvme0n1, sdd, sda (was nvme0n1, sda, sdd).
+- TESTS: new tests/test_disk_order_151.py (28): mixed fixture order;
+  location groups (12 cases); within-group key incl. ties to path; all 720
+  permutations of the lsblk order give the same list; never adds/drops a
+  disk; Check disks again with the same disks in reverse order keeps the
+  order (and returns to Owner with no selection); re-sorting the list
+  cannot change the chosen disk, its token or Confirm target; Up/Down step
+  from the chosen disk in the shown order; a rescan in another order keeps
+  the target and authorization key, countdown still governs Erase now;
+  Compare "Disk N", curses (protected first), plain console numbers and
+  number 5 choosing that disk; GTK loop and source checks; preview payload
+  order and JS sort; Tk rows top-down at 800x600 and 1280x820, Down and
+  click select by disk, protected card still after the list. With only the
+  new module copied to 7ade9ee, 10 fail (all view/wizard order tests);
+  without it all 28 fail at import.
+- CHECKS (Windows-native route): new file 28/28 one by one; updated
+  test_compact_rows_149 / test_review_on_activate_150 one by one: 16/16 and 22/22;
+  ruff clean; mypy --platform linux 6 env-only errors (a loop variable in
+  the plain console was renamed: the typed pick_order made mypy see a
+  reused name); node --check; headless Chrome preview: cards, disks() and
+  ArrowDown all nvme0n1, sdd, sda (web-order-after.txt).
+  RELATED-FILE COMPARISON: 185 related files (related-151.txt) on #151
+  against #150 (124 shared with the #150 run; 22 more run on #150 for a
+  baseline, pf-base-extra.txt). Real: seven older tests assumed path order
+  (test_zero_serial_identity_pass5, test_wizard_flow, test_compare_disks,
+  test_slow_unusual_interactions x3, test_tk_runtime); they now take the
+  order from pick_order (b370508, a4f9db0) and pass. Not caused by #151:
+  test_audio_responsiveness timing limits (fails on #150 too / passes on
+  one of three reruns on this loaded host), install-cloud-triggers bash
+  10 s timeout, release_manifest (no ISO here), the #150 GTK fake-gi test
+  (passes on rerun).
+- SCREENS: scratch work151-scratch-20261104 before/ and after/ (mixed
+  fixture, Tk 800x600 and 1280x820 x Standard/Large/Extra large) with
+  order.txt (every view's order, reversed-lsblk check).
+- NOT VERIFIED: GTK/Orca runtime and speech order (no gi here; source and
+  fake-gi checks only), Linux 72 DPI on DISPLAY=:99, ISO/QEMU, hosted
+  ci.yml, real hardware transports (eMMC/MMC, Thunderbolt, SAS) beyond
+  fake lsblk.
+- RISKS / NOTES: grouping trusts lsblk TRAN and RM/HOTPLUG (untrusted
+  metadata); it only affects order, never eligibility, identity or
+  authorization. A hot-plug SATA/NVMe bay inside the PC is listed after
+  fixed internal disks (location is not guessed). eMMC (TRAN "mmc", bus
+  "MMC") is group 2, after hot-plug internal transports and before USB.
