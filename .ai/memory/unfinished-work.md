@@ -4650,3 +4650,48 @@ another very thorough and comprehensive pass of this." Repo
   console-after.txt; preview work159-scratch-20261105/web-after161-*.png.
 - NOT VERIFIED: owner copy sign-off, GTK/Orca runtime, Linux 72 DPI,
   ISO/QEMU, hosted ci.yml, native review of the drafts.
+
+## BW-162-COUNTDOWNCOPY — Review lead: 'Erasing starts only when you press Erase now' (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/countdown-copy-162` (stacked
+  on `feat/rarely-needed-161` @ bae2823; commit beab555 safety:), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
+  review item 36). Ref #163 (not implemented here).
+- BASELINE: copy.LAST_LEAD "Check the selected disk and method. The
+  countdown never starts erasure." (FR/DE/ES/IT equivalents), read by Tk,
+  GTK, curses, the plain console and the web preview payload
+  (work162-scratch-20261105/before: Tk Review before erasing counting and
+  at zero, EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE
+  800x600, FR 1280x820 Large; metrics.txt).
+- WHAT CHANGED (copy only; countdown, Erase now gate, argv unchanged):
+  LAST_LEAD = "Check the selected disk and method. Erasing starts only
+  when you press Erase now."; FR/DE/ES/IT drafts name each language's own
+  Erase now label (Effacer maintenant / Jetzt löschen / Borrar ahora /
+  Cancella ora). The helper page already says "Nothing is erased until you
+  choose Erase now" (unchanged). Docs: screens.md, translations.md.
+- FILES: src/beamo_wipe/copy.py, locales/{fr,de,es,it}.py,
+  tests/test_countdown_copy_162.py (new, 13), tests/test_console_parity.py,
+  tests/test_design_runtime.py, tests/test_tk_runtime.py (pinned the old
+  sentence), docs/screens.md, docs/translations.md.
+- TESTS: exact English lead; every language names its own BTN_ERASE and
+  drops the old sentence; gate unchanged (zero enables Erase now, runner
+  not started, still on Review); plain console; curses; GTK source and
+  preview payload (EN, DE); Tk at 800x600 Standard/Large and 1280x820
+  Extra large: lead shown unclipped, zero enables Erase now, nothing
+  starts. OLD-CODE (#161 @ 5fa619c): 9/10 non-Tk cases fail (the gate check
+  passes by design).
+- CHECKS (Windows-native route): 13/13 (Tk cases one by one);
+  test_design_runtime countdown, tk_runtime review/countdown (6),
+  console_parity Last chance (4) pass one by one; ruff clean; mypy
+  --platform linux clean; copy, ui_system, language, translation, gallery,
+  confirmation-gate and curses erase-gate files pass except the
+  pre-existing test_ui_system selector failure (#144, see BW-160).
+- KNOWN, NOT CAUSED HERE: Review before erasing at 800x600 Extra large
+  never settles in Tk's idle loop on this Windows host (recorded "Windows
+  Tk idle-loop hangs (Review extra 800x600)"; reproduced on #156 and #157
+  with the old copy). That state is left out of the new test and the
+  screenshots; Linux 72 DPI still unchecked.
+- SCREENS: work162-scratch-20261105/before and after (same states).
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts. Not pushed to main; merge
+  order ... #157 -> #159 -> #160 -> #161 (after copy sign-off) -> #162.
