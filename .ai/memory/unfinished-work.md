@@ -4189,3 +4189,55 @@ another very thorough and comprehensive pass of this." Repo
   name_every_layout_shortcut fails on #149 54f8c81, #152, #153, #154 and
   #155 alike ("1–" in HINT_KEYBOARD, the language-neutral 1–7 cap). Needs
   its own item: either the test or the hint is out of date.
+
+## BW-154-ENCTAG — Tag disks 'BitLocker (Windows encryption)' / 'Encrypted (LUKS)' (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/encrypted-tag-154` (stacked on
+  `fix/key-hints-153`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
+  review item 28). Ref #147 (contents line, FORMAT_BITLOCKER/FORMAT_LUKS).
+- BASELINE (scratch work154-scratch-20261104/before, fixture154.py): no
+  view tagged encryption; only the #147 summary said "Windows (BitLocker
+  encrypted) 510 GB" / "LUKS encrypted 998 GB". Observed, unchanged: a USB
+  stick with only a BitLocker To Go partition is classified "Windows found
+  on this disk" (discovery treats BitLocker as a Windows mark; pre-existing).
+- WHAT CHANGED (ea575f5, test follow-up 65d77ac; feat: display only; no discovery, selection or
+  identity change): inventory.encryption_tags(children) from the
+  VolumeFacts.fstype lsblk already gave for partitions and opened volumes
+  (any depth): "bitlocker" -> TAG_BITLOCKER "BitLocker (Windows
+  encryption)", "crypto_luks" -> TAG_LUKS "Encrypted (LUKS)", both when
+  both. Tk: in the compact row details after the connection; on the
+  expanded card an outlined (1 px border, ink bold) tag row above the
+  contents hint. GTK: label under the disk button and in its spoken name.
+  curses + plain console: own line under the serial. Web preview: payload
+  encryptionTags; compact details and .enc-tag pills on the card. FR/DE/ES/
+  IT drafts. Docs: screens.md #154 row; translations.md note.
+- DESIGN NOTE: a whole-disk file system (LUKS on the raw disk, no
+  partition table) has no nested component and is not tagged. Tagging it
+  needs the disk's own FSTYPE on Disk, which session_recovery serialises
+  with an exact field set; left as a follow-up rather than widen this
+  display item into discovery/recovery.
+- TESTS: new tests/test_encrypted_tag_154.py (14): fixture with BitLocker
+  (Windows), LUKS (Linux), plain NTFS, ext4, whole-disk LUKS, BitLocker To
+  Go USB, and a disk with an opened LUKS volume plus BitLocker: exact tags;
+  display only (same eligible set and tokens with FSTYPE stripped; only
+  presentation modules read the tags); copy in every language keeps the
+  product name and has no unlock/key/password/recovery words; curses +
+  plain console lines; GTK source; preview payload/markup/CSS; Tk rows and
+  card tags at 800x600 Standard/Extra large (EN, FR) and 1280x820, not
+  clipped, no tag on an untagged card. All 14 fail on 5958278.
+- CHECKS (Windows-native route): 14/14 (Tk cases one by one); ruff clean;
+  mypy 6 env-only errors; node --check; headless Chrome DOM probe (web-probe-after.txt): rows for nvme0n1/sdd carry the BitLocker tag, nvme1n1 the LUKS tag, sda/sdb/sdc none; the selected card shows one enc-tag; web-after-pick.png shows both.
+  RELATED-FILE COMPARISON: 20 related files (related-154.txt) per file on
+  #154 and #153: test_partition_names_147's GTK source check expected the
+  spoken-name line without the tag (updated in 65d77ac); its Tk summary
+  case passes on rerun; test_design_runtime timed out as a whole file and
+  per case is 56/57 with the known Windows tmp-permission result-tab case.
+  The Confirm-related 109-file run (#156 vs #154) adds nothing new.
+- SCREENS: before/ and after/ (Tk: nothing selected 800x600 Standard/Extra
+  large and 1280x820; nvme0n1 selected 800x600 x 3 sizes and 1280x820;
+  nvme1n1 selected), text.txt (tags, summaries, curses blocks EN/FR),
+  web-after-pick.png.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, real lsblk
+  output for BitLocker/LUKS on hardware (fake lsblk only), ISO/QEMU, hosted
+  ci.yml, native review of the drafts.
