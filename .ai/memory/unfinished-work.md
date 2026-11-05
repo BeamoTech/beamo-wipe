@@ -4747,3 +4747,56 @@ another very thorough and comprehensive pass of this." Repo
   FR 1280x820 Large).
 - NOT VERIFIED: Orca actually speaking the alert (GTK unavailable here),
   Linux 72 DPI, ISO/QEMU, hosted ci.yml, native review of the drafts.
+
+## BW-164-REVIEWMETHODONCE — Review describes the method once (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/review-method-once-164`
+  (stacked on `feat/countdown-ready-163` @ 3beb2c2; commit d0415be safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
+  #164 (UI review item 38). Keeps #33's operation summaries intact.
+- BASELINE (work164-scratch-20261105/before, console-before.txt): Review
+  showed "One overwrite, followed by verification." and "Everyday: 1
+  overwrite pass: random data. Then we check the last overwrite." on Tk
+  (bold + muted; below the countdown when stacked), GTK, curses, the plain
+  console and the web preview.
+- WHAT CHANGED (presentation only; METHODS, argv, verification, gates
+  unchanged): copy.REVIEW_METHOD_LINE "{method}: {operation}" (FR
+  "{method} : {operation}"; DE/ES/IT drafts), Wizard.review_method_line =
+  method title + #33's operation summary, e.g. "Everyday: One overwrite,
+  followed by verification." / "Quick zero: One overwrite. Verification is
+  not performed." Review shows only that line on every surface; Working and
+  Done keep their method lines. Preview payload `reviewLine`.
+- FILES: src/beamo_wipe/{copy,wizard,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  tests/test_review_method_once_164.py (new, 18), test_console_parity,
+  test_method_operation_copy, test_tk_runtime (method facts on Review),
+  test_ui_rework, test_console_enter_interleaved_pass25_ui (mock gains
+  review_method_line), docs/screens.md, docs/translations.md.
+- TESTS: line per method incl. verification yes/no and no "verified" for
+  Quick zero; every language keeps name + operation; plain console and
+  curses show it once and no pass detail; GTK source; preview markup; Tk
+  at 800x600, 1280x820, 1280x820 Extra large for Everyday and Quick zero:
+  exactly one method line, no clipping, nothing enabled or started.
+  OLD-CODE (#163 @ 3beb2c2): 18/18 fail.
+- CHECKS (Windows-native route): 18/18 (Tk one by one); ruff clean; mypy
+  --platform linux clean; non-Tk related files vs #163: only new failure
+  was the pass25 mock lacking review_method_line (fixed); remaining
+  failures identical to #163 (Windows /tmp/beamo-wipe permission cases in
+  test_last_chance_operation / test_operation_identity, evidence and
+  export cases). Tk one by one: ui_fit Review 124/124, single_erase_128
+  Review (not Extra 800x600) 37/37, #163 Tk 6/6, ui_rework review 1/1,
+  tk_runtime 27/30 with refresh-from-Last-chance and both KP_Enter cases
+  failing on #163 too.
+- SCREENS: work164-scratch-20261105/before and after (Review counting and
+  ready, EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE
+  800x600, FR 1280x820 Large), console-before/after.txt.
+- NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml,
+  native review of REVIEW_METHOD_LINE drafts.
+- QUEUE AT THIS POINT (owner prompts received, in order; each gets its own
+  branch stacked on the previous): #165 curses Review focus (edit script
+  ready in work165-scratch-20261105/edit_curses.py), #166 step name "Final
+  check" (work166-scratch-20261105/edit_step.py), #167 Working start/finish
+  times (owner question: the wall clock is never trusted today, so only the
+  relative form would show), #168 keep the screen on during an erase
+  (xset s off around nwipe via the SleepInhibit pattern; QEMU check
+  blocked without an authorized isolated VM).
