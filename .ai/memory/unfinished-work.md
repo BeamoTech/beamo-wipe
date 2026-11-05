@@ -4592,3 +4592,61 @@ another very thorough and comprehensive pass of this." Repo
   expander and its spoken name are untested at runtime), Linux 72 DPI,
   ISO/QEMU, hosted ci.yml. Not pushed to main; merge order ... #157 ->
   #159 -> #160.
+
+## BW-161-RARELYNEEDED — Three overwrites tagged 'Rarely needed' with a Show more reason (IMPLEMENTED LOCALLY — COPY AWAITS OWNER SIGN-OFF; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/rarely-needed-161` (stacked
+  on `feat/everyday-caveat-160` @ cec9ecf; commit a8f2a2c), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
+  review item 35). Ref #159.
+- OWNER SIGN-OFF REQUIRED (task requirement; not yet given): the English
+  copy below. Do not merge #161 until the owner approves it or supplies
+  replacement wording; translations are drafts for native review.
+  * Chip (replaces "More overwrites", which only repeated the title):
+    "Rarely needed".
+  * Show more explanation (methods.EXTRA_WORK_DOD): "Three times the
+    overwrites of Everyday, so it takes longer. Extra passes do not reach
+    hidden storage. Everyday is the usual choice. This is not a DoD
+    certificate."
+- CLAIMS CHECK: within docs/claims.md and docs/storage-and-controller-
+  limits.md — "Extra passes do not reach hidden storage" is the existing
+  approved sentence ("Additional overwrite passes do not fix these
+  limitations"); "takes longer" is factual (4 full-disk passes vs 2);
+  "This is not a DoD certificate." is docs/ADVANCED.md's wording (kept as
+  required); no "DoD certified", certification, guarantee or
+  unrecoverability claim. ES/IT first drafts "No es un certificado DoD" /
+  "Non è un certificato DoD" read as "DoD certified" and failed
+  test_language_selection; reworded to "El patrón DoD no supone ningún
+  certificado." / "Il modello DoD non comporta alcun certificato."
+- BASELINE: work161-scratch-20261105/before (Tk Method closed and with
+  Three overwrites open: EN 800x600 Standard/Extra large, 1280x820, DE
+  800x600, FR 1280x820 Large; metrics.txt), console-before.txt.
+- WHAT CHANGED (copy and placement only; dodshort, rounds=1, verify=last,
+  noblank, argv unchanged): methods.MARK_MORE_OVERWRITES ->
+  MARK_RARELY_NEEDED; EXTRA_WORK_DOD reworded (EN + FR/DE/ES/IT drafts).
+  Tk and preview show the neutral chip (not the warning colour) and the
+  reason under the card's Show more (#159). GTK: the explanation left the
+  radio label for that method's Show more expander ("Show more: Three
+  overwrites", #160 pattern). Plain console: "[Rarely needed]" on the
+  choice, "Three overwrites: <reason>" after the choices; curses: the
+  paged note is prefixed with the method name. Docs: screens.md,
+  translations.md.
+- TESTS: new tests/test_rarely_needed_161.py (10): tag and wording;
+  claims (ADVANCED.md sentence, "DoD" kept, Everyday named, forbidden
+  phrases incl. ES/IT/FR/DE forms, every language); method mapping
+  unchanged; plain console; curses first page and paged reason; GTK source
+  (not in the radio label, in the expander); preview payload; Tk chip
+  visible, neutral colour, reason only after Show more, no clipping (EN
+  Standard/Extra large, DE). OLD-CODE (#160 @ 3910f41): 9/10 fail (the
+  mapping check passes by design). Updated: test_ui_system chip text.
+- CHECKS (Windows-native route): 10/10 (Tk cases one by one); ruff
+  clean; mypy --platform linux clean; console, copy, ui_system,
+  language (incl. ES/IT forbidden-claim checks), translation, gallery and
+  method files pass except pre-existing failures that also fail on #160:
+  test_ui_system selector (#144), test_export_worker_locale and
+  test_language_snapshot (Windows subprocess/environment). Post-rebase
+  stack check (all #157–#161 files) passes.
+- SCREENS: work161-scratch-20261105/after (same states as before),
+  console-after.txt; preview work159-scratch-20261105/web-after161-*.png.
+- NOT VERIFIED: owner copy sign-off, GTK/Orca runtime, Linux 72 DPI,
+  ISO/QEMU, hosted ci.yml, native review of the drafts.
