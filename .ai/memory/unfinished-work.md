@@ -4318,3 +4318,54 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, a real X
   keyboard-layout switch (fake applier only), ISO/QEMU, hosted ci.yml,
   native review of the drafts.
+
+## BW-156-TOKENFEEDBACK — Show which typed confirmation character is wrong (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/token-feedback-156` (stacked
+  on `feat/confirm-layout-hint-155` @ 9e94fc7), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
+  review item 30). Ref #129 (card token), #155 (timing of the help).
+- RULE (documented in docs/screens.md "Comparison (#156)", decided with
+  #129 and unchanged here): safety.token_matches strips leading/trailing
+  whitespace and compares case-insensitively; inner spaces count; no
+  partial match; another disk's token never matches.
+- BASELINE: after a wrong entry Confirm showed only the #155 keyboard hint
+  (work155-scratch-20261104/after); no per-character feedback anywhere.
+- WHAT CHANGED (safety:, 10e06dc; written as 8d0e09f on the pre-rebase stack): new src/beamo_wipe/token_feedback.py
+  (display only): marks typed characters that differ from the token at the
+  same position (spaces set aside and marked on their own), counts
+  missing/extra, never prints an expected character. Wizard.confirm_feedback
+  (#155 timing). Tk: typed value (mono, [brackets]) and problem line above
+  the keyboard sentence, refreshed per keystroke. GTK: focusable label,
+  spoken name without brackets. curses/plain console: two lines. Web
+  preview: JS port (parity 72/72 with Python, parity.txt). Copy TOKEN_*
+  + FR/DE/ES/IT drafts. Docs: screens.md, translations.md.
+- TESTS: new tests/test_token_feedback_156.py (40): gate re-asserted (outer
+  spaces accepted x5, inner spaces rejected x4, case rule, wrong/missing/
+  extra rejected, another disk's token rejected); each of 4 wrong
+  positions reported; several/missing/extra; stray space; match/empty ->
+  none; never reveals expected characters (6 inputs); every language's
+  placeholders; wizard timing; Enter on a short wrong entry explains and
+  never advances; countdown 5 and separate Erase now unchanged; only the
+  wizard imports the module and token_ok never consults it; plain console,
+  curses, GTK source, preview source; Tk at 800x600 Standard/Extra large
+  and 1280x820. The file fails at import on 05aba30 (new module).
+- CHECKS (Windows-native route): 40/40 one by one; test_card_token_129,
+  test_confirm_layout_hint_155, test_console_confirm_repeat pass;
+  test_wizard_flow happy_path fails on #150 too (Windows tmp
+  PermissionError); its path-order test was a #151 leftover, fixed on
+  feat/disk-order-151 (897461e); ruff clean; mypy 6 env-only; node --check;
+  Python/JS parity 72/72.
+  RELATED-FILE COMPARISON: 109 Confirm-related files (related-156.txt)
+  per file on #156 and #154 (cmp.txt): the only failure only on #156 is
+  test_serial_diff_152 Tk mark [sda, Large], which passes on rerun. Six
+  files timed out as whole files on both trees; their Confirm cases one by
+  one on #156 (each-confirm.txt): ui_fit 42/42, reflow 2/2,
+  single_erase_warning_128 33/33, tk_runtime 18/19 with the pre-existing
+  refresh-from-Confirm case (fails on #154 and #149 too);
+  test_keyboard_layout per case 88/89 on #155 and #154 (pre-existing
+  hint-shortcut case, fails on #149 too).
+- SCREENS: work156-scratch-20261104/after (Tk Confirm empty / wrong /
+  short + Enter at 800x600 x 3 sizes and 1280x820; FR Extra large).
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts.
