@@ -158,7 +158,10 @@ def test_last_chance_hint_is_above_navigation_not_between_actions(ui, size):  # 
         app.root.update()
     back = _button_named(app, C.BTN_BACK)
     erase = _button_named(app, C.BTN_ERASE)
-    hint = app._hint
+    # #174: no hint row; the Keyboard shortcuts item sits in the tools row
+    # above the actions, never between them.
+    assert app._hint is None
+    hint = app._shortcuts_button
     assert hint is not None and hint.winfo_ismapped()
     assert back.winfo_ismapped() and erase.winfo_ismapped()
     assert app.root.focus_get() is back

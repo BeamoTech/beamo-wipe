@@ -1525,7 +1525,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons', '_help_popup', '_help_button')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons', '_help_popup', '_help_button', '_shortcuts_button')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1694,6 +1694,8 @@ class TkWizard:
             self._help_screen: Optional[Screen] = None
             self._help_popup: Optional[tk.Frame] = None
             self._help_button: Optional[_Button] = None
+            self._shortcuts_button: Optional[_Button] = None  # #174
+            self._help_direct = False
             self._help_keep_focus = ""
             self._help_prior_focus = ""
             self._help_focus_key = ""
@@ -3435,6 +3437,10 @@ class TkWizard:
         # live in it instead of coming and going in this strip.
         self._help_button = utility(C.MENU_TITLE, self._toggle_help_menu)
         self._help_button._beamo_help_menu = True  # type: ignore[attr-defined]
+        # #174: the screen's key hints are one "Keyboard shortcuts" item, so
+        # the footer is two rows (tools, then actions) on every screen.
+        self._shortcuts_button = utility(C.MENU_SHORTCUTS, self._open_shortcuts)
+        self._shortcuts_button._beamo_shortcuts = True  # type: ignore[attr-defined]
         if self.w.refresh_offered:
             # #136: not on What/Owner (no disk list yet); guarded from
             # Confirm, Method and Review by the Check disks again dialog.
@@ -3448,6 +3454,7 @@ class TkWizard:
             # #135: hear the result again beside the footer tools; the
             # Sounds on/off setting is in Help & settings (#175).
             utility(C.SOUND_HEAR_AGAIN, self._nav(self.w.request_hear_outcome_sound))
+        footer_note = ""
         if self.w.screen == Screen.DONE and not self.w.preview:
             reason = self.w.done_actions_reason
             text = reason or C.ANOTHER_HINT
@@ -3458,32 +3465,12 @@ class TkWizard:
                                 fg=MUTED, anchor="w")
                 note.pack(side=tk.LEFT, padx=(12, 0))
             else:
-                inset = _Button.text_inset(compact=True)
-                note = tk.Label(
-                    assist, text=text, font=self.font_s, bg=FOOTER_BG,
-                    fg=MUTED, wraplength=max(200, self.lay.content_w - 24 - inset), justify=tk.LEFT,
-                    anchor="w",
-                )
-                # width=1 so the unwrapped sentence cannot stretch the footer
-                # past an 1024-wide window; fill=X uses the content column.
-                note.configure(width=1)
-                # #173: aligned with the link text above, like the hint.
-                note.pack(fill=tk.X, pady=(4, 0), padx=(max(0, inset - _text_start(note)), 0))
-        # One unwrapped line of key-caps must fit the column; a longer
-        # translation (Spanish, Italian) wraps like the short-window hint.
-        caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,))) for m in _KEY_TOKEN_RE.finditer(hint))
-        too_wide = self.font_s.measure(hint) + 24 * caps > self.lay.content_w - 8
-        # #173: the hint starts where the link text above it starts (the
-        # quiet links' text sits inside their hover pill), at every size.
-        inset = _Button.text_inset(compact=True)
-        if self.lay.short or self._type_scale() > 1.05 or too_wide:
-            self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED, bg=FOOTER_BG,
-                                 wraplength=self.lay.content_w - 8 - inset)
-            self._hint.configure(width=1)
-        else:
-            self._hint = self._hint_bar(assist, hint)
-        self._hint.pack(fill=tk.X, pady=(4, 0),
-                        padx=(max(0, inset - _text_start(self._hint)), 0))
+                # #174: no third footer row. The note explains Erase another
+                # disk, so it sits beside that button in the action row.
+                footer_note = text
+        # #174: no key-hint row; the hint is the first line of the
+        # Keyboard shortcuts page (self._footer_hint).
+        self._hint = None
         # No rule between the assist strip and the buttons: the white bar
         # already frames them, and spacing separates the two rows.
         row = tk.Frame(col, bg=FOOTER_BG)
@@ -3503,6 +3490,17 @@ class TkWizard:
         left.pack(anchor="w")
         right = tk.Frame(row, bg=FOOTER_BG)
         right.pack(side=tk.RIGHT, anchor="n")
+        if footer_note:
+            note = tk.Label(row, text=footer_note, font=self.font_s, bg=FOOTER_BG, fg=MUTED,
+                            anchor="w", justify=tk.LEFT, width=1)
+            note._beamo_footer_note = True  # type: ignore[attr-defined]
+            note.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 12))
+            # Wrap to the room between the two buttons (width=1: the
+            # sentence never widens the footer).
+            def wrap_note(event, label=note) -> None:
+                label.configure(wraplength=max(120, int(event.width) - 2))
+
+            note.bind("<Configure>", wrap_note, add="+")
         row._left_host = left_host  # type: ignore[attr-defined]
         row._left = left  # type: ignore[attr-defined]
         row._left_width = 0  # type: ignore[attr-defined]
@@ -5149,6 +5147,24 @@ class TkWizard:
         button._beamo_help_menu = True  # type: ignore[attr-defined]
         button.pack(side=tk.LEFT)
         self._help_button = button
+        shortcuts = _Button(row, text=C.MENU_SHORTCUTS, font=self.font_s,
+                            command=self._open_shortcuts, variant="quiet", compact=True)
+        shortcuts._beamo_shortcuts = True  # type: ignore[attr-defined]
+        shortcuts.pack(side=tk.LEFT, padx=(4, 0))
+        self._shortcuts_button = shortcuts
+
+    def _open_shortcuts(self) -> None:
+        """#174: the Keyboard shortcuts page, straight from its footer item."""
+        if getattr(self, "_ui_dead", False):
+            return
+        if getattr(self, "_help_open", False) and getattr(self, "_help_direct", False):
+            self._close_help_menu()
+            return
+        self._help_open = True
+        self._help_view = "shortcuts"
+        self._help_direct = True
+        self._help_screen = self.w.screen
+        self._build_help_menu("back")
 
     def _toggle_help_menu(self) -> None:
         if getattr(self, "_help_open", False):
@@ -5162,6 +5178,7 @@ class TkWizard:
             return
         self._help_open = True
         self._help_view = "menu"
+        self._help_direct = False
         self._help_screen = self.w.screen
         self._build_help_menu(focus_key)
 
@@ -5172,6 +5189,8 @@ class TkWizard:
         self._help_view = "menu"
         self._help_pos = None
         self._help_focus_key = ""
+        direct = getattr(self, "_help_direct", False)
+        self._help_direct = False
         if popup is not None:
             try:
                 popup.destroy()
@@ -5179,7 +5198,7 @@ class TkWizard:
                 pass
         if refocus:
             # Focus returns to the control that opened the menu.
-            button = getattr(self, "_help_button", None)
+            button = getattr(self, "_shortcuts_button" if direct else "_help_button", None)
             try:
                 if button is not None and button.winfo_exists():
                     button.focus_set()
@@ -5280,10 +5299,28 @@ class TkWizard:
         if getattr(self, "_help_view", "menu") == "shortcuts":
             tk.Label(inner, text=C.MENU_SHORTCUTS, font=self.font_bold, fg=INK, bg=SURFACE,
                      anchor="w").pack(fill=tk.X)
+            hint = getattr(self, "_footer_hint", "")
             for line in self._help_shortcut_lines():
-                self._p(inner, line, font=self.font_s, bg=SURFACE, wraplength=wrap,
-                        flow=False).pack(fill=tk.X, pady=(4, 0))
-            back = _Button(inner, text=C.MENU_BACK, command=self._help_back,
+                if line != hint:
+                    self._p(inner, line, font=self.font_s, bg=SURFACE, wraplength=wrap,
+                            flow=False).pack(fill=tk.X, pady=(4, 0))
+                    continue
+                # #174: the screen's own keys, one sentence per line, keep
+                # their key-caps here (a sentence too wide stays plain text).
+                box = tk.Frame(inner, bg=SURFACE)
+                box._beamo_shortcuts_hint = True  # type: ignore[attr-defined]
+                box.pack(fill=tk.X, pady=(4, 0))
+                for sentence in re.split(r"(?<=\.)\s+", line.strip()):
+                    caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,)))
+                               for m in _KEY_TOKEN_RE.finditer(sentence))
+                    if caps and self.font_s.measure(sentence) + 24 * caps <= wrap:
+                        self._hint_bar(box, sentence).pack(fill=tk.X, pady=(2, 0))
+                    else:
+                        self._p(box, sentence, font=self.font_s, bg=SURFACE, wraplength=wrap,
+                                flow=False).pack(fill=tk.X, pady=(2, 0))
+            direct = getattr(self, "_help_direct", False)
+            back = _Button(inner, text=C.MENU_CLOSE if direct else C.MENU_BACK,
+                           command=self._close_help_menu if direct else self._help_back,
                            font=self.font_s_bold, variant="secondary", compact=True)
             back._beamo_help_item = "back"  # type: ignore[attr-defined]
             back.pack(anchor="w", pady=(10, 0))
@@ -6701,7 +6738,8 @@ class TkWizard:
         if getattr(self, "_help_open", False):
             # #175: Esc closes the menu (or its shortcuts page) and nothing
             # else; it never goes back or opens Stop from here.
-            if getattr(self, "_help_view", "menu") == "shortcuts":
+            if (getattr(self, "_help_view", "menu") == "shortcuts"
+                    and not getattr(self, "_help_direct", False)):
                 self._help_back()
             else:
                 self._close_help_menu()

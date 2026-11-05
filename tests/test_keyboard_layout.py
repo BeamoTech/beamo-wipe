@@ -716,15 +716,37 @@ def test_tk_up_down_choose_layouts_while_the_check_box_has_focus():
         lang.set_language("en")
 
 
+def _shown_hint(app):
+    """#174: the screen's key hint, on the Keyboard shortcuts page."""
+    app._open_shortcuts()
+    for _ in range(4):
+        app.root.update()
+    found = []
+
+    def walk(node):
+        if getattr(node, "_beamo_shortcuts_hint", False):
+            found.append(node)
+        for child in node.winfo_children():
+            walk(child)
+
+    walk(app._help_popup)
+    (hint,) = found
+    return hint
+
+
 @pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 def test_tk_keyboard_hint_stays_inside_the_window_on_tall_screens(language):
     from beamo_wipe import lang
 
     wiz, app = _tk_keyboard(language, size=(1024, 740))
     try:
-        hint = app._hint
-        assert hint is not None and hint.winfo_ismapped()
-        right = hint.winfo_rootx() + hint.winfo_reqwidth()
+        # #174: the keys are on the Keyboard shortcuts page; it fits too.
+        assert app._hint is None
+        hint = _shown_hint(app)
+        assert hint.winfo_ismapped()
+        popup = app._help_popup
+        right = popup.winfo_rootx() + popup.winfo_width()
+        assert hint.winfo_rootx() + hint.winfo_reqwidth() <= right
         assert right <= app.root.winfo_rootx() + app.root.winfo_width(), language
         assert _clipping_free(app)
     finally:

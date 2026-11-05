@@ -1168,6 +1168,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
   /* #173: starts where the footer link text starts (ghost buttons: 16 px padding + 1 px border). */
   .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px 17px; }
   .fhint .kbd { margin: 0 1px; }
+  /* #174: no key-hint row; its text is the first line of Keyboard shortcuts. */
+  .assist .fhint { display: none; }
   /* #153: drawn arrows share the letter caps' ink and height. */
   .kbd.kbd-arrow { padding: 2px 7px; }
   .kbd.kbd-arrow svg { display: inline-block; vertical-align: -1px; color: var(--ink); }
@@ -2409,7 +2411,7 @@ function draw() {
 }
 // #175: Help & settings. Opening it changes nothing; items use the same
 // rules as the live wizard (P.helpMenu.states) and never erase.
-let helpOpen = false, helpView = "menu", helpFocus = "", helpScreen = null;
+let helpOpen = false, helpView = "menu", helpFocus = "", helpScreen = null, helpDirect = false;
 function helpItems() {
   const items = (P.helpMenu.states[screen] || []).map(item => Object.assign({}, item));
   for (const item of items) {
@@ -2420,11 +2422,16 @@ function helpItems() {
   return items;
 }
 function openHelp(focusKey) {
-  helpOpen = true; helpView = "menu"; helpScreen = screen; helpFocus = focusKey || ""; draw();
+  helpOpen = true; helpView = "menu"; helpDirect = false; helpScreen = screen; helpFocus = focusKey || ""; draw();
+}
+// #174: the Keyboard shortcuts page straight from its footer item.
+function openShortcuts() {
+  helpOpen = true; helpView = "shortcuts"; helpDirect = true; helpScreen = screen; helpFocus = "back"; draw();
 }
 function closeHelp() {
-  helpOpen = false; helpView = "menu"; helpFocus = ""; draw();
-  document.getElementById("help-menu-button")?.focus();
+  const direct = helpDirect;
+  helpOpen = false; helpView = "menu"; helpFocus = ""; helpDirect = false; draw();
+  document.getElementById(direct ? "shortcuts-button" : "help-menu-button")?.focus();
 }
 function helpShortcutLines() {
   const lines = [];
@@ -2458,6 +2465,12 @@ function renderHelpTrigger(utilities) {
   trigger.setAttribute("aria-haspopup", "dialog");
   trigger.setAttribute("aria-expanded", helpOpen ? "true" : "false");
   utilities.prepend(trigger);
+  const shortcuts = btn(P.helpMenu.shortcutsTitle,
+    () => (helpOpen && helpDirect) ? closeHelp() : openShortcuts(), "ghost");
+  shortcuts.id = "shortcuts-button";
+  shortcuts.setAttribute("aria-haspopup", "dialog");
+  shortcuts.setAttribute("aria-expanded", helpOpen && helpDirect ? "true" : "false");
+  trigger.insertAdjacentElement("afterend", shortcuts);
 }
 function renderHelpMenu() {
   document.getElementById("help-menu")?.remove();
@@ -2478,7 +2491,8 @@ function renderHelpMenu() {
       p.textContent = line;
       menu.append(p);
     }
-    const back = btn(P.helpMenu.back, () => { helpView = "menu"; helpFocus = "shortcuts"; draw(); }, "secondary");
+    const back = helpDirect ? btn(P.helpMenu.close, closeHelp, "secondary")
+      : btn(P.helpMenu.back, () => { helpView = "menu"; helpFocus = "shortcuts"; draw(); }, "secondary");
     back.dataset.help = "back";
     menu.append(back);
   } else {
@@ -2527,7 +2541,7 @@ document.addEventListener("keydown", e => {
   if (helpOpen) {
     if (e.key === "Escape") {
       e.preventDefault();
-      if (helpView === "shortcuts") { helpView = "menu"; helpFocus = "shortcuts"; draw(); }
+      if (helpView === "shortcuts" && !helpDirect) { helpView = "menu"; helpFocus = "shortcuts"; draw(); }
       else closeHelp();
       return;
     }

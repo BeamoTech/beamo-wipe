@@ -97,7 +97,7 @@ def _caps(widget):
                 walk(child)
 
     walk(widget)
-    return sorted(found, key=lambda w: w.winfo_rootx())
+    return sorted(found, key=lambda w: (w.winfo_rooty(), w.winfo_rootx()))  # #174: one sentence per line
 
 
 def _content(cap):
@@ -109,11 +109,29 @@ def _content(cap):
     return "label", child
 
 
+def _shown_hint(app):
+    """#174: the screen's key hint, on the Keyboard shortcuts page."""
+    app._open_shortcuts()
+    for _ in range(4):
+        app.root.update()
+    found = []
+
+    def walk(node):
+        if getattr(node, "_beamo_shortcuts_hint", False):
+            found.append(node)
+        for child in node.winfo_children():
+            walk(child)
+
+    walk(app._help_popup)
+    (hint,) = found
+    return hint
+
+
 def test_tk_arrow_caps_are_drawn_in_ink_like_the_letter_caps(tk_app):
     from beamo_wipe.ui.tk_wizard import INK, SURFACE
 
     wiz, app = tk_app()
-    caps = _caps(app._hint)
+    caps = _caps(_shown_hint(app))
     kinds = [_content(c) for c in caps]
     arrows = [w for kind, w in kinds if kind == "glyph"]
     letters = [w for kind, w in kinds if kind == "label"]
@@ -133,7 +151,7 @@ def test_tk_arrow_caps_are_drawn_in_ink_like_the_letter_caps(tk_app):
 
 def test_tk_keyboard_hint_draws_left_and_right(tk_app):
     wiz, app = tk_app(screen="keyboard")
-    glyphs = [getattr(w, "_beamo_key_glyph") for kind, w in map(_content, _caps(app._hint)) if kind == "glyph"]
+    glyphs = [getattr(w, "_beamo_key_glyph") for kind, w in map(_content, _caps(_shown_hint(app))) if kind == "glyph"]
     assert glyphs[:2] == ["left", "right"]
     assert "up" in glyphs and "down" in glyphs
 
@@ -150,7 +168,7 @@ def test_tk_pick_hint_has_no_floating_period(tk_app):
                 pieces.append(child)
             walk(child)
 
-    walk(app._hint)
+    walk(_shown_hint(app))
     texts = [str(p.cget("text")) for p in pieces if str(p.cget("text")) not in ("Enter", "Esc")]
     assert texts and not any(t.strip().startswith(".") for t in texts), texts
 
@@ -159,7 +177,9 @@ def test_tk_punctuation_after_a_cap_sits_against_it(tk_app):
     import tkinter as tk
 
     wiz, app = tk_app()
-    bar = app._hint_bar(app._hint.master, "Then press Enter. Esc goes back.")
+    holder = tk.Frame(app._footer)
+    holder.grid(row=9, column=1, sticky="w")
+    bar = app._hint_bar(holder, "Then press Enter. Esc goes back.")
     bar.pack()
     for _ in range(4):
         app.root.update()

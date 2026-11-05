@@ -113,7 +113,7 @@ def test_tk_result_hint(preview, expected):
             for child in w.winfo_children():
                 visit(child)
 
-        visit(app._hint)
+        visit(_shown_hint(app))  # #174: on the Keyboard shortcuts page
         joined = " ".join(" ".join(texts).split())
         want = " ".join(getattr(C, expected).split())
         # Key names render as key caps; the words around them must all be there.
@@ -122,3 +122,21 @@ def test_tk_result_hint(preview, expected):
         assert "Esc" not in joined and "goes back" not in joined
     finally:
         app._teardown()
+
+
+def _shown_hint(app):
+    """#174: the screen's key hint, on the Keyboard shortcuts page."""
+    app._open_shortcuts()
+    for _ in range(4):
+        app.root.update()
+    found = []
+
+    def walk(node):
+        if getattr(node, "_beamo_shortcuts_hint", False):
+            found.append(node)
+        for child in node.winfo_children():
+            walk(child)
+
+    walk(app._help_popup)
+    (hint,) = found
+    return hint

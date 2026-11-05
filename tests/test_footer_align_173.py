@@ -74,7 +74,12 @@ def test_hint_starts_under_the_link_text(name, size, text_size):
         app._draw()
         for _ in range(8):
             app.root.update()
-        assert abs(_hint_x(app, tkui) - _link_text_x(app, tkui)) <= 2
+        # #174: the hint row is gone (Keyboard shortcuts item); the two
+        # footer items share one row with the same text inset.
+        assert app._hint is None
+        help_button, shortcuts = app._help_button, app._shortcuts_button
+        assert help_button.winfo_rooty() == shortcuts.winfo_rooty()
+        assert _link_text_x(app, tkui) == help_button.winfo_rootx() + help_button.bbox(help_button._label)[0]
         assert not _clipping_problems(app)
     finally:
         app._teardown()
