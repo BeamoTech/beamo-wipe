@@ -116,6 +116,8 @@ STRINGS = {
         "CONFIRM_MATCH_OK": "Coincide. Puede continuar.",
         "COUNTDOWN_CAPTION": "segundos hasta que Borrar ahora esté disponible.",
         "COUNTDOWN_READY": "No ha empezado nada. Elija Borrar ahora para borrar este disco.",
+        "COUNTDOWN_READY_WORD": "Listo",
+        "COUNTDOWN_AVAILABLE": "Borrar ahora está disponible.",
         "METHOD_LEAD": "Elija con qué minuciosidad sobrescribir el disco. Un disco duro grande puede tardar muchas horas, así que no se promete ninguna duración.",
         "TIME_GUIDE_HDD": "Estimación aproximada para este disco duro de {size} (no se promete): {range}.",
         "TIME_GUIDE_SSD": "Estimación aproximada para este SSD de {size} (no se promete): {range}.",

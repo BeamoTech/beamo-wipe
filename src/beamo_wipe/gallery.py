@@ -746,6 +746,8 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "matchOk": C.CONFIRM_MATCH_OK,
         "countdownCaption": C.COUNTDOWN_CAPTION,
         "countdownReady": C.COUNTDOWN_READY,
+        "countdownReadyWord": C.COUNTDOWN_READY_WORD,
+        "countdownAvailable": C.COUNTDOWN_AVAILABLE,
         "advancedLead": C.ADVANCED_LEAD,
         "advancedNote": C.ADVANCED_LOG_NOTE,
         "advancedLogLabel": C.ADVANCED_LOG_LABEL,
@@ -1183,6 +1185,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .ringnum { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
   .countcap { font-size: 16px; color: var(--muted); margin-top: 12px; }
   .countcap.ready { color: var(--ink); font-weight: 600; }
+  /* #163: ready is a check mark plus the word Ready, never the icon alone. */
+  .countcap .readyword { color: var(--primary); font-weight: 700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .advrow { font-size: 13px; margin: 0; padding: 7px 0; }
   .advrow + .advrow { border-top: 1px solid var(--border); }
   .methodlead { font-size: 16px; color: var(--ink); margin: 4px 0 0; line-height: 1.4; }
@@ -2191,8 +2196,9 @@ function draw() {
             `<circle cx="95" cy="95" r="81" fill="none" stroke="${ringColor}" stroke-width="11" stroke-linecap="round"
               stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC * (1 - frac)}" transform="rotate(-90 95 95)"/>`}
         </svg>
-        <div class="ringnum" style="${ready ? "color:var(--primary)" : ""}">${ready ? "0" : tLeft}</div></div>
-      <div class="countcap${ready ? " ready" : ""}">${ready ? P.countdownReady : P.countdownCaption}</div></div>${powerPanel()}</div>`;
+        <div class="ringnum" aria-hidden="true">${ready ? `<svg class="ringcheck" width="28" height="28" viewBox="0 0 28 28"><path d="M7 14.5l4.5 4.5L21 9.5" fill="none" stroke="var(--primary)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : tLeft}</div></div>
+      <div class="countcap${ready ? " ready" : ""}">${ready ? `<div class="readyword">${P.countdownReadyWord}</div>` : ""}${ready ? P.countdownReady : P.countdownCaption}</div></div>
+      <p id="ready-status" class="sr-only" role="status" aria-live="polite">${ready ? `${P.countdownReadyWord}. ${P.countdownAvailable}` : ""}</p>${powerPanel()}</div>`;
     btnsL.append(btn(P.buttons.back, () => { if (timer) clearInterval(timer); screen = "method"; draw(); }));
     btnsR.append(btn(P.buttons.erase, () => { if (tLeft<=0) startWork(); }, "danger", tLeft>0));
     renderHint(P.hints.lastChance);

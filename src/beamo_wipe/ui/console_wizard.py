@@ -554,7 +554,9 @@ def _primary_footer(
         return [
             C.CON_LAST_REVIEW_FIRST if review_pending else (
                 C.CON_LAST_WAIT.format(seconds=wizard.countdown_display)
-                if not wizard.erase_enabled else C.CON_LAST_ERASE
+                # #163: the ready state says "Ready", not only the key.
+                if not wizard.erase_enabled
+                else f"{C.COUNTDOWN_READY_WORD}. {C.CON_LAST_ERASE}"
             ),
             C.CON_BACK_READ_MORE,
         ]
@@ -1258,6 +1260,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 wizard.tick()
                 print(C.CON_COUNTDOWN.format(seconds=wizard.countdown_display))
                 time.sleep(0.4)
+            # #163: say the review period is over; typing ERASE still starts it.
+            print(f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}")
             _retire_erase_typeahead(wizard)
             ans = _answer(wizard, C.CON_ERASE_PROMPT).strip()
             if ans.upper() == "ERASE":

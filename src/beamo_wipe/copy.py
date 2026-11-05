@@ -468,6 +468,10 @@ CONFIRM_MATCH_OK = "That matches. You can continue."
 
 COUNTDOWN_CAPTION = "seconds until Erase now is available."
 COUNTDOWN_READY = "Nothing has started. Choose Erase now to erase this disk."
+# #163: the ready state is a check mark plus this word (never icon-only);
+# screen readers hear "Ready. Erase now is available." Behaviour unchanged.
+COUNTDOWN_READY_WORD = "Ready"
+COUNTDOWN_AVAILABLE = "Erase now is available."
 
 METHOD_LEAD = (
     "Pick how thoroughly to overwrite the disk. Large hard disks can take many "

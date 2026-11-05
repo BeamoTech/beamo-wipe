@@ -198,6 +198,7 @@ class AccessibleWizard:
             self.finish_toggle = None
             self._rendered_sound_message = ""
             self.countdown_label = None
+            self.ready_label = None  # #163
             self.error_label = None
             self.shown = None
             self.report_revision = -1
@@ -442,6 +443,7 @@ class AccessibleWizard:
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
+        self.ready_label = None  # #163
         self.owner_reason = None  # #143: set again by the Owner screen
         self.progress_bar = None
         self.progress_announcer = ProgressAnnouncer()
@@ -899,6 +901,16 @@ class AccessibleWizard:
                     self.label(f"{C.SEVERITY_ERROR}: {self.w.error}", focusable=True)
             self.support_identity_labels()
             self.countdown_label = self.label("")
+            # #163: "Ready. Erase now is available." is an alert hidden until
+            # the review period ends; it appears then, so Orca announces it
+            # without moving focus from Back. The countdown still only
+            # enables Erase now.
+            self.ready_label = self.label(
+                f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}", focusable=True
+            )
+            self.ready_label.get_accessible().set_role(Atk.Role.ALERT)
+            self.ready_label.set_no_show_all(True)
+            self.ready_label.set_visible(self.w.erase_enabled)
             self.primary = self.button(
                 C.BTN_ERASE, self.w.begin_erase, enabled=self.w.erase_enabled
             )
@@ -1407,6 +1419,9 @@ class AccessibleWizard:
             )
             if self.countdown_label.get_text() != text:
                 self.countdown_label.set_text(text)
+            ready = getattr(self, "ready_label", None)
+            if ready is not None and ready.get_visible() != self.w.erase_enabled:
+                ready.set_visible(self.w.erase_enabled)
             self.primary.set_sensitive(self.w.erase_enabled)
         if self.progress_label:
             view = self.w.progress_view

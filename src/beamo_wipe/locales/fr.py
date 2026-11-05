@@ -111,6 +111,8 @@ STRINGS = {
         "CONFIRM_MATCH_OK": "Cela correspond. Vous pouvez continuer.",
         "COUNTDOWN_CAPTION": "secondes avant qu’Effacer maintenant soit disponible.",
         "COUNTDOWN_READY": "Rien n’a commencé. Choisissez Effacer maintenant pour effacer ce disque.",
+        "COUNTDOWN_READY_WORD": "Prêt",
+        "COUNTDOWN_AVAILABLE": "Effacer maintenant est disponible.",
         "METHOD_LEAD": "Choisissez le niveau d’écrasement du disque. Un grand disque dur peut prendre de nombreuses heures : aucune durée n’est promise.",
         "TIME_GUIDE_HDD": "Estimation approximative pour ce disque dur de {size} (non promise) : {range}.",
         "TIME_GUIDE_SSD": "Estimation approximative pour ce SSD de {size} (non promise) : {range}.",

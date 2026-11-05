@@ -302,6 +302,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `copy.COUNTDOWN_READY_WORD`, `copy.COUNTDOWN_AVAILABLE` (2026-11-05 for #163;
+  drafts, not yet reviewed): the Review ready state, "Ready" beside the
+  ring's check mark and "Erase now is available." spoken by Orca.
+  `COUNTDOWN_AVAILABLE` names the language's own `BTN_ERASE` (a test checks
+  it); `COUNTDOWN_READY_WORD` is one short word with no number.
 - `copy.LAST_LEAD` (2026-11-05 for #162; drafts, not yet reviewed): the
   Review before erasing lead now says what starts the erase ("Erasing starts
   only when you press Erase now."). Name the language's own `BTN_ERASE`

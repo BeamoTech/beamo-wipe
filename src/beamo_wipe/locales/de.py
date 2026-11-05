@@ -111,6 +111,8 @@ STRINGS = {
         "CONFIRM_MATCH_OK": "Das stimmt überein. Sie können fortfahren.",
         "COUNTDOWN_CAPTION": "Sekunden, bis Jetzt löschen verfügbar ist.",
         "COUNTDOWN_READY": "Nichts hat begonnen. Wählen Sie Jetzt löschen, um diesen Datenträger zu löschen.",
+        "COUNTDOWN_READY_WORD": "Bereit",
+        "COUNTDOWN_AVAILABLE": "Jetzt löschen ist verfügbar.",
         "METHOD_LEAD": "Wählen Sie, wie gründlich der Datenträger überschrieben wird. Große Festplatten können viele Stunden brauchen, daher wird keine Zeit versprochen.",
         "TIME_GUIDE_HDD": "Grober Richtwert für diese Festplatte ({size}, ohne Gewähr): {range}.",
         "TIME_GUIDE_SSD": "Grober Richtwert für diese SSD ({size}, ohne Gewähr): {range}.",

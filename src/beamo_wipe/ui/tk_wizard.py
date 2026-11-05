@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1593,6 +1593,8 @@ class TkWizard:
             self._chrome_shown = True
             self._countdown_ring: Optional[tk.Canvas] = None
             self._countdown_num: Optional[tk.Label] = None
+            self._countdown_num_item = 0
+            self._countdown_ready: Optional[tk.Label] = None  # #163
             self._countdown_label: Optional[tk.Label] = None
             self._progress_label: Optional[tk.Label] = None
             self._progress_pct: Optional[tk.Label] = None
@@ -2564,6 +2566,8 @@ class TkWizard:
         self._primary = None
         self._countdown_ring = None
         self._countdown_num = None
+        self._countdown_num_item = 0
+        self._countdown_ready = None
         self._countdown_label = None
         self._progress_label = None
         self._progress_pct = None
@@ -5776,14 +5780,24 @@ class TkWizard:
         self._countdown_num = tk.Label(
             ring, text="", font=self.font_bold, fg=INK, bg=zone.cget("bg"), anchor="center"
         )
-        ring.create_window(ring_px / 2, ring_px / 2, window=self._countdown_num)
+        self._countdown_num_item = ring.create_window(
+            ring_px / 2, ring_px / 2, window=self._countdown_num
+        )
+        # #163: when ready, the ring shows a check mark and "Ready" heads the
+        # caption (a word, never the icon alone); packed only when ready.
+        text_col = tk.Frame(zone, bg=zone.cget("bg"))
+        text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(16, 0))
+        self._countdown_ready = tk.Label(
+            text_col, text=C.COUNTDOWN_READY_WORD, font=self.font_bold, fg=PRIMARY,
+            bg=zone.cget("bg"), anchor="w", justify=tk.LEFT,
+        )
         self._countdown_label = tk.Label(
-            zone, text="", font=self.font_b, fg=MUTED, bg=zone.cget("bg"),
+            text_col, text="", font=self.font_b, fg=MUTED, bg=zone.cget("bg"),
             anchor="w", justify=tk.LEFT,
             wraplength=max(120, self.lay.wrap - ring_px - 80),
         )
         self._flow_wrap(self._countdown_label, zone, pad=ring_px + 24)
-        self._countdown_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(16, 0))
+        self._countdown_label.pack(fill=tk.X)
         row = self._footer_shell(C.HINT_LAST_CHANCE_TK)
         back = self._back_btn(row)
         self._primary_btn(
@@ -5803,6 +5817,8 @@ class TkWizard:
         left = self.w.countdown_display
         ring = self._countdown_ring
         size = getattr(self, "_ring_px", RING_SIZE)
+        num_item = getattr(self, "_countdown_num_item", 0)
+        ready_word = getattr(self, "_countdown_ready", None)
         edge0 = RING_PAD
         edge1 = size - RING_PAD
         center = size / 2.0
@@ -5825,11 +5841,27 @@ class TkWizard:
             ring.create_oval(tx - 2, ty - 2, tx + 2, ty + 2, fill=PRIMARY, outline="", tags="arc")
             if self._countdown_num is not None:
                 self._countdown_num.configure(text=str(left), fg=INK)
+            if num_item:
+                ring.itemconfigure(num_item, state="normal")
+            if ready_word is not None:
+                ready_word.pack_forget()
             self._countdown_label.configure(text=C.COUNTDOWN_CAPTION, fg=MUTED)
         else:
             ring.create_oval(edge0, edge0, edge1, edge1, outline=PRIMARY, width=RING_W, tags="arc")
+            # #163: a check mark, not "0"; the number is hidden, and "Ready"
+            # heads the caption so the state is never shown by the icon alone.
+            px = float(size)
+            ring.create_line(
+                [px * 0.31, px * 0.52, px * 0.45, px * 0.66, px * 0.70, px * 0.37],
+                fill=PRIMARY, width=max(3, round(px / 14)), capstyle="round",
+                joinstyle="round", tags=("arc", "check"),
+            )
             if self._countdown_num is not None:
-                self._countdown_num.configure(text="0", fg=PRIMARY)
+                self._countdown_num.configure(text="", fg=PRIMARY)
+            if num_item:
+                ring.itemconfigure(num_item, state="hidden")
+            if ready_word is not None and not ready_word.winfo_manager():
+                ready_word.pack(fill=tk.X, before=self._countdown_label)
             self._countdown_label.configure(text=C.COUNTDOWN_READY, fg=INK)
         self._set_primary_enabled(self.w.erase_enabled)
 

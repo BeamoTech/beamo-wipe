@@ -112,6 +112,8 @@ STRINGS = {
         "CONFIRM_MATCH_OK": "Corrisponde. Può continuare.",
         "COUNTDOWN_CAPTION": "secondi prima che Cancella ora sia disponibile.",
         "COUNTDOWN_READY": "Non è iniziato nulla. Scelga Cancella ora per cancellare questo disco.",
+        "COUNTDOWN_READY_WORD": "Pronto",
+        "COUNTDOWN_AVAILABLE": "Cancella ora è disponibile.",
         "METHOD_LEAD": "Scelga quanto a fondo sovrascrivere il disco. I dischi rigidi grandi possono richiedere molte ore, quindi non promettiamo una durata.",
         "TIME_GUIDE_HDD": "Stima indicativa per questo disco rigido da {size} (non è una promessa): {range}.",
         "TIME_GUIDE_SSD": "Stima indicativa per questo SSD da {size} (non è una promessa): {range}.",

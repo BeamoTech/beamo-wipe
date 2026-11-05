@@ -143,7 +143,10 @@ def test_countdown_ready_still_explains_nothing_started(ui):  # noqa: F811
     wiz._erase_until = 0
     app._refresh_last_chance()
     assert 'Nothing has started' in app._countdown_label.cget('text')
-    assert app._countdown_num.cget('text') == '0'
+    # #163: a check mark and the word Ready, not "0".
+    assert app._countdown_num.cget('text') == ''
+    assert app._countdown_ring.find_withtag('check')
+    assert app._countdown_ready.cget('text') == C.COUNTDOWN_READY_WORD
     assert app.root.focus_get() is _button_named(app, C.BTN_BACK)
     assert not wiz.runner.started
 
