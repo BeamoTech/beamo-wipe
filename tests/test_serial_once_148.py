@@ -333,7 +333,10 @@ def test_tk_cards_show_each_serial_once_unclipped(tk_pick, size, text_size):
         expected = 1 if disk.path == "/dev/sde" else 0
         assert sum(_serial_count(text, disk.serial) for text in texts) == expected, disk.path
         if expected:
-            assert any(text.replace("\n", "") == view.marked_id for text in texts)
+            # #152: Tk shows the plain serial and draws the differing
+            # characters bold and underlined over it (no brackets).
+            shown = view.id_value if view.comparison_marks else view.marked_id
+            assert any(text.replace("\n", "") == shown for text in texts)
         for label in labels:
             assert label.winfo_reqwidth() <= label.winfo_width() + 2
     assert _clipping_problems(app) == []

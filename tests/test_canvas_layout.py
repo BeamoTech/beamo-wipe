@@ -134,6 +134,10 @@ def _overlap_problems(app) -> list:
 
     def visit(w):
         try:
+            if getattr(w.master, "_beamo_serial_mark", False):
+                # #152: bold copies drawn over the serial's own characters
+                # on purpose (test_serial_diff_152 checks they stay on it).
+                return
             if w.winfo_class() == "Label" and w.winfo_ismapped():
                 text = str(w.cget("text")).strip()
                 host = _nearest_canvas(w)
