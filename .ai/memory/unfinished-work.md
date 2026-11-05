@@ -4241,3 +4241,80 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, real lsblk
   output for BitLocker/LUKS on hardware (fake lsblk only), ISO/QEMU, hosted
   ci.yml, native review of the drafts.
+
+## BW-155-LAYOUTHINT — Confirm shows keyboard help only after a wrong entry (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/confirm-layout-hint-155`
+  (stacked on `feat/encrypted-tag-154`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
+  review item 29). Ref #140 (keyboard check), #156 (token comparison, not
+  changed here).
+- BASELINE (scratch work155-scratch-20261104/before): Confirm always showed
+  "Keyboard: QWERTY (US) · Language: English" (every view, every state). A
+  layout change from Confirm cleared the owner tick, the chosen disk and the
+  entry and sent the owner back to Owner (_invalidate_after_layout_change_
+  locked), which #155 asks not to do unless required. Curses Confirm had no
+  way to open the layouts (K is typed into the token).
+- WHAT CHANGED (safety:, 9ca6e1a):
+  - Wizard: _confirm_mismatch, set by a complete non-matching entry
+    (set_confirm_input) or continue_confirm on a non-matching non-empty
+    entry; reset on each continue_pick. confirm_layout_hint = on Confirm,
+    seen, and not matching. Display only.
+  - Layout change opened from Confirm (_keyboard_from == CONFIRM): owner
+    tick and selected disk kept, token unchanged (from the disk), a
+    non-matching entry cleared, no authorization (none exists before
+    Method), Esc/Continue return to Confirm. From any other screen: the
+    previous full reset (Method/Last chance included; the apply/erase-claim
+    race test still holds).
+  - Tk: line removed; hint row (wrapping sentence + ghost "Change" button
+    under it) packed only while confirm_layout_hint, synced on each
+    keystroke and on Enter; Enter on Confirm now calls continue_confirm in
+    every case (it moves only on a match); new _reveal_in_body scrolls the
+    hint into view on short windows/large text (refactored the focus reveal
+    into _apply_body_reveal; focus reveal behaviour unchanged).
+  - GTK: hint label (focusable) + Change button, hidden (no_show_all) until
+    a wrong entry; Enter in the entry records a wrong entry (never moves).
+  - curses: hint + "F2: Change" after a wrong entry; F2 opens the layouts;
+    Enter on a wrong entry records it. Plain console: hint after a wrong
+    answer; K (already printed) opens the layouts.
+  - Web preview: hint + Change (returns to Confirm), same keep/clear rule
+    via layoutChanged(); the suggestion switch now resets like the wizard.
+  - Copy: CONFIRM_KEYBOARD_LINE removed; CONFIRM_LAYOUT_HINT,
+    CONFIRM_LAYOUT_CHANGE, CON_CONFIRM_LAYOUT_KEY + FR/DE/ES/IT drafts.
+    Docs: screens.md #155 row; translations.md.
+- TESTS: new tests/test_confirm_layout_hint_155.py (21): hidden while
+  typing the right characters, shown after a complete wrong entry, stays
+  while editing, hidden on a match; Enter/Continue on a short wrong entry
+  counts and never advances; a new visit starts hidden; copy and every
+  language; layout change from Confirm keeps owner/disk/token, clears a
+  wrong entry, returns to Confirm and every later gate still applies
+  (token, method, countdown, no erase); Esc returns to Confirm; a failed
+  apply changes nothing; changes from Method/Last chance still start over;
+  plain console and curses (hint, F2 opens layouts); GTK and preview source;
+  Tk hidden/shown/hidden at 800x600 Standard/Extra large and 1280x820,
+  Change opens the layouts, Enter on a short wrong entry shows it. 19 fail
+  on 008ef12 (2 guards pass). Updated: test_language_first_131 (from
+  Confirm keeps; new test: from Method still clears), test_language_
+  selection (hint in every view).
+- CHECKS (Windows-native route): new file 21/21 (Tk one by one); related
+  keyboard files per case on #155 and #154: test_keyboard_check_140 69/69
+  on both (an earlier fr-z-match failure was a flake); test_keyboard_layout
+  88/89 on both, the same failure (test_keyboard_hints_name_every_layout_
+  shortcut: "1–" found in HINT_KEYBOARD) which also fails on #149 54f8c81,
+  i.e. pre-existing and not from #150-#156; ruff clean; mypy 6 env-only errors; node
+  --check.
+  RELATED-FILE COMPARISON: 109 Confirm-related files (work156-scratch
+  related-156.txt) per file on #156 (which contains #155) and #154: the
+  only failure only on #156 is a #152 Tk mark case that passes on rerun.
+  Six files timed out as whole files on both trees; their Confirm cases
+  run one by one on #156: ui_fit 42/42, reflow_large_text 2/2,
+  single_erase_warning_128 33/33, adaptive_layout has none, tk_runtime
+  18/19 with test_graphical_refresh_restarts_full_authorization[confirm]
+  failing identically on #154 and #149 (refresh from Confirm now opens the
+  guarded dialog first; pre-existing, not from #150-#156).
+- SCREENS: before/ and after/ (Tk Confirm empty / complete wrong / short
+  wrong + Enter at 800x600 Standard, Large, Extra large and 1280x820; FR
+  Extra large) with text.txt.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, a real X
+  keyboard-layout switch (fake applier only), ISO/QEMU, hosted ci.yml,
+  native review of the drafts.
