@@ -1606,6 +1606,7 @@ class TkWizard:
             self._finish_toggle: Optional[_CheckRow] = None
             self._indet = 0.0
             self._match_label: Optional[tk.Label] = None
+            self._match_wrap_max = 0
             self._match_icon: Optional[tk.Canvas] = None
             self._match_pill: Optional[_Box] = None
             self._layout_hint: Optional[tk.Frame] = None  # #155
@@ -2572,6 +2573,7 @@ class TkWizard:
         self._progress_notes_slot = None
         self._finish_toggle = None
         self._match_label = None
+        self._match_wrap_max = 0
         self._match_icon = None
         self._match_pill = None
         self._layout_hint = None
@@ -5156,12 +5158,10 @@ class TkWizard:
         )
         self._match_label.pack(side=tk.LEFT, padx=(8, 0))
 
-        def _wrap_status(event, label=self._match_label) -> None:
+        def _wrap_status(event) -> None:
             # Icon, gaps and the pill's own padding sit beside the text.
-            try:
-                label.configure(wraplength=max(160, int(event.width) - 22 - 8 - 2 * 12 - 12))
-            except tk.TclError:
-                return
+            self._match_wrap_max = max(160, int(event.width) - 22 - 8 - 2 * 12 - 12)
+            self._fit_match_wrap()
 
         zone.bind("<Configure>", _wrap_status, add="+")
         self._paint_match()
@@ -5269,6 +5269,26 @@ class TkWizard:
         except tk.TclError:
             return
 
+    def _fit_match_wrap(self) -> None:
+        """Wrap the status line only when it is wider than the room for it.
+
+        The pill shrinks to its text, so a short status keeps no wrap length
+        (a wrap wider than the pill would mean nothing); a long #156 entry
+        wraps at the room beside the icon.
+        """
+        label = self._match_label
+        room = self._match_wrap_max
+        if label is None or not room:
+            return
+        try:
+            lines = str(label.cget("text")).split("\n")
+            widest = max(self.font_s_bold.measure(line) for line in lines)
+            want = room if widest > room else 0
+            if int(float(str(label.cget("wraplength") or 0))) != want:
+                label.configure(wraplength=want)
+        except (tk.TclError, AttributeError, ValueError):
+            return
+
     def _paint_match(self) -> None:
         if self._match_icon is None or self._match_label is None:
             return
@@ -5302,6 +5322,7 @@ class TkWizard:
             cv.configure(bg=SURFACE)
             cv.create_oval(2, 2, 20, 20, outline=BORDER_STRONG, width=2)
             self._match_label.configure(text=C.CONFIRM_MATCH_WAIT, fg=MUTED, bg=SURFACE)
+        self._fit_match_wrap()
 
     def _ensure_confirm_focus(self, entry: tk.Entry, retries: int = 20) -> None:
         """Recover Entry focus while X11 finishes mapping the no-WM window."""
