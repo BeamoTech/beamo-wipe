@@ -76,7 +76,9 @@ def test_method_cards_show_the_time_guide_without_clipping(ui, size, code):  # n
     _assert_actions_on_window(app)
 
 
-def test_method_guide_hidden_when_size_is_unknown(ui):  # noqa: F811
+def test_method_guide_says_it_depends_when_size_is_unknown(ui):  # noqa: F811
+    from beamo_wipe import copy as C
+
     wiz, app = ui(size=LAPTOP_SIZE)
     _at_method(wiz, app)
     wiz.selected = replace(wiz.selected, size_gb_label="", size_bytes=0)
@@ -84,11 +86,12 @@ def test_method_guide_hidden_when_size_is_unknown(ui):  # noqa: F811
     app.root.update()
     shown = _texts(app.root)
     assert "Rough guide" not in shown
+    # #159: every card still has its time line, with the clock, and says
+    # the time depends on the disk; the check sentences are under Show more.
+    assert shown.count(C.TIME_GUIDE_UNKNOWN) == len(METHODS)
+    assert _clocks(app) == len(METHODS)
     for spec in METHODS.values():
-        assert spec.verification_description in shown
-    # Without a guide the clock stays beside the check sentence, as before.
-    checks = sum(1 for spec in METHODS.values() if spec.verification_passes)
-    assert _clocks(app) == checks
+        assert spec.verification_description not in shown
     _assert_actions_on_window(app)
 
 

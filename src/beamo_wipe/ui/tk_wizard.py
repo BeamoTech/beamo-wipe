@@ -6682,7 +6682,7 @@ class TkWizard:
         if self._start_refresh_scan(after) is None:
             return
         self._show_more = False
-        self._method_more.clear()
+        self._method_more = set()
         self._pick_scroll = 0.0
 
     def _on_f5_release(self, _event=None) -> str:
