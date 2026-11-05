@@ -4695,3 +4695,55 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
   hosted ci.yml, native review of the drafts. Not pushed to main; merge
   order ... #157 -> #159 -> #160 -> #161 (after copy sign-off) -> #162.
+
+## BW-163-COUNTDOWNREADY — Review ring shows a check mark and 'Ready', not '0' (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/countdown-ready-163`
+  (stacked on `fix/countdown-copy-162` @ f798714; commit e7d7e06 safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
+  #163 (UI review item 37). Ref #162.
+- BASELINE (work163-scratch-20261105/before, metrics.txt): at zero the Tk
+  ring showed "0" (PRIMARY) with COUNTDOWN_READY beside it; GTK only
+  changed a plain label's text (no announcement); curses footer "Enter to
+  erase."; plain console went straight to its ERASE prompt; preview ring
+  "0".
+- WHAT CHANGED (presentation only; countdown, gate, argv unchanged):
+  copy.COUNTDOWN_READY_WORD "Ready", copy.COUNTDOWN_AVAILABLE "Erase now is
+  available." (+ FR/DE/ES/IT drafts naming each BTN_ERASE). Tk: check mark
+  drawn in the full ring, the number's window item hidden, "Ready" (bold,
+  PRIMARY) packed above the caption only when ready and removed if the
+  countdown restarts. GTK: an ALERT label "Ready. Erase now is available."
+  hidden (no_show_all) until erase_enabled, then shown — no grab_focus, so
+  focus stays on Back. curses footer "Ready. Enter to erase."; plain console
+  prints "Ready. Erase now is available." before "Type ERASE to start".
+  Preview: SVG check, "Ready" word, sr-only role=status line (best effort:
+  the preview redraws each second). translation consistency now also
+  checks COUNTDOWN_AVAILABLE and LAST_LEAD name BTN_ERASE. Docs:
+  screens.md, translations.md.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  tests/test_countdown_ready_163.py (new, 11), tests/test_design_runtime.py
+  (was '0'), tests/test_translation_consistency_20261027.py,
+  docs/screens.md, docs/translations.md.
+- TESTS: copy in every language; gate unchanged; curses footer only when
+  enabled; plain console line; GTK source (alert, no focus move, toggled by
+  erase_enabled); preview payload/markup; rendered Tk ready state at
+  800x600 Standard/Large, 1280x820 Extra large, DE 800x600 (check mark,
+  hidden number, Ready above caption in view, no clipping, nothing
+  started); restarted countdown removes Ready and the check mark.
+  OLD-CODE (#162 @ f798714): 10/11 fail (the gate check passes by design).
+- CHECKS (Windows-native route): 11/11 (Tk one by one); ruff clean; mypy
+  --platform linux clean (a create_line overload error found and fixed
+  before commit); related non-Tk files: failure set identical to #162 (9
+  pre-existing export/cancel/evidence cases in
+  test_accountable_audit_2026_09_03 and the #144 selector case); Tk:
+  design_runtime countdown, ui_fit 40/40, review_visible, #162 Tk cases
+  pass; tk_runtime 23/26 with refresh-from-Last-chance and both KP_Enter
+  cases failing on #162 too; single_erase_warning_128 42/44 with the two
+  800x600 Extra large Review cases hanging (known Windows Tk idle-loop
+  hang, BW-162).
+- SCREENS: work163-scratch-20261105/before and after (counting and ready:
+  EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE 800x600,
+  FR 1280x820 Large).
+- NOT VERIFIED: Orca actually speaking the alert (GTK unavailable here),
+  Linux 72 DPI, ISO/QEMU, hosted ci.yml, native review of the drafts.
