@@ -504,6 +504,13 @@ def test_accessible_method_radio_name_stays_summary(ui):
         assert spec.plain_lead in shown
         assert spec.plain_lead not in heading_names
     assert C.EVERYDAY_LIMITS in shown
+    # #160: the Everyday caveat sits in a collapsed Show more expander.
+    (note,) = [w for w in widgets(app.body)
+               if isinstance(w, Gtk.Label) and w.get_text() == C.EVERYDAY_LIMITS]
+    expander = note.get_parent()
+    assert isinstance(expander, Gtk.Expander) and not expander.get_expanded()
+    assert expander.get_label() == C.BTN_MORE
+    assert expander.get_accessible().get_name() == f"{C.BTN_MORE}: Everyday"
     assert C.TITLE_METHOD in shown
 
 

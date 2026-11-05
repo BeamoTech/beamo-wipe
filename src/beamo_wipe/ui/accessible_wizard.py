@@ -799,10 +799,24 @@ class AccessibleWizard:
                 self.label(text)
             for spec in METHODS.values():
                 self.label(spec.plain_lead)
-            for spec_method in METHODS:
+            # #160: the Everyday caveat ("checks only storage the disk
+            # exposes ...") sits behind Show more (an expander, as #141 and
+            # #146), named for its method; Orca reads it when expanded.
+            for spec_method, note_spec in METHODS.items():
                 note = str(C.METHOD_CARDS[spec_method]["limits"] or "")
-                if note:
-                    self.label(note, focusable=True)
+                if not note:
+                    continue
+                more = Gtk.Expander.new(C.BTN_MORE)
+                more.set_expanded(False)
+                more.get_accessible().set_name(f"{C.BTN_MORE}: {note_spec.title}")
+                note_text = Gtk.Label(label=note)
+                note_text.set_line_wrap(True)
+                note_text.set_xalign(0)
+                note_text.set_max_width_chars(70)
+                note_text.set_can_focus(True)
+                note_text.set_selectable(True)
+                more.add(note_text)
+                self.body.pack_start(more, False, False, 4)
             self.button(storage_limits.BUTTON, self.w.open_limits, utility=True)
             self.button(C.BTN_ADVANCED, self.w.open_advanced, utility=True)
             self.button(C.primary_action(Screen.METHOD), self.w.continue_method)

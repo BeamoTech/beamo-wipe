@@ -1174,15 +1174,20 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 mark = f" [{card['mark']}]" if card["mark"] else ""
                 extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
-                limits_note = f" {card['limits']}" if card["limits"] else ""
                 guide = f" {C.method_time_line(method, wizard.selected)}"  # #159
                 # One logical line so overwrite + verification stay a contiguous description.
                 # The TTY wraps at its own width; pre-fill would split spec.description.
                 print(
                     f"{card['key']} {spec.title}{mark}: "
                     f"{spec.overwrite_description} {spec.verification_description}"
-                    f"{guide}{extra}{lead}{limits_note}"
+                    f"{guide}{extra}{lead}"
                 )
+            # #160: the Everyday caveat follows the choices, named for its
+            # method, instead of lengthening that choice's line.
+            for method, spec in METHODS.items():
+                note = C.METHOD_CARDS[method]["limits"]
+                if note:
+                    print(f"{spec.title}: {note}")
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
                 wizard.open_advanced()
