@@ -5374,3 +5374,40 @@ another very thorough and comprehensive pass of this." Repo
   test_ui_rework 6/6.
 - NOT VERIFIED: Linux 72 DPI fonts (offset is font-independent: padding
   only), web preview screenshot after (CSS checked by test), hosted ci.yml.
+
+## BW-174-SHORTCUTS — Footer key hints collapse into one Keyboard shortcuts item (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/shortcuts-collapse-174`
+  (stacked on `fix/footer-align-173` @ 01cb4e6; commit dbf3574), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
+  (UI review item 48). Ref #173, #175, #142.
+- DECISION: collapse (not "hints after the first key press"): one footer
+  height (no row appearing under the pointer), two rows on every screen;
+  keys one step away (visible, Tab-reachable item; F10 → Help & settings →
+  Keyboard shortcuts); GTK/Orca keeps the keys in its popover; curses keeps
+  its key lines (keys are its only input). Trade-off: Review's "Tab to Erase
+  now, then Enter after the countdown" is now on the shortcuts page only;
+  Enter on Review still presses the focused Back by default (#165).
+- BEFORE/AFTER (work174-scratch-20261105/{before,after}/metrics.txt):
+  footer height 122→97 (800x600), 136→107 (800x600 extra), 142→113
+  (1280x820), 148→119 (1280x820 large) on Owner/Pick/Confirm/Method/Review/
+  Done; Working 114→89; Done 800x600 extra 136→107 (note moved into the
+  action row). Shortcuts page shots: after/shortcuts-*.png.
+- WHAT CHANGED: tk_wizard _footer_shell (no hint row; Keyboard shortcuts
+  item; Done note in the action row when the tools line is full),
+  _help_footer (same item), _open_shortcuts, shortcuts page (sentence per
+  line, key-caps via _hint_bar, Close when opened directly, Esc closes,
+  focus back to the item); gallery (hidden .fhint, #shortcuts-button,
+  openShortcuts/closeHelp focus); docs/screens.md.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, src/beamo_wipe/gallery.py,
+  docs/screens.md, tests/test_shortcuts_collapse_174.py (new, 25), and
+  updated (hint now read on the shortcuts page): tests/test_key_hints_153.py,
+  test_keyboard_layout.py, test_result_hints_169.py,
+  test_separate_footer_actions.py, test_footer_align_173.py.
+- TESTS / CHECKS: new 24/24 + 1 skip (known Windows Tk Review 800x600
+  Extra hang) pass; on 01cb4e6 24 fail. 11 hint-related files vs #173:
+  only the intended hint-row expectations changed (updated, then pass one
+  by one); test_ui_system gallery selectors fails on both (pre-existing
+  #144). ruff, mypy --platform linux clean.
+- NOT VERIFIED: web preview screenshots (logic by node test, CSS by test),
+  Linux 72 DPI, hosted ci.yml.
