@@ -5129,3 +5129,174 @@ another very thorough and comprehensive pass of this." Repo
   report idle / failed / saved, 800x600 and 1280x820).
 - NOT VERIFIED: Orca reading the list, Linux 72 DPI, ISO/QEMU, hosted
   ci.yml, native review of the drafts. #172 (rebalance) builds on this.
+
+## BW-175-HELPMENU — One fixed Help & settings menu on every screen (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/help-settings-menu-175`
+  (stacked on `feat/result-card-171` @ a39794d; commit 9548946, `safety:`),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
+  #175 (UI review item 49). Ref #135, #144, #174, #179.
+- BASELINE (work175-scratch-20261105/before, metrics.txt): footer tools
+  changed per screen — Owner: Keyboard layout, Text size, Need a report?;
+  Pick/Confirm: Keyboard layout, Text size, Check disks again; Method:
+  Advanced, Keyboard layout, Check disks again, Need a report?; Review:
+  Keyboard layout, Check disks again; Working: none; Done: Sounds: off,
+  Hear again; Splash and Keyboard: none. Curses footer showed "R: Need a
+  report?" and "K: Keyboard layout" on some screens.
+- WHAT CHANGED: new src/beamo_wipe/help_menu.py (pure model: fixed ORDER,
+  MenuItem key/label/enabled/reason, rules) + Wizard.help_menu(),
+  Wizard.activate_help_item() (the one guarded path), can_open_advanced,
+  KEYBOARD_OPEN_SCREENS / REPORT_HELP_SCREENS (named, unchanged sets).
+  Items: Text size, Language and keyboard, Sounds, High contrast (disabled:
+  "Not available in this version", until #179), Report help, Advanced
+  (Method only — existing limit kept), Keyboard shortcuts (the screen's keys).
+  Disabled items stay listed with a reason. Text size: locked on the final
+  check and short status screens; enabled elsewhere (was footer-only on
+  first screens); consoles: disabled with the existing TEXT_SIZE_CONSOLE
+  reason. Tk: "Help & settings" first in the footer tools on every screen
+  (splash and status screens get a minimal footer with just it), F10,
+  popup above it, kept inside the window. GTK: Gtk.MenuButton + popover,
+  unavailable items are focusable labels with "Label — reason" for Orca,
+  F10. Curses: F10 opens a full-screen menu (1–7, Up/Down, Enter, Esc),
+  "F10: Help & settings" first in the optional footer line; the wizard keeps
+  ticking. Plain console: MENU. Web preview: same items and rules from the
+  payload (P.helpMenu), aria-disabled + describedby, F10, height capped to
+  the window. Removed from the footer: Text size, Keyboard layout, Need a
+  report?, Advanced, Sounds on/off. Kept: Check disks again, Screen-reader
+  view, Diagnostic, Hear again. R, K and A keys in curses still work and
+  are listed under Keyboard shortcuts. FR/DE/ES/IT drafts (key names stay
+  English). Docs: docs/screens.md row, docs/screen-reader.md.
+- SAFETY: opening reads only; while open the menu owns the keyboard (Esc
+  closes it — never Back or Stop; Enter presses only a focused menu control
+  — never Erase now; Tab/arrows stay inside); a screen change closes it;
+  focus returns to its button; curses holds the closing Enter/Esc so the
+  same press cannot act on the screen behind. No token, countdown, method,
+  disk selection or nwipe change.
+- FILES: src/beamo_wipe/{help_menu (new),copy,wizard,gallery}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py, docs/{screens,screen-reader}.md,
+  tests/test_help_menu_175.py (new, 70), and updated expectations (settings
+  reached through the menu): tests/test_console_parity.py,
+  test_separate_footer_actions.py, test_modern_layout_20261031.py,
+  test_preview.py, test_tk_runtime.py, test_slow_unusual_interactions.py,
+  test_report_panel_135.py, test_gallery_method_focus_pass22_ui.py.
+- TESTS: model (every Screen lists all items in order, disabled ⇒ reason,
+  Advanced only on Method, text-size lock), reading changes nothing,
+  no item starts an erase on a ready Review, settings/keyboard return,
+  every language; Tk (first in footer on 7 screens and no old links, F10 /
+  Esc / focus return, reasons, Tab trapped, Enter+Esc on ready Review never
+  erase, Esc on Working never asks to stop, text size keeps focus, shortcuts
+  page, fits at 800x600 std/extra and 1280x820 large, screen change
+  closes); curses (F10 on every footer, reasons, Advanced from Method, ready
+  Review never erases, Confirm typing untouched); plain console; GTK source
+  (first, owns Esc, F10) + runtime (skipped without gi); preview payload
+  rules, source order, node logic. OLD-CODE (#171 @ a39794d): fails at
+  collection (no help_menu module).
+- CHECKS (Windows-native route): test_help_menu_175 69 passed + 1 skipped
+  (GTK runtime, no gi); Tk cases one by one 20/20; ruff clean; mypy
+  --platform linux clean. 36 related files vs #171 base (base 168
+  pre-existing Windows failures): 44 new at first — all footer-link
+  expectations (updated above), plus three real issues fixed: GTK
+  KEY_F10 read before the menu check (stub Gdk), FR/DE/ES/IT key names
+  must stay English, menu focus reset on redraw (now tracked per item).
+  After fixes every one of them passes alone except baseline failures
+  (gallery keyboard_setup_choices layoutChanged; Windows tmp
+  PermissionError; Windows confirm_erase). 9 base failures passed in this
+  run (timing flakes in progress_timing / slow_unusual / ui_rework review).
+- SCREENS: work175-scratch-20261105/{before,after} (9 screens × 800x600
+  std/extra, 1280x820 std/large; after adds -menu.png; 35/35 menus fit),
+  {before,after}/webd + after/webe (web preview, headless Chrome on a
+  scratch copy), {before,after}/curses.txt (80x24). Footer height: same on
+  Owner/Pick/Confirm/Method/Review/Done; Keyboard 92→122 and Working 84→114
+  (one tool row added); splash gains a 39 px footer.
+- NOT VERIFIED: GTK popover with Orca, Linux 72 DPI, ISO/QEMU, hosted
+  ci.yml, native review of the drafts. Interaction with #174 (collapse key
+  hints): the shortcuts page already lists the screen's keys.
+
+## QUEUE — UI review items received 2026-11-05, not started (Claude)
+
+- Pending, in order, each to be stacked on the previous branch:
+  BW-155B (Confirm keyboard-help row builds its Change button only while
+  shown; test_ui_rework canvas controls [confirm]), #172 (balance result
+  screen), #173 (align footer link row; re-measure after #175), #174
+  (collapse key hints; #175's Keyboard shortcuts page is the natural home),
+  #176 (one selected style), #177 (regular-weight serials, DejaVu Sans
+  Mono), #178 (readable disabled buttons + reasons), #179 (high contrast;
+  enable the #175 menu item), #180 (glossary + banned-synonym lint), #181
+  (reading level check), #183 (Windows "Restart to boot options" — never run
+  shutdown on this host; tests with a fake runner; Windows VM check
+  BLOCKED, no VM authorized), #184 (brand → boot key, one shared table),
+  #185 (Intel VMD/RST empty state; `safety:`; owner to approve warning
+  wording).
+- #182 (code signing): OWNER DECISION REQUIRED — see BW-182-SIGNING.
+
+## BW-182-SIGNING — Code-sign the Windows launcher (PROPOSAL ONLY; OWNER DECISION REQUIRED; NOTHING PURCHASED OR CREATED)
+
+- 2026-11-05, Claude (Opus 5.5). Backlog #182 (UI review item 56). No code,
+  workflow, account or purchase change. Research by web sources dated up to
+  2026-10-27; prices marked UNCONFIRMED come from resellers or mirrors and
+  must be checked before buying.
+- TODAY: `Start Beamo Wipe.exe` has no Authenticode signature
+  (docs/desktop-entry-design.md, docs/boot-card.md tell users to expect the
+  SmartScreen "unknown publisher" warning). Releases are signed and
+  published by `release.yml` job `publish` on a Linux Blacksmith runner,
+  which already authenticates to Google Cloud (project beamo-wipe) by
+  GitHub OIDC; no long-lived key is on a developer machine.
+- KEY FACT FOR THE DECISION: no option removes the warning on day one.
+  Since Feb/Aug 2024 Microsoft treats EV and OV the same (Trusted Root
+  Program 3.D.3; EV "no longer bypasses SmartScreen"). Reputation builds
+  per publisher certificate over weeks and hundreds of clean downloads;
+  signing every release with the same identity carries it forward. Signing
+  does replace "Unknown publisher" with the company name immediately.
+- OPTIONS
+  A. Microsoft Artifact Signing (formerly Trusted Signing), Basic:
+     about $9.99/month (5,000 signatures; UNCONFIRMED figure, Microsoft says
+     "starts at $9.99/month"); keys in Microsoft HSMs; 3-day certificates,
+     so timestamps are mandatory (timestamp.acs.microsoft.com). Needs an
+     Azure paid subscription, a new GitHub→Azure OIDC trust, organization in
+     an eligible region, business identifier, domain email, ID check (1–20
+     business days); a 3-year business-history rule is reported (Q&A, not in
+     current docs; UNCONFIRMED). Billing starts at account creation. Signs
+     from Linux with jsign `TRUSTEDSIGNING` (official GitHub action is
+     Windows-only).
+  B. OV certificate with the key in Google Cloud KMS (HSM protection level):
+     certificate about €139–€380/year depending on CA (Certum €209 cloud,
+     Sectigo ~$220 via resellers UNCONFIRMED) plus ~$1–2.50/month for the
+     HSM key; the CA must accept Google's key attestation (some charge an
+     attestation fee, UNCONFIRMED). Validity now max 460 days (CA/B CSC-31,
+     from 2026-03-01), so yearly renewal/re-issue. Reuses the existing
+     GitHub→Google OIDC publisher identity; signs on the Linux runner with
+     jsign `GOOGLECLOUD`, RFC 3161 timestamp, verify with osslsigncode.
+     Validation: business address, phone call, D-U-N-S preferred (free).
+  C. OV via a CA cloud signer (SSL.com eSigner ~$180–240/year for 240
+     signings + certificate; DigiCert KeyLocker ~$700–1,000/year): no own
+     HSM key, but a third-party signing credential to store as a CI secret.
+  D. EV: ~$300–500+/year, stricter validation, no SmartScreen benefit over
+     OV since 2024. Not recommended.
+  E. Stay unsigned: keep the documented warning and boot-card guidance.
+- RECOMMENDATION: B if the company prefers to keep signing inside the
+  existing Google Cloud release identity (no new cloud trust, no secret to
+  store); A if the company meets Artifact Signing eligibility (region, ~3
+  years of business history) and accepts an Azure subscription — cheapest
+  per year. Either way: sign only in `release.yml` `publish` (never on a
+  developer machine), RFC 3161 timestamp, verify the signature and the
+  timestamp in the same job before upload, record the signer and thumbprint
+  in the signed release manifest/inventory, and document user verification
+  (Explorer → Properties → Digital Signatures, or
+  `Get-AuthenticodeSignature`).
+- OWNER DECISIONS NEEDED: (1) option A, B, C or E; (2) budget; (3) the legal
+  entity name/country that should appear as publisher and whether it has
+  ~3 years of history (for A); (4) who completes CA/Microsoft identity
+  validation (cannot be done by an agent).
+- AFTER APPROVAL (not started): release.yml signing step behind the
+  production environment; secrets/identities only in the CI store; tests
+  that the publish script refuses an unsigned or untimestamped exe; docs
+  (release docs, boot-card wording "unknown publisher" → "Beamo… verified
+  publisher" only once signing ships). Go 1.26.8 and launcher behaviour
+  unchanged.
+- SOURCES: learn.microsoft.com/windows/apps/package-and-deploy/smartscreen-reputation;
+  …/code-signing-options; learn.microsoft.com/azure/artifact-signing/{faq,quickstart,how-to-signing-integrations};
+  learn.microsoft.com/security/trusted-root/program-requirements;
+  cabforum.org/2025/11/17/ballot-csc-31-maximum-validity-reduction;
+  docs.cloud.google.com/kms/docs/reference/pkcs11-jsign; ebourg.github.io/jsign;
+  shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
