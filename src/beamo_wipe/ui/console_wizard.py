@@ -515,6 +515,15 @@ def _review_buttons(wizard: Wizard, focus: str) -> str:
     return f"{back}    {erase}"
 
 
+def _result_card_lines(wizard: Wizard, width: int) -> list[str]:
+    """#171: the result card's method, check result and times as text."""
+    card = wizard.result_card
+    out: list[str] = []
+    for label, value in (card.detail_rows if card is not None else ()):
+        out.extend(_lines(f"{label}: {value}", width))
+    return out
+
+
 def _primary_footer(
     wizard: Wizard, inventory_open: bool, review_pending: bool = False,
     review_focus: str = "back",
@@ -1351,7 +1360,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
             # Technical details line below.
             print(plain.headline)
             print(wizard.elapsed_text)
-            print(wizard.method_summary)
+            card = wizard.result_card  # #171: method, check result, times
+            for label, value in (card.detail_rows if card is not None else ()):
+                print(f"{label}: {value}")
             if wizard.selected:
                 _print_view(wizard.disk_view(wizard.selected))
             sections = recovery_for_view(wizard.result_view)
@@ -2029,7 +2040,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 # The plain headline is the page title (#134); the note and
                 # What next list replace the next-step paragraph and the
                 # post-erase note. The status message goes to the tail.
-                lines.extend(_lines(wizard.method_summary, w))
+                lines.extend(_result_card_lines(wizard, w))  # #171
                 for line in _what_next_lines(plain):
                     lines.extend(_lines(line, w))
             else:
@@ -2037,7 +2048,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 # the plain title, unless they are the same (preview).
                 if wizard.method_result != _screen_title(wizard):
                     lines.extend(_lines(wizard.method_result, w))
-                lines.extend(_lines(wizard.method_summary, w))
+                lines.extend(_result_card_lines(wizard, w))  # #171
                 lines.extend(_lines(wizard.result_view.next_step, w))
                 if may_have_erased(wizard.result_view.code):
                     lines.extend(_lines(C.POST_ERASE_BOOT, w))

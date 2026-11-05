@@ -1557,6 +1557,46 @@ class Wizard:
 
         return text("title"), text("capacity"), text("id_label"), text("id_value")
 
+    @property
+    def result_card(self):
+        """#171: the result summary card, from the photo record's facts.
+
+        None off the result screen. The card and the QR summary read the
+        same record, so they cannot disagree; without a final record (still
+        saving, preview) it uses the same disk and method facts, no times.
+        """
+        from beamo_wipe import erase_record as R
+
+        with self._lock:
+            if self.screen != Screen.DONE:
+                return None
+            code = self.result_view.code
+            preview = self.preview
+            evidence = (
+                self.evidence
+                if isinstance(self.evidence, dict) and not self.evidence_error
+                else None
+            )
+            facts = self._record_disk_facts(evidence)
+            method = self._record_method(evidence)
+            quick_zero = self._record_method_id(evidence) == MethodId.QUICK_ZERO
+        record = None if preview else self.erase_record
+        check = R.check_text(code, quick_zero=quick_zero, method=method, preview=preview)
+        return R.build_card(record, facts, method, check)
+
+    def _record_method_id(self, evidence):
+        """The method this erase used: evidence first, then the request."""
+        method_id = None
+        if evidence is not None and isinstance(evidence.get("method"), dict):
+            try:
+                method_id = MethodId(evidence["method"].get("id"))
+            except (ValueError, TypeError):
+                method_id = None
+        if method_id is None:
+            request = self._wipe_request
+            method_id = request.method if request is not None else self.method
+        return method_id
+
     def _record_method(self, evidence) -> str:
         """Pinned method title in the current language."""
         method_id = None

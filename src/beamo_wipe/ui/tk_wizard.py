@@ -3296,7 +3296,8 @@ class TkWizard:
         label.after_idle(place)
 
     def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False,
-                      token: bool = False) -> _Box:
+                      token: bool = False, caption_text: Optional[str] = None,
+                      rows: tuple = ()) -> _Box:
         """The selected disk, shared across confirmation, method, and result screens.
 
         Short windows tighten its padding so the step's own controls start
@@ -3315,7 +3316,7 @@ class TkWizard:
             # padding; no extra gap below it on short windows.
             caption = tk.Frame(inner, bg=PRIMARY_TINT)
             caption.pack(fill=tk.X, pady=(0, 0 if short else 2))
-        label = tk.Label(caption, text=C.SELECTED_DISK, font=self.font_tiny,
+        label = tk.Label(caption, text=caption_text or C.SELECTED_DISK, font=self.font_tiny,
                          fg=PRIMARY, bg=PRIMARY_TINT, anchor="w")
         if more:
             label.pack(side=tk.LEFT)
@@ -3326,7 +3327,25 @@ class TkWizard:
         self._meta_line(inner, disk, PRIMARY_TINT, token=token).pack(
             fill=tk.X, pady=(2 if short else 4, 0)
         )
+        if rows:
+            self._fact_rows(inner, rows, PRIMARY_TINT).pack(
+                fill=tk.X, pady=(6 if short else 8, 0)
+            )
         return box
+
+    def _fact_rows(self, parent: tk.Widget, rows: tuple, bg: str) -> tk.Frame:
+        """#171: "Label  value" rows of the result card, wrapped to the card."""
+        frame = tk.Frame(parent, bg=bg)
+        frame._beamo_fact_rows = rows  # type: ignore[attr-defined]
+        for label, value in rows:
+            row = tk.Frame(frame, bg=bg)
+            row.pack(fill=tk.X, pady=(1, 0))
+            tk.Label(row, text=f"{label}:", font=self.font_s, fg=MUTED, bg=bg,
+                     anchor="nw", justify=tk.LEFT).pack(side=tk.LEFT, anchor="n")
+            self._p(row, value, font=self.font_s_bold, bg=bg).pack(
+                side=tk.LEFT, fill=tk.X, expand=True, padx=(6, 0)
+            )
+        return frame
 
     # -- footer / buttons -----------------------------------------------------
 
@@ -6124,10 +6143,23 @@ class TkWizard:
         # Keep the selected-disk summary in the first viewport so Show more
         # stays reachable on short windows; report status follows, still
         # independent of the erase badge.
+        # #171: one compact card with the facts (disk, method, check result,
+        # start and end), from the photo record's own facts.
+        from beamo_wipe import erase_record as _record
+
+        card = self.w.result_card
         if self.w.selected is not None:
-            self._disk_summary(col, self.w.selected, more=True).pack(
-                fill=tk.X, pady=(8 if self.lay.short else 12, 0)
-            )
+            self._disk_summary(
+                col, self.w.selected, more=True, caption_text=_record.CARD_TITLE,
+                rows=card.detail_rows if card is not None else (),
+            ).pack(fill=tk.X, pady=(8 if self.lay.short else 12, 0))
+        elif card is not None and card.rows:
+            box = _Box(col, radius=RADIUS, fill=PRIMARY_TINT, outline=SUMMARY_EDGE, ow=1,
+                       padx=18, pady=8 if self.lay.short else 12, shadow=False)
+            box.pack(fill=tk.X, pady=(8 if self.lay.short else 12, 0))
+            tk.Label(box.inner, text=_record.CARD_TITLE, font=self.font_tiny, fg=PRIMARY,
+                     bg=PRIMARY_TINT, anchor="w").pack(fill=tk.X)
+            self._fact_rows(box.inner, card.rows, PRIMARY_TINT).pack(fill=tk.X, pady=(4, 0))
         panel = self.w.report_panel
         if panel.kind == "evidence":
             # Ref #153: an evidence-save failure and its Retry stay in the
@@ -6161,7 +6193,6 @@ class TkWizard:
         # Show more -> Save stays the two-Tab path.
         if panel.kind != "evidence":
             self._report_save_panel(col, panel)
-        self._p(col, self.w.method_summary, font=self.font_s).pack(fill=tk.X, pady=(8, 0))
         sections = recovery_for_view(result)
         if sections:
             self._recovery_block(

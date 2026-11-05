@@ -212,7 +212,8 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
     shown, packed, term = _draw(monkeypatch, wiz)
     assert view.title in shown
     assert view.id_value in shown
-    assert METHODS[method].summary in shown
+    # #171: the result card's Method row replaces the repeated method line.
+    assert f"Method: {METHODS[method].title}" in shown
     assert wiz.result_view.message in shown or wiz.method_result in shown
 
 

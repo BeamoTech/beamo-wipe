@@ -45,6 +45,8 @@ from beamo_wipe.methods import METHODS
 from beamo_wipe.models import MethodId, Screen
 from beamo_wipe.wizard import PREPARATION_PATH, journey_step_for
 from beamo_wipe import progress as _progress
+from beamo_wipe import erase_record as _erase_record
+from beamo_wipe import result_summary as _rs
 from beamo_wipe.power import PowerStatus
 from beamo_wipe import identity as _identity
 from beamo_wipe.safety import (
@@ -500,6 +502,12 @@ def _gallery_html_for_current_language(lang: str) -> str:
     payload: dict[str, Any] = {
         "app": C.APP_NAME,
         "reportStatusTitle": C.REPORT_STATUS_TITLE,
+        "resultCard": {
+            "title": _erase_record.CARD_TITLE,
+            "methodLabel": _rs.H_METHOD,
+            "checkLabel": _erase_record.CHECK_LABEL,
+            "check": _erase_record.CHECK_PREVIEW,
+        },
         "reportPreview": C.REPORT_PREVIEW,
         "journey": C.JOURNEY_LABELS,
         "selectedDisk": C.SELECTED_DISK,
@@ -1188,6 +1196,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .ringnum { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
   .countcap { font-size: 16px; color: var(--muted); margin-top: 12px; }
   .countcap.ready { color: var(--ink); font-weight: 600; }
+  /* #171: the result card facts. */
+  .factrows { list-style: none; padding: 0; margin: 4px 0 0; }
+  .factrows li { margin: 2px 0; }
   /* #163: ready is a check mark plus the word Ready, never the icon alone. */
   .countcap .readyword { color: var(--primary); font-weight: 700; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -2292,7 +2303,7 @@ function draw() {
     main.innerHTML = `<div class="result"><div class="status" aria-hidden="true"><div class="core">i</div></div>
       <section aria-labelledby="erase-status-heading"><h1 id="erase-status-heading">${result.message}</h1>
       ${ok ? `<p class="statustext" style="color:var(--ink)">${result.next_step}</p>` : recovery}
-      <p>${P.methods[method].summary}</p>
+      <ul class="factrows" aria-label="${P.resultCard.title}"><li>${P.resultCard.methodLabel}: ${P.methods[method].title}</li><li>${P.resultCard.checkLabel}: ${P.resultCard.check}</li></ul>
       </section>
       <div style="width:100%;margin-top:12px">${summaryCard(selected)}</div>
       <section aria-labelledby="report-status-heading">

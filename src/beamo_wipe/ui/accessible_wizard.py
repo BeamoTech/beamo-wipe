@@ -250,6 +250,33 @@ class AccessibleWizard:
         """
         self._style.load_from_data(css.encode())
 
+    def result_card_list(self) -> None:
+        """#171: the result card's method, check result and times as a list.
+
+        The disk identity is announced just before by identity(). Each fact
+        is a focusable list item so Orca reads it with Tab or arrow keys.
+        """
+        from beamo_wipe import erase_record as R
+
+        card = self.w.result_card
+        if card is None or not card.detail_rows:
+            return
+        title = self.label(R.CARD_TITLE, focusable=True)
+        title.get_accessible().set_role(Atk.Role.HEADING)
+        group = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        group.get_accessible().set_role(Atk.Role.LIST)
+        group.get_accessible().set_name(R.CARD_TITLE)
+        for label, value in card.detail_rows:
+            item = Gtk.Label(label=f"{label}: {value}")
+            item.set_line_wrap(True)
+            item.set_xalign(0)
+            item.set_max_width_chars(70)
+            item.set_can_focus(True)
+            item.set_selectable(True)
+            item.get_accessible().set_role(Atk.Role.LIST_ITEM)
+            group.pack_start(item, False, False, 0)
+        self.body.pack_start(group, False, False, 4)
+
     def label(self, text: str, *, focusable: bool = False):
         widget = Gtk.Label(label=text)
         widget.set_line_wrap(True)
@@ -1005,7 +1032,7 @@ class AccessibleWizard:
                 f"Result: {result.code}. Status: {result.tone}."
             )
             self.identity()
-            self.label(self.w.method_summary)
+            self.result_card_list()  # #171: the facts as a list for Orca
             self.label(self.w.elapsed_text)
             panel = self.w.report_panel
             if panel.kind == "evidence":

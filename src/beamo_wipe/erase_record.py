@@ -33,6 +33,18 @@ REPORT_NOT_STORED = "Not saved. The full report could not be stored in this sess
 _SOFTWARE_LINE = "Beamo Wipe {version}, build {build}, nwipe {engine}"
 _SOFTWARE_LINE_NO_BUILD = "Beamo Wipe {version}, nwipe {engine}"
 _WALL_UTC = "{date} {time} UTC"
+# #171: the result summary card. Its facts are this record's facts (same
+# source as the QR summary and RESULT.txt), plus the check result, which
+# follows the on-screen outcome and never says more than it.
+CARD_TITLE = "Summary"
+CHECK_LABEL = "Check result"
+CHECK_VERIFIED = "Verified"
+CHECK_NOT_CHECKED = "Not checked"
+CHECK_NOT_CHECKED_METHOD = "Not checked ({method})"
+CHECK_FAILED = "Failed"
+CHECK_STOPPED = "Stopped"
+CHECK_NOT_CONFIRMED = "Not confirmed"
+CHECK_PREVIEW = "Preview: nothing was erased"
 
 # Medium error correction keeps the matrix small enough for 4 px modules on
 # an 800x600 screen while tolerating glare and moiré in a phone photo.
@@ -66,6 +78,71 @@ class EraseRecord:
     @property
     def text(self) -> str:
         return "\n".join(self.lines)
+
+
+@dataclass(frozen=True)
+class ResultCard:
+    """Result-screen summary (#171). ``rows`` are every fact in order;
+    ``detail_rows`` leave out the disk identity, which the graphical card
+    already shows in its disk heading."""
+
+    rows: tuple[tuple[str, str], ...]
+    detail_rows: tuple[tuple[str, str], ...]
+
+    @property
+    def lines(self) -> tuple[str, ...]:
+        return tuple(f"{label}: {value}" for label, value in self.rows)
+
+
+_STOPPED_CODES = frozenset({"cancelled", "interrupted"})
+_UNCONFIRMED_CODES = frozenset({"completion_missing", "indeterminate", "stop_unconfirmed"})
+
+
+def check_text(code: str, *, quick_zero: bool, method: str, preview: bool) -> str:
+    """Check result for an outcome code: never stronger than the outcome."""
+    if preview:
+        return CHECK_PREVIEW
+    if code == "verified":
+        return CHECK_VERIFIED
+    if code == "unverified":
+        return CHECK_NOT_CHECKED_METHOD.format(method=method) if quick_zero and method else CHECK_NOT_CHECKED
+    if code in _STOPPED_CODES:
+        return CHECK_STOPPED
+    if code in _UNCONFIRMED_CODES:
+        return CHECK_NOT_CONFIRMED
+    return CHECK_FAILED
+
+
+def build_card(
+    record: "EraseRecord | None",
+    facts: tuple[str, str, str, str],
+    method: str,
+    check: str,
+) -> ResultCard:
+    """The card from the photo record's facts (or, without a final record,
+    the same disk and method facts the record would use, and no times)."""
+    title, capacity, id_label, id_value = facts
+    disk = [
+        (label, value)
+        for label, value in ((RS.H_DISK, _value(title)), (RS.H_CAPACITY, _value(capacity)),
+                             (_value(id_label, limit=MAX_RESULT), _value(id_value)))
+        if label and value
+    ]
+    detail: list[tuple[str, str]] = []
+    if record is not None and not record.preview:
+        for label, value in record.fields:
+            if label == RS.H_METHOD:
+                detail.append((label, value))
+                detail.append((CHECK_LABEL, check))
+            elif label in (RS.H_STARTED, RS.H_ENDED):
+                detail.append((label, value))
+        if not any(label == CHECK_LABEL for label, _ in detail):
+            detail.insert(0, (CHECK_LABEL, check))
+    else:
+        if _value(method):
+            detail.append((RS.H_METHOD, _value(method)))
+        detail.append((CHECK_LABEL, check))
+    return ResultCard(rows=tuple(disk + detail), detail_rows=tuple(detail))
 
 
 def _value(text: object, *, limit: int = MAX_VALUE) -> str:
