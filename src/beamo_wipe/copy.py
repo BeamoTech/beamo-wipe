@@ -474,8 +474,11 @@ METHOD_LEAD = (
     "hours, so time is not promised."
 )
 
+# #162: says what starts the erase (the separate Erase now action), not
+# what the countdown does not do. Zero still only enables Erase now.
 LAST_LEAD = (
-    "Check the selected disk and method. The countdown never starts erasure."
+    "Check the selected disk and method. Erasing starts only when you press "
+    "Erase now."
 )
 AUTHORIZATION_STALE = "The disk or method changed. Confirm again."
 

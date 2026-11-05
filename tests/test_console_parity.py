@@ -205,7 +205,7 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
         or METHODS[method].summary in shown
     )
     assert "Check the selected disk and method." in shown
-    assert "never starts erasure" in shown
+    assert "Erasing starts only when you press Erase now." in shown  # #162
     footer = _footer(term)
     assert "Enter to erase" in footer or "Wait" in footer
     wiz.wants_shutdown = False

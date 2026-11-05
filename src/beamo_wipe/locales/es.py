@@ -126,7 +126,7 @@ STRINGS = {
         "TIME_RANGE_HOURS": "{low}–{high} horas",
         "TIME_RANGE_DAYS": "{low}–{high} días",
         "TIME_RANGE_MIXED": "de {low} a {high}",
-        "LAST_LEAD": "Revise el disco y el método seleccionados. La cuenta regresiva nunca inicia el borrado.",
+        "LAST_LEAD": "Revise el disco y el método seleccionados. El borrado solo empieza cuando pulsa Borrar ahora.",
         "AUTHORIZATION_STALE": "El disco o el método cambió. Vuelva a confirmar.",
         "ADVANCED_LEAD": "Estos son los nombres de nwipe. Para técnicos. Las demás pantallas siguen siendo sencillas.",
         "REPORT_HELP_TITLE": "¿Necesita un informe?",

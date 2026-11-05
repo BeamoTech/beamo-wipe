@@ -122,7 +122,7 @@ STRINGS = {
         "TIME_RANGE_HOURS": "{low}–{high} ore",
         "TIME_RANGE_DAYS": "{low}–{high} giorni",
         "TIME_RANGE_MIXED": "da {low} a {high}",
-        "LAST_LEAD": "Controlli il disco e il metodo selezionati. Il conto alla rovescia non avvia mai la cancellazione.",
+        "LAST_LEAD": "Controlli il disco e il metodo selezionati. La cancellazione inizia solo quando preme Cancella ora.",
         "AUTHORIZATION_STALE": "Il disco o il metodo è cambiato. Confermi di nuovo.",
         "ADVANCED_LEAD": "Questi sono i nomi usati da nwipe. Per i tecnici. Le altre schermate restano semplici.",
         "REPORT_HELP_TITLE": "Serve un rapporto?",

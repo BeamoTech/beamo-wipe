@@ -121,7 +121,7 @@ STRINGS = {
         "TIME_RANGE_HOURS": "{low}–{high} Stunden",
         "TIME_RANGE_DAYS": "{low}–{high} Tage",
         "TIME_RANGE_MIXED": "{low} bis {high}",
-        "LAST_LEAD": "Prüfen Sie den gewählten Datenträger und die Methode. Der Countdown startet nie das Löschen.",
+        "LAST_LEAD": "Prüfen Sie den gewählten Datenträger und die Methode. Das Löschen beginnt erst, wenn Sie Jetzt löschen drücken.",
         "AUTHORIZATION_STALE": "Datenträger oder Methode hat sich geändert. Bestätigen Sie erneut.",
         "ADVANCED_LEAD": "Das sind die nwipe-Namen. Für Techniker. Die anderen Bildschirme bleiben einfach.",
         "REPORT_HELP_TITLE": "Bericht nötig?",

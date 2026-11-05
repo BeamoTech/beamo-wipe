@@ -2446,7 +2446,7 @@ def test_review_timer_is_secondary_and_completion_preserves_focus(ui, size):
     numeral = font.Font(root=app.root, font=app._countdown_num.cget("font"))
     assert abs(numeral.cget("size")) <= abs(app.font_bold.cget("size"))
     assert "selected disk and method" in C.LAST_LEAD
-    assert "never starts erasure" in C.LAST_LEAD
+    assert "Erasing starts only when you press Erase now." in C.LAST_LEAD  # #162
     wiz._erase_until = 0
     app._refresh_last_chance()
     app.root.update()
