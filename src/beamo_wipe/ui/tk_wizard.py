@@ -5366,6 +5366,32 @@ class TkWizard:
         self._close_help_menu(refocus=False)
         self._draw()
 
+    def _balance_result(self, col: tk.Frame, spacer: tk.Frame) -> None:
+        """#172: center the result in the view when it fits; never when it
+        scrolls (then it starts at the top, as before)."""
+        canvas = getattr(self, "_body_canvas", None)
+
+        def fit(_event=None) -> None:
+            try:
+                if not spacer.winfo_exists():
+                    return
+                host = canvas if canvas is not None else self._body
+                view = host.winfo_height() if host is not None else 0
+                content = col.winfo_reqheight() - spacer.winfo_reqheight()
+                want = max(0, (view - content) // 2) if view > 1 else 0
+                if abs(spacer.winfo_reqheight() - want) > 1:
+                    spacer.configure(height=want)
+            except tk.TclError:
+                return
+
+        col.bind("<Configure>", fit, add="+")
+        if canvas is not None:
+            canvas.bind("<Configure>", fit, add="+")
+        try:
+            col.after_idle(fit)
+        except tk.TclError:
+            pass
+
     def _click_diagnostic_action(self) -> None:
         self.w.diagnostic_action(background=True)
 
@@ -6412,16 +6438,22 @@ class TkWizard:
         plain = self.w.result_plain
         title = plain.headline
 
-        badge_size = 64 if self.lay.short else 72
+        # #172: balanced. A smaller badge and tighter gaps keep the summary
+        # and What next in the first view; when everything fits, the top
+        # spacer centers the result instead of leaving the space below.
+        balance = tk.Frame(col, bg=BG, height=0)
+        balance.pack(fill=tk.X)
+        balance._beamo_balance = True  # type: ignore[attr-defined]
+        badge_size = 48 if self.lay.short else 56
         icon = (_icon_status(col, True, badge_size) if result.icon == "check"
                 else _icon_badge(col, result.icon, badge_size))
         icon.configure(bg=BG)
-        icon.pack(pady=(8 if self.lay.short else 12, 0))
+        icon.pack(pady=(6 if self.lay.short else 10, 0))
         heading = self._h(col, title)
         heading.configure(anchor="center", justify=tk.CENTER)
-        heading.pack(fill=tk.X, pady=(8, 4) if self.lay.short else (12, 4))
+        heading.pack(fill=tk.X, pady=(6, 2) if self.lay.short else (8, 2))
         self._p(col, self.w.elapsed_text, fg=MUTED, font=self.font_s,
-                justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(4, 0))
+                justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(2, 0))
         # Keep the selected-disk summary in the first viewport so Show more
         # stays reachable on short windows; report status follows, still
         # independent of the erase badge.
@@ -6491,6 +6523,7 @@ class TkWizard:
             self._p(col, self.w.sound_message, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
+        self._balance_result(col, balance)
         # Footer (#135): two actions. Sounds and Hear again sit with the
         # other settings in the assist strip; report actions are in the panel.
         # #169: say exactly what Enter does here; Esc does nothing on a result.
