@@ -732,6 +732,10 @@ class AccessibleWizard:
             entry.get_accessible().set_name(prompt)
             entry.set_text(self.w.confirm_input)
             self.body.pack_start(entry, False, False, 4)
+            # #156: what was typed, wrong characters marked, and which
+            # positions are wrong; Orca hears it without the brackets.
+            self.token_feedback = self.label("", focusable=True)
+            self.token_feedback.set_no_show_all(True)
             # #155: keyboard-layout help only after a wrong entry; focusable
             # so Orca reads it, with a Change button to the layout screen.
             self.layout_hint = self.label(
@@ -1329,6 +1333,15 @@ class AccessibleWizard:
             widget = getattr(self, name, None)
             if widget is not None:
                 widget.set_visible(shown)
+        label = getattr(self, "token_feedback", None)
+        if label is not None:
+            fb = self.w.confirm_feedback  # #156
+            if fb is None:
+                label.set_visible(False)
+            else:
+                label.set_text(f"{fb.display}\n{fb.message}")
+                label.get_accessible().set_name(fb.spoken)
+                label.set_visible(True)
 
     def _keyboard_check_key(self, event, generation) -> bool:
         """Guided check (#140): the keysym the key printed Z produced."""

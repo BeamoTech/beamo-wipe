@@ -309,6 +309,17 @@ rule lives in `safety.confirm_spec`; every surface uses it.
 - **Comparison (#156).** Leading and trailing whitespace is ignored and case
   does not matter. Nothing else is relaxed: no partial match, no inner
   spaces, no auto-fill, and another disk's characters never match.
+- **Wrong entry (#156).** After a wrong entry (the #155 timing) Confirm shows
+  what was typed with the wrong characters in [brackets] and says which:
+  "You typed: 3 4 [7] 6" / "Character 3 doesn't match.", "1 character is
+  missing.", "1 character too many.". A typed space is shown as ␣ and
+  marked on its own ("Spaces between characters count; remove them.") so
+  the characters after it are still compared in order. It never prints an
+  expected character; the card already shows them. Display only
+  (token_feedback.py, read through Wizard.confirm_feedback): the gate is
+  token_matches. Tk and the web preview show it above the keyboard hint;
+  GTK as a focusable label whose spoken name lists the characters without
+  brackets; curses and the plain console as two lines.
 - **Binding.** Erase now recomputes the characters from the rediscovered
   disk list. A changed serial, size, hardware ID or path is rejected as
   before; a newly listed disk that shares the ending makes the typed

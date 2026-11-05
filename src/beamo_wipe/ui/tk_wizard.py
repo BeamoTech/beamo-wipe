@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_token_typed', '_token_problem', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1609,6 +1609,9 @@ class TkWizard:
             self._match_icon: Optional[tk.Canvas] = None
             self._match_pill: Optional[_Box] = None
             self._layout_hint: Optional[tk.Frame] = None  # #155
+            self._layout_sentence: Optional[tk.Label] = None  # #156
+            self._token_typed: Optional[tk.Label] = None  # #156
+            self._token_problem: Optional[tk.Label] = None  # #156
             self._shown: Optional[Screen] = None
             self._shown_report_revision = -1
             self._shown_sound_revision = -1
@@ -2555,6 +2558,9 @@ class TkWizard:
         self._match_icon = None
         self._match_pill = None
         self._layout_hint = None
+        self._layout_sentence = None
+        self._token_typed = None
+        self._token_problem = None
         self._power_label: Optional[tk.Label] = None
         screen = self.w.screen
         first_review_draw = screen == Screen.LAST_CHANCE and getattr(self, "_shown", None) != Screen.LAST_CHANCE
@@ -5120,9 +5126,28 @@ class TkWizard:
         # #155: keyboard-layout help only after a wrong entry, with Change.
         hint = tk.Frame(zone, bg=BG)
         setattr(hint, "_beamo_layout_hint", True)
+        # #156: what was typed, with the wrong characters in [brackets], and
+        # which positions are wrong. Never the expected characters.
+        # Packed by _sync_layout_hint only while there is something to say.
+        typed = tk.Label(hint, text="", font=self.font_mono_bold, fg=INK, bg=BG,
+                         anchor="w", justify=tk.LEFT)
+        setattr(typed, "_beamo_token_typed", True)
+        problem = tk.Label(hint, text="", font=self.font_s_bold, fg=INK, bg=BG,
+                           anchor="w", justify=tk.LEFT)
+        setattr(problem, "_beamo_token_problem", True)
+
+        def _wrap_feedback(event, labels=(typed, problem)) -> None:
+            for label in labels:
+                try:
+                    label.configure(wraplength=max(120, int(event.width) - 4))
+                except tk.TclError:
+                    return
+
+        hint.bind("<Configure>", _wrap_feedback, add="+")
+        self._token_typed, self._token_problem = typed, problem
         # The sentence wraps to the row's real width and Change sits under
         # it, so neither is clipped at any text size or language.
-        self._wrapping_label(
+        self._layout_sentence = self._wrapping_label(
             hint,
             C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
             font=self.font_s, fg=INK, bg=BG,
@@ -5147,6 +5172,21 @@ class TkWizard:
                 self._layout_hint = None
                 return
             shown = bool(hint.winfo_manager())
+            # #156: refresh the typed value and its problems on every change.
+            fb = self.w.confirm_feedback
+            anchor = getattr(self, "_layout_sentence", None)
+            for label, text, pady in (
+                (getattr(self, "_token_typed", None), fb.display if fb else "", (0, 0)),
+                (getattr(self, "_token_problem", None), fb.message if fb else "", (2, 6)),
+            ):
+                if label is None or not label.winfo_exists():
+                    continue
+                if str(label.cget("text")) != text:
+                    label.configure(text=text)
+                if text and not label.winfo_manager():
+                    label.pack(fill=tk.X, pady=pady, before=anchor)
+                elif not text and label.winfo_manager():
+                    label.pack_forget()
             if self.w.confirm_layout_hint and not shown:
                 hint.pack(fill=tk.X, pady=(10, 0))
                 # Short windows and large text put it below the fold: bring

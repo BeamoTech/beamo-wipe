@@ -831,6 +831,12 @@ def _gallery_html_for_current_language(lang: str) -> str:
         # The layout in use (#131: it follows the page's language until picked).
         "confirmLayoutHint": C.CONFIRM_LAYOUT_HINT,
         "confirmLayoutChange": C.CONFIRM_LAYOUT_CHANGE,
+        "tokenFeedback": {
+            "typed": C.TOKEN_TYPED, "wrongOne": C.TOKEN_WRONG_ONE, "wrongMany": C.TOKEN_WRONG_MANY,
+            "missingOne": C.TOKEN_MISSING_ONE, "missingMany": C.TOKEN_MISSING_MANY,
+            "extraOne": C.TOKEN_EXTRA_ONE, "extraMany": C.TOKEN_EXTRA_MANY,
+            "spaceNote": C.TOKEN_SPACE_NOTE, "and": inventory.POSITION_AND,
+        },
         "steps": {str(n): C.JOURNEY_LABELS[n - 1] for n in range(1, len(C.JOURNEY_LABELS) + 1)},
         "stepPrefix": C.STEP_PREFIX,
         "stepIdentify": C.STEP_IDENTIFY,
@@ -1232,6 +1238,10 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .help-reader.compact { max-height: 43vh; }
   .nested { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
   .contents-hint { margin-top: 4px; }
+  /* #156: what was typed, wrong characters in [brackets]. */
+  .layout-hint .token-typed { margin: 8px 0 2px; font-weight: 700; }
+  .layout-hint .token-problem { margin: 0 0 6px; font-weight: 600; }
+  .layout-hint .token-typed:empty, .layout-hint .token-problem:empty { display: none; }
   /* #154: outlined recognition tag, ink text (a word and a shape). */
   .enc-tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
   .enc-tag { border: 1px solid var(--border-strong); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
@@ -1565,6 +1575,31 @@ function closePreview() {
     shutdownFrom = screen; screen = "shutdown_confirm"; draw(); return;
   }
   alert(P.chrome.closeTab);
+}
+// #156: which typed characters are wrong (display only; tokenOk() decides).
+// Same rules as token_feedback.py: spaces marked on their own, the other
+// characters compared in order, never the expected characters.
+function tokenFeedback(typed, wantRaw) {
+  const got = (typed || "").trim(), want = (wantRaw || "").trim();
+  if (!got || !want || got.toLowerCase() === want.toLowerCase()) return null;
+  const T = P.tokenFeedback, chars = Array.from(got), w = Array.from(want);
+  const blank = c => c.trim() === "";
+  const spaces = chars.map((c, i) => blank(c) ? i : -1).filter(i => i >= 0);
+  const kept = chars.map((c, i) => blank(c) ? -1 : i).filter(i => i >= 0);
+  const wrong = [];
+  for (let j = 0; j < Math.min(kept.length, w.length); j++)
+    if (chars[kept[j]].toLowerCase() !== w[j].toLowerCase()) wrong.push(j);
+  const extra = kept.slice(w.length), missing = Math.max(0, w.length - kept.length);
+  const marked = new Set([...wrong.map(j => kept[j]), ...extra, ...spaces]);
+  const cells = chars.map((c, i) => { const v = blank(c) ? "␣" : c; return marked.has(i) ? `[${v}]` : v; });
+  const nums = wrong.map(j => String(j + 1));
+  const list = nums.length > 1 ? nums.slice(0, -1).join(", ") + " " + T.and + " " + nums[nums.length - 1] : (nums[0] || "");
+  const out = [];
+  if (wrong.length) out.push((wrong.length === 1 ? T.wrongOne : T.wrongMany).replace("{n}", nums[0]).replace("{list}", list));
+  if (missing) out.push(missing === 1 ? T.missingOne : T.missingMany.replace("{count}", String(missing)));
+  if (extra.length) out.push(extra.length === 1 ? T.extraOne : T.extraMany.replace("{count}", String(extra.length)));
+  if (spaces.length) out.push(T.spaceNote);
+  return {display: T.typed.replace("{typed}", cells.join(" ")), message: out.join(" ")};
 }
 function tokenOk() {
   return selected && token.trim().toLowerCase() === selected.token.toLowerCase();
@@ -1957,7 +1992,7 @@ function draw() {
       <p style="font-size:16px;margin:14px 0 8px;overflow-wrap:anywhere"><label for="tok">${esc(d.prompt)}</label></p>
       <div class="entryshell"><input class="token" id="tok" aria-describedby="match" autocomplete="off" spellcheck="false"></div>
       <p class="match" id="match" role="status" aria-live="polite"></p>
-      <div class="layout-hint" id="layout-hint" hidden><span>${esc(P.confirmLayoutHint.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title))}</span> <button class="linkbtn" id="layout-change" type="button">${esc(P.confirmLayoutChange)}</button></div></div></div>`;
+      <div class="layout-hint" id="layout-hint" hidden><p class="mono token-typed" id="token-typed"></p><p class="token-problem" id="token-problem"></p><span>${esc(P.confirmLayoutHint.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title))}</span> <button class="linkbtn" id="layout-change" type="button">${esc(P.confirmLayoutChange)}</button></div></div></div>`;
     bindMore();
     const inp = main.querySelector("#tok");
     const matchEl = main.querySelector("#match");
@@ -1971,6 +2006,9 @@ function draw() {
       // #155: a complete entry that does not match is a wrong entry.
       if (!tokenOk() && token.trim() && token.trim().length >= (d.token || "").trim().length) confirmMismatch = true;
       main.querySelector("#layout-hint").hidden = !(confirmMismatch && !tokenOk());
+      const fb = confirmMismatch && !tokenOk() ? tokenFeedback(token, d.token) : null;
+      main.querySelector("#token-typed").textContent = fb ? fb.display : "";
+      main.querySelector("#token-problem").textContent = fb ? fb.message : "";
     };
     inp.oninput = sync;
     inp.onkeydown = (e) => {

@@ -1146,6 +1146,11 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _print_view(wizard.disk_view(disk), token=True)
             _emit(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}")
             print(C.confirm_prompt(confirm_spec, console=True) if confirm_spec else "")
+            feedback = wizard.confirm_feedback
+            if feedback is not None:
+                # #156: what was typed, wrong characters in [brackets].
+                print(feedback.display)
+                print(feedback.message)
             if wizard.confirm_layout_hint:
                 # #155: after a wrong entry; K (printed by _answer) changes it.
                 print(C.CONFIRM_LAYOUT_HINT.format(
@@ -1749,6 +1754,11 @@ def _loop(stdscr, wizard: Wizard) -> int:
             confirm_spec = wizard.confirm
             if confirm_spec:
                 rest.extend(_lines(C.confirm_prompt(confirm_spec, console=True), w))
+            feedback = wizard.confirm_feedback
+            if feedback is not None:
+                # #156: what was typed, wrong characters in [brackets].
+                rest.extend(_lines(feedback.display, w))
+                rest.extend(_lines(feedback.message, w))
             if wizard.confirm_layout_hint:
                 # #155: after a wrong entry, with F2 to change the layout.
                 rest.extend(_lines(

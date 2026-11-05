@@ -2186,6 +2186,22 @@ class Wizard:
             and not self.token_ok
         )
 
+    @property
+    def confirm_feedback(self):
+        """#156: which typed characters are wrong, once a wrong entry was made.
+
+        Same timing as confirm_layout_hint. Display only: the gate is
+        token_matches, never this explanation.
+        """
+        if not self.confirm_layout_hint:
+            return None
+        spec = self.confirm
+        if spec is None:
+            return None
+        from beamo_wipe.token_feedback import feedback
+
+        return feedback(self.confirm_input, spec.token)
+
     def continue_confirm(self) -> None:
         with self._lock:
             if self.screen != Screen.CONFIRM:
