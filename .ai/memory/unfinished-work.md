@@ -5300,3 +5300,20 @@ another very thorough and comprehensive pass of this." Repo
   cabforum.org/2025/11/17/ballot-csc-31-maximum-validity-reduction;
   docs.cloud.google.com/kms/docs/reference/pkcs11-jsign; ebourg.github.io/jsign;
   shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
+
+## BW-155B — Confirm layout hint held a hidden Change button (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/layout-hint-build-155`
+  (stacked on `feat/help-settings-menu-175` @ 27f4f0b; commit 25362d9),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155b-20261105`.
+  Regression from #155 found during #171.
+- WHAT CHANGED: tk_wizard._confirm keeps an empty hint frame;
+  _sync_layout_hint builds the sentence + Change (_build_layout_hint) when
+  the hint shows and destroys them when it hides. Same look when shown.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, tests/test_layout_hint_build_155b.py (new, 3).
+- TESTS / CHECKS: new file 3/3 pass, 3/3 fail on #175 @ 27f4f0b;
+  test_ui_rework canvas controls [confirm] now passes (fails on 27f4f0b);
+  test_confirm_layout_hint_155 Tk 5/5, test_confirm_spacing_157 15/15 (one
+  by one); ruff and mypy --platform linux clean.
+- NOT DONE: no new screenshots (rendering of the shown hint is unchanged);
+  Linux 72 DPI, hosted ci.yml not run.
