@@ -15,6 +15,7 @@ from types import SimpleNamespace
 import pytest
 from test_result_presentations import CASES as RESULT_CASES, case_evidence
 
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.methods import METHODS
@@ -1155,7 +1156,7 @@ def test_pick_list_scrolls_selected_card_into_view(ui):
     _drive_to(wiz, app, Screen.PICK, size=MIN_WINDOW)
     if not _pick_list_overflows(app):
         pytest.skip("disk list fits without scrolling at this size")
-    ordered = sorted(wiz.selectable, key=lambda d: d.path)
+    ordered = list(pick_order(wiz.selectable))  # #151 shown order
     for _ in range(len(ordered)):
         (app.root.focus_get() or app.root).event_generate("<KeyPress>", keysym="Down")
         app.root.update()

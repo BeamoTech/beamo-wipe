@@ -181,10 +181,18 @@ def test_gtk_comparison_disclosure_is_read_only():
 
 
 def test_equal_capacity_candidates_are_adjacent_without_renumbering_picker():
+    # "Disk N" is the place in the shown list (#151 order); equal capacities
+    # are grouped first without renumbering.
+    from beamo_wipe.disk_order import pick_order
+
     w = make_demo_wizard()
+    numbers = {d.path: f"Disk {i}" for i, d in enumerate(pick_order(w.selectable), 1)}
+    same = {numbers[d.path] for d in w.selectable if d.size_gb_label == "256"}
+    other = {numbers[d.path] for d in w.selectable if d.size_gb_label != "256"}
     entries = inventory.comparison_entries(w.selectable)
-    assert {entry.split("\n")[0] for entry in entries[:2]} == {"Disk 1", "Disk 3"}
-    assert entries[2].startswith("Disk 2\n")
+    assert len(same) == 2 and len(other) == 1
+    assert {entry.split("\n")[0] for entry in entries[:2]} == same
+    assert entries[2].split("\n")[0] in other
     assert "Capacity: 256 GB" in entries[0] and "Capacity: 256 GB" in entries[1]
 
 

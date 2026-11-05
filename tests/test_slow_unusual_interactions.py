@@ -9,6 +9,7 @@ import time
 from dataclasses import replace
 import pytest
 
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import copy as C
 from beamo_wipe.copy import REDISCOVER_ERROR
 from beamo_wipe.demo import DEMO_DURATION_S, discovery_for_scenario
@@ -401,7 +402,7 @@ def test_many_disks_keep_boot_excluded_and_require_a_real_choice():
     wiz.select_disk(boot.path)
     assert wiz.selected is None
     assert boot.path not in {d.path for d in wiz.selectable}
-    last = sorted(wiz.selectable, key=lambda d: d.path)[-1]
+    last = pick_order(wiz.selectable)[-1]  # #151
     wiz.move_selection(1)
     for _ in range(len(wiz.selectable) + 2):
         wiz.move_selection(1)
@@ -425,7 +426,7 @@ def test_console_pages_many_disks_without_overflow(monkeypatch):
 
     discovery = many_disk_discovery()
     wiz = at_pick(make_wiz(discovery=discovery, rediscover=lambda: discovery))
-    last = sorted(wiz.selectable, key=lambda d: d.path)[-1]
+    last = pick_order(wiz.selectable)[-1]  # #151
     wiz.select_disk(last.path)
     term = Terminal(wiz, h=24, w=80, keys=[])
     for name in ("curs_set", "use_default_colors", "echo", "noecho"):
@@ -894,7 +895,7 @@ def test_tk_many_disks_overflow_and_keep_selection_in_view():
         assert bbox and bbox[3] > canvas.winfo_height(), (
             "forced many-disk list must overflow; the original demo-list test skipped"
         )
-        ordered = sorted(wiz.selectable, key=lambda d: d.path)
+        ordered = list(pick_order(wiz.selectable))  # #151 shown order
         for _ in range(len(ordered)):
             (app.root.focus_get() or app.root).event_generate("<KeyPress>", keysym="Down")
             app.root.update()
