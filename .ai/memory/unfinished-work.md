@@ -5348,3 +5348,29 @@ another very thorough and comprehensive pass of this." Repo
   third What next step.
 - NOT VERIFIED: displays taller than 1080 (Windows screen limit here),
   Linux 72 DPI, hosted ci.yml.
+
+## BW-173-ALIGN — Footer link row and key-hint row share one left edge (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/footer-align-173` (stacked on
+  `fix/result-balance-172` @ 1a1ef13; commit 9c3e7ba), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
+  (UI review item 47). Ref #174, #175.
+- BASELINE (work173-scratch-20261105/before/metrics.txt): link text vs hint
+  start offset -11 px (text hint) / -14 px (hint starting with a key-cap)
+  on Owner, Pick, Method at 800x600 and 1280x820, every text size; web
+  preview about 16 px.
+- WHAT CHANGED: _Button.text_inset() (pill inset 3 + padding); _text_start()
+  (a hint's first glyph or key-cap); _footer_shell packs the hint and the
+  Done note with that indent (wraplength reduced to match). Web preview
+  .fhint padding-left 17 px. GTK/curses: no pixel layout to align.
+- AFTER (work173-scratch-20261105/after/metrics.txt): offset +1 px (Tk
+  bbox rounding) in all 18 combinations.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, src/beamo_wipe/gallery.py,
+  tests/test_footer_align_173.py (new, 14).
+- TESTS / CHECKS: new 14/14 pass, 14/14 fail on 1a1ef13 (one by one); ruff,
+  mypy --platform linux clean; related Tk one by one:
+  test_separate_footer_actions 10/10, test_modern_layout footer 1/1,
+  test_help_menu_175 tk 20/20, test_report_panel_135 footer 9/9,
+  test_ui_rework 6/6.
+- NOT VERIFIED: Linux 72 DPI fonts (offset is font-independent: padding
+  only), web preview screenshot after (CSS checked by test), hosted ci.yml.
