@@ -154,14 +154,16 @@ def test_move_selection_does_not_start_on_boot():
     assert wiz.selected.path in paths
 
 
-def test_move_selection_follows_path_sorted_order():
-    """Keyboard highlight must match the on-screen sort (path, boot last)."""
+def test_move_selection_follows_the_on_screen_order():
+    """Keyboard highlight must match the on-screen list (#151 order, boot apart)."""
+    from beamo_wipe.disk_order import pick_order
+
     wiz, _clock = _wiz()
     wiz.skip_intro()
     wiz.accept_what()
     wiz.set_owner(True)
     wiz.continue_owner()
-    ordered = sorted(wiz.selectable, key=lambda d: d.path)
+    ordered = list(pick_order(wiz.selectable))
     wiz.move_selection(1)
     assert wiz.selected is not None
     assert wiz.selected.path == ordered[0].path
