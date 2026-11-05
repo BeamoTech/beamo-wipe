@@ -4905,3 +4905,56 @@ another very thorough and comprehensive pass of this." Repo
   BW-163/164).
 - NOT VERIFIED: Orca speech, Linux 72 DPI, ISO/QEMU, hosted ci.yml, native
   review of the drafts.
+
+## BW-167-WORKINGTIMES — Working says when it started and when to come back (IMPLEMENTED LOCALLY; OWNER QUESTION OPEN; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/working-times-167` (stacked
+  on `fix/final-check-step-166` @ 4c3465b; commit 2d5bde9), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
+  review item 41). Ref #36 (clock confidence), #132 (glance), #133.
+- OWNER QUESTION (asked 2026-11-05, unanswered): may the OS clock ever be
+  treated as trusted for Working's clock times? Existing logic never trusts
+  it (evidence.wall_timestamps records os_utc/injected as "unverified"; no
+  "verified" source exists). So the live USB shows the relative wording;
+  the clock-time wording is implemented and tested behind
+  Wizard.wall_clock_trusted (False; only an explicit True enables it).
+- BASELINE (work167-scratch-20261105/before): the large time line was
+  "About 50 minutes left" (validated estimate) or "Running for 12 minutes";
+  an "Elapsed: …" note appeared with an estimate.
+- WHAT CHANGED (presentation only; estimate gates, completion, evidence
+  unchanged): ProgressView gains wall_now / wall_trusted; glance_time is
+  untrusted: "Started 12 minutes ago · about 50 minutes left" (or just
+  "Started 12 minutes ago" without an estimate, "· less than 1 minute
+  left" under a minute); trusted: "Started 2:02 PM · expected around 3:05
+  PM" (finish rounded up to 5 min; FR/DE/ES/IT 24-hour). Invalid monotonic
+  clock hides the started part; unusable wall time falls back to relative.
+  The Elapsed note is removed. One source for Tk (font_size_big), GTK
+  (glance + paced Orca summary), curses, the plain console and the web
+  preview. progress.GLANCE_RUNNING removed. Docs: progress-timing.md,
+  translations.md.
+- FILES: src/beamo_wipe/{progress,wizard}.py, locales/{fr,de,es,it}.py,
+  tests/test_working_times_167.py (new, 9), test_working_glance_132,
+  test_progress_timing, test_tk_runtime, docs/progress-timing.md,
+  docs/translations.md.
+- TESTS: untrusted with/without estimate and under a minute; trusted
+  times, 5-minute rounding at and past the mark; unknown/broken clocks;
+  no Elapsed note; DE/FR wording and every language complete; the live
+  wizard never claims trust (and only True enables it) next to the
+  evidence confidence logic; preview payload; Tk line in the large font for
+  both. OLD-CODE (#166 @ 4c3465b): 9/9 fail.
+- CHECKS (Windows-native route): 9/9 (Tk one by one); ruff clean; mypy
+  --platform linux clean; glance/progress/language/console files pass
+  except pre-existing failures that also fail on #166:
+  test_progress_timing freeze-evidence and real-runner ETA cases (Windows
+  tmp / SIGUSR1), test_gallery_working_focus_pass35_ui (renderPowerBadge
+  missing from the extracted script, #144), test_ui_system selector (#144),
+  tk_runtime keyboard_only_flow_reaches_working (needs a real start). Tk:
+  working_glance_132 18/18, tk_runtime Working/timing 11/12.
+- SCREENS: work167-scratch-20261105/before, after (untrusted), and
+  after-trusted (flag set): EN 1280x820 with/without estimate, 800x600
+  Standard/Large, DE 800x600, FR 1280x820 Large.
+- NOT VERIFIED: Orca speech of the new line, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts.
+- QUEUE (owner prompts received, in order): #168 keep the screen on during
+  an erase, #169 result-screen key hints, #170 report-status line only on
+  failure, #171 compact result summary card.
