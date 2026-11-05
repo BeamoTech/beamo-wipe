@@ -350,6 +350,10 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
+        # #154: an encryption tag helps recognise the main disk.
+        tags = " · ".join(inventory.encryption_tags(wizard.nested_components(disk)))
+        if tags:
+            block.extend(_lines("  " + tags, width))
         hint = C.contents_hint(disk)
         if hint:
             block.extend(_lines("  " + hint, width))
@@ -1091,6 +1095,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(f"    {view.id_label}: {view.marked_id}")
                 for note in view.notes:
                     _emit("    " + note)
+                tags = " · ".join(inventory.encryption_tags(wizard.nested_components(listed)))
+                if tags:
+                    _emit("    " + tags)  # #154
                 hint = C.contents_hint(listed)
                 if hint:
                     _emit("    " + hint)

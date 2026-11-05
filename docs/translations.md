@@ -302,6 +302,11 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `inventory.TAG_BITLOCKER`, `inventory.TAG_LUKS` (2026-11-04 for #154; drafts,
+  not yet reviewed): pick-card tags "BitLocker (Windows encryption)" and
+  "Encrypted (LUKS)". Keep the product names BitLocker and LUKS; never add
+  words about unlocking, keys, passwords or recovery (out of scope per
+  docs/claims.md). A test rejects those words in every language.
 - `copy.HINT_PICK`, `copy.HINT_CONFIRM` (2026-11-04 for #153; drafts, not yet
   reviewed): footer hints whose key names (`Up/Down`, `Enter`, `Esc`) become
   key-caps. No sentence may end on a key name (no `.`, `,`, `;`, `:` right

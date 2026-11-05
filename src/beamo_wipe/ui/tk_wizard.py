@@ -4007,11 +4007,14 @@ class TkWizard:
         icon = _icon_radio(row, False, 22)
         icon.configure(bg=fill)
         icon.grid(row=0, column=0, sticky="nw")
-        summary = inventory.contents_summary(self.w.nested_components(disk))
+        nested = self.w.nested_components(disk)
+        summary = inventory.contents_summary(nested)
         # The contents hint ("Windows found on this disk") stays on the
-        # collapsed row too: it is how an owner recognises the PC's own disk.
+        # collapsed row too: it is how an owner recognises the PC's own disk,
+        # and so does an encryption tag (#154).
         details_text = " · ".join(
-            part for part in (view.kind_chip, view.connection, C.contents_hint(disk), summary)
+            part for part in (view.kind_chip, view.connection, *inventory.encryption_tags(nested),
+                              C.contents_hint(disk), summary)
             if part
         )
         base = max(200, self.lay.wrap - 120)
@@ -4110,6 +4113,7 @@ class TkWizard:
         heading, model_col = self._disk_heading(title_col, disk, fill)
         self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(2 if dense else 4, 0))
         if not disk.is_boot:
+            self._encryption_tags(title_col, disk, fill)
             self._contents_line(title_col, disk, fill)
         children = self.w.nested_components(disk)
         nested = _nesting_line(children) if dense else inventory.card_nesting_text(children)
@@ -4157,6 +4161,24 @@ class TkWizard:
         opener = self._comparison_opener
         if opener is not None:
             opener()
+
+    def _encryption_tags(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+        """'BitLocker (Windows encryption)' / 'Encrypted (LUKS)' tags (#154).
+
+        Outlined, ink text: a shape and a word, not a colour. Display only.
+        """
+        tags = inventory.encryption_tags(self.w.nested_components(disk))
+        if not tags:
+            return
+        row = tk.Frame(parent, bg=bg)
+        row.pack(fill=tk.X, pady=(4 if self.lay.short else 6, 0))
+        setattr(row, "_beamo_encryption_tags", True)
+        for text in tags:
+            tag = tk.Label(row, text=text, font=self.font_s_bold, fg=INK, bg=bg,
+                           padx=6, pady=0, bd=0, highlightthickness=1,
+                           highlightbackground=BORDER_STRONG, highlightcolor=BORDER_STRONG)
+            tag.pack(side=tk.LEFT, padx=(0, 6))
+            setattr(tag, "_beamo_encryption_tag", text)
 
     def _contents_line(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
         """What the partitions show (Windows, another system, none): helps an

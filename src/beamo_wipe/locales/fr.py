@@ -584,6 +584,8 @@ STRINGS = {
         "FORMAT_UNKNOWN": "Format inconnu",
         "FORMAT_BITLOCKER": "chiffrée BitLocker",
         "FORMAT_LUKS": "chiffrée LUKS",
+        "TAG_BITLOCKER": "BitLocker (chiffrement Windows)",
+        "TAG_LUKS": "Chiffré (LUKS)",
         "ITEM_NAMED": "« {name} » ({format}) {size}",
         "MORE_COUNT": "+{count} autres",
         "REMINDER_CHECK_ID": "Vérifiez l’identifiant complet avant de choisir.",

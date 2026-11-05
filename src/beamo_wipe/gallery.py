@@ -144,9 +144,8 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
             except SafetyError:
                 spec = None
         view = _identity.present_disk(disk, peers, compare_serials=True)
-        contents_summary = inventory.contents_summary(
-            inventory.nested_under(disk.path, result.excluded)
-        )
+        nested = inventory.nested_under(disk.path, result.excluded)
+        contents_summary = inventory.contents_summary(nested)
         out.append(
             {
                 "path": disk.path,
@@ -176,6 +175,7 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "tokenEnd": view.token_end,
                 "warning": "" if disk.is_boot else C.confirm_warning(disk),
                 "contentsSummary": contents_summary,
+                "encryptionTags": [] if disk.is_boot else list(inventory.encryption_tags(nested)),
                 "contents": disk.contents,
                 "contentsHint": "" if disk.is_boot else C.contents_hint(disk),
                 "eraseLabel": "" if disk.is_boot else C.erase_now_label(disk, peers),
@@ -1231,6 +1231,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .help-reader.compact { max-height: 43vh; }
   .nested { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
   .contents-hint { margin-top: 4px; }
+  /* #154: outlined recognition tag, ink text (a word and a shape). */
+  .enc-tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .enc-tag { border: 1px solid var(--border-strong); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
   .nested-intro { font-weight: 600; margin-bottom: 4px; }
   .nested-item { margin-top: 6px; }
   .inventory-reader:focus-visible, .help-reader:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
@@ -1632,7 +1635,7 @@ function nestedComponents(d) {
 }
 function compactDiskRow(d) {
   // #149: model, kind and connection, contents hint and summary, capacity.
-  const details = [d.kindLabel, d.connection || d.bus, d.contentsHint, d.contentsSummary].filter(Boolean).join(" · ");
+  const details = [d.kindLabel, d.connection || d.bus, ...(d.encryptionTags || []), d.contentsHint, d.contentsSummary].filter(Boolean).join(" · ");
   return `<div class="card pickable compact" data-path="${esc(d.path)}" tabindex="0" role="button" aria-pressed="false">
     <div class="row"><span class="radio"></span>
       <div class="title">${esc(d.name)}</div>
@@ -1656,6 +1659,7 @@ function diskCard(d) {
           <div class="size">${esc(d.size)}</div>
         </div>
         ${metaLine(d)}
+        ${(d.encryptionTags || []).length ? `<div class="enc-tags">${d.encryptionTags.map(t => `<span class="enc-tag">${esc(t)}</span>`).join("")}</div>` : ""}
         ${d.contentsHint ? `<div class="small muted contents-hint">${esc(d.contentsHint)}</div>` : ""}
         ${nestedComponents(d)}
       </div>

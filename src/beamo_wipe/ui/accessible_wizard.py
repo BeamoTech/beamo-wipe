@@ -679,10 +679,15 @@ class AccessibleWizard:
                 # Factual contents lines: shown under the row and spoken with
                 # it, so Orca users hear what sighted owners see (#147: the
                 # partition names and formats too).
-                spoken = ". ".join(part for part in (text, hint, summary) if part)
+                # #154: "BitLocker (Windows encryption)" / "Encrypted (LUKS)",
+                # shown under the row and spoken with it, like the hint.
+                tags = " · ".join(inventory.encryption_tags(children))
+                spoken = ". ".join(part for part in (text, tags, hint, summary) if part)
                 if spoken != text:
                     select.get_accessible().set_name(spoken)
                 self._mark_serial(select, text, self.w.disk_view(disk))
+                if tags:
+                    self.label(tags)
                 if hint:
                     self.label(hint)
                 nested = inventory.card_nesting_text(children)

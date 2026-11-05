@@ -50,6 +50,10 @@ ROLE_RECOVERY = "Recovery"
 FORMAT_UNKNOWN = "Unknown format"
 FORMAT_BITLOCKER = "BitLocker encrypted"
 FORMAT_LUKS = "LUKS encrypted"
+# Recognition tags on the pick card (#154): from the same lsblk FSTYPE
+# values, never a probe. They say what is there, nothing about unlocking.
+TAG_BITLOCKER = "BitLocker (Windows encryption)"
+TAG_LUKS = "Encrypted (LUKS)"
 # A volume name is untrusted text. It is always quoted and followed by the
 # format and size, so it cannot pass for a role, a reason or a banner.
 ITEM_NAMED = '"{name}" ({format}) {size}'
@@ -458,6 +462,33 @@ def _volume_item(device: ExcludedDevice, *, windows: bool = False) -> str:
     if name:
         return ITEM_NAMED.format(name=name, format=fmt, size=size)
     return f"{fmt} {size}"
+
+
+def encryption_tags(children: Iterable[ExcludedDevice]) -> tuple[str, ...]:
+    """'BitLocker (Windows encryption)' / 'Encrypted (LUKS)' for a disk card (#154).
+
+    From the FSTYPE lsblk already reported for the disk's partitions and
+    opened volumes (any depth). Display only: a recognition cue, never an
+    eligibility, identity or unlocking fact. A file system written to the
+    whole disk without partitions is not among the components and gets no
+    tag.
+    """
+    found: set[str] = set()
+
+    def walk(items: Iterable[ExcludedDevice]) -> None:
+        for item in items:
+            volume = item.volume
+            if volume is not None and volume.node_type != "disk":
+                found.add(volume.fstype)
+            walk(item.children)
+
+    walk(children)
+    tags = []
+    if "bitlocker" in found:
+        tags.append(TAG_BITLOCKER)
+    if "crypto_luks" in found:
+        tags.append(TAG_LUKS)
+    return tuple(tags)
 
 
 def contents_summary(children: Iterable[ExcludedDevice]) -> str:
