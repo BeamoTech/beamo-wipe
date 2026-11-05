@@ -23,7 +23,7 @@ STRINGS = {
         "STEP_NAME_PICK": "Scegliere un disco",
         "STEP_NAME_CONFIRM": "Confermarne l’identità",
         "STEP_NAME_METHOD": "Scegliere un metodo",
-        "STEP_NAME_REVIEW": "Controllare",
+        "STEP_NAME_REVIEW": "Controllo finale",
         "STEP_CAPTION": "Passo {n} di {total} · {name}",
         "STEP_SPOKEN": "{stage}, passo {n} di {total}: {name}.",
         "ROADMAP_STAGE_STEPS": "{stage} ({count} passaggi)",

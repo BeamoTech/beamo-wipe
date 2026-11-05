@@ -3,8 +3,8 @@
 
 Stages (Preparation, Erase, Result) name the header stepper, the progress
 strip, spoken announcements and the start-screen roadmap. Steps inside
-Preparation keep their #130 names; the last one is "Review" because Review
-comes before the Erase stage (#166). Both come from one source in copy.py
+Preparation keep their #130 names; the last one is "Final check" (#166):
+it is the last step, and it comes before the Erase stage, so no erase verb. Both come from one source in copy.py
 and wizard.PREPARATION_PATH.
 """
 
@@ -51,7 +51,7 @@ def test_roadmap_and_header_come_from_one_source(monkeypatch):
 
 def test_review_is_the_last_step_and_does_not_say_erase():
     assert PREPARATION_PATH[-1] == Screen.LAST_CHANCE
-    assert C.step_name(Screen.LAST_CHANCE) == "Review"
+    assert C.step_name(Screen.LAST_CHANCE) == "Final check"  # #166
     for screen in PREPARATION_PATH:
         assert "erase" not in C.step_name(screen).lower()
 
@@ -64,7 +64,7 @@ def test_every_language_uses_its_own_stage_names(code):
         assert parts[0].startswith(C.JOURNEY_LABELS[0]) and "6" in parts[0]
         assert parts[1:] == tuple(C.JOURNEY_LABELS[1:])
         assert "{" not in parts[0]
-        assert C.step_name(Screen.LAST_CHANCE) != "Review"
+        assert C.step_name(Screen.LAST_CHANCE) != "Final check"
         erase_stem = {"fr": "effa", "de": "lösch", "es": "borr", "it": "cancell"}[code]
         assert erase_stem not in C.step_name(Screen.LAST_CHANCE).lower()
     finally:

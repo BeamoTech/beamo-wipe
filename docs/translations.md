@@ -253,9 +253,10 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   ES *subrayados*, IT *sottolineati* refer to the marked characters.
 - `copy.STEP_NAME_KEYBOARD` … `STEP_NAME_REVIEW`, `STEP_CAPTION` and
   `STEP_SPOKEN` (added 2026-11-02 for #130, not yet reviewed): the step
-  bar's step names. `STEP_NAME_REVIEW` is just *Review* (#138; FR *Vérifier*,
-  DE *Prüfen*, ES *Revisar*, IT *Controllare*) and must never contain the
-  erase verb: it is the step before the Erase stage. Keep `{n}`, `{total}`,
+  bar's step names. `STEP_NAME_REVIEW` is *Final check* (#166, 2026-11-05; FR
+  *Dernière vérification*, DE *Letzte Prüfung*, ES *Última comprobación*, IT
+  *Controllo finale*, drafts) and must never contain the erase verb (#138):
+  it is the last step before the Erase stage. Keep `{n}`, `{total}`,
   `{name}` and `{stage}`; the caption must fit the 800 px header (it is
   shortened to `STEP_OF` when it does not).
 - `copy.ROADMAP_STAGE_STEPS` (2026-11-03 for #138, not yet reviewed): the

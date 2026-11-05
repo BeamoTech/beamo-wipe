@@ -93,7 +93,7 @@ def test_each_step_has_a_name_and_numbers_count_up_without_gaps():
                                             name=C.step_name(screen)))
     assert len(set(labels)) == len(labels)
     assert labels[2] == "Step 3 of 6 · Choose a disk"
-    assert labels[5] == "Step 6 of 6 · Review"  # #138: last step before Erase
+    assert labels[5] == "Step 6 of 6 · Final check"  # #166: the last step before Erase
 
 
 @pytest.mark.parametrize("screen,parent", [
@@ -257,7 +257,7 @@ def test_web_preview_uses_the_wizard_step_captions():
     captions = payload["stepCaptions"]
     assert captions["pick"] == captions["empty"] == captions["blocked"] == captions["disk_help"]
     assert captions["method"] == captions["advanced"] == captions["limits"]
-    assert captions["last"] == "Step 6 of 6 · Review"
+    assert captions["last"] == "Step 6 of 6 · Final check"  # #166
     assert [captions[k] for k in ("keyboard", "owner", "pick", "confirm", "method", "last")] == [
         C.STEP_CAPTION.format(n=n, total=6, name=C.step_name(s)) for n, s in enumerate(MAIN, 1)]
     assert payload["stepParts"]["pick"] == pytest.approx(0.5)

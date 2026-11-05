@@ -90,14 +90,15 @@ def journey_announcement(screen: Screen) -> str:
 # Preparation steps (#130). One vocabulary (#138): the stages above
 # (Preparation, Erase, Result) name the header stepper, the progress strip,
 # spoken announcements and the start-screen roadmap; these names are the
-# steps inside Preparation. Review is the last step before Erase (#166), so
-# it does not say "erase". Order and count come from wizard.PREPARATION_PATH.
+# steps inside Preparation. Review is the last step before Erase, so its
+# name says it is the final check (#166) but not "erase" (#138). Order and
+# count come from wizard.PREPARATION_PATH.
 STEP_NAME_KEYBOARD = "Check keyboard"
 STEP_NAME_OWNER = "Confirm ownership"
 STEP_NAME_PICK = "Choose a disk"
 STEP_NAME_CONFIRM = "Confirm its identity"
 STEP_NAME_METHOD = "Choose a method"
-STEP_NAME_REVIEW = "Review"
+STEP_NAME_REVIEW = "Final check"
 STEP_CAPTION = "Step {n} of {total} · {name}"
 STEP_SPOKEN = "{stage}, step {n} of {total}: {name}."
 _ROADMAP_ARROW = "  →  "  # not translated: an arrow
