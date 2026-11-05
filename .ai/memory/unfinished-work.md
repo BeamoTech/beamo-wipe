@@ -4539,3 +4539,56 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
   hosted ci.yml, native review of TIME_GUIDE_UNKNOWN drafts. Not pushed to
   main; merge order #94 -> ... -> #157 -> #159.
+
+## BW-160-EVERYDAYCAVEAT — Everyday 'checks only exposed storage' caveat off the main card (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/everyday-caveat-160`
+  (stacked on `feat/method-cards-159` @ 0205571; commit 18cfe5a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
+  review item 34). Ref #158 (proposal, owner decision pending), #159.
+- CLAIMS CHECK: docs/claims.md and docs/storage-and-controller-limits.md do
+  not require copy.EVERYDAY_LIMITS ("This checks only storage the disk
+  exposes. It does not promise how long it will take. A saved report is not
+  extra proof of hidden areas.") on the card. The method-selection warning
+  they do require (storage_limits.OVERWRITE_LIMITS via the storage limits
+  notice and "Storage limits (L)") stays on the Method screen, unchanged
+  (#158's subject). A test pins both facts.
+- BASELINE: original code — the caveat was the last paragraph of the
+  Everyday card (work159-scratch-20261105/before/method-*-800x600.png);
+  GTK showed it as a focusable label on the Method screen; the plain
+  console appended it to Everyday's line (work160-scratch-20261105/
+  console-before.txt); curses paged it after the choices. #159 had already
+  moved it under the Everyday card's Show more in Tk and the web preview.
+- WHAT CHANGED (presentation only; wording, METHODS, argv and gates
+  unchanged): GTK puts it in a collapsed Show more expander (pattern of
+  #141/#146) named "Show more: Everyday", label focusable and selectable;
+  plain console prints "Everyday: <caveat>" after the three choices instead
+  of inside Everyday's line. Curses unchanged (already paged after the
+  choices, Up/Down to read more). docs/screens.md row.
+- FILES: src/beamo_wipe/ui/accessible_wizard.py,
+  src/beamo_wipe/ui/console_wizard.py, tests/test_everyday_caveat_160.py
+  (new, 9), tests/test_accessible_runtime.py (expander asserted),
+  docs/screens.md.
+- TESTS: wording and claims facts; storage limits notice still on the
+  Method screen; plain console line order; curses 80x25 first page keeps
+  the choices and the caveat follows them; GTK source expander; preview
+  caveat only in opened details; Tk caveat hidden until Show more at
+  800x600 Standard and 1280x820 Large, method unchanged. OLD-CODE: on the
+  original code (d55220e) the preview and both Tk cases fail; on #159
+  (e270780) the plain console and GTK cases fail
+  (work160-scratch-20261105/oldcode-*.txt).
+- CHECKS (Windows-native route): 9/9 (Tk cases one by one); ruff clean;
+  mypy --platform linux clean; console/copy/ui_system/language/method
+  files pass except pre-existing failures that also fail on the original
+  code: test_method_operation_copy evidence/report cases (Windows temp
+  files) and test_ui_system::test_gallery_identity_selectors_cannot_clip
+  (the #144 `.powerbadge` nowrap rule; FOLLOW-UP, not caused here: the
+  gallery's identity selectors must either avoid nowrap or the test must
+  exempt the header badge — decide with #144's owner).
+- SCREENS: work160-scratch-20261105/after (Tk Method 800x600 Standard and
+  Extra large, 1280x820: closed and Everyday open; metrics.txt says the
+  caveat is hidden closed and shown open), console-before/after.txt.
+- NOT VERIFIED: GTK/Orca runtime (gi unavailable on this host; the
+  expander and its spoken name are untested at runtime), Linux 72 DPI,
+  ISO/QEMU, hosted ci.yml. Not pushed to main; merge order ... #157 ->
+  #159 -> #160.
