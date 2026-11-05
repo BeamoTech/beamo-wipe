@@ -371,7 +371,8 @@ def test_plain_console_shows_the_summary(monkeypatch, capsys):
 def test_gtk_speaks_the_summary_with_the_disk_button():
     src = (ROOT / "src/beamo_wipe/ui/accessible_wizard.py").read_text(encoding="utf-8")
     assert "summary = inventory.contents_summary(children)" in src
-    assert 'spoken = ". ".join(part for part in (text, hint, summary) if part)' in src
+    # #154 adds the encryption tag to the spoken name, between the row and the hint.
+    assert 'spoken = ". ".join(part for part in (text, tags, hint, summary) if part)' in src
     assert "select.get_accessible().set_name(spoken)" in src
 
 
