@@ -491,6 +491,10 @@ class Wizard:
         self._progress_timing = ProgressTiming(self._clock, time.time)
         self._display_progress: Optional[ProgressView] = None
         self._display_progress_at = 0.0
+        # #167: clock times on Working only with a trusted wall clock. The
+        # live USB has none (evidence records the OS clock as unverified), so
+        # this stays False and Working shows elapsed / time-left wording.
+        self.wall_clock_trusted = False
         self._stage_anchor = None
         self._evidence_argv: Optional[list[str]] = None
         self.evidence: Optional[dict] = None  # type: ignore[type-arg]
@@ -930,6 +934,8 @@ class Wizard:
                 mismatch=mismatch,
                 step_percent=step_percent,
                 estimate_state=estimate_state,
+                wall_now=self._progress_timing.wall_clock(),
+                wall_trusted=self.wall_clock_trusted is True,
             )
             self._display_progress = view
             return view

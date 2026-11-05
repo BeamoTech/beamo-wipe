@@ -116,11 +116,24 @@ GLANCE_STOPPING = "Stopping…"
 GLANCE_FINISHING = "Finishing…"
 GLANCE_TIME_LEFT = "About {text} left"
 GLANCE_TIME_LEFT_SHORT = "Less than 1 minute left"
-GLANCE_RUNNING = "Running for {text}"
 GLANCE_OVERWRITE = "Overwriting"
 GLANCE_OVERWRITE_ROUND = "Overwriting (pass {i} of {n})"
 GLANCE_VERIFY = "Checking (verification)"
 GLANCE_TIME_LATER = "Time left appears during the last step."
+# #167: when it started and when to come back, in large text. The session
+# clock is not trusted on the live USB (evidence records it as unverified),
+# so the line normally uses elapsed time and the cautious estimate; clock
+# times appear only when ProgressView.wall_trusted is set.
+GLANCE_STARTED_AGO = "Started {text} ago"
+GLANCE_STARTED_AT = "Started {time}"
+GLANCE_ABOUT_LEFT = "about {text} left"
+GLANCE_LESS_LEFT = "less than 1 minute left"
+GLANCE_EXPECTED_AT = "expected around {time}"
+# Time of day: "12" gives 2:02 PM, "24" gives 14:02 (per language).
+CLOCK_STYLE = "12"
+CLOCK_AM = "AM"
+CLOCK_PM = "PM"
+_GLANCE_JOIN = " · "  # not translated: a separator
 # Measured nwipe 0.42: the runner requests SIGUSR1 every 2.0s after the
 # handler exists. Five missed pulses mark telemetry stale, matching the
 # existing estimate-history expiry. The PRNG auto-bench is 8×1.0s before
@@ -364,6 +377,22 @@ def estimate(seconds: float) -> str:
     return ABOUT_DURATION.format(text=duration(_estimate_rounded(seconds)))
 
 
+def _round_up_minutes(epoch: float, step: int) -> float:
+    """Round a wall time up to the next ``step`` minutes (a cautious finish)."""
+    block = step * 60
+    return math.ceil(epoch / block) * block
+
+
+def clock_time(epoch: float) -> str:
+    """Local time of day in the active language's style (#167)."""
+    moment = datetime.datetime.fromtimestamp(epoch)
+    if CLOCK_STYLE == "24":
+        return f"{moment.hour:02d}:{moment.minute:02d}"
+    hour = moment.hour % 12 or 12
+    meridiem = CLOCK_AM if moment.hour < 12 else CLOCK_PM
+    return f"{hour}:{moment.minute:02d} {meridiem}"
+
+
 def time_left(seconds: float) -> str:
     """Glance form of a validated estimate: "About 40 minutes left".
 
@@ -497,6 +526,10 @@ class ProgressView:
     mismatch: bool = False
     step_percent: float | None = None  # Legacy name: job-wide percent beside the step.
     estimate_state: str = ""
+    # #167: wall time when the view was made, and whether that clock is
+    # trusted. Untrusted (the default) means elapsed/remaining wording only.
+    wall_now: float | None = None
+    wall_trusted: bool = False
 
     @property
     def known_quiet(self) -> bool:
@@ -576,12 +609,36 @@ class ProgressView:
 
     @property
     def glance_time(self) -> str:
-        """Validated time left, else how long it has run; "" if neither."""
+        """When it started and when to come back (#167); "" if unknown.
+
+        Trusted clock: "Started 2:02 PM · expected around 3:00 PM". Otherwise
+        "Started 12 minutes ago · about 50 minutes left". The second part is
+        the validated, cautious estimate and is left out when there is none.
+        """
+        trusted = (
+            self.wall_trusted
+            and self.wall_now is not None
+            and math.isfinite(self.wall_now)
+        )
+        parts = []
+        if self.elapsed is not None:
+            if trusted:
+                started = clock_time(self.wall_now - self.elapsed)  # type: ignore[operator]
+                parts.append(GLANCE_STARTED_AT.format(time=started))
+            else:
+                parts.append(GLANCE_STARTED_AGO.format(text=duration(self.elapsed)))
         if self.remaining is not None:
-            return time_left(self.remaining)
-        if self.elapsed is None:
-            return ""
-        return GLANCE_RUNNING.format(text=duration(self.elapsed))
+            if trusted:
+                finish = _round_up_minutes(self.wall_now + self.remaining, 5)  # type: ignore[operator]
+                parts.append(GLANCE_EXPECTED_AT.format(time=clock_time(finish)))
+            elif not parts:
+                parts.append(time_left(self.remaining))
+            elif self.remaining < 60:
+                parts.append(GLANCE_LESS_LEFT)
+            else:
+                parts.append(GLANCE_ABOUT_LEFT.format(
+                    text=duration(_estimate_rounded(self.remaining))))
+        return _GLANCE_JOIN.join(parts)
 
     @property
     def glance_step(self) -> str:
@@ -617,8 +674,7 @@ class ProgressView:
             and self.estimate_state == ESTIMATE_LAST_STEP
         ):
             notes.append(GLANCE_TIME_LATER)
-        if self.remaining is not None and self.elapsed is not None:
-            notes.append(ELAPSED_LABEL.format(text=duration(self.elapsed)))
+        # #167: the time line already says when it started; no Elapsed note.
         return tuple(notes)
 
     @property

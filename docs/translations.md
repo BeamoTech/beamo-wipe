@@ -303,6 +303,14 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `progress.GLANCE_STARTED_AGO`, `GLANCE_STARTED_AT`, `GLANCE_ABOUT_LEFT`,
+  `GLANCE_LESS_LEFT`, `GLANCE_EXPECTED_AT`, `CLOCK_STYLE`, `CLOCK_AM`,
+  `CLOCK_PM` (2026-11-05 for #167, replacing `GLANCE_RUNNING`; drafts, not
+  yet reviewed): the Working time line, joined by " · ". Keep `{text}`
+  (a duration) and `{time}` (a time of day); the part after the separator
+  starts in lower case where the language allows. `CLOCK_STYLE` is "12"
+  (2:02 PM) or "24" (14:02); FR/DE/ES/IT use "24". Never promise a
+  finish time: *expected around*, *voraussichtlich*, *prévue*, *previsto*.
 - `copy.REVIEW_METHOD_LINE` (2026-11-05 for #164; drafts, not yet reviewed):
   Review's one method line, `{method}` (the method title) and `{operation}`
   (`methods.OPERATION_*`, which already say whether verification follows).

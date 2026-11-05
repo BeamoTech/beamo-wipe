@@ -1828,7 +1828,9 @@ def test_timing_text_readable_and_working_controls_stable(ui, size):
         app.root.update_idletasks()
         # Glance (#132): percentage, rounded time left, then the notes.
         label = app._progress_time
-        assert label.cget("text") == view.glance_time == "About 2 hours left"
+        # #167: when it started and the cautious time left, in large text.
+        assert label.cget("text") == view.glance_time == (
+            "Started 1 day 1 hour 1 minute ago · about 2 hours left")
         assert app._progress_label.cget("text") == "\n".join(view.glance_notes)
         assert label.winfo_height() >= label.winfo_reqheight()
         assert label.winfo_rooty() + label.winfo_height() < app.root.winfo_rooty() + app.root.winfo_height()

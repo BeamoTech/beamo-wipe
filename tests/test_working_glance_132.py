@@ -68,14 +68,14 @@ STATES = {
 
 def test_starting_is_one_calm_word_and_no_placeholder():
     view = STATES["starting"][1]()
-    assert view.glance_lines == ("Starting…", "Running for less than 1 minute")
+    assert view.glance_lines == ("Starting…", "Started less than 1 minute ago")  # #167
     assert view.glance_step == "" and view.glance_notes == ()
     assert not PLACEHOLDER.search(_shown(view))
 
 
 def test_unknown_phase_and_unlocated_step_hide_their_lines():
     view = ProgressView(P.PHASE_UNKNOWN, 12.0, 300, stages=EV, estimate_state=P.ESTIMATE_EARLY)
-    assert view.glance_lines == ("12%", "Running for 5 minutes")
+    assert view.glance_lines == ("12%", "Started 5 minutes ago")  # #167
     assert not PLACEHOLDER.search(_shown(view))
     # The full model text still names the uncertainty for tests and preview.
     assert P.STAGE_NOT_REPORTED in view.timing_text
@@ -83,18 +83,20 @@ def test_unknown_phase_and_unlocated_step_hide_their_lines():
 
 def test_overwriting_shows_step_1_of_2_and_waits_for_the_estimate():
     view = STATES["overwriting"][1]()
-    assert view.glance_lines == ("23%", "Running for 25 minutes", "Step 1 of 2: Overwriting")
+    assert view.glance_lines == ("23%", "Started 25 minutes ago", "Step 1 of 2: Overwriting")
     assert view.glance_notes == (P.GLANCE_TIME_LATER,)
     assert "left" not in view.glance_time
 
 
 def test_verifying_shows_step_2_of_2_checking_and_a_rounded_estimate():
     view = STATES["verifying"][1]()
+    # #167: started and time left on one large line; no Elapsed note.
     assert view.glance_lines == (
-        "61%", "About 40 minutes left", "Step 2 of 2: Checking (verification)",
+        "61%", "Started 1 hour 30 minutes ago · about 40 minutes left",
+        "Step 2 of 2: Checking (verification)",
     )
     assert P.PHASE_NOTE_VERIFYING in view.glance_notes
-    assert "Elapsed: 1 hour 30 minutes" in view.glance_notes
+    assert not any(note.startswith("Elapsed") for note in view.glance_notes)
 
 
 def test_quick_zero_has_one_step_and_no_verification():
@@ -241,7 +243,7 @@ def _view(pct, *, position=0, stale_for=None, elapsed=600, phase="Writing"):
 
 def test_announcer_speaks_first_then_at_most_once_a_minute():
     a = ProgressAnnouncer()
-    assert a.update(_view(10.0), 0.0) == "10%. Running for 10 minutes. Step 1 of 2: Overwriting."
+    assert a.update(_view(10.0), 0.0) == "10%. Started 10 minutes ago. Step 1 of 2: Overwriting."  # #167
     assert a.update(_view(10.0), 1.0) is None  # nothing changed
     for t, pct in ((5.0, 11.0), (30.0, 15.0), (59.0, 19.0)):
         assert a.update(_view(pct), t) is None  # changed, but within the minute

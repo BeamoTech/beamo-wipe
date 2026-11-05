@@ -73,17 +73,23 @@ parsing, estimate gates or completion checks.
   publishes a validated 100; completion is the result screen's job. Before
   the first number the large line is *Starting…* (*Stopping…* or
   *Finishing…* in those phases).
-- The time line is *About … left* only when the estimate above exists, using
-  the same upward rounding (`progress.time_left`). Otherwise it is *Running for
-  …* (elapsed). During earlier steps a note says time left appears during the
-  last step; the other estimate-gate reasons stay in the full status text
-  used by tests and the preview payload, not on the glance.
+- The time line (#167, large text) says when the erase started and when to
+  come back. The live USB's wall clock is not trusted (evidence records it as
+  `unverified`; `Wizard.wall_clock_trusted` stays False), so it reads *Started
+  12 minutes ago · about 50 minutes left*: elapsed time, then the validated
+  estimate above with the same upward rounding. Without an estimate it is
+  just *Started 12 minutes ago*. Only with a trusted clock does it use times
+  of day: *Started 2:02 PM · expected around 3:05 PM* (the finish rounded up
+  to 5 minutes; 24-hour style in FR/DE/ES/IT). An invalid monotonic clock
+  hides the started part. During earlier steps a note says time left appears
+  during the last step; the other estimate-gate reasons stay in the full
+  status text used by tests and the preview payload, not on the glance.
 - The step line is *Step k of n:* plus *Overwriting*, *Overwriting (pass i of
   n)* or *Checking (verification)*. Unknown steps are hidden; a disagreement
   with the plan shows the mismatch warning. Quick zero plans one step.
 - Stale telemetry marks the percentage old and adds the stale explainer as a
-  separate warning band. Phase notes and, with an estimate, the elapsed time
-  follow as small notes.
+  separate warning band. Phase notes follow as small notes (the elapsed note
+  is gone: the time line already says when it started).
 
 `ProgressAnnouncer` paces spoken output: the GTK summary label and progress
 bar, and plain console lines, change at once for a new step, progress going
