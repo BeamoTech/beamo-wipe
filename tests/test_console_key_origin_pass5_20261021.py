@@ -236,7 +236,8 @@ def test_s_from_review_cannot_confirm_stop_after_start(
     w = session.wizard
     prepare(w, Screen.LAST_CHANCE)
     # The first real review frame starts its visible countdown at t=0.
-    events = [(5.1, -1), (5.2, letter), (5.3, 10), (5.4, 27)]
+    # #165: Tab to Erase now before Enter (Enter presses only the focused button).
+    events = [(5.1, -1), (5.2, letter), (5.25, 9), (5.3, 10), (5.4, 27)]
     events += [(5.5, -1), (6.6, -1), (6.7, letter)] if fresh else [(5.5, letter)]
     run_keys(monkeypatch, w, events)
     assert w.runner.started and w.runner.cancelled is fresh
@@ -246,7 +247,8 @@ def test_s_from_review_cannot_confirm_stop_after_start(
 def test_fresh_stop_s_after_start_still_cancels(session, monkeypatch):
     w = session.wizard
     prepare(w, Screen.LAST_CHANCE)
-    run_keys(monkeypatch, w, [(5.1, -1), (5.2, 10), (5.3, 27), (5.4, ord("s"))])
+    # #165: Tab to Erase now before Enter.
+    run_keys(monkeypatch, w, [(5.1, -1), (5.15, 9), (5.2, 10), (5.3, 27), (5.4, ord("s"))])
     assert w.runner.started and w.runner.cancelled and w.screen is Screen.DONE
 
 

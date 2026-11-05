@@ -194,10 +194,13 @@ def test_last_chance_hint_does_not_say_enter_continues():
     from beamo_wipe import copy as C
     from beamo_wipe.ui.tk_wizard import TkWizard
 
-    assert "continues" not in C.HINT_LAST_CHANCE.lower()
-    assert "erases" in C.HINT_LAST_CHANCE.lower()
+    # #165: the one Review hint says Tab to Erase now, then Enter; every
+    # surface shows it (Tk, curses, web preview). No "Enter erases" hint.
+    assert "continues" not in C.HINT_LAST_CHANCE_TK.lower()
+    assert "Tab to Erase now" in C.HINT_LAST_CHANCE_TK
+    assert not hasattr(C, "HINT_LAST_CHANCE")
     source = inspect.getsource(TkWizard._last)
-    assert "HINT_LAST_CHANCE" in source
+    assert "HINT_LAST_CHANCE_TK" in source
 
 
 def test_splash_escape_skips_splash():

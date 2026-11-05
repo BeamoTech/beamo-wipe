@@ -128,6 +128,8 @@ def test_curses_paged_review_can_be_completed_then_waited(monkeypatch):
                 assert wizard.countdown_left == 5
                 return -1
             if self.presses == 17:
+                return 9  # #165: Tab to Erase now; Enter presses only it.
+            if self.presses == 18:
                 return 10
             wizard.wants_shutdown = True
             return -1

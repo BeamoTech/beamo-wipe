@@ -70,7 +70,9 @@ def test_curses_footer_says_ready_only_when_enabled():
     assert "Ready." not in lines and "Wait" in lines
     wiz._erase_until = 0
     ready = " ".join(console_wizard._primary_footer(wiz, False))
-    assert ready.startswith(f"{C.COUNTDOWN_READY_WORD}. {C.CON_LAST_ERASE}")
+    # #165: the ready line no longer says "Enter to erase"; Enter presses
+    # only the highlighted button.
+    assert ready.startswith(f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}")
     assert not wiz.runner.started
 
 

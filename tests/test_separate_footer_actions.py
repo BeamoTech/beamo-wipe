@@ -141,7 +141,7 @@ def test_console_keeps_extra_chrome_off_the_primary_action_line():
     lines = inspect.getsource(console._footer_lines)
     assert "CON_DIAGNOSTIC" in extra
     assert "REFRESH_UTILITY_NOTE" in extra
-    assert "CON_LAST_ERASE" in primary
+    assert "_review_buttons" in primary  # #165: Back / Erase now, not "Enter to erase"
     assert "_primary_footer" in lines and "_chrome_extra" in lines
     assert "extra_shown + assist_shown + actions" in lines
 

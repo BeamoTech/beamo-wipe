@@ -504,8 +504,20 @@ def _ring_finish_bell(wizard: Wizard, rung: int, ring) -> int:
     return serial
 
 
+def _review_buttons(wizard: Wizard, focus: str) -> str:
+    """#165: Review's two buttons; the focused one is marked > <, not only by colour.
+
+    Erase now can hold focus only while it is enabled.
+    """
+    erase_focused = focus == "erase" and wizard.erase_enabled
+    back = f"[> {C.BTN_BACK} <]" if not erase_focused else f"[ {C.BTN_BACK} ]"
+    erase = f"[> {C.BTN_ERASE} <]" if erase_focused else f"[ {C.BTN_ERASE} ]"
+    return f"{back}    {erase}"
+
+
 def _primary_footer(
-    wizard: Wizard, inventory_open: bool, review_pending: bool = False
+    wizard: Wizard, inventory_open: bool, review_pending: bool = False,
+    review_focus: str = "back",
 ) -> list[str]:
     if inventory_open:
         return [C.CON_READ_ONLY]
@@ -551,14 +563,17 @@ def _primary_footer(
     if screen == Screen.ADVANCED:
         return [C.CON_ADVANCED_FOOTER]
     if screen == Screen.LAST_CHANCE:
+        # #165: as in Tk and GTK, Enter presses only the highlighted button;
+        # focus starts on Back and Erase now takes it only once enabled.
         return [
             C.CON_LAST_REVIEW_FIRST if review_pending else (
                 C.CON_LAST_WAIT.format(seconds=wizard.countdown_display)
-                # #163: the ready state says "Ready", not only the key.
                 if not wizard.erase_enabled
-                else f"{C.COUNTDOWN_READY_WORD}. {C.CON_LAST_ERASE}"
+                else f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}"
             ),
-            C.CON_BACK_READ_MORE,
+            _review_buttons(wizard, review_focus),
+            C.HINT_LAST_CHANCE_TK,
+            C.CON_READ_MORE,
         ]
     if screen == Screen.WORKING:
         lines = ([C.CON_WORKING_STOP]
@@ -625,11 +640,11 @@ def _assist_footer(wizard: Wizard, inventory_open: bool) -> list[str]:
 
 def _footer_lines(
     wizard: Wizard, inventory_open: bool, width: int, height: int,
-    review_pending: bool = False,
+    review_pending: bool = False, review_focus: str = "back",
 ) -> list[str]:
     """Pin next-step actions. Assist and extra chrome drop before identity."""
     actions: list[str] = []
-    for line in _primary_footer(wizard, inventory_open, review_pending):
+    for line in _primary_footer(wizard, inventory_open, review_pending, review_focus):
         actions.extend(_lines(line, width) or [""])
     assist: list[str] = []
     for line in _assist_footer(wizard, inventory_open):
@@ -1490,6 +1505,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
     review_overlay_held = False
     review_lines: tuple[str, ...] = ()
     review_seen: set[int] = set()
+    # #165: the Review button with focus; Back is the safe default.
+    review_focus = "back"
     bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
@@ -1508,12 +1525,15 @@ def _loop(stdscr, wizard: Wizard) -> int:
             review_seen.clear()
             review_lines = ()
             review_overlay_held = wizard.begin_review_overlay()
+        if first_review_frame or wizard.screen != Screen.LAST_CHANCE or not wizard.erase_enabled:
+            # Arrival, leaving, or a restarted countdown: focus back on Back.
+            review_focus = "back"
         shown_screen = wizard.screen
         stdscr.erase()
         h, w = stdscr.getmaxyx()
         h, w = max(2, h), max(20, w)
         review_ready_painted = wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled
-        footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held)
+        footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held, review_focus)
         y_max = max(1, h - len(footer))
         chrome = _chrome_lines(wizard, w)
         y = 0
@@ -2209,6 +2229,22 @@ def _loop(stdscr, wizard: Wizard) -> int:
         # Keep this after hold bookkeeping so repeating the rejected key
         # cannot become a fresh action when the next frame is ready.
         if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13) and not review_ready_painted:
+            if review_focus == "back":
+                wizard.back()
+            continue
+        if wizard.screen == Screen.LAST_CHANCE and ch in (
+            9, curses.KEY_BTAB, curses.KEY_LEFT, curses.KEY_RIGHT,
+        ):
+            # #165: move focus between Back and Erase now. Erase now takes
+            # focus only on a painted, enabled frame.
+            review_focus = "erase" if review_focus == "back" and review_ready_painted else "back"
+            continue
+        if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13):
+            # #165: Enter presses only the highlighted button.
+            if review_focus == "erase" and review_ready_painted and wizard.erase_enabled:
+                wizard.confirm_erase()
+            elif review_focus == "back":
+                wizard.back()
             continue
         _handle(wizard, ch)
     if review_overlay_held:
@@ -2415,8 +2451,8 @@ def _handle(wizard: Wizard, ch: int) -> None:
             wizard.continue_pick()
         elif wizard.screen == Screen.METHOD:
             wizard.continue_method()
-        elif wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled:
-            wizard.confirm_erase()
+        # #165: Review is handled in _loop (Enter presses only the focused
+        # button). A bare Enter here never erases.
         elif wizard.screen in (Screen.DONE, Screen.PICK_BLOCKED, Screen.PICK_EMPTY):
             wizard.accept_done_keyboard()
         return
