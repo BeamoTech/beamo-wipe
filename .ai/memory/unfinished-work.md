@@ -4057,3 +4057,79 @@ another very thorough and comprehensive pass of this." Repo
   authorization. A hot-plug SATA/NVMe bay inside the PC is listed after
   fixed internal disks (location is not guessed). eMMC (TRAN "mmc", bus
   "MMC") is group 2, after hot-plug internal transports and before USB.
+
+## BW-152-SERIALDIFF — Bold and underline the serial characters that tell look-alike disks apart (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-diff-152` (stacked on
+  `feat/disk-order-151`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
+  review item 26). Ref #66 (distinguishing logic), #129 (Confirm token marks,
+  unchanged), #148 (serial once; this closes its pairwise follow-up).
+- BASELINE (scratch work152-scratch-20261104/before, fixture-lookalike.json):
+  one contiguous [bracket] span from the group's common prefix/suffix:
+  512 GB pair MX500A1B2C3/MX500A7B2C9 marked "1B2C3" (7-11) though only 7
+  and 11 differ; 2 TB look-alikes ZFL0ABCD/ZFL0ABXD lost every mark because
+  an unrelated Y7Q9KLMN had the same size; Tk drew brackets in an all-bold
+  serial; note "Compare characters 11 to 14 with other disks of this size."
+- WHAT CHANGED (safety:, 963c95c; test follow-up df97b81): inventory.serial_differences (replaces
+  serial_comparison): pairwise against every same-size disk; strip shared
+  prefix/suffix (per-character casefold, offsets preserved); same remaining
+  length -> only differing characters, else the whole remainder; a peer
+  sharing nothing is not a look-alike and adds no mark; union over
+  look-alikes; shorter contained serial keeps SERIAL_LONGER; duplicates/
+  missing/case-only unchanged (no marks). DiskIdentityView.comparison_marks
+  (runs) with derived comparison_start/end, comparison_segments, marked_id
+  ([brackets] per run). Tk: regular mono serial + bold copies with a 2 px
+  underline placed over each run (wrap-aware; any text/height mismatch hides
+  all marks). Web preview: <b class="diff"> (bold + underline) on a regular
+  serial; payload serialMarks. GTK: Pango <b><u> on the disk button label;
+  accessible name stays plain and includes the note. curses/plain console:
+  [brackets] per run (terminal bold/underline can render as colour only).
+  Note (visible + Orca): "Differs from the other 512 GB disk at characters
+  7 and 11. Check the full ID before choosing." / "the similar 256 GB
+  disk(s)". New keys COMPARE_SERIAL_OTHER, _SIMILAR_ONE, _SIMILAR_MANY,
+  POSITION_MANY, POSITION_ITEM_RANGE, POSITION_AND; FR/DE/ES/IT drafts.
+  Docs: screens.md #152 row (+ #148 row pointer), translations.md.
+- TESTS: new tests/test_serial_diff_152.py (47): marks for 2, 3 and 4
+  similar disks, two separate characters, different lengths (longer marks
+  what the shorter lacks; inserted/longer middle), case-only, nothing
+  shared; unrelated same-size serial no longer hides look-alike marks;
+  exact notes (other / similar one / similar many, positions with runs);
+  duplicates/missing/boot/other sizes unmarked; display only (id, token,
+  confirmable unchanged; Confirm has token marks, no compare marks); every
+  language's templates and placeholders; curses + plain console brackets;
+  preview payload/CSS/markup; GTK markup via fake gi (escaped, bold+underline
+  runs, plain text identical, note in the spoken text); Tk at 800x600 x 3
+  text sizes and 1280x820 for a 2-run, 1-run and wrapped 55-character
+  serial: marks sit on the right characters, label is the plain serial in
+  regular weight, a changed label text hides all marks; unmarked serial
+  stays bold. 45 fail on d53f40f (2 guards pass). Updated:
+  test_serial_comparison (multi-run, wording, preview), test_serial_once_148
+  (wording, templates, function name), test_security_hardening_new (escaped
+  pieces, span class).
+- CHECKS (Windows-native route): new file 47/47 (GTK/Tk cases one by one);
+  updated files pass except test_as_int_logs_on_malformed (Windows tmp
+  PermissionError, environmental); ruff clean; mypy 6 env-only errors;
+  node --check; headless Chrome DOM probe (web-probe-after.txt): marks
+  ["1","3"] / ["3456"] / ["C"] / ["7"], weight 700, underline, base 400;
+  unmarked serial stays 700.
+  RELATED-FILE COMPARISON: 92 related files (related-152b.txt) on #152
+  against #151 (81 shared with the #151 run; 11 more run on #151,
+  pf-base-extra.txt). Real: test_canvas_layout's overlap check flagged the
+  drawn mark copies (pick, 5 sizes) and test_serial_once_148 expected the
+  bracketed serial in the Tk label (3 sizes); both updated in df97b81 and
+  pass one by one. test_zero_serial_identity_pass5 was the #151 order
+  test (fixed on #151). Flakes that pass on rerun: pick_row_fit
+  en-800x600-selected, owner_reason_143 fit, power_badge_144 Confirm/
+  Method/Last chance header.
+- SCREENS: scratch before/ and after/ (Tk: nvme0n1 at 800x600 x 3 sizes and
+  1280x820; sda, sdc, sdd, sde at 800x600), zoom-serial.png (before/after
+  crops), web-after-sda.png, text.txt per run (EN/FR notes, curses lines).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi; fake-gi markup test
+  only), Linux 72 DPI with DejaVu Sans Mono (bold/regular advance assumed
+  equal, as for the #129 mark), ISO/QEMU, hosted ci.yml, native review of
+  the FR/DE/ES/IT drafts.
+- NOTES: when two look-alikes' remaining parts differ in length the whole
+  remainder is marked (e.g. A9B2C3D8 vs A1B2C3D4X marks 2-8); the
+  same-size warning text ("Two disks are the same size") is pre-existing
+  and unchanged with several same-size groups.
