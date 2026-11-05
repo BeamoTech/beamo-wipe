@@ -3892,3 +3892,97 @@ another very thorough and comprehensive pass of this." Repo
   the preview's "ConnectionNVMe" (missing gap between label and value) is
   pre-existing (same on #148); with the selected card in view, Tk's
   ensure-visible can scroll earlier rows out (by design).
+
+## BW-150-REVIEWACTIVATE — Double-click or Enter on a disk opens Review this disk (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/review-on-activate-150`
+  (stacked on `feat/compact-rows-149` @ 54f8c81), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
+  review item 24). Ref #149 (compact rows: the row a double-click starts on
+  expands, so the second press is matched by disk, not by position).
+- BASELINE: Tk Enter with a disk selected already ran continue_pick
+  (focus lands on Review this disk); Tk double-click only selected (second
+  and third press stayed on Pick); GTK disk buttons already did
+  select_disk + continue_pick on activation (its "row-activated"); curses
+  Enter and the plain console's number already reviewed; web preview Enter
+  on a card only selected. HINT_PICK already says "Enter reviews this
+  disk"; no copy changed (no translation or footer-fit churn).
+- WHAT CHANGED (safety:, 7ade9ee; guard fix fbc4b44):
+  - Tk: rows call `_press_disk(path, event)`. Two presses on the same disk
+    (by path), within DOUBLE_CLICK_MS 500 and 8 px, where the first press
+    selected it, call `_review_disk`, which runs the footer primary's own
+    command (`_nav(wizard.continue_pick)`) only if that button is enabled.
+    A second press on another disk (rows move when one expands) is a plain
+    click on that disk. After the review opens Confirm, `_pointer_quiet`
+    makes `_Button._press` and `_CheckRow._press` ignore presses for 500 ms
+    (event time; monotonic fallback), so the rest of the double-click or a
+    quick third click cannot press Back / Show more / any Confirm control.
+  - GTK: `_select` (disk button activation) unchanged in effect; after a
+    pointer activation that left Pick it sets `_pointer_quiet_until`, and
+    every `button()` click ignores pointer clicks inside that window
+    (Gtk.get_current_event type/time). Key and AT-SPI activations are never
+    ignored.
+  - Web preview: `reviewDisk(pointer)` is the footer action; Enter on a
+    card reviews (repeat ignored), Space only selects, a click pair on the
+    same card path within 500 ms / 8 px reviews; capture-phase listeners
+    swallow mousedown/mouseup/click/dblclick for 500 ms after.
+  - Unchanged gates: continue_pick clears the token and authorization;
+    unconfirmable identity stays on Pick with AMBIGUOUS_IDENTITY; boot USB
+    card and Other detected devices never chosen; Enter in that reader is
+    swallowed.
+  - Docs: screens.md #150 row; accessibility-lowres-matrix Pick row.
+- ALSO (#149 defect found here, 54f8c81 on feat/compact-rows-149): c3117cb's
+  untyped `**flat` Label options caused 28 mypy arg-type errors; typed as
+  dict[str, Any]; BW-149's "mypy same 6" corrected in its entry.
+- TESTS: new tests/test_review_on_activate_150.py (22): Tk double-click at
+  800x600 and 1280x820 opens Confirm only (empty token, no authorization,
+  no erase, Confirm continue still refused); typed token never carried
+  over after Back; second press on another disk only selects; slow / moved
+  presses are two clicks; double-click is the footer action (disabled
+  button = nothing); tail of the double-click cannot press Back or Show
+  more, both work after 500 ms; unconfirmable disk shows the reason; boot
+  card never chosen; Enter reviews once, X11 repeat pair cannot act again;
+  Enter on unconfirmable shows reason; Enter in Other detected devices does
+  nothing. GTK via fake gi (real button()/_select): pointer click reviews,
+  sets the window, tail click ignored, key/AT-SPI never ignored, later
+  clicks work, token reset, unconfirmable stays with reason. curses: Down +
+  Enter reviews, held Enter cannot act again; unconfirmable shows reason.
+  Plain console: number = review. Preview: source checks and a Playwright
+  run (Enter, Space, double-click; skips without Playwright/Chrome).
+  8 fail on 02f2e74 (5 Tk, 2 GTK, 1 preview); the other 14 guard
+  behaviour that already held.
+- CHECKS (Windows-native route): new file 22/22 one by one (Playwright 2
+  skipped: not installed here; hosted ci-hosted.sh installs it); ruff
+  clean; mypy --platform linux 6 env-only errors (gi, qrcode stubs);
+  node --check on the preview script; headless Chrome probe of the real
+  preview page (web-probe-after.txt): Space selects, repeated Enter
+  ignored, Enter -> confirm with empty token, double-click by path ->
+  confirm, tail click on Back swallowed, click pair on two disks / moved
+  8+ px / 700 ms apart only selects, Back works after the window.
+  RELATED-FILE COMPARISON: 210 related files (scratch related-files.txt)
+  run per file on 7ade9ee and 54f8c81 (pf-new.txt / pf-base.txt,
+  cmp.txt): 13 failures only on #150, each rerun on both trees
+  (rerun.txt). 3 were real: test_audit_20260908_wizard click tests built
+  a fake _Button with no Tk, and the new guard caught only TclError
+  (AttributeError). Fixed in fbc4b44 (safety:): the guard returns False
+  unless a live wizard answers exactly True; the audit file and the #150
+  Tk tests pass again. The other 10 fail the same way on #149 (Windows
+  tmp PermissionError, Last chance timing on this loaded host) or pass on
+  rerun (canvas_layout, modern_layout).
+- SCREENS: scratch work150-scratch-20261104 before/ and after/ (demo, Tk
+  800x600 and 1280x820 x Standard/Large/Extra large: pick-*, dblclick-*
+  (before: still Pick; after: Confirm, empty token, button disabled),
+  enter-*; probe.txt per state).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi here; fake-gi test
+  only), Linux 72 DPI on DISPLAY=:99 with a real X server double-click,
+  ISO/QEMU, hosted ci.yml (Playwright cases), a real-mouse double-click in a
+  browser (synthetic events only).
+- FOLLOW-UP (not done; separate safety item, needs owner decision): a fast
+  double-click on a footer button can also press the next screen's button
+  under the pointer. Verified on Tk at 800x600 (scratch footer_dbl.py, same
+  on 54f8c81): Confirm (token typed) "Choose erase method" double-click went
+  CONFIRM -> METHOD -> LAST_CHANCE, skipping the Method screen; the 5 s
+  countdown still held (Erase now disabled). Pre-existing, every screen;
+  GTK likely similar (not run). The #150 pointer guard could be applied to
+  every screen-changing pointer activation; not done here because it
+  changes all footer buttons and many existing flow tests.
