@@ -4421,3 +4421,121 @@ another very thorough and comprehensive pass of this." Repo
   1280x1024, 1920x1080), metrics.txt.
 - NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
   Not pushed to main; merge order #94 -> ... -> #156 -> #157.
+
+## BW-158-LIMITSLINE — One-line SSD limits under the method cards (PROPOSAL ONLY — OWNER DECISION REQUIRED; NOTHING IMPLEMENTED)
+
+- 2026-11-05, Claude (Opus 5.5). Backlog #158 (UI review item 32). Branch
+  `feat/method-limits-line-158` (no commits; @ d55220e), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
+  measurement prototype was reverted). Scratch:
+  `work158-scratch-20261105` (shots158.py; before/, opt-base/, opt-A/,
+  opt-B/, opt-C/ with metrics.txt and screenshots).
+- STATUS: the task requires explicit owner approval before implementing or
+  merging anything that depends on the decision. No approval was available
+  in the session, so it stopped at the proposal. Coordinate with #159
+  (implemented after, below), #160, #161, #186.
+- FINDING: the two acceptance criteria conflict on today's cards. At 800x600
+  the title block and disk card take ~190 px and each method card was
+  140–180 px, so no placement of the limits text alone puts all three cards
+  above the fold. Baseline: the limits panel is already below the fold on
+  every short window (800x600, 1024x600, 1280x720) and Quick zero was never
+  fully visible at any measured size.
+- OPTIONS MEASURED (SSD, Tk, before #159):
+  A. As worded: one line directly under the cards. The line is never visible
+     without scrolling at any size (fails Ref #18).
+  B. One line between the disk card and the cards. Always visible at every
+     size and text size; cards no better than today at 800x600.
+  C. B plus compact unselected cards (title and sentence only). Line always
+     visible; all three cards fully visible at 1280x720 and 1280x820, still
+     not at 800x600 or 1024x768.
+  D. Keep today's panel.
+  #159 (title, sentence, time line) now shrinks the cards to 102–125 px,
+  which is the prerequisite for any "all three cards above the fold" goal;
+  B or C must be re-measured on top of #159 once chosen.
+- RECOMMENDATION: B (line above the cards, full text under its Show more
+  and "Storage limits (L)"), re-measured after #159; it is the only option
+  that keeps the limits visible without scrolling at 800x600 and largest
+  text (Ref #18).
+- CLAIMS CHECK (for owner sign-off): the line "On SSDs, overwriting may not
+  reach every hidden area." stays within docs/claims.md ("SSD results depend
+  on the drive's controller"; "overwrites the storage the drive exposes"; no
+  sanitize/secure-erase claim). The full storage.OVERWRITE_LIMITS text stays
+  one action away. Open owner questions: is a one-line summary prominent
+  enough for docs/method-and-storage-wording-validation.md's "prominent SSD
+  limits"; HDD and unknown disks show a notice today too — keep a line for
+  them ("Hidden or remapped sectors may remain.") or SSD/NVMe only.
+- NEXT ACTION: owner picks A/B/C/D and confirms the claims wording; then
+  implement on `feat/method-limits-line-158` rebased onto the #159 branch,
+  with a `safety:`-free UI commit, tests and before/after screenshots.
+
+## BW-159-METHODCARDS — Method cards show title, one sentence and a time line (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/method-cards-159` (stacked
+  on `fix/confirm-spacing-157` @ 595224a; commits 741e417 feat, 2a0fa29
+  fix), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
+  review item 33). Ref #158 (above), #160, #161.
+- BASELINE (work159-scratch-20261105/before, metrics.txt): each card had
+  five to seven lines (sentence, overwrite count, check, rough guide, extra
+  note, Everyday limits note): 140–231 px tall. When the size was unknown
+  the time guide was hidden, so cards could not be compared on time.
+- WHAT CHANGED (presentation only; METHODS, argv, verification, gates and
+  copy of existing strings unchanged; not a `safety:` change):
+  * copy.method_time_line(method, disk): the existing cautious guide
+    (progress.time_guide ranges, "not promised"), or the new
+    TIME_GUIDE_UNKNOWN "Time depends on the disk." (FR/DE/ES/IT drafts).
+  * Tk card: title + chip (Recommended / More overwrites / No check), the
+    one sentence (Quick zero's says it does not check the result), and a
+    clock + time line with that card's own Show more on the same row. The
+    counts, check sentence, Three overwrites note and Everyday limits note
+    open under it. Show more never chooses a method (Enter, Space or click;
+    focus stays on it after the rebuild; opened details scroll into view
+    without moving the card's top away). Clicking the card or 1/2/3 still
+    chooses. Last chance still states the exact counts.
+  * Web preview: same card; the choice (role=button) and the toggle are
+    siblings, never nested; per-disk `methodTimes` in the payload.
+  * GTK, curses, plain console: layouts unchanged; every method now has
+    its time line (Orca name and visible line), unknown size included.
+  * Docs: screens.md, progress-timing.md, accessibility-lowres-matrix.md,
+    translations.md.
+- RESULT (Tk 800x600..1280x820, all text sizes): cards 102–125 px (from
+  140–231); at 800x600 Standard Everyday and Three overwrites are fully
+  visible (was Everyday only), at 1280x720 all three.
+- TESTS: new tests/test_method_cards_159.py (23): time line = guide when
+  known; "Time depends on the disk." for 4 unknown-size cases, no disk and
+  no estimate; translated, no digits; method mapping unchanged; Tk cards
+  show only title/sentence/time for HDD, SSD and unknown; cards <= 120 px at
+  800x600; Show more opens only its card, never chooses, keeps focus,
+  closes; Enter and Space on it never advance; details scroll into view
+  (Standard, Extra large); card click still chooses, gates unchanged; no
+  clipping at 3 sizes with details open; plain console and curses show the
+  unknown line; preview payload, sibling toggle, handler never sets the
+  method. OLD-CODE: on d55220e 19 of the 21 cases then in the file failed
+  (pf-base.txt; the mapping check passes by design); the two later cases
+  (keyboard toggle, details scroll) need the new toggle. Updated:
+  test_tk_runtime (method facts and the Everyday limits-note fit open the
+  card's Show more first); test_ui_polish unknown-size case now expects
+  "Time depends on the disk." with a clock on every card (2a0fa29).
+- CHECKS (Windows-native route): test_method_cards_159 23/23 (Tk cases one
+  by one); ruff clean; mypy --platform linux clean. RELATED-FILE
+  COMPARISON (79 files whole, #159 vs #157 base d55220e, pf-new/pf-base
+  .txt; Method cases of 4 big files, each-new.txt): only-on-#159 were
+  test_ui_polish unknown-size (intended, updated), test_slow_unusual
+  refresh loop (REAL: Check disks again called .clear() on the open-details
+  set, which a partially built app lacks; fixed in 2a0fa29 by assignment,
+  failure set of that file now identical to base), power_badge and
+  step_progress header (pass alone), test_time_guide_other_views
+  collection error (passes on rerun). Big files: ui_fit Method 20/20,
+  reflow 2/2, tk_runtime 28/29 with refresh-from-Method failing on base too
+  (with Confirm and Last chance). Post-rebase stack check on the #161 tip:
+  new files of #157/#159/#160/#161 pass, reflow 4/4, ui_polish Method
+  25/25; only the pre-existing test_ui_system selector failure (#144
+  `.powerbadge`, see BW-160).
+- SCREENS: work159-scratch-20261105/before, after (Tk Method for SSD, HDD,
+  unknown size at 800x600 x3 text sizes, 1024x600, 1024x768, 1280x720,
+  1280x820 x3; metrics.txt; cmpshots.py), web-before-*/web-after-*
+  (preview 800x600 and 1280x900, closed and with Quick zero open),
+  web-probe-after.txt, curses-unknown.txt.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of TIME_GUIDE_UNKNOWN drafts. Not pushed to
+  main; merge order #94 -> ... -> #157 -> #159.
