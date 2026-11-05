@@ -777,10 +777,11 @@ class AccessibleWizard:
                 # Orca reads the rough duration with its choice. The visible
                 # copy follows the choices so 800x600 keeps all three above
                 # the footer; the name still starts with the visible label.
-                guide = C.method_time_guide(method, self.w.selected)
-                if guide:
-                    choice.get_accessible().set_name(f"{label} {guide}")
-                    guides.append(f"{spec.title}: {guide}")
+                # #159: every method has a time line ("Time depends on the
+                # disk" when no range can be given).
+                guide = C.method_time_line(method, self.w.selected)
+                choice.get_accessible().set_name(f"{label} {guide}")
+                guides.append(f"{spec.title}: {guide}")
                 if spec.plain_lead:
                     choice.get_accessible().set_description(spec.plain_lead)
                 self.body.pack_start(choice, False, False, 3)

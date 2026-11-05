@@ -504,6 +504,9 @@ TIME_GUIDE_HDD = "Rough guide for this {size} hard disk (not promised): {range}.
 TIME_GUIDE_SSD = "Rough guide for this {size} SSD (not promised): {range}."
 TIME_GUIDE_DISK = "Rough guide for this {size} disk (not promised): {range}."
 TIME_GUIDE_LONG = "Plan to leave it running overnight or longer."
+# #159: every method card shows a time line. Without a usable size the
+# estimator gives no range, so the card says so instead of guessing.
+TIME_GUIDE_UNKNOWN = "Time depends on the disk."
 TIME_RANGE_MINUTES = "{low}–{high} minutes"
 TIME_RANGE_HOURS = "{low}–{high} hours"
 TIME_RANGE_DAYS = "{low}–{high} days"
@@ -564,6 +567,16 @@ def method_time_guide(method: MethodId, disk: "Disk | None") -> str:
         range=time_guide_range(guide),
     )
     return f"{text} {TIME_GUIDE_LONG}" if guide.long else text
+
+
+def method_time_line(method: MethodId, disk: "Disk | None") -> str:
+    """The time line every method card shows (#159): the rough guide for this
+    disk, or TIME_GUIDE_UNKNOWN when no cautious range can be given.
+
+    Presentation only, like method_time_guide.
+    """
+    return method_time_guide(method, disk) or TIME_GUIDE_UNKNOWN
+
 
 ADVANCED_LEAD = (
     "These are the nwipe names. For technicians. The other screens stay simple."

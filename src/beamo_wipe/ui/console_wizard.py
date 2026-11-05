@@ -1175,8 +1175,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
                 limits_note = f" {card['limits']}" if card["limits"] else ""
-                guide = C.method_time_guide(method, wizard.selected)
-                guide = f" {guide}" if guide else ""
+                guide = f" {C.method_time_line(method, wizard.selected)}"  # #159
                 # One logical line so overwrite + verification stay a contiguous description.
                 # The TTY wraps at its own width; pre-fill would split spec.description.
                 print(
@@ -1863,7 +1862,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             # Rough durations follow the choices so the first page keeps
             # every method; taller consoles show them without scrolling.
             guides = [
-                (i, METHODS[method].title, C.method_time_guide(method, wizard.selected))
+                (i, METHODS[method].title, C.method_time_line(method, wizard.selected))
                 for i, method in enumerate(
                     (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1
                 )

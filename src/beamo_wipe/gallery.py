@@ -155,6 +155,11 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "kind": disk.kind.value,
                 "kindLabel": view.kind_chip,
                 "storageNotice": limits.notice(disk.kind),
+                # #159: each method card's time line for this disk.
+                "methodTimes": {
+                    mid.value: C.method_time_line(mid, disk)
+                    for mid in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO)
+                },
                 "bus": view.connection,
                 "serial": view.id_value,
                 "markedSerial": view.marked_id,
@@ -736,6 +741,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "methodLead": C.METHOD_LEAD,
         "lastLead": C.LAST_LEAD,
         "recommended": C.RECOMMENDED_TAG,
+        "timeUnknown": C.TIME_GUIDE_UNKNOWN,
         "matchWait": C.CONFIRM_MATCH_WAIT,
         "matchOk": C.CONFIRM_MATCH_OK,
         "countdownCaption": C.COUNTDOWN_CAPTION,
@@ -1184,6 +1190,14 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .methodlimits { font-size: 14px; color: var(--muted); margin: 4px 0 0; line-height: 1.4; }
   .methodpace { font-size: 14px; color: var(--muted); margin: 4px 0 0; display: flex; gap: 7px; align-items: flex-start; }
   .methodpace svg { flex: none; margin-top: 1px; }
+  /* #159: the card is the visual box; the choice and Show more are siblings. */
+  .card.methodcard { cursor: pointer; transition: border-color .12s ease, background .12s ease, box-shadow .12s ease; }
+  .card.methodcard:not(.sel):hover { background: var(--surface-alt); }
+  .card.pickable.methodpick, .card.pickable.methodpick.sel, .card.pickable.methodpick:hover { border: 0; background: transparent; padding: 0; margin: 0; box-shadow: none; }
+  .methodtime, .methoddetails { margin-left: 36px; }
+  .methodtime { align-items: center; }
+  .methodtime .grow { flex: 1; min-width: 0; }
+  .methodtime .linkbtn { flex: none; margin: 0 0 0 8px; padding: 2px 10px; }
   .centerstage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   .centerstage h1 { margin: 22px 0 8px; }
   .result { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 12px; }
@@ -1385,6 +1399,7 @@ let demoPct = null;
 let demoFrac = null;
 let progressKey = "";
 let showMore = false;
+let methodMore = new Set();
 
 document.getElementById("stripe").textContent = P.previewBanner;
 document.getElementById("brand").textContent = P.app;
@@ -1489,6 +1504,7 @@ function boot(m) {
   demoFrac = null;
   progressKey = "";
   showMore = false;
+  methodMore = new Set();
   if (timer) clearInterval(timer);
   draw();
 }
@@ -1749,7 +1765,7 @@ function refreshPreview() {
   if (["working", "done", "splash"].includes(screen)) return;
   if (timer) clearInterval(timer);
   timer = null; selected = null; token = ""; owner = false;
-  method = "everyday"; tLeft = 5; showMore = false; demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
+  method = "everyday"; tLeft = 5; showMore = false; methodMore = new Set(); demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
   draw();
 }
 function headerCaption(info) {
@@ -2033,18 +2049,23 @@ function draw() {
     ["everyday","extra","quick_zero"].forEach(id => {
       const m = P.methods[id];
       const sel = method === id;
-      html += `<div class="card pickable${sel ? " sel" : ""}" data-id="${id}" tabindex="0" role="button" aria-pressed="${sel}" style="padding-top:9px;padding-bottom:9px;margin-bottom:8px">
+      // #159: title, one sentence and a time line on every card; the
+      // counts, checks and limits sit under the card's own Show more. The
+      // choice (role=button) and the toggle are siblings, never nested.
+      const open = methodMore.has(id);
+      const time = selected && selected.methodTimes ? selected.methodTimes[id] : P.timeUnknown;
+      html += `<div class="card methodcard${sel ? " sel" : ""}" data-card="${id}" style="padding-top:9px;padding-bottom:9px;margin-bottom:8px">
+        <div class="card pickable methodpick${sel ? " sel" : ""}" data-id="${id}" tabindex="0" role="button" aria-pressed="${sel}">
         <div class="row"><span class="radio"></span>
           <div class="grow">
             <div class="title">${m.title}${id === "everyday" ? `<span class="chip ok">${P.recommended}</span>` : (m.mark ? `<span class="chip${m.checks ? "" : " warn"}">${m.mark}</span>` : "")}</div>
             <div class="methodlead">${m.lead}</div>
-            <div class="methodblurb">${m.blurb}</div>
-            <div class="methodpace">${m.checks ? `<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#4A5A6A" stroke-width="1.6"/><path d="M8 4.2V8l2.6 1.7" fill="none" stroke="#4A5A6A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ""}<span>${m.pace}</span></div>
-            ${m.extra ? `<div class="methodextra">${m.extra}</div>` : ""}
-            ${m.limits ? `<div class="methodlimits">${m.limits}</div>` : ""}
           </div>
           <span class="kbd">${m.key}</span>
         </div>
+        </div>
+        <div class="methodpace methodtime"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#4A5A6A" stroke-width="1.6"/><path d="M8 4.2V8l2.6 1.7" fill="none" stroke="#4A5A6A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="grow" data-time="${id}">${time}</span><button type="button" class="linkbtn methodmore" data-more="${id}" aria-expanded="${open}" aria-controls="method-more-${id}" aria-label="${open ? P.buttons.less : P.buttons.more}: ${m.title}">${open ? P.buttons.less : P.buttons.more}</button></div>
+        <div id="method-more-${id}" class="methoddetails">${open ? `<div class="methodblurb">${m.blurb}</div><div class="methodpace"><span>${m.pace}</span></div>${m.extra ? `<div class="methodextra">${m.extra}</div>` : ""}${m.limits ? `<div class="methodlimits">${m.limits}</div>` : ""}` : ""}</div>
       </div>`;
     });
     html += `</div></div>`;
@@ -2065,6 +2086,23 @@ function draw() {
       };
     });
     main.querySelector("#limits").onclick = () => { screen = "limits"; draw(); };
+    // #159: Show more is view-only; it never chooses a method.
+    main.querySelectorAll(".methodmore").forEach(b => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        const id = b.dataset.more;
+        if (methodMore.has(id)) methodMore.delete(id); else methodMore.add(id);
+        draw();
+        main.querySelector(`.methodmore[data-more="${id}"]`)?.focus();
+      };
+    });
+    // Clicking elsewhere on a card chooses it, as in the Tk wizard.
+    main.querySelectorAll(".methodcard").forEach(box => {
+      box.onclick = (e) => {
+        if (e.target.closest(".methodpick, button")) return;
+        box.querySelector(".methodpick")?.click();
+      };
+    });
     renderHint(P.hints.method);
     btnsL.append(btn(P.buttons.back, () => { screen = "confirm"; draw(); }));
     btnsR.append(btn(P.buttons.reviewErase, () => { screen = "last"; tLeft = 5; startCount(); draw(); }, "primary"));

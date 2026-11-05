@@ -1500,7 +1500,7 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons')
     _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
@@ -1657,6 +1657,9 @@ class TkWizard:
             # Optional extra detail (device path, bus) on existing screens.
             # One flag for the session; not a new wizard step.
             self._show_more = False
+            # #159: method cards whose details are open (view only).
+            self._method_more: set[MethodId] = set()
+            self._method_more_buttons: dict[MethodId, _Button] = {}
             self._body_inner: Optional[tk.Frame] = None
             self._body_canvas: Optional[tk.Canvas] = None
             self._body_follow_focus = True
@@ -2430,7 +2433,7 @@ class TkWizard:
                     del root._tk_wizard
             for name in self._NATIVE_FIELDS:
                 if hasattr(self, name):
-                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards") else None)
+                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards", "_method_more_buttons") else None)
             lock = getattr(self, "_refresh_lock", None)
             if lock is not None:
                 with lock:
@@ -5442,44 +5445,52 @@ class TkWizard:
                 side=tk.LEFT, padx=(10, 0)
             )
         self._method_prose_label(text_col, lead, font=self.font_b, bg=fill)
-        self._p(
-            text_col, blurb, font=self.font_s, fg=MUTED, bg=fill,
-        ).pack(fill=tk.X, pady=(2, 0))
-        # Rough duration for this disk (never a promise). When it is shown,
-        # the clock marks that line on every card; otherwise it stays beside
-        # the check sentence as before.
-        guide = C.method_time_guide(method, self.w.selected)
-        pace_clock = checks and not guide
-        # Text beside the 16 px clock and its 7 px gap wraps to what is left.
-        clock_pad = 8 + 16 + 7
-        pace_row = tk.Frame(text_col, bg=fill)
-        pace_row.pack(fill=tk.X, pady=(4, 0))
-        if pace_clock:
-            clock = _icon_clock(pace_row, 16)
-            clock.configure(bg=fill)
-            clock.pack(side=tk.LEFT, anchor="n", pady=1)
-        self._p(
-            pace_row, pace, font=self.font_s, fg=MUTED, bg=fill,
-            flow_pad=clock_pad if pace_clock else 8,
-        ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7 if pace_clock else 0, 0))
-        if guide:
-            guide_row = tk.Frame(text_col, bg=fill)
-            guide_row.pack(fill=tk.X, pady=(4, 0))
-            clock = _icon_clock(guide_row, 16)
-            clock.configure(bg=fill)
-            clock.pack(side=tk.LEFT, anchor="n", pady=1)
+        # #159: title, one sentence and a time line on every card, so the
+        # three compare at a glance. The time line is the rough guide for
+        # this disk, or "Time depends on the disk" when no range can be
+        # given. The counts, checks and limits sit under this card's own
+        # Show more; the chips and the sentence keep "No check" visible.
+        time_row = tk.Frame(text_col, bg=fill)
+        time_row.pack(fill=tk.X, pady=(4, 0))
+        clock = _icon_clock(time_row, 16)
+        clock.configure(bg=fill)
+        clock.pack(side=tk.LEFT, anchor="n", pady=1)
+        time_label = tk.Label(
+            time_row, text=C.method_time_line(method, self.w.selected),
+            font=self.font_s, fg=MUTED, bg=fill, anchor="w", justify=tk.LEFT,
+            wraplength=max(160, self._method_card_wrap() - 140),
+        )
+        time_label._beamo_method_time = method  # type: ignore[attr-defined]
+
+        def fit_time(event, label=time_label) -> None:
+            # The packer gives the label what the clock and Show more leave;
+            # wrap to that allocation, never to the label's own request.
+            width = max(1, int(event.width) - 4)
+            if width >= 80 and int(label.cget("wraplength")) != width:
+                label.configure(wraplength=width)
+
+        time_label.bind("<Configure>", fit_time)
+        time_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7, 0))
+        open_ = method in self._method_more
+        details: Optional[tk.Frame] = None
+        if open_:
+            details = tk.Frame(text_col, bg=fill)
+            details.pack(fill=tk.X)
+            details._beamo_method_details = method  # type: ignore[attr-defined]
             self._p(
-                guide_row, guide, font=self.font_s, fg=MUTED, bg=fill,
-                flow_pad=clock_pad,
-            ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7, 0))
-        if extra:
-            self._p(
-                text_col, extra, font=self.font_s, fg=MUTED, bg=fill,
+                details, blurb, font=self.font_s, fg=MUTED, bg=fill,
             ).pack(fill=tk.X, pady=(4, 0))
-        if limits_note:
-            self._method_prose_label(
-                text_col, limits_note, font=self.font_s, bg=fill, fg=MUTED
-            )
+            self._p(
+                details, pace, font=self.font_s, fg=MUTED, bg=fill,
+            ).pack(fill=tk.X, pady=(4, 0))
+            if extra:
+                self._p(
+                    details, extra, font=self.font_s, fg=MUTED, bg=fill,
+                ).pack(fill=tk.X, pady=(4, 0))
+            if limits_note:
+                self._method_prose_label(
+                    details, limits_note, font=self.font_s, bg=fill, fg=MUTED
+                )
 
         def _click(_e, m=method):
             self._choose_method(m)
@@ -5494,6 +5505,36 @@ class TkWizard:
                 partial(card.set_style, fill=SURFACE_ALT),
                 partial(card.set_style, fill=SURFACE),
             )
+
+        def toggle(m=method) -> None:
+            # Details only: never chooses or changes the method.
+            if m in self._method_more:
+                self._method_more.discard(m)
+            else:
+                self._method_more.add(m)
+            self._draw()
+            # Rebuilding destroys the old control; keep keyboard users on it.
+            again = self._method_more_buttons.get(m)
+            if again is not None:
+                again.focus_set()
+                # On a scrolling body, bring the opened details into view
+                # without scrolling the card's own top away.
+                shown = getattr(again, "_beamo_details", None)
+                if shown is not None:
+                    self._reveal_in_body(shown, keep=getattr(again, "_beamo_card", None))
+
+        # Created after the card's click and hover bindings, which replace a
+        # widget's own <Button-1>: this press stays the toggle's own. Packed
+        # first so the time line wraps to what the toggle leaves.
+        more = _Button(
+            time_row, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle,
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        more._beamo_method_more = method  # type: ignore[attr-defined]
+        more._beamo_card = card  # type: ignore[attr-defined]
+        more._beamo_details = details  # type: ignore[attr-defined]
+        more.pack(side=tk.RIGHT, anchor="n", padx=(8, 0), before=clock)
+        self._method_more_buttons[method] = more
 
     def _method(self) -> None:
         col = self._column(self._body, fill_height=True)
@@ -5528,6 +5569,7 @@ class TkWizard:
         if not short:
             storage_limits(col)
         zone = self._center_zone(col)
+        self._method_more_buttons = {}
         for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
             self._method_card(zone, method)
         if short:
@@ -6640,6 +6682,7 @@ class TkWizard:
         if self._start_refresh_scan(after) is None:
             return
         self._show_more = False
+        self._method_more.clear()
         self._pick_scroll = 0.0
 
     def _on_f5_release(self, _event=None) -> str:

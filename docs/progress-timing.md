@@ -97,7 +97,8 @@ Before anything starts, each method shows a rough range for the selected disk,
 for example "Rough guide for this 1 TB hard disk (not promised): 2–10 hours."
 It is a planning hint, not a measurement: it never gates, starts or describes
 an erase, is not written to evidence or reports, and does not feed the live
-estimate above. It is hidden when the disk size is unknown.
+estimate above. When the disk size is unknown no range is given and every
+method says "Time depends on the disk." instead (#159).
 
 Work is the disk size times the method's full-disk passes from `methods.py`
 (every overwrite plus every verification read: Everyday 2, Three overwrites 4,
@@ -114,8 +115,9 @@ A USB transport halves the slow bound only. The fast end rounds down and the
 slow end rounds up, each in minutes under 1.5 hours (5-minute steps from 10
 minutes), hours under 48 hours, otherwise days. A slow end over 10 hours adds
 "Plan to leave it running overnight or longer." Tk cards, the GTK radio names
-read by Orca, and both console views use the same text
-(`copy.method_time_guide`; tests in `tests/test_method_time_guide.py`).
+read by Orca, both console views and the web preview use the same text
+(`copy.method_time_line`, which wraps `copy.method_time_guide`; tests in
+`tests/test_method_time_guide.py` and `tests/test_method_cards_159.py`).
 
 ## Shared presentation and evidence
 

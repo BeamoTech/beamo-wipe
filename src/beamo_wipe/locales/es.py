@@ -121,6 +121,7 @@ STRINGS = {
         "TIME_GUIDE_SSD": "Estimación aproximada para este SSD de {size} (no se promete): {range}.",
         "TIME_GUIDE_DISK": "Estimación aproximada para este disco de {size} (no se promete): {range}.",
         "TIME_GUIDE_LONG": "Prevea dejarlo funcionando toda la noche o más tiempo.",
+        "TIME_GUIDE_UNKNOWN": "El tiempo depende del disco.",
         "TIME_RANGE_MINUTES": "{low}–{high} minutos",
         "TIME_RANGE_HOURS": "{low}–{high} horas",
         "TIME_RANGE_DAYS": "{low}–{high} días",

@@ -17,7 +17,7 @@ from test_result_presentations import CASES as RESULT_CASES, case_evidence
 
 from beamo_wipe.disk_order import pick_order
 from beamo_wipe.demo import make_demo_wizard
-from beamo_wipe.models import Screen
+from beamo_wipe.models import MethodId, Screen
 from beamo_wipe.methods import METHODS
 try:
     import tkinter as tk
@@ -1270,6 +1270,9 @@ def test_method_facts_render_for_every_choice(ui, method, screen):
         wiz.continue_method()
     if screen == Screen.DONE:
         wiz.screen = Screen.DONE  # preview only; never starts a runner
+    if screen == Screen.METHOD:
+        # #159: counts and checks sit under each card's Show more.
+        app._method_more.update(METHODS)
     app._draw()
     app.root.update()
     texts = []
@@ -2396,6 +2399,9 @@ def test_method_plain_lead_and_limits_fit_card_column(ui, code):
     try:
         wiz, app = ui(size=(800, 600))
         _drive_to(wiz, app, Screen.METHOD, size=(800, 600))
+        # #159: the Everyday limits note sits under that card's Show more.
+        app._method_more_buttons[MethodId.EVERYDAY]._command()
+        app.root.update()
         needles = [spec.plain_lead for spec in METHODS.values()] + [C.EVERYDAY_LIMITS]
         found = {needle: False for needle in needles}
 

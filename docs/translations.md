@@ -302,6 +302,9 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   several runs `POSITION_MANY` with items such as "7", "11 to 14"
   (`POSITION_ITEM_RANGE`) joined by ", " and `POSITION_AND`. The note must
   never repeat the serial's characters; the card shows them once.
+- `copy.TIME_GUIDE_UNKNOWN` (2026-11-05 for #159; drafts, not yet reviewed):
+  the method card's time line when no range can be given ("Time depends on
+  the disk."). No number, no promise and no guess at a duration.
 - `copy.TOKEN_TYPED`, `TOKEN_WRONG_ONE`/`_MANY`, `TOKEN_MISSING_ONE`/`_MANY`,
   `TOKEN_EXTRA_ONE`/`_MANY`, `TOKEN_SPACE_NOTE`, `TOKEN_SPACE_WORD` (2026-11-04
   for #156; drafts, not yet reviewed): Confirm's wrong-entry feedback.

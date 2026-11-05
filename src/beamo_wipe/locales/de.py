@@ -116,6 +116,7 @@ STRINGS = {
         "TIME_GUIDE_SSD": "Grober Richtwert für diese SSD ({size}, ohne Gewähr): {range}.",
         "TIME_GUIDE_DISK": "Grober Richtwert für diesen Datenträger ({size}, ohne Gewähr): {range}.",
         "TIME_GUIDE_LONG": "Planen Sie ein, dass es über Nacht oder länger läuft.",
+        "TIME_GUIDE_UNKNOWN": "Die Dauer hängt vom Datenträger ab.",
         "TIME_RANGE_MINUTES": "{low}–{high} Minuten",
         "TIME_RANGE_HOURS": "{low}–{high} Stunden",
         "TIME_RANGE_DAYS": "{low}–{high} Tage",
