@@ -4869,3 +4869,39 @@ another very thorough and comprehensive pass of this." Repo
   The Tk/GTK Review is unchanged.
 - NOT VERIFIED: GTK runtime (gi unavailable here), a real terminal's
   KEY_BTAB/Left/Right codes, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
+
+## BW-166-FINALCHECKSTEP — Header names Review as the final check (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/final-check-step-166`
+  (stacked on `safety/review-enter-focus-165` @ 2e1c48a; commit ef88356),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
+  #166 (UI review item 40). Ref #130, #138.
+- BASELINE (work164-scratch-20261105/before/last-en-standard-1280x820-*):
+  the header said "Step 6 of 6 · Review" beside the stepper with
+  Preparation highlighted.
+- DECISION: "Final check", not the example "Final check before erasing":
+  #138 decided (and test_stage_names_138 pins) that step names never use
+  the erase verb because Review comes before the Erase stage. "Final check"
+  says it is the last step; the stage stepper keeps Preparation (Review is
+  still preparation per #130/#138). Owner may override the wording.
+- WHAT CHANGED (copy only): copy.STEP_NAME_REVIEW "Final check" (FR
+  "Dernière vérification", DE "Letzte Prüfung", ES "Última comprobación",
+  IT "Controllo finale"; drafts). Header "Step 6 of 6 · Final check",
+  spoken "Preparation, step 6 of 6: Final check.", same in curses, the
+  plain console and the web preview (one source). Long translations still
+  fall back to "Step 6 of 6" when they do not fit (existing rule).
+- FILES: src/beamo_wipe/copy.py, locales/{fr,de,es,it}.py,
+  tests/test_final_check_step_166.py (new, 10), tests/test_stage_names_138,
+  test_step_progress_130, test_journey_stages, docs/screens.md,
+  docs/translations.md.
+- CHECKS (Windows-native route): 10/10 (Tk one by one); stage/journey/step
+  files pass except test_journey_stages curses 80x24 Pick (fails on #160
+  and #165 too); ruff clean; mypy --platform linux clean; language, ui_system,
+  console files pass except the known #144 selector case; Tk step-bar
+  header 9/17 with test_tk_long_translations_fit_at_800x600 x8 failing on
+  #165 too (the #144 power badge's header text is not in that test's
+  allowed list; FOLLOW-UP with #144).
+- SCREENS: work166-scratch-20261105/after (Review header, same states as
+  BW-163/164).
+- NOT VERIFIED: Orca speech, Linux 72 DPI, ISO/QEMU, hosted ci.yml, native
+  review of the drafts.
