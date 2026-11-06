@@ -5584,3 +5584,51 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK HighContrast theme rendering and Orca on the live
   image, Linux 72 DPI, curses on a real VT, hosted ci.yml, native review
   of the FR/DE/ES/IT drafts.
+
+## BW-180-GLOSSARY — One name for each thing, with a banned-synonym check (IMPLEMENTED LOCALLY; SAFETY-MODULE WORDING FOLLOW-UP; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/one-name-180` (stacked on
+  `feat/high-contrast-179` @ 16e45f2; commit e339343), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
+- BASELINE (work180-scratch-20261105/lint_before.txt, scan1/scan2.txt):
+  120 banned-synonym hits on English surfaces — boot/live/original/Beamo
+  boot USB for the Beamo USB, wipe for erase, PC/machine for computer,
+  drive for disk, refresh, second USB, "turn the PC off", offline
+  helper/page; translations split "clé USB de démarrage" vs "clé USB Beamo"
+  (and DE/ES/IT equivalents, 13 each).
+- WHAT CHANGED: docs/glossary.md (Use / For / Not / Notes table plus "Not
+  renamed"); tests/test_glossary_180.py parses it and checks copy.py
+  constants, prose string constants in src/beamo_wipe (no docstrings; not
+  locales/, safety.py, nwipe_runner.py), scripts/stage_live_assets.py,
+  helper/index.html, desktop/web/{index.html,app.js}, desktop/*.go, and
+  README.md / helper/README.md / docs/screen-reader.md (code stripped);
+  ALLOWED exceptions each must still occur. Text edits across copy,
+  inventory, recovery, identity, outcomes, progress, storage_limits (+ the
+  mirrored docs/storage-and-controller-limits.md), diagnostic_report,
+  support_export, wizard, app (CLI help), gallery comments, helper, launcher
+  page/app.js/readiness.go, USB README, README, screen-reader.md; locales:
+  the Beamo USB in every language (44 strings); translations.md row.
+  "Do not turn the PC off" became "Keep the computer on" (the stale block
+  must never say "shut down"; test_stale_progress).
+- FILES: 27 source/doc files + docs/glossary.md, tests/test_glossary_180.py
+  (new, 63 cases), 14 tests updated for the new wording.
+- TESTS / CHECKS: new 63/63 pass; on 16e45f2 the file errors at collection
+  (no glossary) and with the glossary copied in fails 6 (lists the old
+  synonyms). Full suite per file (702 files, 600-900 s cap each) on both
+  trees: after single-file reruns of every difference, no new failure on
+  #180 (three Tk cases — compact_rows_149 selected-disk, last_chance
+  quick_zero, report_panel_135 [found] — fail alone on both trees; the
+  rest flipped both ways only under the parallel run). Not run: four
+  files that hang/time out on Windows Tk on both trees
+  (test_adaptive_layout, test_reflow_large_text,
+  test_single_erase_warning_128, test_tk_runtime). Go 1.26.8 `go test
+  ./...` ok before and after, go vet and gofmt clean; ruff, mypy
+  --platform linux, node --check app.js clean.
+- SCREENS: work180-scratch-20261105/{before,after} (Boot helper top,
+  launcher page via headless Chrome).
+- FOLLOW-UP (needs a safety: review): safety.py guard texts ("Boot USB
+  appeared as a selectable disk…", "target disk"), nwipe_runner.py
+  messages ("A wipe is already running.") and their translations keep the
+  old words; listed under "Not renamed" in docs/glossary.md.
+- NOT VERIFIED: native review of the FR/DE/ES/IT wording, hosted ci.yml,
+  Linux 72 DPI, GTK runtime.
