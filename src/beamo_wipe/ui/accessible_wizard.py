@@ -230,6 +230,7 @@ class AccessibleWizard:
             #beamo-accessible button.primary-action:hover {{ background-color: #163A5C; }}
             #beamo-accessible button.primary-action:active {{ background-color: #102A44; }}
             #beamo-accessible button.destructive-action {{ background-image: none; background-color: #B3261E; color: #FFFFFF; }}
+            #beamo-accessible button.selected-choice {{ background-image: none; background-color: #F0F5FA; color: #1C4A73; border: 2px solid #1C4A73; }}
             #beamo-accessible button.destructive-action:hover {{ background-color: #8E1D16; }}
             #beamo-accessible button.destructive-action:active {{ background-color: #6E1510; }}
             #beamo-accessible button:disabled {{ background-image: none; background-color: #E8ECF1; color: #6E7989; }}
@@ -563,6 +564,7 @@ class AccessibleWizard:
                 )
                 if self.w.language == code:
                     chosen_language = language_button
+                    language_button.get_style_context().add_class("selected-choice")  # #176
             self.label(C.LANGUAGE_LEAD)
             # #139: language, then text size, then the keyboard; each part
             # starts with a heading Orca can jump to.
@@ -571,11 +573,13 @@ class AccessibleWizard:
             self.label(C.TEXT_SIZE_LEAD)
             for size_id, label in C.TEXT_SIZE_LABELS.items():
                 state = C.ACCESSIBLE_SELECTED if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
+                size_button = self.button(
                     f"{label} ({state})",
                     lambda sid=size_id: self.w.set_text_size(sid),
                     in_body=True,
                 )
+                if self.w.text_size == size_id:
+                    size_button.get_style_context().add_class("selected-choice")  # #176
             keyboard_heading = self.label(C.KEYBOARD_LEAD, focusable=True)
             keyboard_heading.get_accessible().set_role(Atk.Role.HEADING)
             notice = C.keyboard_layout_notice(self.w)
@@ -584,11 +588,13 @@ class AccessibleWizard:
             for index, layout_id in enumerate(LAYOUT_ORDER, 1):
                 spec = _keyboard.LAYOUTS[layout_id]
                 state = C.ACCESSIBLE_SELECTED if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
+                layout_button = self.button(
                     f"{index} {spec.title} ({state})",
                     lambda lid=layout_id: self.w.set_keyboard_layout(lid),
                     in_body=True,
                 )
+                if self.w.keyboard_layout == layout_id:
+                    layout_button.get_style_context().add_class("selected-choice")  # #176
                 self.label(spec.note)
             # #141: layout fine print behind Show more (an expander).
             limits = Gtk.Expander.new(C.BTN_MORE)

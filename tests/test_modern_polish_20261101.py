@@ -119,11 +119,11 @@ def test_text_size_is_a_segmented_control(tk_app):  # noqa: F811
     track = sizes[0].master.master
     assert isinstance(track, tkui._Box) and track._fill == tkui.TRACK
     assert all(b.master.master is track for b in sizes)
-    chosen = [b for b in sizes if b._variant == "primary"]
+    chosen = [b for b in sizes if b._variant == "selected"]  # #176: the selected token
     assert [b.itemcget(b._label, "text") for b in chosen] == [C.TEXT_SIZE_LABELS[wiz.text_size]]
     assert {b._variant for b in sizes if b not in chosen} == {"segment"}
     html = gallery_html()
-    assert '"primary" : "segment"' in html and ".textsizes button.btn.segment" in html
+    assert 'class="btn choice sel"' in html and ".textsizes button.btn.segment" in html  # #176
 
 
 @pytest.mark.parametrize("ready", [False, True], ids=["counting", "ready"])

@@ -1137,8 +1137,14 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .meta .mono.dev { color: var(--muted); font-size: 13px; }
   .card .meta .dot { color: var(--border-strong); margin: 0 6px; }
   .radio { flex: none; width: 22px; height: 22px; margin-top: 1px; border: 2px solid var(--border-strong); border-radius: 50%; position: relative; background: var(--surface); }
-  .sel .radio { border-color: var(--primary); }
-  .sel .radio::after { content: ""; position: absolute; inset: 30%; border-radius: 50%; background: var(--primary); }
+  /* #176: one "selected" style — brand edge, tint fill and a check mark
+     (never colour alone) on cards, the size switch and language choices. */
+  .sel .radio { border-color: var(--primary); background: var(--primary); }
+  .sel .radio::after { content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #FFFFFF; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .choice { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; margin: 0 6px 4px 0; border: 1px solid var(--border); border-radius: var(--pill); background: var(--surface); font-size: 14px; font-weight: 600; }
+  .choice.sel, .textsizes button.btn.choice.sel { border: 2px solid var(--primary); background: var(--primary-tint); color: var(--primary); }
+  .tick { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); position: relative; }
+  .tick::after { content: ""; position: absolute; left: 4px; top: 1px; width: 3px; height: 7px; border: solid #FFFFFF; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .chip { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; background: var(--surface-alt); color: var(--muted); border-radius: 999px; vertical-align: 2px; }
   .chip.ok { color: var(--ok); background: var(--ok-tint); }
   .chip.warn { color: var(--warn); background: var(--warn-bg); }
@@ -1919,8 +1925,10 @@ function draw() {
       const selected = (keyboardLayout || "us") === item.id;
       return `<div class="card pickable${selected ? " sel" : ""}" data-layout="${item.id}" tabindex="0" role="button" aria-pressed="${selected}"><div class="row"><span class="radio"></span><div class="grow"><div class="title">${item.title}</div><p class="small muted">${item.note}</p></div><span class="kbd">${i+1}</span></div></div>`;
     }).join("");
-    const sizes = P.textSizes.map(item => `<button type="button" class="btn ${textSize === item.id ? "primary" : "segment"}" data-text="${item.id}">${item.label}</button>`).join("");
-    const langs = P.languages.map(l => `<span class="small">${l.active ? ">" : "&nbsp;"} ${l.name}</span>`).join(" &nbsp; ");
+    const sizes = P.textSizes.map(item => textSize === item.id
+      ? `<button type="button" class="btn choice sel" aria-pressed="true" data-text="${item.id}"><span class="tick" aria-hidden="true"></span>${item.label}</button>`
+      : `<button type="button" class="btn segment" aria-pressed="false" data-text="${item.id}">${item.label}</button>`).join("");
+    const langs = P.languages.map(l => `<span class="choice${l.active ? " sel" : ""}"${l.active ? ' aria-current="true"' : ""}>${l.active ? '<span class="tick" aria-hidden="true"></span>' : ""}${l.name}</span>`).join("");
     // #131: language first, each in its own name; the page's layout follows
     // it until a layout is picked by hand.
     const layoutNotice = layoutChosen ? "" : `<p class="small"><strong>${P.layoutNotice}</strong></p>`;

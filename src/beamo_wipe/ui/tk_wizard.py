@@ -88,6 +88,12 @@ PRIMARY = "#1C4A73"
 PRIMARY_DARK = "#163A5C"
 PRIMARY_PRESS = "#102A44"
 PRIMARY_TINT = "#F0F5FA"
+# #176: one "selected" style for every choice (cards, segments, chips):
+# brand edge, tint fill and a drawn check mark — never colour alone.
+SELECTED_FILL = PRIMARY_TINT
+SELECTED_EDGE = PRIMARY
+SELECTED_EDGE_W = 2
+SELECTED_INK = PRIMARY
 DANGER = "#B3261E"
 DANGER_DARK = "#8E1D16"
 DANGER_PRESS = "#6E1510"
@@ -299,14 +305,28 @@ def _text_start(widget: tk.Misc) -> int:
         return 0
 
 
-def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
-    cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
+def _draw_selected_mark(cv: tk.Canvas, x: float, y: float, size: float, *, tags: str = "") -> None:
+    """#176: the selected mark — a filled brand circle with a white check."""
     pad = 1.5
-    ring = PRIMARY if selected else BORDER_STRONG
-    cv.create_oval(pad, pad, size - pad, size - pad, outline=ring, width=2)
+    cv.create_oval(x + pad, y + pad, x + size - pad, y + size - pad,
+                   fill=SELECTED_EDGE, outline=SELECTED_EDGE, width=2, tags=tags)
+    cv.create_line(
+        [x + size * 0.28, y + size * 0.52, x + size * 0.44, y + size * 0.68,
+         x + size * 0.73, y + size * 0.34],
+        fill="#FFFFFF", width=max(2.0, size / 9), capstyle="round", joinstyle="round",
+        tags=(tags, "check") if tags else "check",
+    )
+
+
+def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
+    """A choice's mark: the #176 selected mark, or an empty ring."""
+    cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
+    cv._beamo_selected_mark = selected  # type: ignore[attr-defined]
     if selected:
-        inset = size * 0.30
-        cv.create_oval(inset, inset, size - inset, size - inset, fill=PRIMARY, outline="")
+        _draw_selected_mark(cv, 0, 0, size)
+    else:
+        pad = 1.5
+        cv.create_oval(pad, pad, size - pad, size - pad, outline=BORDER_STRONG, width=2)
     return cv
 
 
@@ -813,6 +833,8 @@ class _Button(tk.Canvas):
         # Unselected segment of a segmented control (the track supplies
         # the shape; the selected segment is a primary pill).
         "segment": (None, INK, "#D9E0E8", "#CDD5DF", None, FOCUS),
+        # #176: a selected choice (segmented control): tint, brand edge, mark.
+        "selected": (SELECTED_FILL, SELECTED_INK, SELECTED_FILL, "#D7E4F2", SELECTED_EDGE, FOCUS),
     }
 
     _RING_GAP = 4  # canvas room below the pill so the focus ring never clips
@@ -836,6 +858,7 @@ class _Button(tk.Canvas):
         compact: bool = False,
         large: bool = False,
         min_width: int = 0,
+        mark: bool = False,
     ) -> None:
         self._command = command
         self._variant = variant
@@ -848,7 +871,11 @@ class _Button(tk.Canvas):
             pad_x, pad_y = 34, 14
         else:
             pad_x, pad_y = (12, 3) if compact else (24, 10)
-        width = max(min_width, font.measure(text) + 2 * pad_x + 6)
+        # #176: room for the selected mark before the text.
+        self._mark = max(12, font.metrics("linespace") - 2) if mark else 0
+        self._mark_x = 3 + pad_x
+        extra = self._mark + 6 if mark else 0
+        width = max(min_width, font.measure(text) + 2 * pad_x + 6 + extra)
         height = font.metrics("linespace") + 2 * pad_y + 6 + self._RING_GAP
         super().__init__(
             parent,
@@ -863,7 +890,7 @@ class _Button(tk.Canvas):
         self._bw = width
         self._bh = height
         self._label = self.create_text(
-            width / 2, (height - self._RING_GAP) / 2, text=text, font=font, anchor="center"
+            (width + extra) / 2, (height - self._RING_GAP) / 2, text=text, font=font, anchor="center"
         )
         self.bind("<ButtonPress-1>", self._press)
         self.bind("<ButtonRelease-1>", self._release)
@@ -905,11 +932,15 @@ class _Button(tk.Canvas):
                 self, 1, 1, self._bw - 1, body_bottom + 2, PILL,
                 fill=ring, outline="", tags="rr",
             )
+        edge = SELECTED_EDGE_W if self._variant == "selected" else 1
         _round_rect(
             self, 3, 3, self._bw - 3, body_bottom, PILL,
-            fill=fill or "", outline=outline or "", width=1 if outline else 0,
+            fill=fill or "", outline=outline or "", width=edge if outline else 0,
             tags="rr",
         )
+        if self._mark:
+            top = (body_bottom + 3 - self._mark) / 2
+            _draw_selected_mark(self, self._mark_x, top, self._mark, tags="rr")
         self.tag_lower("rr")
         self.itemconfigure(self._label, fill=fg)
 
@@ -3679,11 +3710,12 @@ class TkWizard:
         for index, layout_id in enumerate(LAYOUT_ORDER, 1):
             spec = _keyboard.LAYOUTS[layout_id]
             selected = self.w.keyboard_layout == layout_id
-            fill = PRIMARY_TINT if selected else SURFACE
+            fill = SELECTED_FILL if selected else SURFACE
             # Light card edge; the radio inside carries the control contrast.
-            outline = PRIMARY if selected else BORDER
+            outline = SELECTED_EDGE if selected else BORDER
             card = _Box(
-                layout_grid, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
+                layout_grid, radius=RADIUS, fill=fill, outline=outline,
+                ow=SELECTED_EDGE_W if selected else 1,
                 padx=14, pady=8, halo=False,
             )
             layout_cells.append(card)
@@ -3899,8 +3931,9 @@ class TkWizard:
                 text=label,
                 font=self.font_s_bold,
                 command=partial(self._apply_text_size, size_id),
-                variant="primary" if selected else "segment",
+                variant="selected" if selected else "segment",
                 compact=True,
+                mark=selected,
             ).pack(side=tk.LEFT)
         size_row.fit_now()
         self._p(block, C.TEXT_SIZE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
@@ -3927,17 +3960,23 @@ class TkWizard:
                 self.choose_language(lang_code)
                 return "break"
 
+            fill = SELECTED_FILL if selected else SURFACE
             chip = _Box(
-                row, radius=PILL, fill=PRIMARY_TINT if selected else SURFACE,
-                outline=PRIMARY if selected else BORDER, ow=2 if selected else 1,
+                row, radius=PILL, fill=fill,
+                outline=SELECTED_EDGE if selected else BORDER,
+                ow=SELECTED_EDGE_W if selected else 1,
                 padx=14, pady=6, halo=False,
             )
             chip.pack(side=tk.LEFT, padx=(0, 8), pady=(0, 4))
+            if selected:
+                # #176: the check mark says "selected" without colour.
+                mark = _icon_radio(chip.inner, True, max(12, self.font_s_bold.metrics("linespace") - 2))
+                mark.configure(bg=fill)
+                mark.pack(side=tk.LEFT, padx=(0, 6))
             tk.Label(
                 chip.inner, text=LANGUAGE_NAMES[code], font=self.font_s_bold,
-                fg=PRIMARY if selected else INK,
-                bg=PRIMARY_TINT if selected else SURFACE,
-            ).pack()
+                fg=SELECTED_INK if selected else INK, bg=fill,
+            ).pack(side=tk.LEFT)
             setattr(chip, "_beamo_language", code)
             self._bind_tree(chip, _pick_language)
             chip.configure(cursor="hand2", takefocus=1)
@@ -4204,7 +4243,7 @@ class TkWizard:
         if disk.is_boot:
             fill, outline, ow = USB_BG, USB_BORDER, 1
         elif selected:
-            fill, outline, ow = PRIMARY_TINT, PRIMARY, 2
+            fill, outline, ow = SELECTED_FILL, SELECTED_EDGE, SELECTED_EDGE_W
         else:
             fill, outline, ow = SURFACE, BORDER, 1
         card = _Box(
@@ -5811,10 +5850,10 @@ class TkWizard:
         checks = bool(card_copy["checks"])
         key = str(card_copy["key"])
         selected = self.w.method == method
-        fill = PRIMARY_TINT if selected else SURFACE
-        outline = PRIMARY if selected else BORDER
+        fill = SELECTED_FILL if selected else SURFACE
+        outline = SELECTED_EDGE if selected else BORDER
         card = _Box(
-            parent, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
+            parent, radius=RADIUS, fill=fill, outline=outline, ow=SELECTED_EDGE_W if selected else 1,
             padx=18, pady=8, halo=False,
         )
         card.pack(fill=tk.X, pady=(0, 6), padx=4)
