@@ -5611,8 +5611,8 @@ another very thorough and comprehensive pass of this." Repo
   "Do not turn the PC off" became "Keep the computer on" (the stale block
   must never say "shut down"; test_stale_progress).
 - FILES: 27 source/doc files + docs/glossary.md, tests/test_glossary_180.py
-  (new, 63 cases), 14 tests updated for the new wording.
-- TESTS / CHECKS: new 63/63 pass; on 16e45f2 the file errors at collection
+  (new, 89 cases), 14 tests updated for the new wording.
+- TESTS / CHECKS: new 89/89 pass; on 16e45f2 the file errors at collection
   (no glossary) and with the glossary copied in fails 6 (lists the old
   synonyms). Full suite per file (702 files, 600-900 s cap each) on both
   trees: after single-file reruns of every difference, no new failure on
