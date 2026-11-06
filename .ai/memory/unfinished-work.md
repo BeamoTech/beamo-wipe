@@ -5474,3 +5474,48 @@ another very thorough and comprehensive pass of this." Repo
   800x600 std, 1280x820 extra); no clipping (test at both sizes).
 - NOT VERIFIED: GTK markup rendering (no GTK here), Linux 72 DPI hinting of
   the dotted zero at 14 px, hosted ci.yml.
+
+## BW-178-DISABLED — Readable disabled buttons with reasons (IMPLEMENTED LOCALLY; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/disabled-buttons-178` (stacked
+  on `feat/serial-type-177` @ 5ff66a2; commit 17afdf8), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
+  review item 52). Ref #143, #179.
+- BASELINE (work178-scratch-20261105/before/metrics.txt): disabled primary
+  = DISABLED_BG #E8ECF1 / DISABLED_FG #6E7989, no outline — label 3.72:1,
+  pill vs white footer 1.19:1. Reasons beside the button: Owner only
+  (#143); Pick none; Confirm and Review only in the body.
+- WHAT CHANGED: tokens DISABLED_FILL #F0F5FA, DISABLED_EDGE #6A84A1 (dashed
+  4/3), DISABLED_INK #4A6684 in _Button for disabled primary/danger/
+  secondary (ghost/quiet/segment unchanged: 4.4:1 on white); _primary_btn
+  reason= (shown only while disabled; _set_primary_enabled keeps it in
+  step): Owner (OWNER_CONTINUE_REASON, same text), Pick
+  PICK_CONTINUE_REASON, Confirm CONFIRM_CONTINUE_REASON, Review
+  REVIEW_ERASE_REASON, Diagnostic busy DISABLED_BUSY. GTK button:disabled
+  CSS; web button.btn:disabled. FR/DE/ES/IT drafts. Other disabled controls
+  already carry reasons (Done note, report Save/Retry, Working finish
+  toggle, Help & settings items).
+- CONTRAST (measured): label 5.43:1 on fill; edge 3.87:1 on white.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard}.py, tests/test_disabled_buttons_178.py (new, 14).
+- TESTS / CHECKS: new 14/14 pass, 14/14 fail on 5ff66a2 (one by one);
+  related (#143, #157, #162, #163, #165, ui_system, design_runtime,
+  modern_*) vs #177: no new failures except test_confirm_spacing_157
+  roomy [size1], which fails identically on #177 — bisected to #174, fixed
+  below. ruff, mypy --platform linux clean.
+- SCREENS: work178-scratch-20261105/{before,after2} (owner, pick, confirm,
+  review; 800x600 std, 1280x820 large).
+- NOT VERIFIED: GTK CSS rendering, Linux 72 DPI dash rendering, hosted
+  ci.yml, native review of the drafts.
+
+## BW-174B — Confirm help moved the status line by 1 px (REGRESSION FROM #174; FIXED LOCALLY)
+
+- 2026-11-05, Claude (Opus 5.5). Same branch, commit a7b0188.
+  test_confirm_spacing_157 roomy [1280x720] failed from #174 @ 76c8eff on
+  (passes on #173 @ 01cb4e6): the taller body flipped the centring spacer
+  by 1 px when the wrong-entry help appeared. The #174 comparison had not
+  included test_confirm_spacing_157. Fix in _balance_confirm: the status
+  pill's measured one-line height (not an estimated linespace per extra
+  line), and the Change button's height from the font (BW-155B builds the
+  button only while the help shows). test_confirm_spacing_157 15/15,
+  test_layout_hint_build_155b 3/3, test_confirm_layout_hint_155 Tk 5/5.
