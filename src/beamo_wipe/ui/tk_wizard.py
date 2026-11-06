@@ -5664,7 +5664,10 @@ class TkWizard:
         appears. Only the spacer above the title changes.
         """
         sentence = C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title)
-        change = next((w for w in hint.winfo_children() if getattr(w, "_beamo_layout_change", False)), None)
+        # The help's Change button is built only while the help shows
+        # (BW-155B): reserve its height from the font, as _Button draws it.
+        change_h = self.font_s_bold.metrics("linespace") + 2 * 3 + 6 + _Button._RING_GAP
+        one_line: list[int] = []  # the status pill's height with one line
 
         def fit(_event=None) -> None:
             try:
@@ -5678,12 +5681,17 @@ class TkWizard:
                 line = self.font_s_bold.metrics("linespace")
                 label = self._match_label
                 lines = str(label.cget("text")).count("\n") + 1 if label is not None else 1
-                block = pill.winfo_y() + pill.winfo_reqheight() - (lines - 1) * line
+                if lines == 1:
+                    one_line[:] = [pill.winfo_reqheight()]
+                # The one-line height as measured, not estimated: a wrapped
+                # line need not add exactly one linespace (Tk rounding).
+                height = one_line[0] if one_line else pill.winfo_reqheight() - (lines - 1) * line
+                block = pill.winfo_y() + height
                 width = max(200, content.winfo_width())
                 sentence_lines = max(1, -(-self.font_s.measure(sentence) // width))
                 reserve = (line + self._layout_hint_gap
                            + sentence_lines * self.font_s.metrics("linespace")
-                           + (change.winfo_reqheight() if change is not None else line) + 2)
+                           + change_h + 2)
                 # In the scrolling body the column is only as tall as its
                 # content: measure against the visible view instead.
                 canvas = self._body_canvas
