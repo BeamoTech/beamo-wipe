@@ -235,6 +235,7 @@ class AccessibleWizard:
             #beamo-accessible button.primary-action:hover {{ background-color: #163A5C; }}
             #beamo-accessible button.primary-action:active {{ background-color: #102A44; }}
             #beamo-accessible button.destructive-action {{ background-image: none; background-color: #B3261E; color: #FFFFFF; }}
+            #beamo-accessible button:disabled {{ background-image: none; background-color: #F0F5FA; color: #4A6684; border: 1px dashed #6A84A1; }}
             #beamo-accessible button.selected-choice {{ background-image: none; background-color: #F0F5FA; color: #1C4A73; border: 2px solid #1C4A73; }}
             #beamo-accessible button.destructive-action:hover {{ background-color: #8E1D16; }}
             #beamo-accessible button.destructive-action:active {{ background-color: #6E1510; }}

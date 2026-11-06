@@ -111,6 +111,12 @@ FOCUS = "#2563EB"
 ACCENT = "#E6A817"
 DISABLED_BG = "#E8ECF1"
 DISABLED_FG = "#6E7989"
+# #178: a disabled filled button is a faded brand pill with a dashed edge:
+# label 5.4:1 on its fill, edge 3.9:1 on white, so it reads as a button that
+# is not ready yet (and is never the #176 selected style: no check, dashed).
+DISABLED_FILL = "#F0F5FA"
+DISABLED_EDGE = "#6A84A1"
+DISABLED_INK = "#4A6684"
 TRACK = "#E4E9EF"
 # Confirmation characters in the disk card (#129). The box and underline
 # carry the meaning; the fill only adds contrast.
@@ -915,7 +921,7 @@ class _Button(tk.Canvas):
         if not self._enabled:
             if self._variant == "ghost" or self._variant in ("quiet", "segment"):
                 return self.cget("bg"), DISABLED_FG, None
-            return DISABLED_BG, DISABLED_FG, None
+            return DISABLED_FILL, DISABLED_INK, DISABLED_EDGE
         if self._pressed and press is not None:
             return press, fg, outline
         if self._hovering and hover is not None:
@@ -936,6 +942,7 @@ class _Button(tk.Canvas):
         _round_rect(
             self, 3, 3, self._bw - 3, body_bottom, PILL,
             fill=fill or "", outline=outline or "", width=edge if outline else 0,
+            dash=(4, 3) if outline and not self._enabled else "",
             tags="rr",
         )
         if self._mark:
@@ -1727,6 +1734,7 @@ class TkWizard:
             self._help_button: Optional[_Button] = None
             self._shortcuts_button: Optional[_Button] = None  # #174
             self._help_direct = False
+            self._disabled_reason: Optional[tk.Label] = None  # #178
             self._help_keep_focus = ""
             self._help_prior_focus = ""
             self._help_focus_key = ""
@@ -3621,6 +3629,7 @@ class TkWizard:
         command: Callable[[], None],
         enabled: bool = True,
         danger: bool = False,
+        reason: str = "",
     ) -> _Button:
         btn = _Button(
             row._right,  # type: ignore[attr-defined]
@@ -3633,12 +3642,37 @@ class TkWizard:
         )
         btn.pack(side=tk.RIGHT)
         self._primary = btn
+        self._disabled_reason = None
+        if reason:
+            # #143/#178: a greyed button never stands without its reason, on
+            # the same row, just before it; shown only while it is disabled
+            # (_set_primary_enabled keeps it in step without a redraw).
+            label = tk.Label(
+                row._right, text=reason,  # type: ignore[attr-defined]
+                font=self.font_s, fg=MUTED, bg=FOOTER_BG, justify=tk.RIGHT, anchor="e",
+                wraplength=max(140, self.lay.content_w // 3),
+            )
+            label._beamo_disabled_reason = True  # type: ignore[attr-defined]
+            if not enabled:
+                label.pack(side=tk.RIGHT, padx=(0, 12))
+            self._disabled_reason = label
         return btn
 
     def _set_primary_enabled(self, enabled: bool) -> None:
         if self._primary is None:
             return
         self._primary.set_enabled(enabled)
+        reason = getattr(self, "_disabled_reason", None)
+        if reason is None:
+            return
+        try:
+            shown = bool(reason.winfo_manager())
+            if enabled and shown:
+                reason.pack_forget()
+            elif not enabled and not shown:
+                reason.pack(side=tk.RIGHT, padx=(0, 12), after=self._primary)
+        except tk.TclError:
+            pass
 
     # -- screens ---------------------------------------------------------------
 
@@ -4114,17 +4148,12 @@ class TkWizard:
         self._support_identity_block(zone)
         row = self._footer_shell(C.HINT_OWNER)
         self._back_btn(row)
-        self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok)
+        # #143: a greyed button never stands without its reason (#178: the
+        # shared reason line). Ticking the box redraws the screen without it.
+        self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner,
+                          enabled=self.w.owner_ok, reason=C.OWNER_CONTINUE_REASON)
         if not self.w.owner_ok:
-            # #143: a greyed button never stands without its reason. Ticking
-            # the box redraws the screen without it.
-            reason = tk.Label(
-                row._right, text=C.OWNER_CONTINUE_REASON,  # type: ignore[attr-defined]
-                font=self.font_s, fg=MUTED, bg=FOOTER_BG, justify=tk.RIGHT, anchor="e",
-                wraplength=max(140, self.lay.content_w // 3),
-            )
-            reason.pack(side=tk.RIGHT, padx=(0, 12))
-            self._owner_reason = reason
+            self._owner_reason = self._disabled_reason
 
     def _owner_clicked(self, _event=None) -> str:
         self._owner_var.set(0 if self._owner_var.get() else 1)
@@ -4522,7 +4551,8 @@ class TkWizard:
         row = self._footer_shell(C.HINT_PICK)
         back = self._back_btn(row)
         can = self.w.selected is not None and not self.w.selected.is_boot
-        self._primary_btn(row, C.primary_action(Screen.PICK), self.w.continue_pick, enabled=can)
+        self._primary_btn(row, C.primary_action(Screen.PICK), self.w.continue_pick, enabled=can,
+                          reason=C.PICK_CONTINUE_REASON)
         # Always land keyboard focus somewhere sensible: the obvious next
         # action when a disk is chosen, otherwise the safe way out.
         (self._primary if can and self._primary is not None else back).focus_set()
@@ -5176,7 +5206,7 @@ class TkWizard:
         self._secondary_btn(row, C.BTN_BACK, self.w.close_diagnostic, enabled=not view.busy)
         self._primary_btn(row, C.SAVE_DIAGNOSTIC_REPORT if view.ready else C.BTN_PREPARE,
                           self._click_diagnostic_action,
-                          enabled=not view.busy)
+                          enabled=not view.busy, reason=C.DISABLED_BUSY)
 
     # -- Help & settings (#175) ----------------------------------------------
 
@@ -5610,7 +5640,8 @@ class TkWizard:
         self._sync_layout_hint()
         row = self._footer_shell(C.HINT_CONFIRM)
         self._back_btn(row)
-        self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok)
+        self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok,
+                          reason=C.CONFIRM_CONTINUE_REASON)
         # Also in the scrolling body: a short-but-wide window (1280x720) or
         # larger text at 1280x820 can still have room to spare; with none,
         # the spacer stays at zero.
@@ -6240,6 +6271,7 @@ class TkWizard:
             self._click_erase,
             enabled=self.w.erase_enabled,
             danger=True,
+            reason=C.REVIEW_ERASE_REASON,
         )
         # Safe default: focus Back, never the Erase button.
         back.focus_set()

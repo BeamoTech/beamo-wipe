@@ -1192,7 +1192,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
   button.btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--button-edge); }
   .secondary:hover:not(:disabled) { background: var(--surface-alt); }
   .secondary:active:not(:disabled) { background: #E2E8EE; }
-  button.btn:disabled { background: var(--disabled-bg); color: var(--disabled-fg); border-color: transparent; box-shadow: none; cursor: not-allowed; }
+  /* #178: faded brand pill, dashed edge (3.9:1), label 5.4:1 — readable, clearly not ready. */
+  button.btn:disabled { background: #F0F5FA; color: #4A6684; border: 1px dashed #6A84A1; box-shadow: none; cursor: not-allowed; }
   .linkbtn { background: none; border: 0; color: var(--primary); font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 10px; text-align: left; border-radius: var(--pill); margin-left: -10px; }
   .linkbtn:hover:not(:disabled) { background: var(--primary-tint); }
   .linkbtn:active:not(:disabled) { background: #D7E4F2; }
