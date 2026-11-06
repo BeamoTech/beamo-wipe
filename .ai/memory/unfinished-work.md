@@ -5519,3 +5519,68 @@ another very thorough and comprehensive pass of this." Repo
   line), and the Change button's height from the font (BW-155B builds the
   button only while the help shows). test_confirm_spacing_157 15/15,
   test_layout_hint_build_155b 3/3, test_confirm_layout_hint_155 Tk 5/5.
+
+## BW-179-CONTRAST — High-contrast theme on every screen (IMPLEMENTED LOCALLY; ACCESSIBLE BOOT ENTRY OWNER DECISION; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/high-contrast-179` (stacked
+  on `feat/disabled-buttons-178` @ e60c7fa; commit dfd8786), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
+  review item 53). Enables the #175 Help & settings item.
+- BASELINE: no theme; the Help & settings High contrast item was greyed
+  ("not in this version"). Screens: work179-scratch-20261105/std178
+  (setup screen before), work175/work178 scratch for the other screens.
+- WHAT CHANGED (colours only; no wizard step, guard, token, countdown,
+  method, argv or discovery change):
+  - Model: `Wizard.high_contrast` (start from BEAMO_WIPE_HIGH_CONTRAST=1),
+    `set_high_contrast(bool)`, `toggle_high_contrast()`; app.py carries it
+    into the next session (Erase another disk). help_menu: the item is
+    enabled, labelled "High contrast: on/off", and keeps the menu open.
+  - Tk: `_HIGH_CONTRAST_PALETTE` / `apply_palette(high)` swaps every colour
+    token (white page, black ink and edges, PRIMARY #002A54, DANGER
+    #8A0000, OK #0A4A22, SELECTED edge 3 px black, yellow preview stripe);
+    `_sync_palette` recolours the persistent chrome on each draw; colour
+    parameter defaults resolve at call time (found by AST scan); 3 px
+    black focus ring. Setup screen: "Contrast" segmented choice
+    (Standard contrast / High contrast) after Text size.
+  - GTK/Orca: switches `gtk-theme-name` to HighContrast (restores the
+    starting theme when off) plus a thick-focus CSS block; starts on when
+    the desktop theme already is a contrast theme; setup-screen buttons.
+    Also fixes a #178 bug: an older `button:disabled` rule later in the CSS
+    overrode the #178 disabled colours; removed.
+  - Curses: bold white on black (init_pair + bkgd), F4 on the first
+    screen. Plain console unchanged (terminal colours).
+  - Web preview: `.shell.hc` variables, 4 px focus outline, menu item and
+    setup-screen choice.
+  - Copy: MENU_HIGH_CONTRAST_ON/OFF, CONTRAST_TITLE, CONTRAST_STANDARD
+    ("Standard contrast" — not "Standard", which is a text size),
+    CONTRAST_HIGH, CONTRAST_LEAD, CON_CONTRAST_KEY; FR/DE/ES/IT drafts.
+  - docs/screens.md: High contrast row; Help & settings row updated.
+- CONTRAST (asserted in test_palette_contrast): every text/background pair
+  7:1 or more; white on filled buttons 7:1 or more; edges and focus 3:1 or
+  more; selected edge 3 px. Selection keeps the drawn check (not colour
+  alone).
+- FILES: src/beamo_wipe/{app,copy,gallery,help_menu,wizard}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  docs/screens.md, tests/test_high_contrast_179.py (new, 26),
+  tests/test_help_menu_175.py, tests/test_selected_style_176.py (GTK
+  selected-choice count 3 → 4: contrast uses the #176 token).
+- TESTS / CHECKS: new 26/26 pass; on e60c7fa all fail or error (50
+  FAILED/ERROR lines). Related comparison (19 files: ui_system,
+  design_runtime, modern_*, canvas_layout, card_token_129,
+  confirm_spacing_157, console_parity, help_menu_175, keyboard_layout,
+  language_first_131, result_card_171, review_enter_focus_165,
+  selected_style_176, setup_order_139, shortcuts_collapse_174, ui_rework,
+  disabled_buttons_178) vs #178: no new failures (run_179c vs run_178; two new tmp_path setup ERRORs in test_keyboard_layout came from a concurrent pytest pruning the shared Windows temp folder and pass when rerun alone). The first run found 5 new
+  failures, all from the contrast choice reusing the label "Standard"
+  (size-button counts 4 ≠ 3); fixed by the "Standard contrast" label and a
+  regression assertion that contrast and size labels never share a name.
+  ruff, mypy --platform linux clean.
+- SCREENS: work179-scratch-20261105/high (every screen + menu, high,
+  800x600 standard and 1280x820 large), high2 / std179 / std178 (setup
+  screen after the label fix; before), web3 (web preview high contrast).
+- OWNER DECISION: the accessible boot entry does not turn high contrast
+  on. It needs a live-image (boot parameter / environment) change;
+  BEAMO_WIPE_HIGH_CONTRAST=1 is ready. Not done without approval.
+- NOT VERIFIED: GTK HighContrast theme rendering and Orca on the live
+  image, Linux 72 DPI, curses on a real VT, hosted ci.yml, native review
+  of the FR/DE/ES/IT drafts.
