@@ -42,6 +42,11 @@ from beamo_wipe.safety import same_size_conflict  # noqa: E402
 from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
 from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support  # noqa: E402
 
+# #177: identifiers in monospace, regular weight, slightly spaced (0.75 pt);
+# Pango letter_spacing is in 1/1024 pt. The label's text stays the plain
+# identifier, so Orca reads it unchanged.
+SERIAL_SPAN = '<span font_family="monospace" weight="normal" letter_spacing="768">'
+
 
 def _record_image(text: str, scale: int = 4):
     """Gtk.Image of the record code, or None when it cannot be drawn."""
@@ -409,14 +414,15 @@ class AccessibleWizard:
             # read the serial or hardware ID character by character (#129).
             widget = self.label(view.announcement, focusable=marked)
             widget.get_style_context().add_class("disk-identity")
-            if marked:
-                self._mark_token(widget, view)
+            # #177: the identifier in monospace, regular weight, slightly
+            # spaced; the #129 token stays bold and underlined inside it.
+            self._mark_token(widget, view, token=marked)
         elif self.w.operation_identity_text:
             self.label(self.w.operation_identity_text).get_style_context().add_class(
                 "disk-identity"
             )
 
-    def _mark_token(self, widget, view) -> None:
+    def _mark_token(self, widget, view, *, token: bool = True) -> None:
         """Underline the confirmation characters inside the identity text.
 
         The label's text (what AT-SPI and Orca read) is unchanged; Pango
@@ -428,15 +434,25 @@ class AccessibleWizard:
         at = text.find(field)
         if at < 0:
             return
-        start = at + len(view.id_label) + 2 + view.token_start
-        end = at + len(view.id_label) + 2 + view.token_end
+        value_start = at + len(view.id_label) + 2
+        value_end = value_start + len(view.id_value)
         esc = GLib.markup_escape_text
+        if token and view.token_end > view.token_start:
+            start = value_start + view.token_start
+            end = value_start + view.token_end
+            value = (
+                esc(text[value_start:start])
+                + '<span underline="double" weight="bold" background="#FFF3C4">'
+                + esc(text[start:end])
+                + "</span>"
+                + esc(text[end:value_end])
+            )
+        else:
+            value = esc(text[value_start:value_end])
         widget.set_markup(
-            esc(text[:start])
-            + '<span underline="double" weight="bold" background="#FFF3C4">'
-            + esc(text[start:end])
-            + "</span>"
-            + esc(text[end:])
+            esc(text[:value_start])
+            + SERIAL_SPAN + value + "</span>"
+            + esc(text[value_end:])
         )
 
     def reader(self, text: str):

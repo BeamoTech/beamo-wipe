@@ -3207,7 +3207,12 @@ class TkWizard:
             setattr(ident, "_beamo_serial_marked", True)
             self._mark_differences(ident, view.id_value, view.comparison_marks, bg)
         else:
-            ident = self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
+            # #177: regular weight; the #129 token and #152 differences are
+            # drawn bold over it, so they stand out more than before. Tk has
+            # no letter spacing: DejaVu Sans Mono's dotted 0 and serifed 1/I/l
+            # keep the characters apart.
+            ident = self._wrapping_label(value, view.marked_id, font=self.font_mono, bg=bg)
+            setattr(ident, "_beamo_serial", True)
         if token and view.token_end > view.token_start:
             self._mark_token(ident, view.id_value[view.token_start:view.token_end])
         for note in view.notes:

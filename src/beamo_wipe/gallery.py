@@ -1130,7 +1130,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card.compact .size { font-size: 16px; }
   .card .meta { margin-top: 4px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 0; align-items: center; }
   .card .meta .mono { color: var(--ink); font-size: 14px; }
-  .card .meta .mono.ser { font-weight: 700; }
+  /* #177: regular weight, slightly spaced; #129/#152 marks stay bold. */
+  .card .meta .mono.ser { font-weight: 400; letter-spacing: .06em; }
   /* #152: regular serial, differing characters bold and underlined. */
   .card .meta .mono.ser.compared { font-weight: 400; }
   .card .meta .mono.ser b.diff { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
