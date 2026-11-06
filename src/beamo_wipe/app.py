@@ -482,6 +482,7 @@ def _run_session(args, *, session_store, use_console, want_accessible,
     keyboard_layout = None
     language = None
     text_size = None
+    high_contrast = None
     owned_reader = None
     try:
         while True:
@@ -507,12 +508,13 @@ def _run_session(args, *, session_store, use_console, want_accessible,
                 args, session_store=session_store, use_console=use_console,
                 want_accessible=want_accessible, fullscreen=fullscreen, reader=reader,
                 keyboard_layout=keyboard_layout, language=language,
-                text_size=text_size)
+                text_size=text_size, high_contrast=high_contrast)
             if not isinstance(code, Wizard):
                 return code
             keyboard_layout = code.keyboard_layout
             language = code.language
             text_size = code.text_size
+            high_contrast = code.high_contrast  # #179: for the whole session
             use_console = code.diagnostic_ui == "console"
             want_accessible = code.diagnostic_ui == "accessible"
             del code
@@ -527,7 +529,7 @@ def _run_session(args, *, session_store, use_console, want_accessible,
 
 def _run_one_session(args, *, session_store, use_console, want_accessible,
                      fullscreen, reader, keyboard_layout=None,
-                     language=None, text_size=None) -> int | Wizard:
+                     language=None, text_size=None, high_contrast=None) -> int | Wizard:
     if args.demo:
         # Instant fake data: stages would flash meaninglessly.
         try:
@@ -565,6 +567,8 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
         wizard.keyboard_layout = keyboard_layout
     if text_size is not None:
         wizard.set_text_size(text_size)
+    if high_contrast is not None:
+        wizard.set_high_contrast(high_contrast)
     wizard.diagnostic_ui = "console" if use_console else "graphical"
     # The language modules are process-wide. Every freshly constructed
     # wizard must record the same choice as the copy it will render. Keep

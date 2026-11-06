@@ -661,7 +661,11 @@ def _primary_footer(
     if screen == Screen.SPLASH:
         return [C.CON_PRESS_ANY_KEY]
     if screen == Screen.KEYBOARD:
-        lines = [C.CON_KEYBOARD_FOOTER]
+        lines = [C.CON_KEYBOARD_FOOTER,
+                 # #179: high contrast on the first screen.
+                 C.CON_CONTRAST_KEY.format(
+                     state=C.MENU_HIGH_CONTRAST_ON if getattr(wizard, "high_contrast", False)
+                     else C.MENU_HIGH_CONTRAST_OFF)]
         # Guided check (#140): the result sits beside the typed text.
         result = getattr(wizard, "keyboard_check_text", "")
         if result:
@@ -1655,6 +1659,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
     bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
+        _sync_contrast(stdscr, wizard)  # #179
         screen_changed = wizard.screen != shown_screen
         first_review_frame = wizard.screen == Screen.LAST_CHANCE and screen_changed
         if screen_changed:
@@ -2508,6 +2513,9 @@ def _handle(wizard: Wizard, ch: int) -> None:
         if ch == curses.KEY_F3:
             wizard.accept_keyboard_suggestion()  # #140 one-key switch
             return
+        if ch == curses.KEY_F4:
+            wizard.toggle_high_contrast()  # #179: colours only
+            return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.accept_keyboard()
             return
@@ -2647,10 +2655,35 @@ def _add(stdscr, y, x, text, attr=curses.A_NORMAL) -> bool:
     if not fitted:
         return not bool(text)
     try:
-        stdscr.addstr(y, x, fitted, attr)
+        stdscr.addstr(y, x, fitted, attr | _CONTRAST_ATTR)
     except curses.error:
         return False
     return fitted == text
+
+
+# #179: high contrast in the text screen — bold white on black where the
+# terminal has colours, bold everywhere. Set each frame from the wizard.
+_CONTRAST_ATTR = 0
+_contrast_shown = False
+
+
+def _sync_contrast(stdscr, wizard) -> None:
+    global _CONTRAST_ATTR, _contrast_shown
+    on = bool(getattr(wizard, "high_contrast", False))
+    _CONTRAST_ATTR = curses.A_BOLD if on else 0
+    if on == _contrast_shown:
+        return
+    _contrast_shown = on
+    try:
+        if on and curses.has_colors():
+            curses.start_color()
+            curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+            stdscr.bkgd(" ", curses.color_pair(1))
+        elif not on:
+            stdscr.bkgd(" ", 0)
+    except Exception:
+        # No colour support (or a test terminal): bold text still applies.
+        pass
 
 
 def _wrap(stdscr, y, text, width, y_max=None) -> int:

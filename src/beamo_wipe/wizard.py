@@ -459,6 +459,10 @@ class Wizard:
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
         self.text_size = "standard"
+        # #179: high contrast, for the whole session (carried to the next
+        # session like the text size). The accessible boot path can start
+        # with it on through BEAMO_WIPE_HIGH_CONTRAST=1.
+        self.high_contrast = os.environ.get("BEAMO_WIPE_HIGH_CONTRAST") == "1"
         self.language = "en"
         self.typing_check = ""
         self.keyboard_check: Optional[_keyboard.KeyCheck] = None
@@ -1071,6 +1075,19 @@ class Wizard:
                 self.keyboard_check = None
                 self.screen = Screen.OWNER
 
+    def set_high_contrast(self, on: bool) -> bool:
+        """#179: colours only; never changes any answer or gate."""
+        if type(on) is not bool:
+            return False
+        with self._lock:
+            self.high_contrast = on
+            return True
+
+    def toggle_high_contrast(self) -> bool:
+        with self._lock:
+            self.high_contrast = not self.high_contrast
+            return self.high_contrast
+
     def set_text_size(self, size: str) -> bool:
         """Session-only type size. Unknown values are refused."""
         if size not in {"standard", "large", "extra"}:
@@ -1148,6 +1165,7 @@ class Wizard:
                 sound_available=not (
                     self.screen == Screen.WORKING and self.audio_available is False
                 ),
+                high_contrast=self.high_contrast,
                 after_erase_started=(
                     self._wipe_request is not None or self.wipe_result is not None
                 ),
@@ -1160,7 +1178,8 @@ class Wizard:
         Only the existing guarded actions are reachable (text size, the
         keyboard screen, sounds, report help, Advanced); none of them can
         start, confirm or stop an erase. A disabled or stale item does
-        nothing. Keyboard shortcuts and High contrast change no state.
+        nothing. Keyboard shortcuts changes no state; High contrast (#179)
+        changes colours only.
         """
         from beamo_wipe import help_menu as _menu
 
@@ -1174,6 +1193,8 @@ class Wizard:
                 self.open_keyboard()
             elif key == _menu.SOUNDS:
                 self.toggle_sounds()
+            elif key == _menu.HIGH_CONTRAST:
+                self.toggle_high_contrast()
             elif key == _menu.REPORT_HELP:
                 self.open_report_help()
             elif key == _menu.ADVANCED:

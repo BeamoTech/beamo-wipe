@@ -479,6 +479,12 @@ def _help_menu_payload() -> dict:
         "common": C.MENU_SHORTCUTS_COMMON,
         "refresh": C.MENU_SHORTCUTS_REFRESH,
         "menuKeys": C.MENU_SHORTCUTS_MENU,
+        "contrastOn": C.MENU_HIGH_CONTRAST_ON,
+        "contrastOff": C.MENU_HIGH_CONTRAST_OFF,
+        "contrastTitle": C.CONTRAST_TITLE,
+        "contrastStandard": C.CONTRAST_STANDARD,
+        "contrastHigh": C.CONTRAST_HIGH,
+        "contrastLead": C.CONTRAST_LEAD,
         "states": states,
     }
 
@@ -1014,6 +1020,20 @@ _TEMPLATE = r"""<!DOCTYPE html>
 <link rel="icon" href="__FAVICON__">
 <title>__GALLERY_TITLE__</title>
 <style>
+  /* #179: high contrast — the same tokens as tk_wizard._HIGH_CONTRAST_PALETTE. */
+  .shell.hc {
+    --bg: #FFFFFF; --surface: #FFFFFF; --surface-alt: #EDEDED; --ink: #000000; --muted: #1F1F1F;
+    --border: #000000; --border-strong: #000000; --button-edge: #000000; --summary-edge: #000000;
+    --primary: #002A54; --primary-dark: #001C38; --primary-press: #00101F; --primary-tint: #E5EDF7;
+    --danger: #8A0000; --danger-dark: #660000; --danger-press: #4A0000; --danger-tint: #FFFFFF; --danger-border: #8A0000;
+    --ok: #0A4A22; --ok-tint: #FFFFFF; --ok-border: #0A4A22;
+    --warn: #000000; --warn-bg: #FFF0A0; --warn-border: #000000; --usb-bg: #FFFFFF; --usb-border: #000000;
+    --focus: #000000; --accent: #000000; --track: #C8C8C8; --disabled-bg: #FFFFFF; --disabled-fg: #3A3A3A;
+    --shadow: none; --halo: none;
+  }
+  .shell.hc .preview-stripe { background: #FFD000; color: #000000; }
+  .shell.hc :focus-visible { outline: 4px solid #000000 !important; outline-offset: 2px; }
+  .shell.hc .card, .shell.hc button.btn.secondary { border-width: 2px; }
   :root {
     /* Shared palette, pinned against ui/tk_wizard.py by tests/test_ui_system.py. */
     --bg: #EEF2F6; --surface: #FFFFFF; --surface-alt: #F4F6F8;
@@ -1863,8 +1883,12 @@ function headerCaption(info) {
 }
 function applyTextSize() {
   const shell = document.querySelector(".shell");
-  if (shell) shell.setAttribute("data-text", textSize);
+  if (shell) {
+    shell.setAttribute("data-text", textSize);
+    shell.classList.toggle("hc", highContrast);  // #179
+  }
 }
+let highContrast = false;
 function draw() {
   applyTextSize();
   // Countdown redraws must preserve deliberate keyboard focus. Entering
@@ -1938,6 +1962,10 @@ function draw() {
       <p>${langs}</p><p class="small muted">${P.languageLead}</p></section>
       <section class="text-size" aria-label="${P.textSizeUtility}"><p class="small"><strong>${P.textSizeUtility}</strong></p>
       <div class="textsizes">${sizes}</div><p class="small muted">${P.textSizeLead}</p></section>
+      <section class="contrast" aria-label="${P.helpMenu.contrastTitle}"><p class="small"><strong>${P.helpMenu.contrastTitle}</strong></p>
+      <div class="textsizes">${[[false, P.helpMenu.contrastStandard], [true, P.helpMenu.contrastHigh]].map(([on, label]) => highContrast === on
+        ? `<button type="button" class="btn choice sel" aria-pressed="true" data-contrast="${on}"><span class="tick" aria-hidden="true"></span>${label}</button>`
+        : `<button type="button" class="btn segment" aria-pressed="false" data-contrast="${on}">${label}</button>`).join("")}</div><p class="small muted">${P.helpMenu.contrastLead}</p></section>
       <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>${layoutNotice}
       <div class="cz"><div class="czc"><div class="layout-cards">${layouts}</div>
       ${moreLink("keyboard-limits")}<div id="keyboard-limits">${showMore ? `<p class="small muted">${P.keyboardLimits}</p>` : ""}</div>
@@ -1966,6 +1994,14 @@ function draw() {
         textSize = el.dataset.text;
         draw();
         main.querySelector(`[data-text="${textSize}"]`)?.focus();
+      };
+    });
+    // #179: Standard or High contrast; focus stays on the chosen one.
+    main.querySelectorAll("[data-contrast]").forEach(el => {
+      el.onclick = () => {
+        highContrast = el.dataset.contrast === "true";
+        draw();
+        main.querySelector(`[data-contrast="${highContrast}"]`)?.focus();
       };
     });
     const box = main.querySelector("#kbcheck");
@@ -2428,6 +2464,7 @@ function helpItems() {
     if (item.key === "text_size")
       item.label = `${P.textSizeUtility}: ${(P.textSizes.find(s => s.id === textSize) || P.textSizes[0]).label}`;
     if (item.key === "sounds") item.label = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
+    if (item.key === "high_contrast") item.label = highContrast ? P.helpMenu.contrastOn : P.helpMenu.contrastOff;
   }
   return items;
 }
@@ -2462,6 +2499,7 @@ function activateHelp(key) {
     helpFocus = key; draw(); return;
   }
   if (key === "sounds") { soundsOn = !soundsOn; helpFocus = key; draw(); return; }
+  if (key === "high_contrast") { highContrast = !highContrast; helpFocus = key; draw(); return; }
   helpOpen = false; helpView = "menu";
   if (key === "language") { keyboardFrom = screen; screen = "keyboard"; }
   else if (key === "report_help") { reportHelpFrom = screen; screen = "report_help"; }

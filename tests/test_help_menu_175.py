@@ -86,7 +86,7 @@ def test_every_screen_lists_every_item_in_the_same_order(screen):
     for item in menu:
         assert item.label and "{" not in item.label
         assert item.enabled or item.reason, item.key  # never disabled without a reason
-    assert M.find(menu, M.HIGH_CONTRAST).enabled is False
+    assert M.find(menu, M.HIGH_CONTRAST).enabled is True  # #179: a working setting
     assert M.find(menu, M.SHORTCUTS).enabled is True
     # Advanced keeps its existing limit: the method step only.
     assert M.find(menu, M.ADVANCED).enabled is (screen == Screen.METHOD)
@@ -133,7 +133,8 @@ def test_disabled_items_do_nothing_and_say_why():
     assert not size.enabled and size.reason == C.MENU_REASON_FINAL_CHECK
     assert not wiz.activate_help_item(M.TEXT_SIZE)
     assert wiz.text_size == "standard"
-    assert not wiz.activate_help_item(M.HIGH_CONTRAST)
+    assert wiz.activate_help_item(M.HIGH_CONTRAST) and wiz.high_contrast  # #179
+    assert wiz.screen == Screen.LAST_CHANCE and wiz.text_size == "standard"
     assert not wiz.activate_help_item("no-such-item")
     wiz.screen = Screen.WORKING
     wiz.audio_available = False
@@ -271,9 +272,8 @@ def test_tk_disabled_items_show_their_reasons(tk_at):
 
     visit(app._help_popup)
     disabled = [b._beamo_help_item for b in _buttons(app._help_popup) if not b._enabled]
-    assert set(disabled) == {M.HIGH_CONTRAST, M.REPORT_HELP, M.ADVANCED}
+    assert set(disabled) == {M.REPORT_HELP, M.ADVANCED}  # #179: High contrast works
     assert reasons == {
-        M.HIGH_CONTRAST: C.MENU_REASON_NOT_YET,
         M.REPORT_HELP: C.MENU_REASON_REPORT_HELP,
         M.ADVANCED: C.MENU_REASON_ADVANCED,
     }
@@ -470,7 +470,7 @@ def test_plain_console_menu(monkeypatch, capsys):
     monkeypatch.setattr("builtins.input", lambda _p="": next(answers))
     console._plain_help_menu(wiz)
     out = capsys.readouterr().out
-    assert C.MENU_TITLE in out and f"4. {C.MENU_HIGH_CONTRAST} — {C.MENU_REASON_NOT_YET}" in out
+    assert C.MENU_TITLE in out and f"4. {C.MENU_HIGH_CONTRAST_OFF}" in out  # #179
     assert wiz.screen == Screen.ADVANCED
     wiz = _wizard_at("pick")
     answers = iter(["6"])
@@ -557,7 +557,7 @@ def test_preview_menu_logic_in_node():
     end = script.index("function renderHelpTrigger")
     program = ("const P = " + payload.group(1) + ";\n"
                + "let screen = 'pick', textSize = 'standard', soundsOn = false;\n"
-               + "let keyboardFrom = null, reportHelpFrom = 'owner', draws = 0;\n"
+               + "let keyboardFrom = null, reportHelpFrom = 'owner', draws = 0, highContrast = false;\n"
                + "function draw() { draws += 1; }\n"
                + script[start:end]
                + """

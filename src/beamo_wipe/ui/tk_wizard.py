@@ -12,6 +12,7 @@ keep the live USB self-contained and readable without network dependencies.
 from __future__ import annotations
 
 import math
+import os
 import gc
 import re
 import sys
@@ -128,6 +129,54 @@ SHADOW = "#D5DCE6"
 FOOTER_BG = SURFACE
 PREVIEW_BG = "#E6A817"
 PREVIEW_FG = "#0A1B34"
+
+# #179: high contrast. Black text on white, black edges, deep brand and
+# danger fills under white labels, a yellow warning fill, no shadows, and
+# thick black focus rings (see HIGH_CONTRAST in _Button/_Box). Text is
+# 7:1 or more on every surface it sits on; nothing relies on colour alone
+# (checks, dashes, icons and words carry every state).
+HIGH_CONTRAST = False
+_HIGH_CONTRAST_PALETTE: dict = {
+    "BG": "#FFFFFF", "SURFACE": "#FFFFFF", "SURFACE_ALT": "#EDEDED",
+    "INK": "#000000", "MUTED": "#1F1F1F",
+    "BORDER": "#000000", "BORDER_STRONG": "#000000", "BUTTON_EDGE": "#000000",
+    "SUMMARY_EDGE": "#000000",
+    "PRIMARY": "#002A54", "PRIMARY_DARK": "#001C38", "PRIMARY_PRESS": "#00101F",
+    "PRIMARY_TINT": "#E5EDF7",
+    "SELECTED_FILL": "#E5EDF7", "SELECTED_EDGE": "#000000", "SELECTED_EDGE_W": 3,
+    "SELECTED_INK": "#000000",
+    "DANGER": "#8A0000", "DANGER_DARK": "#660000", "DANGER_PRESS": "#4A0000",
+    "DANGER_TINT": "#FFFFFF", "DANGER_BORDER": "#8A0000",
+    "OK": "#0A4A22", "OK_TINT": "#FFFFFF", "OK_BORDER": "#0A4A22",
+    "WARN": "#000000", "WARN_BG": "#FFF0A0", "WARN_BORDER": "#000000",
+    "USB_BG": "#FFFFFF", "USB_BORDER": "#000000",
+    "FOCUS": "#000000", "ACCENT": "#000000",
+    "DISABLED_BG": "#FFFFFF", "DISABLED_FG": "#3A3A3A",
+    "DISABLED_FILL": "#FFFFFF", "DISABLED_EDGE": "#000000", "DISABLED_INK": "#3A3A3A",
+    "TRACK": "#C8C8C8", "CONFIRM_MARK_BG": "#FFF0A0", "SHADOW": "#FFFFFF",
+    "FOOTER_BG": "#FFFFFF", "PREVIEW_BG": "#FFD000", "PREVIEW_FG": "#000000",
+}
+_STANDARD_PALETTE: dict = {name: globals()[name] for name in _HIGH_CONTRAST_PALETTE}
+
+
+# Default for colour parameters where None already has a meaning (#179).
+_PALETTE_DEFAULT: Any = "__palette_default__"
+
+
+def apply_palette(high: bool) -> bool:
+    """Switch every colour token to the standard or the high-contrast palette.
+
+    Returns True when the palette changed; the caller redraws. Colours are
+    read at draw time, so a redraw recolours every screen.
+    """
+    global HIGH_CONTRAST
+    high = bool(high)
+    if high == HIGH_CONTRAST:
+        return False
+    globals().update(_HIGH_CONTRAST_PALETTE if high else _STANDARD_PALETTE)
+    HIGH_CONTRAST = high
+    _Button._VARIANTS = _button_variants()
+    return True
 
 CONTENT_W = 940
 WRAP = CONTENT_W - 72
@@ -556,8 +605,8 @@ class _Box(tk.Canvas):
         parent: tk.Widget,
         *,
         radius: int = RADIUS,
-        fill: str = SURFACE,
-        outline: Optional[str] = BORDER,
+        fill: Optional[str] = None,
+        outline: Optional[str] = _PALETTE_DEFAULT,
         ow: int = 1,
         padx: int = 18,
         pady: int = 14,
@@ -566,6 +615,8 @@ class _Box(tk.Canvas):
         shadow: bool = False,
         halo: bool = False,
     ) -> None:
+        fill = SURFACE if fill is None else fill  # #179: current palette
+        outline = BORDER if outline is _PALETTE_DEFAULT else outline  # #179: current palette
         super().__init__(
             parent,
             highlightthickness=0,
@@ -646,6 +697,9 @@ class _Box(tk.Canvas):
                 self, 1, 1, width - 1, bottom + 2, self._radius + 2,
                 fill=FOCUS, outline="", tags="rr",
             )
+            if HIGH_CONTRAST:
+                _round_rect(self, 1.5, 1.5, width - 1.5, bottom + 1.5, self._radius + 2,
+                            fill="", outline=FOCUS, width=3, tags="rr")
         _round_rect(
             self,
             inset, inset, width - inset, bottom,
@@ -816,17 +870,9 @@ def _label_line_cuts(widget: tk.Misc, top: float, height: float) -> tuple[float,
     return tuple(first + index * line for index in range(1, lines))
 
 
-class _Button(tk.Canvas):
-    """Canvas button: identical rendering on Linux Tk and macOS preview.
-
-    Buttons are flat rounded rectangles: filled primary/danger, bordered white secondary,
-    quiet ghost. All enabled buttons show a focus ring on keyboard focus, a
-    hover shade under the pointer, and a darker press shade while held, so
-    the control always answers the user.
-    """
-
-    # bg, fg, hover, press, outline, focus-ring.
-    _VARIANTS = {
+def _button_variants() -> dict:
+    """Button colours from the current palette (#179)."""
+    return {
         "primary": (PRIMARY, "#FFFFFF", PRIMARY_DARK, PRIMARY_PRESS, None, FOCUS),
         "danger": (DANGER, "#FFFFFF", DANGER_DARK, DANGER_PRESS, None, FOCUS),
         # A light edge: the label names the button, so a dark outline only
@@ -842,6 +888,19 @@ class _Button(tk.Canvas):
         # #176: a selected choice (segmented control): tint, brand edge, mark.
         "selected": (SELECTED_FILL, SELECTED_INK, SELECTED_FILL, "#D7E4F2", SELECTED_EDGE, FOCUS),
     }
+
+
+class _Button(tk.Canvas):
+    """Canvas button: identical rendering on Linux Tk and macOS preview.
+
+    Buttons are flat rounded rectangles: filled primary/danger, bordered white secondary,
+    quiet ghost. All enabled buttons show a focus ring on keyboard focus, a
+    hover shade under the pointer, and a darker press shade while held, so
+    the control always answers the user.
+    """
+
+    # bg, fg, hover, press, outline, focus-ring (#179: from the palette).
+    _VARIANTS = _button_variants()
 
     _RING_GAP = 4  # canvas room below the pill so the focus ring never clips
     _PILL_INSET = 3  # the pill is drawn 3 px inside the canvas edge
@@ -938,6 +997,10 @@ class _Button(tk.Canvas):
                 self, 1, 1, self._bw - 1, body_bottom + 2, PILL,
                 fill=ring, outline="", tags="rr",
             )
+            if HIGH_CONTRAST:
+                # #179: a thick ring that never relies on the fill colour.
+                _round_rect(self, 1.5, 1.5, self._bw - 1.5, body_bottom + 1.5, PILL,
+                            fill="", outline=FOCUS, width=3, tags="rr")
         edge = SELECTED_EDGE_W if self._variant == "selected" else 1
         _round_rect(
             self, 3, 3, self._bw - 3, body_bottom, PILL,
@@ -1746,6 +1809,7 @@ class TkWizard:
             self._body_slack = 0
             self._ring_px = self.lay.ring
             self._layout_drawing = False
+            apply_palette(bool(getattr(self.w, "high_contrast", False)))  # #179
             self._build_chrome()
             self.root.bind("<Configure>", self._on_root_configure)
             self._confirm_var_trace: Optional[str] = _new_owned_trace(self, "_confirm_var_trace", self._confirm_var, self._confirm_var_written)
@@ -1779,6 +1843,7 @@ class TkWizard:
             # Content-sized stripe: a fixed height clipped the label on
             # Linux Tk, where DejaVu metrics run taller than macOS.
             stripe = tk.Frame(self.root, bg=PREVIEW_BG)
+            self._preview_stripe = stripe
             stripe.pack(fill=tk.X)
             # Chrome outlives screens: _sync_preview_copy re-reads the text
             # on every draw so a language change reaches the stripe too.
@@ -1805,7 +1870,8 @@ class TkWizard:
         # the last thing that ever gets clipped.
         self._footer = tk.Frame(self.root, bg=FOOTER_BG)
         self._footer.pack(fill=tk.X, side=tk.BOTTOM)
-        tk.Frame(self.root, bg=BORDER, height=1).pack(fill=tk.X, side=tk.BOTTOM)
+        self._footer_rule = tk.Frame(self.root, bg=BORDER, height=1)
+        self._footer_rule.pack(fill=tk.X, side=tk.BOTTOM)
         self._body = tk.Frame(self.root, bg=BG)
         self._body.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
         self._apply_grid()
@@ -2069,8 +2135,10 @@ class TkWizard:
             self._strip.pack(fill=tk.X, before=self._body)
             self._chrome_shown = True
 
-    def _column(self, parent: Optional[tk.Widget], *, fill_height: bool, bg: str = BG) -> tk.Frame:
+    def _column(self, parent: Optional[tk.Widget], *, fill_height: bool,
+                bg: Optional[str] = None) -> tk.Frame:
         assert parent is not None
+        bg = BG if bg is None else bg  # #179: the current palette
         host = parent
         if parent is self._body and self._body_inner is not None:
             host = self._body_inner
@@ -2676,6 +2744,7 @@ class TkWizard:
         sync_preview = getattr(self, "_sync_preview_copy", None)
         if callable(sync_preview):
             sync_preview()
+        self._sync_palette()  # #179
         self._body.configure(bg=BG)
         dispatch = {
             Screen.SPLASH: self._splash,
@@ -2783,7 +2852,10 @@ class TkWizard:
 
         parent.bind("<Configure>", fit, add="+")
 
-    def _h(self, parent: tk.Widget, text: str, *, bg: str = BG, fg: str = INK) -> tk.Label:
+    def _h(self, parent: tk.Widget, text: str, *, bg: Optional[str] = None,
+           fg: Optional[str] = None) -> tk.Label:
+        bg = BG if bg is None else bg  # #179: the current palette
+        fg = INK if fg is None else fg
         label = tk.Label(
             parent, text=text, font=self.font_h, fg=fg, bg=bg,
             wraplength=self.lay.wrap, justify=tk.LEFT, anchor="w",
@@ -2842,11 +2914,12 @@ class TkWizard:
         *,
         height: int,
         wrap: Literal["none", "char", "word"] = "word",
-        bg: str = SURFACE,
+        bg: Optional[str] = None,
         padx: int = 12,
         pady: int = 8,
     ) -> tk.Text:
         """Flat readable text surface. Replaces native sunken Text chrome."""
+        bg = SURFACE if bg is None else bg  # #179: current palette
         return tk.Text(
             parent,
             wrap=wrap,
@@ -3051,7 +3124,7 @@ class TkWizard:
         parent: tk.Widget,
         sections: RecoverySections,
         *,
-        bg: str = BG,
+        bg: Optional[str] = None,
         omit_duplicate_happened: str = "",
     ) -> None:
         """What happened, meaning, next; technical details separately.
@@ -3061,6 +3134,7 @@ class TkWizard:
         Technical detail is a muted line, not a button: Done tab order
         stays Show more then Save report.
         """
+        bg = BG if bg is None else bg  # #179: current palette
         from beamo_wipe import recovery as Rec
 
         frame = tk.Frame(parent, bg=bg)
@@ -3117,10 +3191,11 @@ class TkWizard:
         self,
         parent: tk.Widget,
         *,
-        bg: str = BG,
+        bg: Optional[str] = None,
         side: Optional[Literal["left", "right", "top", "bottom"]] = None,
     ) -> bool:
         """Optional details use the shared, keyboard-accessible control."""
+        bg = BG if bg is None else bg  # #179: current palette
         open_ = self._show_more
 
         def toggle() -> None:
@@ -3141,7 +3216,7 @@ class TkWizard:
         return open_
 
     def _wrapping_label(self, parent: tk.Widget, text: str, *, font, bg: str,
-                        fg: str = INK) -> tk.Label:
+                        fg: Optional[str] = None) -> tk.Label:
         """Wrap the full identity to its allocated width, never ellipsize it.
 
         Card interiors are canvas windows. Their width settles after layout,
@@ -3149,6 +3224,7 @@ class TkWizard:
         Observe the allocated parent width without feeding the label's
         requested width back into the layout.
         """
+        fg = INK if fg is None else fg  # #179: current palette
         base = max(200, self.lay.wrap - 120)
         def displayed(width):
             # Native word wrapping preserves prose and avoids double wrapping
@@ -3733,6 +3809,7 @@ class TkWizard:
         # language, then text size, then the keyboard (layout and check).
         # Visual order is creation order, so Tab follows it.
         self._text_size_section(col)
+        self._contrast_section(col)  # #179
         self._title_block(col, C.TITLE_KEYBOARD, C.KEYBOARD_LEAD)
         zone = self._center_zone(col)
         notice = C.keyboard_layout_notice(self.w)
@@ -3977,6 +4054,55 @@ class TkWizard:
         size_row.fit_now()
         self._p(block, C.TEXT_SIZE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
 
+    def _contrast_section(self, parent: tk.Widget) -> None:
+        """#179: Standard or High contrast, after Text size on the setup screen."""
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(10, 0))
+        tk.Label(
+            block, text=C.CONTRAST_TITLE, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        row = _Box(block, radius=PILL, fill=TRACK, outline=None, ow=0, padx=2, pady=0)
+        row.pack(anchor="w")
+        for on, label in ((False, C.CONTRAST_STANDARD), (True, C.CONTRAST_HIGH)):
+            selected = bool(self.w.high_contrast) == on
+            button = _Button(
+                row.inner, text=label, font=self.font_s_bold,
+                command=partial(self._apply_contrast, on),
+                variant="selected" if selected else "segment", compact=True, mark=selected,
+            )
+            button._beamo_contrast = on  # type: ignore[attr-defined]
+            button.pack(side=tk.LEFT)
+        row.fit_now()
+        self._p(block, C.CONTRAST_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
+
+    def _apply_contrast(self, on: bool) -> None:
+        if self.w.set_high_contrast(on):
+            self._draw()
+
+    def _sync_palette(self) -> None:
+        """#179: follow the wizard's contrast setting; recolour the chrome."""
+        if not apply_palette(bool(getattr(self.w, "high_contrast", False))):
+            return
+        try:
+            self.root.configure(bg=BG)
+            if self._footer is not None:
+                self._footer.configure(bg=FOOTER_BG)
+            rule = getattr(self, "_footer_rule", None)
+            if rule is not None:
+                rule.configure(bg=BORDER)
+            if self._header is not None:
+                self._header.configure(bg=BG)
+            if self._strip is not None:
+                self._strip.configure(bg=TRACK)
+            stripe = getattr(self, "_preview_stripe", None)
+            label = getattr(self, "_preview_label", None)
+            if stripe is not None:
+                stripe.configure(bg=PREVIEW_BG)
+            if label is not None:
+                label.configure(bg=PREVIEW_BG, fg=PREVIEW_FG)
+        except tk.TclError:
+            pass
+
     def _language_picker(self, parent: tk.Widget) -> None:
         """Language chips, first on the keyboard screen (#131).
 
@@ -4043,7 +4169,8 @@ class TkWizard:
             activate()
         return "break"
 
-    def _power_notice(self, parent, *, reminder=True, bg: str = BG, indent: int = 0) -> None:
+    def _power_notice(self, parent, *, reminder=True, bg: Optional[str] = None, indent: int = 0) -> None:
+        bg = BG if bg is None else bg  # #179: the current palette
         if reminder:
             self._wrapping_label(parent, C.POWER_KEEP, font=self.font_s_bold, bg=bg)
         label = self._p(parent, self.w.power_text, font=self.font_s, bg=bg)
@@ -5851,7 +5978,7 @@ class TkWizard:
         return max(200, self.lay.wrap - 200)
 
     def _method_prose_label(
-        self, parent: tk.Widget, text: str, *, font, bg: str, fg: str = INK
+        self, parent: tk.Widget, text: str, *, font, bg: str, fg: Optional[str] = None
     ) -> tk.Label:
         """Wrap novice lead/limits to the allocated title column.
 
@@ -5859,6 +5986,7 @@ class TkWizard:
         ordinary prose with spaces; keep the words intact and shrink
         wraplength only after the label has a real width.
         """
+        fg = INK if fg is None else fg  # #179: current palette
         wrap = self._method_card_wrap()
         label = tk.Label(
             parent,
@@ -7461,6 +7589,8 @@ def run_tk_startup(build, *, fullscreen: bool = False,
     from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
 
     _collect_retired_interpreters()
+    # #179: the startup window follows the accessible boot path's choice.
+    apply_palette(os.environ.get("BEAMO_WIPE_HIGH_CONTRAST") == "1")
     _ensure_tk_display()
     run = StartupRun(
         build,

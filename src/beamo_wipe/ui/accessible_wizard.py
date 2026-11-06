@@ -42,6 +42,27 @@ from beamo_wipe.safety import same_size_conflict  # noqa: E402
 from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
 from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support  # noqa: E402
 
+# #179: GTK's built-in high-contrast theme, plus our own overrides so the
+# wizard's colours (identity card, actions, warnings) follow it too.
+HIGH_CONTRAST_THEME = "HighContrast"
+HIGH_CONTRAST_CSS = """
+            #beamo-accessible { background: #FFFFFF; color: #000000; }
+            #beamo-accessible label, #beamo-accessible .screen-heading { color: #000000; }
+            #beamo-accessible .disk-identity { background: #FFFFFF; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible .preview-notice { background: #FFD000; color: #000000; }
+            #beamo-accessible .power-ok, #beamo-accessible .power-warn, #beamo-accessible .power-neutral { color: #000000; }
+            #beamo-accessible button { background-image: none; background-color: #FFFFFF; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible button.primary-action { background-color: #002A54; color: #FFFFFF; }
+            #beamo-accessible button.destructive-action { background-color: #8A0000; color: #FFFFFF; }
+            #beamo-accessible button.utility-action { background-color: #FFFFFF; color: #000000; }
+            #beamo-accessible button.selected-choice { background-color: #E5EDF7; color: #000000; border: 3px solid #000000; }
+            #beamo-accessible button:disabled { background-color: #FFFFFF; color: #3A3A3A; border: 2px dashed #000000; }
+            #beamo-accessible *:focus { outline: 4px solid #000000; outline-offset: 2px; }
+            #beamo-accessible .erase-warning, #beamo-accessible .report-warning { background: #FFF0A0; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible .report-saved { background: #FFFFFF; color: #0A4A22; border: 2px solid #0A4A22; }
+            #beamo-accessible .error-message { color: #8A0000; }
+"""
+
 # #177: identifiers in monospace, regular weight, slightly spaced (0.75 pt);
 # Pango letter_spacing is in 1/1024 pt. The label's text stays the plain
 # identifier, so Orca reads it unchanged.
@@ -170,6 +191,11 @@ class AccessibleWizard:
             # Keep manual selection available without selecting text on arrival.
             self.window.get_settings().set_property("gtk-label-select-on-focus", False)
             self.window.set_name("beamo-accessible")
+            # #179: a session already in a high-contrast GTK theme starts in
+            # high contrast here too.
+            theme = str(self.window.get_settings().get_property("gtk-theme-name") or "")
+            if "contrast" in theme.lower() and hasattr(self.w, "set_high_contrast"):
+                self.w.set_high_contrast(True)
             self._style = Gtk.CssProvider()
             self._apply_type_css()
             # Size before the first show: a low-resolution live session may have
@@ -239,7 +265,6 @@ class AccessibleWizard:
             #beamo-accessible button.selected-choice {{ background-image: none; background-color: #F0F5FA; color: #1C4A73; border: 2px solid #1C4A73; }}
             #beamo-accessible button.destructive-action:hover {{ background-color: #8E1D16; }}
             #beamo-accessible button.destructive-action:active {{ background-color: #6E1510; }}
-            #beamo-accessible button:disabled {{ background-image: none; background-color: #E8ECF1; color: #6E7989; }}
             #beamo-accessible button:focus {{ outline: 3px solid #2563EB; outline-offset: 2px; }}
             #beamo-accessible checkbutton {{ padding: 8px 10px; border-radius: 12px; }}
             #beamo-accessible checkbutton:hover {{ background-color: #F4F6F8; }}
@@ -255,7 +280,25 @@ class AccessibleWizard:
             #beamo-accessible .report-saved {{ background: #E7F2EB; color: #17703F; padding: 10px 14px; border-radius: 12px; }}
             #beamo-accessible .error-message {{ color: #B3261E; font-weight: bold; }}
         """
+        if getattr(self.w, "high_contrast", False):
+            css += HIGH_CONTRAST_CSS  # #179: later rules win
         self._style.load_from_data(css.encode())
+        self._sync_gtk_theme()
+
+    def _sync_gtk_theme(self) -> None:
+        """#179: use GTK's built-in HighContrast theme while high contrast is on.
+
+        The theme the session started with is restored when it is turned off.
+        """
+        window = getattr(self, "window", None)
+        if window is None:
+            return
+        settings = window.get_settings()
+        if not hasattr(self, "_start_theme"):
+            self._start_theme = settings.get_property("gtk-theme-name") or "Adwaita"
+        want = HIGH_CONTRAST_THEME if getattr(self.w, "high_contrast", False) else self._start_theme
+        if settings.get_property("gtk-theme-name") != want:
+            settings.set_property("gtk-theme-name", want)
 
     def result_card_list(self) -> None:
         """#171: the result card's method, check result and times as a list.
@@ -597,6 +640,20 @@ class AccessibleWizard:
                 )
                 if self.w.text_size == size_id:
                     size_button.get_style_context().add_class("selected-choice")  # #176
+            # #179: contrast, after text size, each with its state in words.
+            contrast_heading = self.label(C.CONTRAST_TITLE, focusable=True)
+            contrast_heading.get_accessible().set_role(Atk.Role.HEADING)
+            self.label(C.CONTRAST_LEAD)
+            for on, label in ((False, C.CONTRAST_STANDARD), (True, C.CONTRAST_HIGH)):
+                chosen = bool(self.w.high_contrast) == on
+                state = C.ACCESSIBLE_SELECTED if chosen else C.ACCESSIBLE_NOT_SELECTED
+                contrast_button = self.button(
+                    f"{label} ({state})",
+                    lambda value=on: self.w.set_high_contrast(value),
+                    in_body=True,
+                )
+                if chosen:
+                    contrast_button.get_style_context().add_class("selected-choice")
             keyboard_heading = self.label(C.KEYBOARD_LEAD, focusable=True)
             keyboard_heading.get_accessible().set_role(Atk.Role.HEADING)
             notice = C.keyboard_layout_notice(self.w)

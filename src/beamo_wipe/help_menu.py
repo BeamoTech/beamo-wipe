@@ -29,7 +29,7 @@ ORDER = (TEXT_SIZE, LANGUAGE, SOUNDS, HIGH_CONTRAST, REPORT_HELP, ADVANCED, SHOR
 
 # Items that change a setting and leave the menu open; the others open a
 # screen (and close the menu) or show information inside it.
-STAYS_OPEN = frozenset({TEXT_SIZE, SOUNDS, SHORTCUTS})
+STAYS_OPEN = frozenset({TEXT_SIZE, SOUNDS, HIGH_CONTRAST, SHORTCUTS})
 
 # Screens where the type size must not change under the person: the final
 # check before Erase now (its countdown and focus must not be disturbed) and
@@ -73,6 +73,7 @@ def items(
     can_open_report_help: bool,
     can_open_advanced: bool,
     sound_available: bool = True,
+    high_contrast: bool = False,
     after_erase_started: bool = False,
     text_size_supported: bool = True,
 ) -> tuple[MenuItem, ...]:
@@ -106,7 +107,12 @@ def items(
         if sound_available
         else MenuItem(SOUNDS, sounds_label, False, C.MENU_REASON_NO_SOUND)
     )
-    contrast = MenuItem(HIGH_CONTRAST, C.MENU_HIGH_CONTRAST, False, C.MENU_REASON_NOT_YET)
+    # #179: a session setting, on every screen (it changes colours only).
+    contrast = MenuItem(
+        HIGH_CONTRAST,
+        C.MENU_HIGH_CONTRAST_ON if high_contrast else C.MENU_HIGH_CONTRAST_OFF,
+        True,
+    )
 
     if screen == Screen.REPORT_HELP:
         report = MenuItem(REPORT_HELP, C.MENU_REPORT_HELP, False, here)

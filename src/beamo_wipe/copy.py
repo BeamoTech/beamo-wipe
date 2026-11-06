@@ -231,6 +231,14 @@ CON_KEYBOARD_CHECK_SWITCH = "F3: switch to {layout}"
 CON_KEYBOARD_CHECK_SWITCH_WORD = "Type SWITCH to use {layout}."
 KEYBOARD_UTILITY = "Keyboard layout"
 TEXT_SIZE_LEAD = "Choose a size that is easy to read. You can change it later."
+# #179: high contrast, on the first screen and in Help & settings.
+MENU_HIGH_CONTRAST_ON = 'High contrast: on'
+MENU_HIGH_CONTRAST_OFF = 'High contrast: off'
+CONTRAST_TITLE = 'Contrast'
+CONTRAST_STANDARD = 'Standard contrast'
+CONTRAST_HIGH = 'High contrast'
+CONTRAST_LEAD = 'High contrast uses black text, strong edges and thick focus rings.'
+CON_CONTRAST_KEY = 'F4: {state}'
 TEXT_SIZE_STANDARD = "Standard"
 TEXT_SIZE_LARGE = "Large"
 TEXT_SIZE_EXTRA = "Extra large"

@@ -137,7 +137,7 @@ def test_gtk_marks_selected_choices_with_the_token():
     src = (pathlib.Path(__file__).resolve().parents[1]
            / "src/beamo_wipe/ui/accessible_wizard.py").read_text(encoding="utf-8")
     assert "button.selected-choice" in src and "border: 2px solid #1C4A73" in src
-    assert src.count('add_class("selected-choice")') == 3  # language, text size, layout
+    assert src.count('add_class("selected-choice")') == 4  # language, text size, contrast (#179), layout
 
 
 def test_web_preview_uses_the_token():
