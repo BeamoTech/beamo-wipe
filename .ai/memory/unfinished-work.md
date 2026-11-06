@@ -5411,3 +5411,32 @@ another very thorough and comprehensive pass of this." Repo
   #144). ruff, mypy --platform linux clean.
 - NOT VERIFIED: web preview screenshots (logic by node test, CSS by test),
   Linux 72 DPI, hosted ci.yml.
+
+## BW-176-SELECTED — One selected style across controls (IMPLEMENTED LOCALLY; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/selected-style-176` (stacked
+  on `feat/shortcuts-collapse-174` @ 76c8eff; commit a2461f9), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
+  (UI review item 50). Ref #179 (high contrast can swap the token).
+- BASELINE (work176-scratch-20261105/before): radio dot + edge on cards,
+  filled navy pill in the size switch, edge-only language chips; web
+  preview language shown as "> English" text.
+- WHAT CHANGED: Tk token SELECTED_FILL/EDGE/EDGE_W/INK; _draw_selected_mark
+  (brand circle + white check), _icon_radio uses it; layout/disk/method
+  cards and language chips use the token (chips gain the mark); size switch
+  selected segment = "selected" _Button variant (2 px edge, tint, mark).
+  GTK: CSS class selected-choice on the selected language, text size and
+  layout buttons (names keep "(selected)"). Web: .sel .radio check,
+  .choice/.tick chips, size switch "btn choice sel" with aria-pressed.
+  docs/screens.md row.
+- FILES: src/beamo_wipe/ui/{tk_wizard,accessible_wizard}.py,
+  src/beamo_wipe/gallery.py, docs/screens.md,
+  tests/test_selected_style_176.py (new, 6), tests/test_modern_polish_20261101.py
+  (size switch expects the "selected" variant).
+- TESTS / CHECKS: new 6/6 pass, 6/6 fail on 76c8eff; contrast: selected
+  ink 7:1+ on tint, edge 3:1+ on surface/bg/track, white check 4.5:1+;
+  10 related files vs #174: no new failures (test_ui_system gallery
+  selectors pre-existing on both). ruff, mypy --platform linux clean.
+- SCREENS: work176-scratch-20261105/{before,after} (keyboard, pick, method
+  at 800x600 std and 1280x820 large) and {before,after}/web.
+- NOT VERIFIED: GTK CSS rendering (no GTK here), Linux 72 DPI, hosted ci.yml.
