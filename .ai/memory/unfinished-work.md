@@ -5440,3 +5440,37 @@ another very thorough and comprehensive pass of this." Repo
 - SCREENS: work176-scratch-20261105/{before,after} (keyboard, pick, method
   at 800x600 std and 1280x820 large) and {before,after}/web.
 - NOT VERIFIED: GTK CSS rendering (no GTK here), Linux 72 DPI, hosted ci.yml.
+
+## BW-177-SERIAL — Regular-weight serials, highlights bold (IMPLEMENTED LOCALLY; TK LETTER SPACING GAP; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/serial-type-177` (stacked on
+  `feat/selected-style-176` @ 8a7dd36; commit acd2517), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
+  (UI review item 51). Ref #129, #148, #152.
+- FONT: the live image ships fonts-dejavu-core; _mono_family picks DejaVu
+  Sans Mono first. Rendered DejaVu Sans Mono 2.37.3 (jsDelivr npm
+  dejavu-fonts-ttf, sha256 b4a6c3e4…c582 regular) with Pillow:
+  dotted 0 vs O, 1 with flag and foot, l with tail, I with serifs; regular
+  and bold have the same advance (work177-scratch-20261105/zoom.png,
+  glyphs.png). No font change needed.
+- WHAT CHANGED: Tk _meta_line serial font_mono_bold → font_mono (marked
+  _beamo_serial); #129 token overlay and #152 difference marks stay
+  font_mono_bold. GTK identity: SERIAL_SPAN (monospace, weight normal,
+  letter_spacing 768 = 0.75 pt) around the identifier for every identity
+  label, #129 token span (bold, double underline) inside it; label text
+  unchanged for Orca. Web: .mono.ser weight 400, letter-spacing .06em.
+- GAP (requirement "slight letter spacing"): Tk fonts have no tracking.
+  Thin/hair spaces take a full cell in a monospace font and break the
+  #129/#152 character-for-character overlays. Proper Tk spacing needs a
+  per-character canvas renderer for identifiers including both overlays —
+  proposed follow-up, not done here (confirmation display is safety-adjacent).
+- FILES: src/beamo_wipe/ui/{tk_wizard,accessible_wizard}.py,
+  src/beamo_wipe/gallery.py, tests/test_serial_type_177.py (new, 6).
+- TESTS / CHECKS: new 6/6 pass; on 8a7dd36 5 fail (the font-order guard
+  passes on both). Related (#129 card token, canvas layout, Confirm
+  spacing 157, result card 171, ui_rework, #148/#152) vs #176: no new
+  failures. ruff, mypy --platform linux clean.
+- SCREENS: work177-scratch-20261105/{before,after} (pick, confirm, method;
+  800x600 std, 1280x820 extra); no clipping (test at both sizes).
+- NOT VERIFIED: GTK markup rendering (no GTK here), Linux 72 DPI hinting of
+  the dotted zero at 14 px, hosted ci.yml.
