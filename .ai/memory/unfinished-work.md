@@ -5632,3 +5632,68 @@ another very thorough and comprehensive pass of this." Repo
   old words; listed under "Not renamed" in docs/glossary.md.
 - NOT VERIFIED: native review of the FR/DE/ES/IT wording, hosted ci.yml,
   Linux 72 DPI, GTK runtime.
+
+## BW-187-OWNERCARRY — Keep the ownership tick when erasing several disks in a row (PROPOSAL ONLY — OWNER DECISION REQUIRED; NOTHING IMPLEMENTED)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187` (stacked
+  on `feat/one-name-180` @ 065a8dd; record only), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
+  review item 61). Safety-sensitive: any change to owner_ok persistence is
+  a gate change (`safety:` commit, focused tests, owner approval).
+- BASELINE (code read on 065a8dd; screens
+  work187-scratch-20261106/before: owner, pick, done at 800x600 standard
+  and 1280x820 large):
+  - Erase another disk (#103) ends the wizard with wants_new_session; the
+    app loop (app._run_session) builds a brand-new Wizard, runner and
+    discovery ("never reset live authority fields in place") and carries
+    only language, keyboard layout, text size and high contrast.
+    _request_new_session_locked clears owner_ok, the typed token, the
+    authorization and the countdown. tests/test_erase_another.py pins this
+    (not owner_ok, new SPLASH, fresh runner/discovery, stale callbacks
+    cannot start the new runner).
+  - Second disk today: Done → Erase another disk → (save-or-continue if no
+    verified report) → Splash → Keyboard → Owner (tick) → Pick → Confirm
+    (token) → Method → Review (5 s) → Erase now.
+  - owner_ok is enforced twice: Owner screen (continue_owner) and
+    safety.assert_ready_to_wipe ("Owner checkbox is required.").
+  - The box reads "I own this computer and these disks, or I have written
+    permission to erase them." — it covers the disks connected when ticked.
+  - No list of earlier erases exists across sessions; each session has its
+    own evidence/report (session_store.begin_new_session).
+- PROPOSAL (options for the owner):
+  - A (recommended): carry the confirmation inside one app run, bound to
+    the disks it covered. On tick, record the identities (serial/WWN/size/
+    model, not paths) of every listed disk. After Erase another disk the
+    next session sets owner_ok only if its fresh discovery shows no
+    erasable disk outside that set and every listed disk has a stable
+    identity; otherwise the Owner screen appears unticked ("A disk was
+    connected since you confirmed. Confirm again."). In memory only: a
+    crash, kiosk restart, recovery or reboot drops it; never written to
+    the session store or USB. The Owner screen is skipped; Pick shows
+    "You confirmed that you own these disks or have written permission to
+    erase them. Change" (Change = back to Owner, box cleared). Per-disk
+    gates unchanged: fresh rediscovery, selection, exact token, 5-second
+    review countdown, separate Erase now, pre-launch rediscovery and
+    identity check, one nwipe, boot USB excluded; assert_ready_to_wipe
+    unchanged.
+  - B: same binding, but the Owner screen still appears with the box
+    pre-ticked and the same sentence (saves the tick, keeps the screen).
+  - C: no carry-over; only mark earlier erases (no gate change).
+  - All options: Pick marks disks erased earlier in this app run ("Erased
+    earlier — checked" / "overwritten with zeros, not checked" / "not
+    finished"), still selectable (a failed erase may be retried); each
+    erase keeps its own evidence and report; parity in Tk, GTK/Orca,
+    curses, plain console and the web preview.
+- OWNER QUESTIONS: (1) A, B or C? (2) keep the binding to the disks
+  present when ticked (recommended) or carry over regardless? (3) any
+  expiry (idle minutes or number of disks)? (4) may each evidence/report
+  record whether ownership was confirmed on screen or carried over (adds
+  one field)? (5) approve the wording above.
+- PLAN AFTER APPROVAL: `safety:` commit; tests — carry-over only within
+  one app run (fresh process starts unticked), a new or unidentifiable
+  disk drops it, Change clears it, token/countdown/Erase now/rediscovery
+  still required (assert_ready_to_wipe refuses without each), boot USB
+  never listed or marked, one nwipe, evidence per erase separate, erased
+  marks correct per outcome; update test_erase_another.py expectations;
+  screenshots at 800x600 and 1280x820, every text size; GTK/curses parity.
+- NEXT ACTION: owner decision on the questions above. Nothing implemented.
