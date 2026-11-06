@@ -33,7 +33,7 @@ def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="beamo-wipe",
         description=(
-            "Guided front-end for nwipe. This is not a wipe engine. "
+            "Guided front-end for nwipe. This is not an erase engine. "
             "It will not erase disks from inside Windows or macOS. "
             "On this computer, use --preview or ./preview (fake disks)."
         ),
@@ -50,18 +50,18 @@ def _parser() -> argparse.ArgumentParser:
         "--gallery",
         dest="web",
         action="store_true",
-        help="Open a browser click-through of the screens. Does not wipe.",
+        help="Open a browser click-through of the screens. Does not erase.",
     )
     p.add_argument(
         "--lang",
         choices=("en", "fr", "de", "es", "it"),
         default="en",
-        help="Gallery language: en, fr, de, es, or it. Preview only; ignored on the live USB.",
+        help="Gallery language: en, fr, de, es, or it. Preview only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--helper",
         action="store_true",
-        help="Open the boot-menu helper page (does not wipe).",
+        help="Open the Boot helper (does not erase).",
     )
     p.add_argument(
         "--scenario",
@@ -76,24 +76,24 @@ def _parser() -> argparse.ArgumentParser:
         "--fail-demo",
         dest="fail_demo",
         action="store_true",
-        help="Preview a failed wipe.",
+        help="Preview a failed erase.",
     )
     p.add_argument("--plain-console", action="store_true", help="Use sequential text prompts without curses screen redraws.")
     p.add_argument("--console", action="store_true", help="Use the keyboard console UI.")
     p.add_argument("--accessible", action="store_true", help="Use the Linux GTK screen-reader view.")
-    p.add_argument("--fullscreen", action="store_true", help="Fill the screen (live USB).")
+    p.add_argument("--fullscreen", action="store_true", help="Fill the screen (Beamo USB).")
     p.add_argument(
         "--dry-run",
         action="store_true",
-        help="Do not invoke nwipe. Test only; ignored on the live USB.",
+        help="Do not invoke nwipe. Test only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--lsblk-json",
-        help="Read disks from an lsblk JSON file. Test only; ignored on the live USB.",
+        help="Read disks from an lsblk JSON file. Test only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--boot-device",
-        help="Override live-medium path. Test only; ignored on the live USB.",
+        help="Override live-medium path. Test only; ignored on the Beamo USB.",
     )
     p.add_argument("--version", action=_VersionAction, nargs=0, help="Show version and USB image identity.")
     return p
@@ -655,8 +655,8 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
     return code
 
 
-FAKE_REQUIRED = "A fake lsblk JSON file is required for refresh."
-SHUTDOWN_FAILED = "Shutdown failed: could not power off. Hold the power button."
+FAKE_REQUIRED = "A fake lsblk JSON file is required for Check disks again."
+SHUTDOWN_FAILED = "Shutdown failed: could not shut down. Hold the power button."
 POWER_REQUEST_BLOCKED = "Power request blocked: an erase or report action may still be active."
 STARTUP_BLOCKED = "Startup was blocked. Save a diagnostic report for support."
 STARTUP_BLOCKED_LOG = "Startup blocked ({code})."

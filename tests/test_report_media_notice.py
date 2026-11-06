@@ -35,7 +35,7 @@ def test_what_notice_names_media_timing_and_refusal():
     # photo option; media rules and the refusal live in Need a report?,
     # which the line's Learn more opens.
     assert "photograph" in C.REPORT_MEDIA_WHAT and "when asked" in C.REPORT_MEDIA_WHAT
-    assert "second USB" in C.REPORT_MEDIA_WHAT
+    assert "report USB" in C.REPORT_MEDIA_WHAT
     help_text = C.REPORT_HELP_TEXT
     assert "FAT32 or exFAT" in help_text and "one writable, unmounted volume" in help_text
     assert "Keep the report USB unplugged" in help_text

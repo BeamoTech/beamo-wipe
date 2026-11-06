@@ -79,10 +79,10 @@ PHASE_NOTE_RETRYING = "Retrying a step that did not finish. The erase continues.
 PHASE_NOTE_FINALIZING = "The erase run ended. Determining the result."
 ESTIMATE_EARLY = "Estimating after more progress."
 ESTIMATE_LAST_STEP = "Estimate unavailable until the last step."
-ESTIMATE_RETRYING = "Estimate unavailable while the drive is retrying."
-ESTIMATE_SYNCING = "Estimate unavailable while the drive is syncing."
+ESTIMATE_RETRYING = "Estimate unavailable while the disk is retrying."
+ESTIMATE_SYNCING = "Estimate unavailable while the disk is syncing."
 ESTIMATE_PAUSED = "No estimate until progress resumes."
-ESTIMATE_NO_ETA = "Estimate unavailable: no time information from the drive."
+ESTIMATE_NO_ETA = "Estimate unavailable: no time information from the disk."
 ESTIMATE_DISAGREE = "Estimate unavailable: progress reports disagree."
 ESTIMATE_STEP_DONE = "Last step finished. Waiting for the result."
 
@@ -99,7 +99,7 @@ NO_UPDATE = "No new progress update for {text}."
 STALE_MEANING = "A quiet screen does not mean the erase stopped."
 STALE_NEXT = (
     "Keep the USB in and wall power connected. "
-    'Do not turn off the computer. You can choose "Stop erase" at any time.'
+    'Keep the computer on. You can choose "Stop erase" at any time.'
 )
 ELAPSED_LINE = " · Elapsed: {text}"
 ELAPSED_LABEL = "Elapsed: {text}"

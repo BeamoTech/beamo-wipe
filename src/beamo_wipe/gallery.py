@@ -1543,7 +1543,7 @@ function badge(kind, size) {
       `<line x1="${s*0.28}" y1="${s*0.52}" x2="${s*0.72}" y2="${s*0.52}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/>` +
       `<line x1="${s*0.28}" y1="${s*0.68}" x2="${s*0.72}" y2="${s*0.68}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/></svg>`;
   }
-  // "erase" is the warn triangle in red (the review screen's erase warning).
+  // "erase" is the warn triangle in red (the final check's erase warning).
   const c = kind === "erase" ? "#B3261E" : "#7A5200";
   return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">` +
     `<path d="M ${s/2} ${2} L ${s-2} ${s-3} L 2 ${s-3} Z" fill="${c}" stroke="${c}" stroke-width="${s*0.18}" stroke-linejoin="round"/>` +
@@ -2085,7 +2085,7 @@ function draw() {
     html += `<div class="pick-tools"><span class="small muted inventory-count" role="status" aria-live="polite">${esc(P.inventoryCount[mode] || P.inventoryCount.happy)}</span>${moreLink()}</div>`;
     html += `<div class="disklist">`;
     selectable().forEach(d => { html += diskCard(d); });
-    // Selection notes, the protected boot USB and Compare follow the disks.
+    // Selection notes, the protected Beamo USB and Compare follow the disks.
     if (selected && (selected.kind === "SSD" || selected.kind === "NVMe")) html += `<div style="margin:4px 0 8px">${panel("limits", P.ssd, true)}</div>`;
     if (reportWanted) html += `<div style="margin:4px 0 8px">${panel("info", P.reportMediaWanted, true)}</div>`;
     disks().filter(d => d.isBoot).forEach(d => { html += diskCard(d); });
@@ -2576,7 +2576,7 @@ function renderHelpMenu() {
 }
 document.addEventListener("keydown", e => {
   // A held key cannot trigger the newly focused action after navigation.
-  // Last chance deliberately focuses Back when reached from Method; a repeat
+  // Final check deliberately focuses Back when reached from Method; a repeat
   // Enter from Continue would otherwise activate that Back button.
   if (e.repeat && ["Escape", "Enter"].includes(e.key)) { e.preventDefault(); return; }
   // #175: F10 opens or closes Help & settings on every screen. While it is

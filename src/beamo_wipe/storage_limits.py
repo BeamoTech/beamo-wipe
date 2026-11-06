@@ -43,7 +43,7 @@ SECTION_VERIFY_TITLE = "Read-back verification"
 SECTION_HDD_TITLE = "Hard disks, hidden areas, and damaged media"
 SECTION_HDD_BODY = (
     "Hidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe "
-    "namespaces are outside what the overwrite reaches. A drive can report "
+    "namespaces are outside what the overwrite reaches. A disk can report "
     "completion while hidden data remains. Read or write errors, missing "
     "completion evidence, and interruption must not be treated as success."
 )
@@ -63,7 +63,7 @@ SECTION_ENCRYPTION_BODY = (
 )
 SECTION_ALTERNATIVE_TITLE = "When to use a different process"
 SECTION_ALTERNATIVE_BODY = (
-    "If you need coverage beyond exposed storage, consult the drive maker's "
+    "If you need coverage beyond exposed storage, consult the disk maker's "
     "guidance for the exact model and firmware. Vendor secure erase support "
     "and validation vary; this USB does not perform or certify that process. "
     "For required assurance that cannot be established, use a qualified "

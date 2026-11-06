@@ -197,7 +197,7 @@ Read-back verification
 Read-back verification checks exposed storage against the final overwrite. It does not prove that hidden copies were erased.
 
 Hard disks, hidden areas, and damaged media
-Hidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe namespaces are outside what the overwrite reaches. A drive can report completion while hidden data remains. Read or write errors, missing completion evidence, and interruption must not be treated as success.
+Hidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe namespaces are outside what the overwrite reaches. A disk can report completion while hidden data remains. Read or write errors, missing completion evidence, and interruption must not be treated as success.
 
 Unknown devices and controllers
 A missing device type stays unknown. A USB bridge or RAID controller may hide the media type, physical members, caches, or capacity. An exposed virtual disk does not establish coverage of every physical member. Do not use a displayed SSD or HDD label as proof that hidden areas are absent.
@@ -206,7 +206,7 @@ Encryption and locked devices
 Beamo Wipe does not unlock BitLocker, OPAL, ATA security, or other locked devices; extract keys; reset passwords; or bypass Secure Boot. Overwriting an exposed encrypted device is not proof of key destruction or coverage of hidden encrypted copies. Mapped volumes and partitions are not whole-disk targets.
 
 When to use a different process
-If you need coverage beyond exposed storage, consult the drive maker's guidance for the exact model and firmware. Vendor secure erase support and validation vary; this USB does not perform or certify that process. For required assurance that cannot be established, use a qualified destruction service. Beamo reports are not a formal certificate.
+If you need coverage beyond exposed storage, consult the disk maker's guidance for the exact model and firmware. Vendor secure erase support and validation vary; this USB does not perform or certify that process. For required assurance that cannot be established, use a qualified destruction service. Beamo reports are not a formal certificate.
 
 Ownership and safety
 Erase only disks you own or have written permission to erase. Confirm the device identity and keep backups. Destructive-action warnings, boot exclusion, the confirmation token, and the five-second delay still apply. If identity is uncertain, stop; do not bypass the safety gates.

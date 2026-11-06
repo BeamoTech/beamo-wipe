@@ -2,7 +2,7 @@
 """#145: the Owner report panel is one line with a Learn more link.
 
 "Want a report? You can photograph a summary at the end, or save it to a
-second USB when asked." (#127's photo record ships, so it leads). Learn more
+report USB when asked." (#127's photo record ships, so it leads). Learn more
 opens Need a report? by keyboard and in the screen-reader view. Choosing a
 wanted report still asks before it is discarded at shutdown (#25). Fake data.
 """
@@ -31,7 +31,7 @@ def _owner():
 def test_copy_is_one_short_line():
     assert C.REPORT_MEDIA_WHAT == (
         "Want a report? You can photograph a summary at the end, "
-        "or save it to a second USB when asked."
+        "or save it to a report USB when asked."
     )
     assert C.LEARN_MORE == "Learn more"
     assert len(C.REPORT_MEDIA_WHAT) < 110

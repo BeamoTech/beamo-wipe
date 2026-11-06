@@ -271,7 +271,7 @@ def test_working_stale_progress_shows_meaning_and_next_steps(monkeypatch):
         shown, packed, term = _draw(monkeypatch, wiz)
     assert "No new progress update for 1 minute." in shown
     assert STALE_MEANING in shown
-    for fragment in ("Keep the USB in", "wall power", "Do not turn off", '"Stop erase"'):
+    for fragment in ("Keep the USB in", "wall power", "Keep the computer on", '"Stop erase"'):
         assert fragment in shown, fragment
     assert STALE_NEXT.split(". ")[0] in packed.replace("  ", " ")
     last = term.frames[-1]

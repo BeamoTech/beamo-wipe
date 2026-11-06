@@ -333,7 +333,7 @@ def test_curses_record_lines_are_text_only():
 
 def test_report_help_leads_with_the_photo_option():
     first = C.REPORT_HELP_SECTIONS[0]
-    assert first.startswith("No second USB? Photograph the code\n")
+    assert first.startswith("No report USB? Photograph the code\n")
     assert "not a certificate" in first and "serial number" in first
     assert len(C.REPORT_HELP_SECTIONS) == 4
     usb = C.REPORT_HELP_SECTIONS[1]

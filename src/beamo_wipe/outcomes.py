@@ -114,12 +114,12 @@ HEADLINE_VERIFIED = "Done — this disk was erased and checked"
 HEADLINE_UNVERIFIED = "Done — this disk was overwritten with zeros (not checked)"
 NOTE_VERIFIED = (
     "The check read the disk back after the last overwrite. It covers the "
-    "storage the disk shows; on an SSD, the drive's controller decides what "
+    "storage the disk shows; on an SSD, the disk's controller decides what "
     "remains. Other disks were not erased."
 )
 NOTE_UNVERIFIED = (
     "Quick zero does not read the disk back, so nothing confirms the "
-    "overwrite reached every part. On an SSD, the drive's controller decides "
+    "overwrite reached every part. On an SSD, the disk's controller decides "
     "what remains. Other disks were not erased."
 )
 WHAT_NEXT = "What next"

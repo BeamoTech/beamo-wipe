@@ -86,7 +86,7 @@ reads naturally:
 | English | French | German | Spanish | Italian | Why |
 |---|---|---|---|---|---|
 | USB stick / the Beamo USB | clé USB / la clé USB Beamo | USB-Stick / der Beamo-USB-Stick | memoria USB / la memoria USB Beamo | chiavetta USB / la chiavetta USB Beamo | ES: understood everywhere; *pendrive* is regional |
-| boot USB | clé USB de démarrage | Start-USB-Stick | memoria USB de arranque | chiavetta USB di avvio | |
+| *(not used: boot USB — say the Beamo USB, #180)* | *not* clé USB de démarrage | *not* Start-USB-Stick | *not* memoria USB de arranque | *not* chiavetta USB di avvio | one name for the stick the computer starts from; English names are in [glossary.md](glossary.md). Safety-module messages (`BOOT_APPEARED_*`) keep their wording until their own review |
 | report USB | clé USB de rapport | Berichts-USB-Stick | memoria USB del informe | chiavetta USB del rapporto | |
 | disk / drive | disque | Datenträger (*Festplatte* only for "hard disk") | disco (*unidad* where English says "drive") | disco (*unità* where English says "drive") | DE: covers SSD, HDD and USB |
 | erase / erasure | effacer / effacement | löschen / das Löschen | borrar / borrado | cancellare / cancellazione | |

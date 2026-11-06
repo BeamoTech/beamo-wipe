@@ -9,12 +9,12 @@ announces the same ordered USB-removal steps as text below the question. See
 [the state, console, and recovery rules](report-shutdown.md). No report survives
 live-session shutdown or power loss unless it has been exported.
 
-The live USB offers a GTK 3 view using standard AT-SPI controls and Orca.
+The Beamo USB offers a GTK 3 view using standard AT-SPI controls and Orca.
 Press F8 in the graphical wizard before erasure, or choose **Screen-reader
 view (F8)**. This checks disks again and clears the selected target, ownership
 acknowledgement, typed confirmation, method, and countdown. Complete the entire
 authorization flow in the new view. Switching is unavailable while an erase is
-starting or running. A failed refresh leaves no stale disk selectable.
+starting or running. If Check disks again fails, no stale disk stays selectable.
 
 **Check disks again (F5)** first explains that reset and waits for confirm or
 Back. It is not offered on the ownership screen. From Confirm, Method or
@@ -24,7 +24,7 @@ again** button clears your answers. In the graphical view, F8 screen-reader
 handoff scans immediately from Pick and earlier; from Confirm, Method or Review
 it first opens the same guarded dialog.
 
-The live USB boot menu also offers **Beamo Wipe: speech for screen readers** —
+The Beamo USB boot menu also offers **Beamo Wipe: speech for screen readers** —
 press **S** when the menu appears. That entry passes `beamo.ui=accessible` on
 the kernel command line; the kiosk supervisor then launches
 `beamo-wipe --accessible` directly, so a blind owner never has to operate the
@@ -85,7 +85,7 @@ cancellation's status still says “Stopped by you.”
 Next comes the **Save a report (optional)** heading (#135). Its state, the
 numbered steps and any greyed control's reason are focusable labels; Save
 report to USB and Retry evidence save are buttons inside it, and the bottom
-buttons are only Erase another disk and Shut down. When the live USB line
+buttons are only Erase another disk and Shut down. When the Beamo USB line
 changes, the view keeps focus where it was; if focus was inside the panel it
 moves to the new status line so Orca reads it. Sound settings stay in the
 Sound check utility.
@@ -106,7 +106,7 @@ exact status message (the Technical details line), disk, capacity, serial number
 software version. It is a summary, not a certificate. It is not shown while an
 erase may still be running or after a stop that could not be confirmed.
 
-The view starts Orca and PulseAudio on the live USB. Speech requires working
+The view starts Orca and PulseAudio on the Beamo USB. Speech requires working
 audio output. Native Tk 8.6 is not claimed to expose its custom canvas controls
 to screen readers. The sequential `--plain-console` view is also available for
 terminal environments with an independently configured reader.

@@ -116,7 +116,7 @@ async function action(fn, focusId = "title") {
     if (fromButton && document.activeElement === document.body) $(focusId)?.focus();
   }
 }
-$("inspect").onclick=()=>action(async()=>{clearChecks("Checking the original USB, startup settings, and restart route…");show(await api("check"));$("status").textContent="Readiness checks updated.";});
+$("inspect").onclick=()=>action(async()=>{clearChecks("Checking the Beamo USB, startup settings, and restart route…");show(await api("check"));$("status").textContent="Readiness checks updated.";});
 $("saved").onchange=()=>{$("restart").disabled=busy||!ready||!$("saved").checked;};
 $("restart").onclick=()=>action(async()=>{
   if (!ready || !$("saved").checked) return;

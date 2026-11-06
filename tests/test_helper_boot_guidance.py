@@ -201,7 +201,7 @@ def test_bitlocker_warning_precedes_firmware_advice():
 
 def test_oem_variation_and_safe_fallbacks_are_documented():
     text = _html()
-    assert "not the same on every PC" in text
+    assert "not the same on every computer" in text
     assert "Examples only" in text
     assert "Shift" in text
     assert "another direct USB port" in text or "another USB port" in text

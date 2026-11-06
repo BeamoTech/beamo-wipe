@@ -58,14 +58,14 @@ def test_method_cards_are_a_tighter_choice_group():
 def test_report_help_sections_have_scan_headings():
     """Would fail when report help was six unlabeled paragraphs.
 
-    #127: the photo option (no second USB) comes first; the USB steps,
+    #127: the photo option (no report USB) comes first; the USB steps,
     already-plugged-in recovery and safe removal are one USB section.
     """
     headings = (
-        "No second USB? Photograph the code",
+        "No report USB? Photograph the code",
         "Saving the full report to a USB",
         "What the report contains",
-        "If the wipe cannot start",
+        "If the erase cannot start",
     )
     assert len(C.REPORT_HELP_SECTIONS) == len(headings)
     for heading, section in zip(headings, C.REPORT_HELP_SECTIONS):
@@ -75,7 +75,7 @@ def test_report_help_sections_have_scan_headings():
         assert len(body) > 40
     html = gallery_html()
     assert "Saving the full report to a USB" in html
-    assert "No second USB? Photograph the code" in html
+    assert "No report USB? Photograph the code" in html
     assert "FAT32" in html
     assert "Diagnostic report" in C.REPORT_HELP_TEXT
 

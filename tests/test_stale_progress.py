@@ -186,7 +186,7 @@ def test_stale_block_never_recommends_an_unsafe_restart():
         assert token not in lowered, token
     assert "USB" in block
     assert "wall power" in block
-    assert "Do not turn off" in block
+    assert "Keep the computer on" in block
     assert copy_strings.STOP_ASK in block
 
 

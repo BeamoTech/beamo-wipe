@@ -4,9 +4,9 @@ For development on Windows, macOS, or Linux, start with the [development guide](
 
 A guided USB for **nwipe**.
 
-Beamo Wipe is a bootable x86_64 live USB UI that walks a first-time BIOS user
+Beamo Wipe is a bootable x86_64 USB (the Beamo USB) that walks a first-time BIOS user
 through erasing a disk they own. You pay for a flashed stick, a boot-key card,
-and this wizard. You do not pay for a secret wipe algorithm.
+and this wizard. You do not pay for a secret erase algorithm.
 
 > **No warranty.** See [LICENSE](LICENSE) (GPL-3.0-or-later) and [NOTICE](NOTICE).
 > Owner-operated disk overwrite before recycle or resale. Not a lab certificate.
@@ -39,12 +39,12 @@ without building an ISO or booting a USB.
 
 ```bash
 cd "/path/to/Beamo Wipe"   # this repo
-./preview                   # real Tk window (same screens as the live USB)
+./preview                   # real Tk window (same screens as the Beamo USB)
 ./preview --web             # browser click-through of the same copy
-./preview --helper          # boot-menu helper page (does not wipe)
+./preview --helper          # Boot helper (does not erase)
 ./preview --empty           # no other disks
 ./preview --blocked         # cannot identify the USB
-./preview --fail            # finished screen after a failed wipe
+./preview --fail            # finished screen after a failed erase
 ./preview --accessible      # Linux GTK view for Orca / AT-SPI
 ./preview --console         # keyboard screens in the terminal
 ./preview --plain-console   # sequential text prompts, without screen redraws
@@ -57,7 +57,7 @@ see the flow in Safari or Chrome without installing anything extra.
 
 If `./preview` cannot open a window (no Tk), it falls back to `--console`.
 
-On the live USB, the boot menu also offers a speech entry — press **S** when
+On the Beamo USB, the boot menu also offers a speech entry — press **S** when
 the menu appears (see [screen-reader operation](docs/screen-reader.md)).
 Inside the guide, press **F8** before erasure to open the screen-reader view
 with Orca. Switching views clears all previous confirmations and checks disks
@@ -79,8 +79,8 @@ acknowledgement, typed confirmation, method, and countdown, and that
 preparation starts again from the beginning. You can keep your answers, or
 continue. It appears from the disk list onward, not on the ownership screen;
 after you have chosen a disk, the question defaults to **Cancel**. Then it reads the inventory again and identifies the boot device
-again. Complete the entire confirmation flow again. A failed refresh leaves
-no stale target selectable. Refresh is unavailable once an erase is starting
+again. Complete the entire confirmation flow again. If Check disks again fails,
+no stale target stays selectable. Check disks again is unavailable once an erase is starting
 or running.
 
 The disk list opens with a short count such as **2 disks available to erase · Beamo USB protected**, so you can check that the expected disks were found.
@@ -113,10 +113,10 @@ becomes success.
 ## What this is not
 
 - Not for **Apple Silicon** Macs, Chromebooks, Android, or RAID controllers.
-- Not a wipe from inside Windows or macOS. The PC must boot this USB.
-- Intel Mac USB boot-picker guidance is best-effort only; it is not Mac wipe support.
+- Not an erase from inside Windows or macOS. The computer must start from this USB.
+- Intel Mac USB boot-picker guidance is best-effort only; it is not Mac erase support.
 - Not DoD / NSA / NIST “certified.” Not a certified erasure service.
-- Not a new wipe engine. The only eraser is [nwipe](https://github.com/martijnvanbrummelen/nwipe) **v0.42**.
+- Not a new erase engine. The only eraser is [nwipe](https://github.com/martijnvanbrummelen/nwipe) **v0.42**.
 - Opening the application is explicit. The firmware boot menu (often F12,
   Esc, or F9) remains necessary when guided restart is unavailable.
 
@@ -146,7 +146,7 @@ packages are missing, the script prints the missing pieces and exits non-zero.
 
 ## Run the wizard in a VM
 
-**Preview on your Mac/PC (fake disks, no wipe):**
+**Preview on your Mac or Windows computer (fake disks, nothing erased):**
 
 ```bash
 ./preview
@@ -184,7 +184,7 @@ qemu-system-x86_64 -m 2048 \
 
 Full notes: [docs/vm-test.md](docs/vm-test.md).
 
-Use **only disposable virtual disks**. Never point this at a developer machine’s
+Use **only disposable virtual disks**. Never point this at a developer computer’s
 real Windows disk.
 
 ## Flash a USB for testing
@@ -226,7 +226,7 @@ GitHub Actions (`.github/workflows/ci.yml`, required check `CI gate`). Details: 
 
 ## How it works
 
-1. Boot the live USB (UEFI or legacy BIOS, x86_64).
+1. Start the computer from the Beamo USB (UEFI or legacy BIOS, x86_64).
 2. The wizard is the first screen. There is no desktop and no raw nwipe TUI.
 3. Confirm ownership or permission to erase. Identify the intended disk by
    model, size, and serial. If unsure, open the identification help.
@@ -239,7 +239,7 @@ GitHub Actions (`.github/workflows/ci.yml`, required check `CI gate`). Details: 
    screen-reader view, expand **Compare disks**; in the console, press **C**,
    then **Esc** to return. The plain console prints the same comparison before
    the disk choices. If identity is uncertain, shut down and disconnect the
-   extra drives.
+   extra disks.
 4. The Beamo USB cannot be selected. If we cannot tell which disk is the USB,
    the app refuses to list disks.
 5. Type-to-confirm, five-second delay, then nwipe runs non-interactively.
@@ -251,7 +251,7 @@ GitHub Actions (`.github/workflows/ci.yml`, required check `CI gate`). Details: 
    were erased. Additional overwrite passes do not fix SSD coverage limitations
    ([details](docs/storage-and-controller-limits.md#3-overwrite-limits--why-overwrite-alone-is-not-a-certificate)).
    Reports are not a formal certificate. If required assurance cannot be
-   established, consult the drive maker's guidance for the exact model and
+   established, consult the disk maker's guidance for the exact model and
    firmware or use a qualified destruction service.
 
 ## Development
@@ -282,7 +282,7 @@ The warning includes inaccessible, remapped, over-provisioned, and controller-ma
 flash areas and explains why additional overwrite passes do not fix those limits.
 See [the full limits](docs/storage-and-controller-limits.md).
 
-When a wipe cannot start, use the separately labeled [diagnostic report](docs/startup-diagnostics.md) path. Diagnostic reports are not erase evidence.
+When an erase cannot start, use the separately labeled [diagnostic report](docs/startup-diagnostics.md) path. Diagnostic reports are not erase evidence.
 
 ### Erasing another disk
 
@@ -303,9 +303,9 @@ Console: type `ANOTHER` (or press `A` in the keyboard interface). See
 Open **Need a report?** before choosing an erase target (also available at method
 selection and in Advanced). Keep a separate supported FAT32 or exFAT report USB unplugged
 until the erase has stopped and the result screen's **Save a report** panel
-asks for it; insert it, wait for **Found: …**, then choose **Save report to USB**. Keep the boot USB and erase disk connected. Any unsaved
+asks for it; insert it, wait for **Found: …**, then choose **Save report to USB**. Keep the Beamo USB and the selected disk connected. Any unsaved
 report is lost on live-session shutdown or power loss. The optional preference
 records intent for this session. It does not save anything. If a report was requested
 and no verified export completed, shutdown asks **Shut down without saving?**
 with **Keep session open** as the safe default. See [shutdown protection](docs/report-shutdown.md).
-See [the exact media, refresh and safe-removal requirements](docs/ADVANCED.md#logs).
+See [the exact media, Check disks again and safe-removal requirements](docs/ADVANCED.md#logs).

@@ -22,7 +22,7 @@ from stage_wrapper_sources import (
 
 
 README = """Beamo Wipe
-This USB is a bootable nwipe front-end. It does not wipe from Windows.
+This USB is a bootable nwipe front-end. It does not erase from Windows.
 On Windows: open Start Beamo Wipe.exe. Save your work, use Windows Restart,
 then choose this USB from the computer's boot menu. The launcher does not
 request administrator permission or set a one-time boot entry on Windows.

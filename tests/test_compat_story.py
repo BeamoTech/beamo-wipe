@@ -287,7 +287,7 @@ def test_this_usb_card_precedes_the_startup_chooser():
     assert html.index('id="guide"') < html.index('id="trouble-usb"')
     assert 'class="support-qr"' in html
     assert "BitLocker" in html
-    assert "not the same on every PC" in html
+    assert "not the same on every computer" in html
 
 
 def test_usb_story_strings_stay_on_the_swept_copy_surface():

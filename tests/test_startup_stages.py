@@ -227,7 +227,7 @@ def test_real_tk_startup_consumes_worker_completion(monkeypatch, failed, fullscr
 
 def test_startup_copy_never_claims_a_passed_check():
     assert (C.STARTUP_TITLE, C.STARTUP_TITLE_HINT) == ("Starting Beamo Wipe", "Getting ready.")
-    assert C.STARTUP_STAGE_BOOT_USB == "Checking the boot USB"
+    assert C.STARTUP_STAGE_BOOT_USB == "Checking the Beamo USB"
     assert C.STARTUP_STAGE_FINDING == "Finding disks"
     lines = [
         C.STARTUP_TITLE,

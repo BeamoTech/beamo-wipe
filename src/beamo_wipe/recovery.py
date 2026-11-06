@@ -78,7 +78,7 @@ NEXT_BLOCKED_REFRESH = (
 )
 NEXT_EMPTY = (
     "Review the reasons below. Keep the Beamo USB connected. "
-    "Shut down before checking drive connections. "
+    "Shut down before checking disk connections. "
     "If a disk remains unavailable or its identity is uncertain, contact support."
 )
 NEXT_EVIDENCE = (

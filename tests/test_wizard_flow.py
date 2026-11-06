@@ -684,7 +684,7 @@ def test_confirm_erase_second_start_reports_already_running(monkeypatch, tmp_pat
     wiz.runner.start = lambda request: (starts.append(request), orig_start(request))  # type: ignore[method-assign]
     wiz.confirm_erase()
     assert wiz.screen == Screen.WORKING
-    assert wiz.error == "A wipe is already running."
+    assert wiz.error == "An erase is already running."
     assert starts == []
     assert wiz._wipe_request is first_request
 

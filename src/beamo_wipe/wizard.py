@@ -81,7 +81,7 @@ CHECKING_AGAIN = "Checking disks again."
 FAKE_SOURCE_REQUIRED = "A fresh fake-device discovery source is required."
 INVALID_INVENTORY = "Discovery returned an invalid inventory."
 BOOT_UNIDENTIFIED = "Boot device could not be identified."
-ALREADY_RUNNING = "A wipe is already running."
+ALREADY_RUNNING = "An erase is already running."
 PREVIEW_NO_EXEC = "Preview and dry-run cannot exec nwipe."
 CHECKING_NO_START = "Disk checking could not start. Try again."
 REREAD_FAILED = "Could not re-read disks. Erase did not start."
@@ -127,13 +127,13 @@ def error_needs_support(error: object) -> bool:
         or error == VIEWS["stop_unconfirmed"].announcement
     )
 NO_EXPORT_EVIDENCE = "No current verified evidence to export"
-NO_FINISHED_REPORT = "A current finished wipe report is not available."
-EVIDENCE_UNREADABLE = "The saved wipe evidence could not be read. Try saving the report again."
-REPORT_CHANGED_BEFORE_SAVE = "The finished wipe report changed before it could be saved."
+NO_FINISHED_REPORT = "A current finished erase report is not available."
+EVIDENCE_UNREADABLE = "The saved erase evidence could not be read. Try saving the report again."
+REPORT_CHANGED_BEFORE_SAVE = "The finished erase report changed before it could be saved."
 REPORT_SAVING = "Saving the report to the USB and verifying it. Leave the USB connected."
 EXPORT_FAILED = "The report export failed. Shut down before removing the USB."
 REPORT_NOT_SAVED = "The report was not saved and verified. Shut down before removing the USB."
-REPORT_CHANGED_DURING_SAVE = "The finished wipe report changed while it was being saved. Shut down before removing the USB."
+REPORT_CHANGED_DURING_SAVE = "The finished erase report changed while it was being saved. Shut down before removing the USB."
 EXPORT_NO_START = "The report export could not start."
 REPORT_USB_POLL_S = 1.5  # read-only report-USB detection on Done (#135)
 # Check disks again (#136). Direct: a rescan clears at most the ownership

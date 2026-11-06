@@ -41,5 +41,5 @@ def test_diagnostic_baseline_rejects_test_only_boot_override(monkeypatch):
     monkeypatch.setattr(discovery, "read_cmdline", str)
     monkeypatch.setenv("BEAMO_WIPE_BOOT_DEVICE", "/dev/nvme0n1")
 
-    with pytest.raises(SafetyError, match="boot USB"):
+    with pytest.raises(SafetyError, match="Beamo USB"):
         export.capture_diagnostic_baseline(scan=lambda: payload)

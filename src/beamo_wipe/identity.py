@@ -33,11 +33,11 @@ MISSING_SERIAL_HARDWARE_ID = (
 CONFIRM_HARDWARE_ID = "Use the hardware ID shown here to identify this disk."
 DUPLICATE_ID = (
     "Two disks report the same serial or hardware ID. "
-    "If you cannot tell them apart, shut down and disconnect the extra drives."
+    "If you cannot tell them apart, shut down and disconnect the extra disks."
 )
 AMBIGUOUS_IDENTITY = (
     "These disks look too similar to tell apart safely. "
-    "Shut down. Disconnect the drives you do not want to erase. "
+    "Shut down. Disconnect the disks you do not want to erase. "
     "Start from this USB again. Do not guess."
 )
 SYSTEM_PATH_NOTE = "System name (not a stable identity)"

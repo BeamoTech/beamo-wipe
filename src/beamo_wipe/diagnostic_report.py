@@ -45,7 +45,7 @@ CODES = frozenset(
         "unexpected_startup_failure",
     }
 )
-TITLE = "Diagnostic report — wipe could not start"
+TITLE = "Diagnostic report — erase could not start"
 TITLE_RECOVERY = "Diagnostic report — previous result unavailable"
 INVALID_CLASSIFICATION = "Invalid diagnostic classification."
 INVALID_REPORT = "Invalid or unsanitized diagnostic report."

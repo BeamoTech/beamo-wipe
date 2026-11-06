@@ -316,7 +316,7 @@ POWER_REMINDER = (
 
 POWER_KEEP = "Laptop: keep wall power connected and keep the lid open."
 POWER_EVENTS = (
-    "This live USB asks Linux to ignore lid closure and a short power-button press, "
+    "The Beamo USB asks Linux to ignore lid closure and a short power-button press, "
     "and disables sleep. Firmware or a held power button can still stop the erase. "
     "Use Stop erase to stop; wait for the result before shutting down. "
     "A power cut can leave the disk partly erased and lose unsaved reports. "
@@ -359,14 +359,14 @@ OWNER_CHECKBOX = (
 # is verified by discovery itself, never by these lines.
 STARTUP_TITLE = "Starting Beamo Wipe"
 STARTUP_TITLE_HINT = "Getting ready."
-STARTUP_STAGE_BOOT_USB = "Checking the boot USB"
+STARTUP_STAGE_BOOT_USB = "Checking the Beamo USB"
 STARTUP_STAGE_BOOT_USB_HINT = (
     "Learning which disk is this USB stick, so it is never offered for erasure."
 )
 STARTUP_STAGE_FINDING = "Finding disks"
 STARTUP_STAGE_FINDING_HINT = "Listing the disks connected to this computer."
 STARTUP_STILL_WORKING = (
-    "Still working — this can take a minute on older machines."
+    "Still working — this can take a minute on older computers."
 )
 
 OWNER_LEAD = "Check the box, then continue."
@@ -477,7 +477,7 @@ SSD_FOOTER = _limits.OVERWRITE_LIMITS + SSD_FOOTER_SUFFIX
 WORKING_PULSE = (
     "Leave the USB in. Keep wall power connected if this computer has a battery. "
     "Keep the lid open. "
-    "Do not turn the PC off."
+    "Keep the computer on."
 )
 
 DONE_OK = _outcomes.VIEWS["verified"].message
@@ -642,7 +642,7 @@ REPORT_VOLATILE = (
     "Any unsaved report is lost when this live session shuts down or loses power."
 )
 REPORT_HELP_PHOTO = (
-    "No second USB? Photograph the code\n"
+    "No report USB? Photograph the code\n"
     "After the erase, the result screen shows a square code. Take a photo of it "
     "with your phone. The phone's camera shows it as plain text: the result, the "
     "disk and its serial number, the method and the time. No app or internet is "
@@ -652,7 +652,7 @@ REPORT_HELP_PHOTO = (
 REPORT_HELP_NEED = (
     "Saving the full report to a USB\n"
     "Saving a report is optional. You need a separate removable FAT32 or exFAT USB device, "
-    "with one writable, unmounted volume. It must be different from the Beamo boot USB and "
+    "with one writable, unmounted volume. It must be different from the Beamo USB and "
     "the disk you erase. NTFS, FAT12 and FAT16 are not supported. "
     "Beamo Wipe does not format or repair report media."
 )
@@ -660,7 +660,7 @@ REPORT_HELP_INSERT = (
     "Keep the report USB unplugged while choosing, confirming and erasing. Only "
     "after the erase has stopped and the result screen offers Save report to USB, "
     "insert exactly one report USB, then choose Save report to USB. Leave the "
-    "Beamo boot USB and selected erase disk connected."
+    "Beamo USB and the selected disk connected."
 )
 REPORT_HELP_STAGES = (
     "The result screen then guides you in five steps: 1. Insert the report USB. "
@@ -672,7 +672,7 @@ REPORT_HELP_STAGES = (
 )
 REPORT_HELP_PLUGGED = (
     "If you inserted the report USB before erasing, remove only that report USB. "
-    "Leave the boot USB and erase disk connected. Choose Check disks again, then "
+    "Leave the Beamo USB and the selected disk connected. Choose Check disks again, then "
     "choose and confirm the erase target again. Do not guess which disk to unplug "
     "or erase."
 )
@@ -688,15 +688,15 @@ REPORT_HELP_CONTAINS = (
     "identity evidence is required. To share, copy only SHARE.json and SHARE.txt."
 )
 REPORT_HELP_START = (
-    "If the wipe cannot start\n"
-    "If the wipe cannot start, Diagnostic report has a separate flow: keep the "
+    "If the erase cannot start\n"
+    "If the erase cannot start, Diagnostic report has a separate flow: keep the "
     "report USB unplugged for Prepare and insert it only when prompted. "
     "Diagnostics are not erase evidence and do not establish that an erase ran."
 )
 
 
 def _report_help_sections() -> tuple[str, ...]:
-    """Photo first (no second USB needed), then the USB report, then limits."""
+    """Photo first (no report USB needed), then the USB report, then limits."""
     return (
         REPORT_HELP_PHOTO,
         "\n".join(
@@ -715,7 +715,7 @@ REPORT_SHARE_REDACTED = (
 )
 
 REPORT_INSERT = (
-    "No erase is running. Leave the boot USB and selected disk connected. "
+    "No erase is running. Leave the Beamo USB and the selected disk connected. "
     "Insert one separate FAT32 or exFAT USB, then choose Save report to USB. "
     "The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence."
 )
@@ -724,7 +724,7 @@ REPORT_INSERT = (
 # screen. Media details (FAT32/exFAT, one volume) are in the report help.
 REPORT_MEDIA_WHAT = (
     "Want a report? You can photograph a summary at the end, "
-    "or save it to a second USB when asked."
+    "or save it to a report USB when asked."
 )
 LEARN_MORE = "Learn more"
 LEARN_MORE_REPORT_NAME = "Learn more about saving a report"
@@ -738,7 +738,7 @@ REPORT_MEDIA_WANTED = (
 ADVANCED_LOG_LEAD = (
     "Keep the separate FAT32 or exFAT report USB unplugged until the erase has stopped "
     "and Save report to USB is offered. Then insert it before choosing Save. "
-    "Leave the boot USB and selected disk connected. "
+    "Leave the Beamo USB and the selected disk connected. "
 )
 ADVANCED_LOG_TAIL = " Open Need a report? for requirements and safe removal."
 ADVANCED_LOG_NOTE = ADVANCED_LOG_LEAD + REPORT_VOLATILE + ADVANCED_LOG_TAIL
@@ -1169,9 +1169,9 @@ Compare the name or model, capacity, and serial or hardware ID with a trusted la
 
 If disks look alike or have the same capacity, compare their serial or hardware ID. Size alone is not enough. If identity is missing, duplicated, or does not match your record, do not guess. Ask someone you trust to help identify the disk.
 
-Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo boot USB; the connection type alone does not identify a disk. The Beamo boot USB remains protected.
+Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo USB; the connection type alone does not identify a disk. The Beamo USB remains protected.
 
-Still unsure? Stop and shut down before checking labels or changing connections. Wait until the computer is fully off. Keep the Beamo boot USB for restarting. Do not disconnect hardware while this session is running.
+Still unsure? Stop and shut down before checking labels or changing connections. Wait until the computer is fully off. Keep the Beamo USB for restarting. Do not disconnect hardware while this session is running.
 
 Back returns to the disk list with no disk selected. Continue only when you can identify the intended disk with confidence. You will still need to select it, type its confirmation, and wait through the final safety countdown."""
 
@@ -1224,7 +1224,7 @@ SOUND_NO_OUTPUT = (
     "Follow the recovery steps below."
 )
 SOUND_OFF_LIVE = (
-    "Sound check is available on the live USB. This preview cannot reach sound devices."
+    "Sound check is available on the Beamo USB. This preview cannot reach sound devices."
 )
 SOUND_ORCA_MISSING = (
     "The screen reader (Orca) is not running. The check below still works, "
@@ -1263,7 +1263,7 @@ FINISH_SOUND_STATE_ON = "Play a sound when it's finished: on"
 FINISH_SOUND_STATE_OFF = "Play a sound when it's finished: off"
 FINISH_SOUND_STATE_UNAVAILABLE = "Play a sound when it's finished: not available"
 SOUND_OUTCOME_OFF_LIVE = (
-    "Outcome sounds play on the live USB. This preview stays silent."
+    "Outcome sounds play on the Beamo USB. This preview stays silent."
 )
 
 # Console-only chrome (CON_): terse key hints for the 80-column fallback.
@@ -1326,7 +1326,7 @@ CON_BACK = "Esc: back"
 CON_REFRESH_HINT_CONFIRM = (
     "Type CHECK DISKS AGAIN to continue. Type BACK to keep your answers."
 )
-CON_REFRESH_HINT = "Type CHECK DISKS AGAIN to refresh. This clears preparation."
+CON_REFRESH_HINT = "Type CHECK DISKS AGAIN to read the disk list again. This clears preparation."
 CON_DIAGNOSTIC_HINT = "Type DIAGNOSTIC for a diagnostic report (not erase evidence)."
 CON_REPORT_HINT = "Type REPORT for Need a report? (optional)."
 CON_INPUT_UNAVAILABLE = "Console input unavailable. Shutdown was not authorized."
@@ -1345,7 +1345,7 @@ BUSY_CHECKING_TITLE = "Checking disk"
 BUSY_STOPPING_TITLE = "Stopping erase"
 BUSY_REFRESHING_TITLE = "Checking disks again"
 BUSY_CHECKING_MESSAGE = (
-    "Confirming disk identity and boot USB exclusions. "
+    "Confirming disk identity and that the Beamo USB is excluded. "
     "Please wait; controls are unavailable during this check."
 )
 BUSY_REFRESHING_MESSAGE = "Previous selections and confirmations have been cleared."
@@ -1411,7 +1411,7 @@ HINT_ESC_METHOD = "Esc returns to method selection."
 POWER_KEEP_CONNECTED = "Keep the disk and Beamo USB connected."
 ERASE_PROGRESS_LABEL = "Erase progress"
 RETRY_SAVE = "Retry evidence save"
-NO_WIPE_YET = "(no wipe yet)"
+NO_WIPE_YET = "(no erase yet)"
 ACCESSIBLE_TITLE = "Beamo Wipe — screen-reader view"
 # Screen-reader pick button: the action, then the spoken disk identity.
 ACCESSIBLE_SELECT_DISK = "Select {disk}"
@@ -1485,13 +1485,13 @@ GALLERY_TITLE = "Beamo Wipe — screen preview"
 GALLERY_NOTE = (
     "This is a <strong>preview</strong>. It does not erase disks. "
     "Click through like the USB wizard.\n"
-    "The real window (same Tk screens as the live USB): <code>./preview</code>\n"
-    "&nbsp;·&nbsp; <a href=\"{helper}\">Boot-menu helper</a>"
+    "The real window (same Tk screens as the Beamo USB): <code>./preview</code>\n"
+    "&nbsp;·&nbsp; <a href=\"{helper}\">Boot helper</a>"
 )
 GALLERY_HAPPY = "Happy path"
 GALLERY_EMPTY = "No other disks"
 GALLERY_BLOCKED = "Cannot identify USB"
-GALLERY_FAIL = "Failed wipe"
+GALLERY_FAIL = "Failed erase"
 GALLERY_FAKE_POWER = "Fake power"
 GALLERY_POWER_UNKNOWN = "Unknown"
 GALLERY_POWER_AC = "Wall power connected"
