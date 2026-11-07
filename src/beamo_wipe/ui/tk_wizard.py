@@ -2670,7 +2670,10 @@ class TkWizard:
             self._kbd_focus: Optional[tuple] = None
             self._layout_keys_used = False  # #142
         assert self._body is not None and self._footer is not None
-        self._help_prior_focus = self._help_focused_key()
+        # BW-175B: guarded like _sync_layout; partial windows (tests, an
+        # interface built before the menu existed) have no Help & settings.
+        focused = getattr(self, "_help_focused_key", None)
+        self._help_prior_focus = focused() if callable(focused) else ""
         self._footer_hint = C.HINT_SPLASH if self.w.screen == Screen.SPLASH else ""
         self._done_refocus = ""
         if self.w.screen == Screen.DONE and getattr(self, "_shown", None) == Screen.DONE:
@@ -2744,7 +2747,9 @@ class TkWizard:
         sync_preview = getattr(self, "_sync_preview_copy", None)
         if callable(sync_preview):
             sync_preview()
-        self._sync_palette()  # #179
+        sync_palette = getattr(self, "_sync_palette", None)  # #179; BW-175B guard
+        if callable(sync_palette):
+            sync_palette()
         self._body.configure(bg=BG)
         dispatch = {
             Screen.SPLASH: self._splash,
@@ -2784,13 +2789,17 @@ class TkWizard:
             self._diagnostic(diagnostic_view)
         else:
             dispatch[screen]()
-        if not self._footer.winfo_children():
+        footer_children = getattr(self._footer, "winfo_children", None)
+        help_footer = getattr(self, "_help_footer", None)
+        if callable(footer_children) and callable(help_footer) and not footer_children():
             # #175: splash and the short status screens have no footer;
             # Help & settings still sits in the same place.
-            self._help_footer()
+            help_footer()
         self._draw_header()
         self._draw_strip()
-        self._sync_help_menu()
+        sync_help = getattr(self, "_sync_help_menu", None)  # BW-175B guard
+        if callable(sync_help):
+            sync_help()
         _drain_retired_native()
         self._shown = screen
         self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
