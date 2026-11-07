@@ -4422,7 +4422,7 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
   Not pushed to main; merge order #94 -> ... -> #156 -> #157.
 
-## BW-158-LIMITSLINE — One-line SSD limits under the method cards (PROPOSAL ONLY — OWNER DECISION REQUIRED; NOTHING IMPLEMENTED)
+## BW-158-LIMITSLINE — One-line SSD limits under the method cards (OWNER CHOSE OPTION B 2026-11-07; IMPLEMENTATION IN PROGRESS)
 
 - 2026-11-05, Claude (Opus 5.5). Backlog #158 (UI review item 32). Branch
   `feat/method-limits-line-158` (no commits; @ d55220e), worktree
@@ -4593,7 +4593,7 @@ another very thorough and comprehensive pass of this." Repo
   ISO/QEMU, hosted ci.yml. Not pushed to main; merge order ... #157 ->
   #159 -> #160.
 
-## BW-161-RARELYNEEDED — Three overwrites tagged 'Rarely needed' with a Show more reason (IMPLEMENTED LOCALLY — COPY AWAITS OWNER SIGN-OFF; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+## BW-161-RARELYNEEDED — Three overwrites tagged 'Rarely needed' with a Show more reason (IMPLEMENTED LOCALLY — COPY APPROVED BY OWNER 2026-11-07; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/rarely-needed-161` (stacked
   on `feat/everyday-caveat-160` @ cec9ecf; commit a8f2a2c), worktree
@@ -4906,7 +4906,7 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: Orca speech, Linux 72 DPI, ISO/QEMU, hosted ci.yml, native
   review of the drafts.
 
-## BW-167-WORKINGTIMES — Working says when it started and when to come back (IMPLEMENTED LOCALLY; OWNER QUESTION OPEN; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+## BW-167-WORKINGTIMES — Working says when it started and when to come back (IMPLEMENTED LOCALLY; OWNER DECIDED 2026-11-07: RELATIVE TIMES ONLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/working-times-167` (stacked
   on `fix/final-check-step-166` @ 4c3465b; commit 2d5bde9), worktree
@@ -5230,7 +5230,7 @@ another very thorough and comprehensive pass of this." Repo
   wording).
 - #182 (code signing): OWNER DECISION REQUIRED — see BW-182-SIGNING.
 
-## BW-182-SIGNING — Code-sign the Windows launcher (PROPOSAL ONLY; OWNER DECISION REQUIRED; NOTHING PURCHASED OR CREATED)
+## BW-182-SIGNING — Code-sign the Windows launcher (OWNER DECIDED 2026-11-07: STAY UNSIGNED FOR NOW; NOTHING PURCHASED OR CREATED; DEFERRED)
 
 - 2026-11-05, Claude (Opus 5.5). Backlog #182 (UI review item 56). No code,
   workflow, account or purchase change. Research by web sources dated up to
@@ -5520,7 +5520,7 @@ another very thorough and comprehensive pass of this." Repo
   button only while the help shows). test_confirm_spacing_157 15/15,
   test_layout_hint_build_155b 3/3, test_confirm_layout_hint_155 Tk 5/5.
 
-## BW-179-CONTRAST — High-contrast theme on every screen (IMPLEMENTED LOCALLY; ACCESSIBLE BOOT ENTRY OWNER DECISION; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+## BW-179-CONTRAST — High-contrast theme on every screen (IMPLEMENTED LOCALLY; OWNER DECIDED 2026-11-07: BOOT ENTRY UNCHANGED; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/high-contrast-179` (stacked
   on `feat/disabled-buttons-178` @ e60c7fa; commit dfd8786), worktree
@@ -5776,3 +5776,39 @@ another very thorough and comprehensive pass of this." Repo
   with a partial window match a39794d exactly (69 = 69 lines).
 - REMAINING: the same regression exists on the #175–#180 branches until
   they are rebased onto this fix or merged together with it.
+
+## BW-INT-20261107 — Owner decisions and integration round (IN PROGRESS)
+
+- 2026-11-07, Claude (Opus 5.5). Branch `integrate/ui-review-20261107`
+  (from `feat/owner-carryover-187` @ 699825a, which contains every pushed
+  task branch #127–#187), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-int-20261107`.
+- OWNER DECISIONS (given in chat 2026-11-07, by AskUserQuestion):
+  * #158: option B — one SSD limits line between the disk card and the
+    method cards, full text under Show more; re-measure on top of #159.
+  * #161: chip "Rarely needed" and the Show more text approved as written.
+  * #167: keep relative times; never show clock times from the PC clock.
+    Question closed; Wizard.wall_clock_trusted stays False.
+  * #179: the speech boot entry does not turn high contrast on; it stays
+    one choice away in Help & settings. Question closed.
+  * #182: stay unsigned for now; revisit later. Nothing purchased or
+    created. Not started; kept open in Notion as deferred.
+  * #185: empty-state wording approved: heading "This PC's disk may be
+    hidden by Intel VMD (RST)."; steps "1. Restart and open the BIOS/UEFI
+    setup. 2. Find the storage setting (often called SATA mode, RST or
+    VMD). Change it to AHCI, or turn VMD off. 3. Save, then start from the
+    Beamo USB again."; warning "Windows may not start until you change
+    this setting back. If BitLocker is on, Windows may ask for its
+    recovery key." Shown only when detection is certain.
+  * Hosted CI: after local and Linux checks are clean, dispatch ONE hosted
+    `ci.yml` run on the combined branch and report; do NOT merge to main
+    until the owner says so. No release or publish.
+- NOTION: on 2026-11-07 the 49 built tasks (#127, #129, #130, #135–#157,
+  #159–#180, #187) were set to Done in the Wipe To Do database at the
+  owner's request, each with a comment naming its branch, commit and the
+  checks still outstanding. The workspace automation "Project To Do
+  Cleanup" archives Done tasks. This record stays the source of truth for
+  what is still pending on each (hosted gate, merge, native review).
+- LINUX: WSL works again (2026-11-07; 2.9 GB RAM, 2 CPUs, shared with a
+  peer lab self-test). Full-suite runs of main 58c677f and 699825a started
+  at low priority in /home/beamo-qual/bw-linux-20261107 (out/status.txt).
