@@ -5633,7 +5633,7 @@ another very thorough and comprehensive pass of this." Repo
 - NOT VERIFIED: native review of the FR/DE/ES/IT wording, hosted ci.yml,
   Linux 72 DPI, GTK runtime.
 
-## BW-187-OWNERCARRY — Keep the ownership tick when erasing several disks in a row (PROPOSAL ONLY — OWNER DECISION REQUIRED; NOTHING IMPLEMENTED)
+## BW-187-OWNERCARRY — Keep the ownership tick when erasing several disks in a row (OWNER APPROVED OPTION A; IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, GTK/ORCA RUNTIME, FULL DRY-RUN ERASE ON LINUX, NATIVE REVIEW, MERGE PENDING)
 
 - 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187` (stacked
   on `feat/one-name-180` @ 065a8dd; record only), worktree
@@ -5696,4 +5696,83 @@ another very thorough and comprehensive pass of this." Repo
   never listed or marked, one nwipe, evidence per erase separate, erased
   marks correct per outcome; update test_erase_another.py expectations;
   screenshots at 800x600 and 1280x820, every text size; GTK/curses parity.
-- NEXT ACTION: owner decision on the questions above. Nothing implemented.
+- NEXT ACTION: superseded — see DECISION and IMPLEMENTED below.
+- DECISION (2026-11-06, owner, via the session question): option A; a disk
+  connected after the tick asks again (binding kept); each evidence/report
+  records whether ownership was confirmed on screen or carried over. No
+  expiry asked for (the confirmation lasts for the app run only).
+- IMPLEMENTED: commit 0fc885b (`safety:`), on top of 9454c9b (BW-175B).
+  - New src/beamo_wipe/owner_carry.py: disk_key (serial, WWN, size,
+    model; None without serial and WWN or for the boot disk), capture /
+    OwnerCarry.covers (no carry for unidentifiable or duplicate
+    identities), erased marks (checked / unchecked / unconfirmed; nothing
+    for proven-nothing-erased codes; latest erase of a disk wins).
+  - wizard.py: owner_source ("on_screen" / "carried_over"),
+    _clear_owner_locked at every reset (recovery, layout change, preview
+    reset, Check disks again), continue_owner records what an on-screen
+    tick covered, offer_owner_carry (Splash/Keyboard only, never ticks by
+    itself), _apply_owner_carry_locked at the first accept_keyboard →
+    Owner (skips to Pick only if it covers the fresh discovery; otherwise
+    Owner unticked with OWNER_CARRY_NEW_DISK / OWNER_CARRY_UNSURE),
+    take_handoff (only after Erase another disk; read once),
+    change_ownership, owner_carried, erased_tag, disk_tags (encryption
+    tags #154 + erased tag). Evidence inputs pass owner_confirmation.
+  - app.py: _run_session carries (confirmation, erased list) in local
+    variables only and offers them to the next fresh wizard.
+  - evidence.py: optional authorization.owner_confirmation (closed set);
+    privacy.py: sharing copy keeps only on_screen / carried_over (a test
+    caught that a generic allowlist would pass forged text);
+    result_summary.py: "Ownership" line when present.
+  - UIs: Tk Pick row + Change link, Owner note, tags via disk_tags; GTK
+    focusable line + Change button (accessible name includes the line),
+    note, spoken tags; curses line, W key and footer hint, note, tags;
+    plain console line + OWNER command, note, tags. Web preview unchanged.
+  - Copy (EN + FR/DE/ES/IT drafts): OWNER_CARRY_*, CON_OWNER_CARRY_*,
+    TAG_ERASED_* ("Earlier erase not confirmed" instead of the proposal's
+    "not finished": it also covers a finished erase whose check failed),
+    result_summary H_OWNERSHIP / OWNERSHIP_ON_SCREEN / OWNERSHIP_CARRIED.
+  - docs/screens.md row, docs/screen-reader.md paragraph.
+  - Tests: tests/test_owner_carry_187.py (new, 31): identity binding,
+    one app run only, hand-off only via Erase another disk, new/unmatched
+    disk asks again, blocked/empty discovery never ticks, Change, Check
+    disks again and layout change drop it, every per-disk gate still
+    required (no selection, wrong token, countdown) and
+    assert_ready_to_wipe unchanged, erased marks per outcome (boot never
+    marked, still selectable), evidence/report/sharing field, the wizard's
+    own source reaches evidence, app loop: fresh wizard+runner each
+    session and a new app run starts unticked, curses/plain/GTK parity,
+    Tk Pick line/Change/tag at 800x600 and 1280x820, Tk Owner note, every
+    language. Updated pins: test_encrypted_tag_154 (tags via disk_tags;
+    regex excludes the _encryption_tags method name),
+    test_high_contrast_179 (app loop text), curses stub in
+    test_ui_console_save_prompt_pass9 (owner_carried).
+- CHECKS: new 31/31 pass; on 065a8dd the file errors at import (no
+  owner_carry). ruff, mypy --platform linux clean. Related comparison,
+  202 files one by one, #187 vs #180: after single-file and single-case
+  reruns no new failure caused by #187 (remaining differences flip both
+  ways or fail identically on #180 alone; Windows tmp PermissionError
+  tests identical). 57 further stub-wizard files: no error mentions the
+  new attributes. Full dry-run erase (confirm_erase → Working) cannot run
+  on this Windows host (known baseline), so the positive erase path is
+  covered here only through gate refusals and the _finish evidence path.
+- SCREENS: work187-scratch-20261106/before (owner, pick, done) and after
+  (pick-carried and owner-new-disk at 800x600 standard, 1280x820 large
+  and extra): no clipping.
+- NOT VERIFIED: hosted ci.yml, Linux 72 DPI, GTK/Orca runtime, curses on
+  a real VT, full dry-run and QEMU erase sequence of two disks, native
+  review of the drafts. Do not merge before those pass.
+
+## BW-175B — Tk _draw called the #175/#179 hooks unguarded (REGRESSION FROM #175/#179; FIXED LOCALLY)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187`, commit
+  9454c9b. Found while checking #187: test_qemu_diagnostic_markers and
+  test_tk_review_visible_pass16_ui draw with a partial window; #175 added
+  _help_focused_key / _help_footer / _sync_help_menu and #179
+  _sync_palette calls in TkWizard._draw without the getattr guard the
+  other optional hooks use: 29 failures vs 3 on a39794d (before #175).
+  The #175–#180 comparisons missed it because both sides had it.
+- FIX: guard the four calls; real windows unchanged. Those two files now
+  match a39794d (3 environment failures), and all 12 files that draw
+  with a partial window match a39794d exactly (69 = 69 lines).
+- REMAINING: the same regression exists on the #175–#180 branches until
+  they are rebased onto this fix or merged together with it.
