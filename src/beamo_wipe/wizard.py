@@ -22,6 +22,7 @@ from beamo_wipe.copy import (
     erase_now_label,
 )
 from beamo_wipe import keyboard as _keyboard
+from beamo_wipe import owner_carry as _owner_carry
 from beamo_wipe.keyboard import (
     DEFAULT_LAYOUT,
     LANGUAGE_LAYOUTS,
@@ -455,6 +456,17 @@ class Wizard:
         # which reopens in the reader once the rescan finishes (Tk only).
         self.refresh_then_reader = False
         self.owner_ok = False
+        # #187: where the tick came from ("on_screen" / "carried_over"; "" when
+        # unticked), the confirmation offered by the previous erase in this
+        # app run (used once, at the first Owner step), the confirmation this
+        # session can hand to the next one, and why an offer was not used.
+        self.owner_source = ""
+        self._owner_carry_in: Optional[_owner_carry.OwnerCarry] = None
+        self._owner_carry_out: Optional[_owner_carry.OwnerCarry] = None
+        self.owner_carry_note = ""
+        self.erased_history: tuple[_owner_carry.ErasedMark, ...] = ()
+        self._handoff: Optional[tuple[Optional[_owner_carry.OwnerCarry],
+                                      tuple[_owner_carry.ErasedMark, ...]]] = None
         self.selected: Optional[Disk] = None
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
@@ -586,7 +598,7 @@ class Wizard:
         self._recovered = True
         self._startup_blocked = True
         self.report_wanted = True
-        self.owner_ok = False
+        self._clear_owner_locked()
         self.confirm_input = ""
         self._erase_until = None
         self._authorized_operation = None
@@ -1124,6 +1136,10 @@ class Wizard:
             self._keyboard_from = None
             self.typing_check = ""
             self.keyboard_check = None
+            if dest == Screen.OWNER and self._owner_carry_in is not None:
+                # #187: the first Owner step after Erase another disk.
+                if self._apply_owner_carry_locked():
+                    return
             self._return_to_screen_locked(dest)
 
     @property
@@ -1399,7 +1415,7 @@ class Wizard:
             self.typing_check = ""
             self.keyboard_check = None
             return
-        self.owner_ok = False
+        self._clear_owner_locked()
         self.confirm_input = ""
         self.selected = None
         self._erase_until = None
@@ -1427,7 +1443,9 @@ class Wizard:
         self._saved_report_claim = None
         self._saved_diagnostic_context = None
         self._report_help_from = None
-        self.owner_ok = False
+        self._clear_owner_locked()
+        self._owner_carry_in = None
+        self.erased_history = ()
         self.selected = None
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
@@ -1719,7 +1737,18 @@ class Wizard:
             self._request_new_session_locked()
 
     def _request_new_session_locked(self) -> None:
+        # #187: only Erase another disk hands anything to the next session:
+        # the disks this tick covered (when it is still in force) and the
+        # list of disks erased in this app run. Read once by the app loop.
+        carry = self._owner_carry_out if self.owner_ok and self.owner_source in _owner_carry.SOURCES else None
+        try:
+            code = self.result_view.code
+        except Exception:  # noqa: BLE001 — an unreadable result marks nothing
+            code = ""
+        self._handoff = (carry, _owner_carry.add_mark(self.erased_history, self.selected, code))
         self.owner_ok = False
+        self.owner_source = ""
+        self._owner_carry_out = None
         self.confirm_input = ""
         self._authorized_operation = None
         self._erase_until = None
@@ -1937,12 +1966,124 @@ class Wizard:
             if self.screen not in {Screen.WHAT, Screen.OWNER}:
                 return
             self.owner_ok = checked is True
+            # #187: a tick given here is an on-screen confirmation; what it
+            # covers is recorded when the owner continues to the disk list.
+            self.owner_source = _owner_carry.SOURCE_ON_SCREEN if self.owner_ok else ""
+            self._owner_carry_out = None
 
     def continue_owner(self) -> None:
         with self._lock:
             if self.screen not in {Screen.WHAT, Screen.OWNER} or not self.owner_ok:
                 return
+            if self.owner_source != _owner_carry.SOURCE_CARRIED:
+                # The box vouches for "these disks": the erasable disks this
+                # discovery lists now. None (no stable identity) never carries.
+                self.owner_source = _owner_carry.SOURCE_ON_SCREEN
+                self._owner_carry_out = _owner_carry.capture(self.selectable)
+            self.owner_carry_note = ""
             self._enter_pick()
+
+    def _clear_owner_locked(self) -> None:
+        """Untick the owner box and drop any confirmation that could carry (#187)."""
+        self.owner_ok = False
+        self.owner_source = ""
+        self._owner_carry_out = None
+
+    def offer_owner_carry(self, carry: Optional[_owner_carry.OwnerCarry],
+                          history: tuple[_owner_carry.ErasedMark, ...] = ()) -> None:
+        """App loop only: what the previous erase in this app run handed over.
+
+        Used once, at the first Owner step of this session, and only if this
+        session's own discovery lists no erasable disk outside what the tick
+        covered. Never sets owner_ok by itself.
+        """
+        with self._lock:
+            if self.screen not in {Screen.SPLASH, Screen.KEYBOARD} or self.wipe_result is not None:
+                return
+            self._owner_carry_in = carry if isinstance(carry, _owner_carry.OwnerCarry) else None
+            self.erased_history = tuple(
+                m for m in history
+                if isinstance(m, _owner_carry.ErasedMark) and m.state in _owner_carry.ERASED_STATES
+            )
+
+    def take_handoff(self) -> tuple[Optional[_owner_carry.OwnerCarry], tuple[_owner_carry.ErasedMark, ...]]:
+        """App loop only, after Erase another disk: (confirmation, erased list)."""
+        with self._lock:
+            handoff = self._handoff
+            self._handoff = None
+            if not self.wants_new_session or handoff is None:
+                return None, ()
+            return handoff
+
+    def _apply_owner_carry_locked(self) -> bool:
+        """At the first Owner step: use the carried tick if it still covers.
+
+        Returns True when the Owner screen is skipped. Fails closed: blocked
+        discovery, no erasable disk, an unidentifiable disk or a disk that
+        was not listed when the owner ticked all show the Owner screen
+        unticked.
+        """
+        carry, self._owner_carry_in = self._owner_carry_in, None
+        if carry is None:
+            return False
+        disks = list(self.selectable)
+        if (
+            self._startup_blocked
+            or not self.discovery.boot_identified
+            or self.discovery.error
+            or not disks
+        ):
+            return False
+        if not carry.covers(disks):
+            known = [_owner_carry.disk_key(d) for d in disks]
+            self.owner_carry_note = (
+                C.OWNER_CARRY_NEW_DISK
+                if all(k is not None for k in known) and len(set(known)) == len(known)
+                else C.OWNER_CARRY_UNSURE
+            )
+            return False
+        self.owner_ok = True
+        self.owner_source = _owner_carry.SOURCE_CARRIED
+        self._owner_carry_out = carry  # still bound to what was first confirmed
+        self.owner_carry_note = ""
+        self._enter_pick()
+        return True
+
+    @property
+    def owner_carried(self) -> bool:
+        """Pick shows 'You confirmed… Change' (#187)."""
+        return self.owner_ok and self.owner_source == _owner_carry.SOURCE_CARRIED
+
+    def change_ownership(self) -> None:
+        """'Change' on Pick a disk: back to the Owner screen, box unticked."""
+        with self._lock:
+            if self.screen not in {Screen.PICK, Screen.PICK_EMPTY} or not self.owner_carried:
+                return
+            self._clear_owner_locked()
+            self.selected = None
+            self.confirm_input = ""
+            self._erase_until = None
+            self._authorized_operation = None
+            self.screen = Screen.OWNER
+
+    def erased_tag(self, disk: Optional[Disk]) -> str:
+        """'Erased earlier (…)' for a disk erased earlier in this app run (#187)."""
+        state = _owner_carry.mark_for(self.erased_history, disk)
+        return {
+            _owner_carry.ERASED_CHECKED: C.TAG_ERASED_CHECKED,
+            _owner_carry.ERASED_UNCHECKED: C.TAG_ERASED_UNCHECKED,
+            _owner_carry.ERASED_UNCONFIRMED: C.TAG_ERASED_UNCONFIRMED,
+        }.get(state or "", "")
+
+    def disk_tags(self, disk: Disk) -> tuple[str, ...]:
+        """Tags shown with a disk row: encryption (#154), then an earlier erase (#187)."""
+        from beamo_wipe import inventory
+
+        if disk.is_boot:
+            return ()
+        tags = tuple(inventory.encryption_tags(self.nested_components(disk)))
+        erased = self.erased_tag(disk)
+        return tags + ((erased,) if erased else ())
 
     def _discovery_error(self) -> Optional[str]:
         """Discovery's error in the current language.
@@ -2055,7 +2196,8 @@ class Wizard:
             self.screen = Screen.REFRESHING
             self.discovery = DiscoveryResult(error=CHECKING_AGAIN, boot_identified=False)
             self.selected = None
-            self.owner_ok = False
+            self._clear_owner_locked()  # #187: a carried tick never survives a rescan
+            self._owner_carry_in = None
             self.confirm_input = ""
             self.method = DEFAULT_METHOD
             self._erase_until = None
@@ -2965,6 +3107,9 @@ class Wizard:
                 assessment_log_text=assessment_log_text,
                 wall_provenance=self._evidence_wall_provenance,
                 language=self.language, keyboard_layout=self.keyboard_layout,
+                # #187: whether the owner ticked the box for this erase or it
+                # carried over from an earlier erase in this app run.
+                owner_confirmation=self.owner_source or None,
             )
             with self._lock:
                 if write_seq != self._evidence_write_seq:

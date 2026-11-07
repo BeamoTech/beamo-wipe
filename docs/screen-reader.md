@@ -90,6 +90,12 @@ changes, the view keeps focus where it was; if focus was inside the panel it
 moves to the new status line so Orca reads it. Sound settings stay in the
 Sound check utility.
 
+After Erase another disk (#187), Pick a disk may start with a focusable
+line, "You confirmed that you own these disks or have written permission to
+erase them.", and a Change button that returns to the ownership question.
+A disk erased earlier in this session is read with its tag, for example
+"Erased earlier (checked)".
+
 On the keyboard screen, the check box is named "Optional check: press the key
 labelled Z here…" (#140). Press Z: focus moves to the result, an alert Orca
 reads ("✓ Letters and numbers match …" or "That looks like …. Switch to it?");

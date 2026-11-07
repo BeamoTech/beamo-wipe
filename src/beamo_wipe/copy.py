@@ -369,6 +369,21 @@ STARTUP_STILL_WORKING = (
     "Still working — this can take a minute on older computers."
 )
 
+# #187: after Erase another disk, the owner's tick carries over within this
+# app run (only while no new disk is connected). Pick shows it with Change.
+OWNER_CARRY_LINE = (
+    "You confirmed that you own these disks or have written permission to erase them."
+)
+OWNER_CARRY_CHANGE = "Change"
+OWNER_CARRY_NEW_DISK = "A disk was connected since you confirmed. Confirm again."
+OWNER_CARRY_UNSURE = "We cannot match these disks to the ones you confirmed. Confirm again."
+CON_OWNER_CARRY_KEY = "W: change ownership"
+CON_OWNER_CARRY_HINT = "Type OWNER to confirm ownership again."
+# A disk erased earlier in this app run (#187). Display only: still selectable.
+TAG_ERASED_CHECKED = "Erased earlier (checked)"
+TAG_ERASED_UNCHECKED = "Erased earlier (not checked)"
+TAG_ERASED_UNCONFIRMED = "Earlier erase not confirmed"
+
 OWNER_LEAD = "Check the box, then continue."
 # Next to the greyed Choose a disk (#143); gone once the box is ticked.
 OWNER_CONTINUE_REASON = "Tick the box above to continue."

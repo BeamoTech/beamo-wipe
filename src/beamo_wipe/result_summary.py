@@ -81,6 +81,10 @@ H_CLOCK = "Clock"
 H_STARTED = "Started (clock not verified)"
 H_ENDED = "Ended (clock not verified)"
 H_IDENTITY_EVIDENCE = "Identity evidence"
+# #187: how the owner box was satisfied for this erase.
+H_OWNERSHIP = "Ownership"
+OWNERSHIP_ON_SCREEN = "Confirmed on screen for this erase"
+OWNERSHIP_CARRIED = "Carried over from an earlier erase in this session"
 WARNINGS_NONE = "None recorded"
 VERIFY_PASSED = "Read-back verification passed"
 VERIFY_SKIPPED = "Verification was not performed"
@@ -354,6 +358,16 @@ def _generator_lines(evidence: Mapping[str, Any], view: ResultView) -> list[tupl
     return [(H_RANDOM_GENERATOR, name)]
 
 
+def _ownership_lines(evidence: Mapping[str, Any]) -> list[tuple[str, str]]:
+    """'Ownership' (#187), only for records that state it; never free text."""
+    value = _object_mapping(evidence.get("authorization")).get("owner_confirmation")
+    if value == "on_screen":
+        return [(H_OWNERSHIP, OWNERSHIP_ON_SCREEN)]
+    if value == "carried_over":
+        return [(H_OWNERSHIP, OWNERSHIP_CARRIED)]
+    return []
+
+
 def _warnings(evidence: Mapping[str, Any], secrets: tuple[str, ...]) -> str:
     raw = evidence.get("warnings")
     if "warnings" not in evidence:
@@ -465,6 +479,7 @@ def _result_fields(
         *_disk_lines(payload, redacted=redacted),
         *_method_lines(payload),
         *_generator_lines(payload, view),
+        *_ownership_lines(payload),
         (H_ELAPSED, _elapsed(timestamps)),
         (H_RESULT, view.message),
         *_recovery_fields(view),

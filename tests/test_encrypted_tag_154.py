@@ -128,13 +128,18 @@ def test_tags_are_display_only():
     for disk in wiz.selectable:
         other = next(d for d in plain.selectable if d.path == disk.path)
         assert confirm_spec(disk, wiz.listed_disks).token == confirm_spec(other, plain.listed_disks).token
-    # Only presentation code reads the tags.
+    # Only presentation code reads the tags. #187: the screens get them
+    # through Wizard.disk_tags (encryption tags plus an earlier erase).
     users = sorted(p.relative_to(ROOT / "src").as_posix()
                    for p in (ROOT / "src/beamo_wipe").rglob("*.py")
-                   if "encryption_tags(" in p.read_text(encoding="utf-8"))
-    assert users == ["beamo_wipe/gallery.py", "beamo_wipe/inventory.py",
-                     "beamo_wipe/ui/accessible_wizard.py", "beamo_wipe/ui/console_wizard.py",
-                     "beamo_wipe/ui/tk_wizard.py"]
+                   if re.search(r"(?<![\w.])encryption_tags\(|inventory\.encryption_tags\(",
+                                p.read_text(encoding="utf-8")))
+    assert users == ["beamo_wipe/gallery.py", "beamo_wipe/inventory.py", "beamo_wipe/wizard.py"]
+    readers = sorted(p.relative_to(ROOT / "src").as_posix()
+                     for p in (ROOT / "src/beamo_wipe").rglob("*.py")
+                     if "disk_tags(" in p.read_text(encoding="utf-8"))
+    assert readers == ["beamo_wipe/ui/accessible_wizard.py", "beamo_wipe/ui/console_wizard.py",
+                       "beamo_wipe/ui/tk_wizard.py", "beamo_wipe/wizard.py"]
 
 
 @pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
@@ -179,7 +184,7 @@ def test_gtk_speaks_and_shows_the_tag():
     source = (ROOT / "src/beamo_wipe/ui/accessible_wizard.py").read_text(encoding="utf-8")
     block = source[source.index("elif screen == Screen.PICK:"):]
     block = block[:block.index("elif screen in (Screen.PICK_EMPTY, Screen.PICK_BLOCKED):")]
-    assert 'tags = " · ".join(inventory.encryption_tags(children))' in block
+    assert 'tags = " · ".join(self.w.disk_tags(disk))' in block  # #187: same tags + erased
     assert "for part in (text, tags, hint, summary) if part" in block
     assert "self.label(tags)" in block
 

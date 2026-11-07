@@ -4217,6 +4217,12 @@ class TkWizard:
                 line, bullet, font=self.font_b, fg=INK, bg=SURFACE, flow_pad=24,
             ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(14, 0))
         checked = bool(self.w.owner_ok)
+        if self.w.owner_carry_note:
+            # #187: the earlier tick did not carry (a new or unmatched disk).
+            note = self._wrapping_label(zone, self.w.owner_carry_note, font=self.font_s_bold,
+                                        fg=INK, bg=BG)
+            note.pack_configure(fill=tk.X, pady=(14, 0))
+            setattr(note, "_beamo_owner_carry_note", True)
         self._wrapping_label(zone, C.OWNER_LEAD, font=self.font_s_bold, bg=BG).pack(
             fill=tk.X, pady=(14, 8)
         )
@@ -4340,7 +4346,7 @@ class TkWizard:
         # collapsed row too: it is how an owner recognises the PC's own disk,
         # and so does an encryption tag (#154).
         details_text = " · ".join(
-            part for part in (view.kind_chip, view.connection, *inventory.encryption_tags(nested),
+            part for part in (view.kind_chip, view.connection, *self.w.disk_tags(disk),
                               C.contents_hint(disk), summary)
             if part
         )
@@ -4494,9 +4500,10 @@ class TkWizard:
 
         Outlined, ink text: a shape and a word, not a colour. Display only.
         """
-        tags = inventory.encryption_tags(self.w.nested_components(disk))
+        tags = self.w.disk_tags(disk)  # #187: plus "Erased earlier (…)"
         if not tags:
             return
+        erased = self.w.erased_tag(disk)
         row = tk.Frame(parent, bg=bg)
         row.pack(fill=tk.X, pady=(4 if self.lay.short else 6, 0))
         setattr(row, "_beamo_encryption_tags", True)
@@ -4505,7 +4512,7 @@ class TkWizard:
                            padx=6, pady=0, bd=0, highlightthickness=1,
                            highlightbackground=BORDER_STRONG, highlightcolor=BORDER_STRONG)
             tag.pack(side=tk.LEFT, padx=(0, 6))
-            setattr(tag, "_beamo_encryption_tag", text)
+            setattr(tag, "_beamo_erased_tag" if text == erased else "_beamo_encryption_tag", text)
 
     def _contents_line(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
         """What the partitions show (Windows, another system, none): helps an
@@ -4517,6 +4524,22 @@ class TkWizard:
         line = self._wrapping_label(parent, hint, font=self.font_s, fg=MUTED, bg=bg)
         line.pack_configure(pady=(2 if self.lay.short else 4, 0))
         setattr(line, "_beamo_contents_hint", True)
+
+    def _owner_carry_row(self, parent: tk.Widget) -> None:
+        """#187: 'You confirmed that you own these disks… Change' on Pick.
+
+        Shown only while the tick carried over from the previous erase in
+        this app run; Change returns to the Owner screen with the box clear.
+        """
+        row = tk.Frame(parent, bg=BG)
+        row.pack(fill=tk.X, pady=(0, 4))
+        setattr(row, "_beamo_owner_carry", True)
+        change = _Button(row, text=C.OWNER_CARRY_CHANGE, command=self._nav(self.w.change_ownership),
+                         font=self.font_s_bold, variant="ghost", compact=True)
+        change.pack(side=tk.RIGHT, anchor="n")
+        setattr(change, "_beamo_owner_carry_change", True)
+        line = self._wrapping_label(row, C.OWNER_CARRY_LINE, font=self.font_s, fg=INK, bg=BG)
+        line.pack_configure(side=tk.LEFT, fill=tk.X, expand=True, anchor="n", pady=(5, 0))
 
     def _pick(self) -> None:
         self._comparison_opener = None  # set by _comparison (#149 link)
@@ -4555,6 +4578,8 @@ class TkWizard:
                 return
 
         tools.bind("<Configure>", _fit_count, add="+")
+        if self.w.owner_carried:
+            self._owner_carry_row(col)
         list_wrap = tk.Frame(col, bg=BG)
         list_wrap.pack(fill=tk.BOTH, expand=True, pady=(2, 4))
         canvas = tk.Canvas(list_wrap, bg=BG, highlightthickness=0)

@@ -279,6 +279,7 @@ def build_evidence(
     wall_provenance: str = "unavailable",
     language: str = "en",
     keyboard_layout: str = "us",
+    owner_confirmation: Optional[str] = None,
 ) -> dict[str, Any]:
     """Build a truthful, user-safe evidence dict."""
     spec = METHODS.get(method)
@@ -487,6 +488,12 @@ def build_evidence(
             "keyboard_layout": keyboard_layout if _is_allowed_layout(keyboard_layout) else "us",
         },
     }
+    # #187: how the owner box was satisfied for this erase. Absent when not
+    # known (recovered sessions, older records); never a free-form value.
+    from beamo_wipe.owner_carry import SOURCES as _OWNER_SOURCES
+
+    if owner_confirmation in _OWNER_SOURCES:
+        evidence["authorization"] = {"owner_confirmation": owner_confirmation}
 
     presentation = present_evidence(evidence)
     evidence["presentation"] = presentation.payload()
@@ -1016,6 +1023,7 @@ def build_evidence_for_wizard(
     interrupted: bool = False,
     language: str = "en",
     keyboard_layout: str = "us",
+    owner_confirmation: Optional[str] = None,
 ) -> dict[str, Any]:
     return build_evidence(
         disk=disk,
@@ -1033,4 +1041,5 @@ def build_evidence_for_wizard(
         cancelled=cancelled,
         language=language,
         keyboard_layout=keyboard_layout,
+        owner_confirmation=owner_confirmation,
     )

@@ -111,7 +111,7 @@ def test_setting_carries_to_the_next_session():
     src = (ROOT / "src/beamo_wipe/app.py").read_text(encoding="utf-8")
     assert "high_contrast = code.high_contrast" in src
     assert "wizard.set_high_contrast(high_contrast)" in src
-    assert "text_size=text_size, high_contrast=high_contrast)" in src
+    assert "text_size=text_size, high_contrast=high_contrast," in src  # #187 adds the handoff
 
 
 def test_every_language_has_the_contrast_words():

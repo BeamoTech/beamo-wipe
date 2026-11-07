@@ -350,8 +350,9 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
-        # #154: an encryption tag helps recognise the main disk.
-        tags = " · ".join(inventory.encryption_tags(wizard.nested_components(disk)))
+        # #154: an encryption tag helps recognise the main disk; #187: and
+        # "Erased earlier (…)" for a disk erased earlier in this run.
+        tags = " · ".join(wizard.disk_tags(disk))
         if tags:
             block.extend(_lines("  " + tags, width))
         hint = C.contents_hint(disk)
@@ -774,6 +775,8 @@ def _assist_footer(wizard: Wizard, inventory_open: bool) -> list[str]:
             lines.append(C.CON_BOOT_IDENTITY.format(line=C.CON_PROTECTED_BOOT_MEDIA))
         if screen == Screen.PICK and len(wizard.selectable) > 1:
             lines.append(C.CON_COMPARE)
+        if wizard.owner_carried:
+            lines.append(C.CON_OWNER_CARRY_KEY)  # #187
         return lines
     return []
 
@@ -1196,6 +1199,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
             if ident:
                 print(ident)
             print(C.owner_platforms_line())  # #146: fine print, not a bullet
+            if wizard.owner_carry_note:
+                print(wizard.owner_carry_note)  # #187
             print(C.OWNER_LEAD)
             print(C.OWNER_CHECKBOX)
             ans = _answer(wizard, C.CON_OWNER_PROMPT).strip()
@@ -1236,6 +1241,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.PICK:
             print(wizard.inventory_count)
+            if wizard.owner_carried:  # #187
+                print(C.OWNER_CARRY_LINE)
+                print(C.CON_OWNER_CARRY_HINT)
             if wizard.protected_boot_text:
                 print(wizard.protected_boot_text)
             if wizard.other_devices:
@@ -1259,7 +1267,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 _emit(f"    {view.id_label}: {view.marked_id}")
                 for note in view.notes:
                     _emit("    " + note)
-                tags = " · ".join(inventory.encryption_tags(wizard.nested_components(listed)))
+                tags = " · ".join(wizard.disk_tags(listed))  # #187: erased earlier too
                 if tags:
                     _emit("    " + tags)  # #154
                 hint = C.contents_hint(listed)
@@ -1277,6 +1285,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(C.CON_COMPARE)
             print(C.CON_DISK_HELP.format(label=C.DISK_HELP_BUTTON))
             choice = _answer(wizard, C.CON_PICK_PROMPT).strip()
+            if wizard.owner_carried and choice.upper() == "OWNER":
+                wizard.change_ownership()  # #187
+                continue
             if choice.upper() == "U":
                 wizard.open_disk_help()
                 continue
@@ -1787,6 +1798,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(ident, w))
             lines.extend(_lines(C.owner_platforms_line(), w))  # #146: fine print
             lines.append("")
+            if wizard.owner_carry_note:
+                lines.extend(_lines(wizard.owner_carry_note, w))  # #187
             lines.extend(_lines(C.OWNER_LEAD, w))
             lines.extend(_lines(C.OWNER_CHECKBOX, w))
             mark = "[X]" if wizard.owner_ok else "[ ]"
@@ -1815,6 +1828,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             for group in (
                 warning_lines,
                 _lines(wizard.inventory_count, w),
+                _lines(C.OWNER_CARRY_LINE, w) if wizard.owner_carried else [],  # #187
                 _lines(C.pick_subtitle(), w),
             ):
                 if group and len(intro) + len(group) <= intro_budget:
@@ -2324,6 +2338,10 @@ def _loop(stdscr, wizard: Wizard) -> int:
             inventory_boot = True
             comparison_open = False
             inventory_offset = 0
+            continue
+        if wizard.screen in (Screen.PICK, Screen.PICK_EMPTY) and ch in (ord("w"), ord("W")) and wizard.owner_carried:
+            wizard.change_ownership()  # #187: back to the Owner screen, unticked
+            inventory_open = False
             continue
         if wizard.screen in (Screen.PICK, Screen.PICK_EMPTY) and ch in (ord("o"), ord("O")) and wizard.other_devices:
             comparison_open = False

@@ -483,6 +483,10 @@ def _run_session(args, *, session_store, use_console, want_accessible,
     language = None
     text_size = None
     high_contrast = None
+    # #187: in memory only, for this app run. A crash, kiosk restart or
+    # reboot starts a new process and the owner ticks the box again.
+    owner_carry = None
+    erased_history: tuple = ()
     owned_reader = None
     try:
         while True:
@@ -508,13 +512,15 @@ def _run_session(args, *, session_store, use_console, want_accessible,
                 args, session_store=session_store, use_console=use_console,
                 want_accessible=want_accessible, fullscreen=fullscreen, reader=reader,
                 keyboard_layout=keyboard_layout, language=language,
-                text_size=text_size, high_contrast=high_contrast)
+                text_size=text_size, high_contrast=high_contrast,
+                owner_carry=owner_carry, erased_history=erased_history)
             if not isinstance(code, Wizard):
                 return code
             keyboard_layout = code.keyboard_layout
             language = code.language
             text_size = code.text_size
             high_contrast = code.high_contrast  # #179: for the whole session
+            owner_carry, erased_history = code.take_handoff()  # #187
             use_console = code.diagnostic_ui == "console"
             want_accessible = code.diagnostic_ui == "accessible"
             del code
@@ -529,7 +535,8 @@ def _run_session(args, *, session_store, use_console, want_accessible,
 
 def _run_one_session(args, *, session_store, use_console, want_accessible,
                      fullscreen, reader, keyboard_layout=None,
-                     language=None, text_size=None, high_contrast=None) -> int | Wizard:
+                     language=None, text_size=None, high_contrast=None,
+                     owner_carry=None, erased_history=()) -> int | Wizard:
     if args.demo:
         # Instant fake data: stages would flash meaninglessly.
         try:
@@ -569,6 +576,10 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
         wizard.set_text_size(text_size)
     if high_contrast is not None:
         wizard.set_high_contrast(high_contrast)
+    if owner_carry is not None or erased_history:
+        # Offered once; the wizard uses it only if its own fresh discovery
+        # lists no erasable disk the owner did not confirm (#187).
+        wizard.offer_owner_carry(owner_carry, tuple(erased_history))
     wizard.diagnostic_ui = "console" if use_console else "graphical"
     # The language modules are process-wide. Every freshly constructed
     # wizard must record the same choice as the copy it will render. Keep

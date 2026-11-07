@@ -745,6 +745,9 @@ class AccessibleWizard:
             self.label(C.POWER_REMINDER)  # #168: no dark-screen note (kept lit)
             self.label(C.POWER_EVENTS, focusable=True)
             self.support_identity_labels()
+            if self.w.owner_carry_note:
+                # #187: the earlier tick did not carry (new or unmatched disk).
+                self.label(self.w.owner_carry_note, focusable=True)
             self.label(C.OWNER_LEAD)
             check = Gtk.CheckButton.new_with_label(C.OWNER_CHECKBOX)
             check.get_child().set_line_wrap(True)
@@ -766,6 +769,11 @@ class AccessibleWizard:
         elif screen == Screen.PICK:
             heading.set_text(C.TITLE_PICK)
             self.label(C.pick_subtitle())
+            if self.w.owner_carried:
+                # #187: the tick carried over from the previous erase.
+                self.label(C.OWNER_CARRY_LINE, focusable=True)
+                change = self.button(C.OWNER_CARRY_CHANGE, self.w.change_ownership, in_body=True)
+                change.get_accessible().set_name(f"{C.OWNER_CARRY_CHANGE}: {C.OWNER_CARRY_LINE}")
             self.button(C.DISK_HELP_BUTTON, self.w.open_disk_help, in_body=True)
             if same_size_conflict(self.w.listed_disks):
                 self.label(f"{C.SEVERITY_WARNING}: {C.SAME_SIZE_HINT}")
@@ -791,7 +799,8 @@ class AccessibleWizard:
                 # partition names and formats too).
                 # #154: "BitLocker (Windows encryption)" / "Encrypted (LUKS)",
                 # shown under the row and spoken with it, like the hint.
-                tags = " · ".join(inventory.encryption_tags(children))
+                # #187: and "Erased earlier (…)" for a disk erased in this run.
+                tags = " · ".join(self.w.disk_tags(disk))
                 spoken = ". ".join(part for part in (text, tags, hint, summary) if part)
                 if spoken != text:
                     select.get_accessible().set_name(spoken)

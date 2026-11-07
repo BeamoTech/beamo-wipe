@@ -50,6 +50,7 @@ def test_idle_inventory_overlay_yields_between_paints(monkeypatch):
         protected_boot=None,
         error="",
         inventory_count="",
+        owner_carried=False,  # #187
         selected=None,
         tick=lambda: None,
     )
