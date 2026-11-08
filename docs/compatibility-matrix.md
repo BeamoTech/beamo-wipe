@@ -370,7 +370,7 @@ BEAMO_WIPE_VERSION=0.2.14 ./scripts/qemu-verify.sh
 ## 14. Remaining risks & unsupported hardware (honest)
 
 - **APFS / BitLocker / SED / OPAL** — wizard does not unlock encrypted volumes; they appear as raw block devices if unlocked at firmware, otherwise not listed via `mountpoint` protected checks. No BitLocker extraction. See `docs/storage-and-controller-limits.md` §4 for per-state guidance.
-- **NVMe Secure Erase / ATA Secure Erase** — not implemented; wrapper only calls `nwipe`. Documented as not a sanitizer bypass. For certified erasure use vendor tools per `docs/storage-and-controller-limits.md` §5.
+- **NVMe Secure Erase / ATA Secure Erase** — not implemented; wrapper only calls `nwipe`. Documented as not a sanitizer bypass. For certified erasure use vendor tools per `docs/storage-and-controller-limits.md` §5. Options, risks and the open owner decision (#186, proposal only): [SSD firmware erase decision record](decisions/ssd-firmware-erase.md).
 - **RAID / Intel RST / mdadm / LVM** — may expose `dm-0`/`md127` or hide members; not supported, not listed, not claimed.
 - **USB-C / Thunderbolt docks** — additional hubs not enumerated in `docs/boot-card.md`.
 - **Serial over non-standard encoding** — `udev` `\xHH` decoding covers typical, but exotic USB hub serials may still fall back to device name (still safe via `SAFE_TOKEN_RE`).
