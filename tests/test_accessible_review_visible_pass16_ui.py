@@ -36,9 +36,27 @@ class Widget:
         if self.clock is not None: self.clock.advance(6)
     def __getattr__(self, _name): return lambda *_args, **_kwargs: None
 
-gtk = SimpleNamespace(
-    Box=lambda **_kw: Widget(), ScrolledWindow=lambda: Widget(),
-    Grid=lambda: Widget(),
+class Factory:
+    # Any Gtk widget class: called, or via new / new_with_label (#144 badge,
+    # #175 Help & settings menu button and popover, and later widgets).
+    def __call__(self, *args, label="", **_kw):
+        return Widget(label or (args[0] if args and isinstance(args[0], str) else ""))
+    def __getattr__(self, _name):
+        return self
+
+class Names(SimpleNamespace):
+    # Enum namespaces (Orientation, PolicyType, PositionType, Atk.Role ...).
+    def __getattr__(self, _name): return 0
+
+class FakeGtk(SimpleNamespace):
+    def __getattr__(self, name):
+        return Names() if name[:1].isupper() and name.endswith("Type") else Factory()
+
+class Label(Widget):
+    def __init__(self, label="", **_kw): super().__init__(label)
+
+gtk = FakeGtk(
+    Label=Label,
     Orientation=SimpleNamespace(VERTICAL=1, HORIZONTAL=2),
     PolicyType=SimpleNamespace(NEVER=1, AUTOMATIC=2),
 )
@@ -47,7 +65,7 @@ repo.Gtk = gtk
 repo.Gdk = SimpleNamespace(CURRENT_TIME=0)
 repo.GLib = SimpleNamespace()
 repo.Pango = SimpleNamespace()
-repo.Atk = SimpleNamespace(Role=SimpleNamespace(PANEL=1, ALERT=2))
+repo.Atk = SimpleNamespace(Role=Names())
 gi = ModuleType('gi')
 gi.require_version = lambda *_args: None
 gi.repository = repo

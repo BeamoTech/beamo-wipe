@@ -18,6 +18,9 @@ def test_working_progress_redraw_keeps_keyboard_focus():
     start = script.index("function draw() {")
     end = script.index('document.addEventListener("keydown"', start)
     draw = script[start:end]
+    # #144: draw() repaints the header power badge on every screen.
+    badge_start = script.index("function renderPowerBadge() {")
+    badge = script[badge_start:script.index("function updatePower(", badge_start)]
     program = r"""
 let active = null, more = null;
 class Bucket {
@@ -29,14 +32,17 @@ class Bucket {
     if (this === elements.main && value.includes('id="more"'))
       more = {id:'more', matches() { return false; }, focus() { active = this; }};
   }
-  append(button) { this.children.push(button); }
-  prepend(button) { this.children.unshift(button); }
+  append(button) { button.parent = this; this.children.push(button); }
+  prepend(button) { button.parent = this; this.children.unshift(button); }
   querySelectorAll() {
     return this === elements.foot
       ? [...elements.utilities.children, ...elements.btnsL.children, ...elements.btnsR.children]
       : this.children;
   }
-  querySelector() { return null; }
+  querySelector(selector) {
+    if (selector !== '.footrow') return null;
+    return this.footrow || (this.footrow = new Bucket());
+  }
 }
 const elements = Object.fromEntries(
   ['step','journey','sfill','main','btnsL','btnsR','foot','utilities','hint']
@@ -53,6 +59,7 @@ const P = {
   finishSound: {toggle:'Play a sound', beep:'Beep', quiet:'Quiet', none:'None', reasonPreview:'Preview'},
   powerKeep: 'Laptop',
   hints: {default:'Hint', working:'Working hint'},
+  helpMenu: {title:'Help & settings', shortcutsTitle:'Keyboard shortcuts'},
 };
 let screen = 'working', renderedScreen = null, showMore = false;
 let selected = {path:'/dev/fake'}, method = 'everyday', soundsOn = false;
@@ -70,10 +77,14 @@ function esc(value) { return value; }
 function btn(label, onclick) {
   return {textContent: label, disabled:false, onclick,
     matches(selector) { return selector === '.foot button'; },
-    setAttribute() {},
+    setAttribute() {}, dataset: {},
+    insertAdjacentElement(_where, other) {
+      other.parent = this.parent;
+      this.parent.children.splice(this.parent.children.indexOf(this) + 1, 0, other);
+    },
     focus() { active = this; }};
 }
-""" + draw + r"""
+""" + badge + draw + r"""
 draw();
 for (let i = 0; i < 3; i++) {
   const oldButton = elements.btnsL.children[i];
@@ -83,6 +94,18 @@ for (let i = 0; i < 3; i++) {
   if (oldButton === newButton) throw Error('working controls were not rebuilt');
   if (document.activeElement !== newButton)
     throw Error('progress redraw lost keyboard focus on ' + oldButton.textContent);
+}
+// #175: Help & settings and Keyboard shortcuts sit in the footer tools on
+// Working too; a progress repaint must keep focus on them as well.
+for (let i = 0; i < 2; i++) {
+  const oldTool = elements.utilities.children[i];
+  oldTool.focus();
+  draw();
+  const newTool = elements.utilities.children[i];
+  if (!newTool || oldTool === newTool || newTool.textContent !== oldTool.textContent)
+    throw Error('footer tools were not rebuilt in place');
+  if (document.activeElement !== newTool)
+    throw Error('progress redraw lost keyboard focus on ' + oldTool.textContent);
 }
 more.focus();
 draw();

@@ -21,7 +21,9 @@ def test_gallery_escape_repeat_does_not_cross_two_screens(start_screen):
     end = source.index("function renderOtherDevices()", start)
     handler = source[start:end]
     program = f"""
+// #175: the keydown handler first routes keys to Help & settings when open.
 let screen = {start_screen!r};
+let helpOpen = false;
 let refreshFrom = 'limits', reportHelpFrom = 'limits';
 let callback, redraws = 0;
 const main = {{querySelector() {{ return {{focus() {{}}}}; }}}};
@@ -54,6 +56,7 @@ def test_gallery_enter_repeat_cannot_activate_new_last_chance_focus():
 // Method's Continue action has just drawn Last chance, whose safe Back button
 // receives focus. A held Enter now delivers a repeat keydown to that button.
 let screen = 'last', callback;
+let helpOpen = false;
 const document = {{addEventListener(_type, fn) {{ callback = fn; }}}};
 {handler}
 const repeated = {{key: 'Enter', repeat: true, prevented: false,

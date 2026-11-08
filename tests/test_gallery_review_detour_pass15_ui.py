@@ -24,6 +24,7 @@ def test_refresh_confirmation_cannot_consume_preview_review_countdown(return_act
     program = f"""
 let screen = 'last', refreshFrom = 'owner', shutdownFrom = 'owner', reportHelpFrom = 'owner';
 let tLeft = 5, timer = null, callback, intervalCallback, nextId = 0;
+let helpOpen = false;
 const document = {{addEventListener(_name, fn) {{ callback = fn; }}}};
 const main = {{querySelector() {{ return {{focus() {{}}}}; }}}};
 const draw = () => {{}};

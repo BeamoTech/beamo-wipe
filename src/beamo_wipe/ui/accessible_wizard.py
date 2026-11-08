@@ -1304,6 +1304,14 @@ class AccessibleWizard:
         generation = self.generation
         button = Gtk.MenuButton()
         button.set_label(C.MENU_TITLE)
+        label = button.get_child()
+        if isinstance(label, Gtk.Label):
+            # Wrap like the other footer tools (button()): the utilities grid
+            # has equal columns, so one unwrapped label ("Hilfe und
+            # Einstellungen" at Extra large) widened the window past 800 px.
+            label.set_line_wrap(True)
+            label.set_line_wrap_mode(Pango.WrapMode.WORD)
+            label.set_max_width_chars(24)
         button.set_can_default(False)
         button.set_receives_default(False)
         button.get_accessible().set_name(C.MENU_TITLE)

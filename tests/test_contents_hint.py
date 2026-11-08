@@ -196,21 +196,42 @@ def test_gallery_disk_card_renders_the_hint_line(monkeypatch):
                 return script[start:index + 1]
             index += 1
 
+    # #149: on Pick an unselected eligible disk is one compact row whose
+    # details carry the hint; the selected disk (and the full card on other
+    # screens) keeps the separate hint line. Both must show it.
     program = "\n".join([
-        "const P = {bootUsb: 'BOOT', bootDisc: 'DISC'}; let selected = null; const ICON_NO = '';",
+        "const P = {bootUsb: 'BOOT', bootDisc: 'DISC'}; let selected = null, screen = 'pick'; const ICON_NO = '';",
         "function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }",
         "function metaLine(d) { return ''; }",
         function("nestedComponents"),
+        function("compactDiskRow"),
         function("diskCard"),
         f"const disks = {json.dumps(disks)};",
-        "console.log(JSON.stringify(disks.map(d => [d.path, "
-        "(diskCard(d).match(/contents-hint\">([^<]*)</) || [null, ''])[1]])));",
+        "const line = html => (html.match(/contents-hint\">([^<]*)</) || [null, ''])[1];",
+        "const compact = html => (html.match(/compact-details\">([^<]*)</) || [null, null])[1];",
+        "const full = disks.map(d => { selected = d.isBoot ? null : d; return [d.path, line(diskCard(d))]; });",
+        "selected = null;",
+        "const rows = disks.filter(d => !d.isBoot).map(d => [d.path, compact(diskCard(d))]);",
+        "console.log(JSON.stringify({full, rows}));",
     ])
-    done = subprocess.run([node, "-e", program], capture_output=True, text=True, timeout=30)
+    done = subprocess.run([node, "-e", program], capture_output=True, text=True,
+                          encoding="utf-8", timeout=30)
     assert done.returncode == 0, done.stderr
-    rendered = dict(json.loads(done.stdout))
+    result = json.loads(done.stdout)
+    rendered = dict(result["full"])
     for item in disks:
         assert rendered[item["path"]] == item["contentsHint"]
     assert {rendered[path] for path in CONTENTS} == {
         C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM, "",
     }
+    rows = dict(result["rows"])
+    eligible = [item for item in disks if not item["isBoot"]]
+    assert eligible and set(rows) == {item["path"] for item in eligible}
+    for item in eligible:
+        details = rows[item["path"]]
+        assert details is not None, item["path"]
+        parts = details.split(" · ")
+        if item["contentsHint"]:
+            assert item["contentsHint"] in parts, (item["path"], details)
+        else:
+            assert not {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM} & set(parts)

@@ -101,6 +101,7 @@ def test_f5_never_reloads_browser_or_repeats_inventory_action(
 let handler;
 const document = {addEventListener(_name, fn) {handler=fn;}};
 let screen = """ + json.dumps(screen) + """;
+let helpOpen = false;
 let refreshes=0;
 const requestRefresh=()=>{refreshes += 1;};
 const refreshPreview=()=>{refreshes += 1;};
