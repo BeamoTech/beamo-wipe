@@ -313,11 +313,15 @@ def test_console_wraps_long_success_copy_at_80x24(tmp_path, monkeypatch):
     monkeypatch.setattr(console.curses, "use_default_colors", lambda *a: None)
     console._loop(terminal, wizard)
     first = " ".join(terminal.rows[y] for y in sorted(terminal.rows))
-    assert C.EXPORT_STAGE_REMOVE in first
+    # #135: the panel's "remove now" step replaced the "Safe removal" stage;
+    # the first 80x24 page must still say the report USB can come out.
+    assert C.REPORT_STEP_REMOVE_NOW in first
     wizard.wants_shutdown = False
     from test_console_parity import _draw
 
-    _, _, term = _draw(monkeypatch, wizard, keys=[console.curses.KEY_DOWN] * 8)
+    # #135 moved the receipt into the panel's step 4 (after the result card
+    # of #171), so it is a few more rows down; it must stay reachable.
+    _, _, term = _draw(monkeypatch, wizard, keys=[console.curses.KEY_DOWN] * 16)
     all_text = " ".join(
         " ".join(frame[y] for y in sorted(frame)) for frame in term.frames
     )
