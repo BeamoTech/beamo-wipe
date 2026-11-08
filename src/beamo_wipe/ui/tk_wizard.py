@@ -5307,7 +5307,8 @@ class TkWizard:
         window = canvas.create_window((0, 0), window=cards, anchor="nw")
         cards.bind("<Configure>", lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.bind("<Configure>", lambda _e: canvas.itemconfigure(window, width=canvas.winfo_width()))
-        self._recovery_block(cards, recovery_for_empty())
+        # #185: Intel VMD / RST steps only when detection is certain.
+        self._recovery_block(cards, recovery_for_empty(getattr(self.w, "empty_storage_hint", "")))
         self._support_block(cards)
         self._support_identity_block(cards)
         scroll = _Scrollbar(region, canvas.yview, takefocus=True)

@@ -422,6 +422,12 @@ class Wizard:
         if dry_run:
             os.environ.setdefault("BEAMO_WIPE_DRY_RUN", "1")
         self.preview = False
+        # #185: read-only PCI snapshot (hidden_storage.read_sysfs on the
+        # Beamo USB) for the empty list's Intel VMD / RST hint. None keeps
+        # the generic empty text. Never consulted for disk selection.
+        self.hidden_storage_probe: Optional[Callable[[], object]] = None
+        self._hidden_storage_for: Optional[DiscoveryResult] = None
+        self._hidden_storage_hint = ""
         self.screen = Screen.SPLASH
         self.report_wanted = False
         self.report_share_redacted = False
@@ -729,6 +735,40 @@ class Wizard:
             return ""
         view = self.disk_view(boot)
         return BOOT_USB_LINE.format(line=view.compact_line)
+
+    @property
+    def empty_storage_hint(self) -> str:
+        """"vmd" / "rst" when the empty list is certainly an Intel VMD / RST
+        case (#185), else "" for the generic text. Display only.
+
+        Computed once per discovery from the read-only probe and never
+        consulted by selection, boot exclusion or erase authorization. Any
+        probe or classification error keeps the generic text.
+        """
+        discovery = self.discovery
+        if self._hidden_storage_for is discovery:
+            return self._hidden_storage_hint
+        hint = ""
+        probe = self.hidden_storage_probe
+        if probe is not None and not self.selectable:
+            from beamo_wipe import hidden_storage
+
+            try:
+                result = hidden_storage.classify(probe(), discovery)  # type: ignore[arg-type]
+                hint = result.kind
+                detail = result.log_detail()
+            except Exception as exc:
+                hint = ""
+                detail = f"kind=generic reason=probe_failed {type(exc).__name__}"
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("wizard", "empty_storage_hint", detail)
+            except Exception:
+                pass
+        self._hidden_storage_for = discovery
+        self._hidden_storage_hint = hint
+        return hint
 
     @property
     def selectable(self):

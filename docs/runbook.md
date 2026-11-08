@@ -106,6 +106,7 @@ Action: no change to `tk scaling 1.0` pin (keeps fonts deterministic).
 ```
 Wizard shows `No disk to erase`
   ├─ Expected when only the Beamo USB exists (verify: customer photo shows no other disk line). Guidance: shut down, attach target disk, boot again.
+  ├─ Screen says `This computer's disk may be hidden by Intel VMD (RST).` with BIOS/UEFI steps (#185) → a read-only PCI check found an Intel VMD controller or Intel SATA in RAID (RST) mode and nothing else. The owner switches storage to AHCI or turns VMD off, then must switch it back for Windows (BitLocker may ask for its recovery key). Never offer a bypass; see storage-and-controller-limits §6a. Any doubt shows the generic text instead.
   ├─ Expected degraded when only soldered eMMC (`mmcblk0boot0` 4 MB hidden via HIDDEN_NAME_RE → correctly not shown) → PICK_EMPTY with one USB (see storage-and-controller-limits §3).
   ├─ Check: is target a network/SAN disk (`nbd/iscsi/fc/nvmeof` → REMOTE_BUS_TOKENS) or dm-raid (`megaraid`)? → Unsupported, correctly hidden (§7 unsupported table). Do NOT offer to target via /dev nbd.
   └─ Otherwise → collect `lsblk -J` snapshot (see §3), wrapper/manifest hash, firmware mode. File SEV-3; engineer adds fixture `lsblk_unusual_controllers.json`-style and pins via tests/test_compatibility_matrix.py without weakening HIDDEN_NAME_RE.

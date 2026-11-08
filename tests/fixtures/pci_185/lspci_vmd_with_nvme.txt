@@ -1,0 +1,4 @@
+00:0e.0 RAID bus controller [0104]: Intel Corporation Volume Management Device NVMe RAID Controller Intel Corporation [8086:a77f]
+	Kernel driver in use: vmd
+10000:e1:00.0 Non-Volatile memory controller [0108]: SK hynix Platinum P41/PC801 NVMe Solid State Drive [1c5c:1959] (prog-if 02 [NVM Express])
+	Kernel driver in use: nvme

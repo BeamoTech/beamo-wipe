@@ -1225,7 +1225,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.PICK_EMPTY:
             print(C.TITLE_EMPTY)
-            _print_recovery(recovery_for_empty())
+            # #185: Intel VMD / RST steps only when detection is certain.
+            _print_recovery(recovery_for_empty(getattr(wizard, "empty_storage_hint", "")))
             print(wizard.inventory_count)
             print(C.support_text())
             ident = _support_identity_text(wizard)
@@ -1917,7 +1918,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
         elif wizard.screen == Screen.PICK_EMPTY:
             lines = _lines(
                 format_recovery_text(
-                    recovery_for_empty(), include_technical=True, compact=True
+                    recovery_for_empty(getattr(wizard, "empty_storage_hint", "")),
+                    include_technical=True, compact=True,
                 ),
                 w,
             )
