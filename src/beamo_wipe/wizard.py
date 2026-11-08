@@ -4316,6 +4316,14 @@ class Wizard:
 
         return notice(self.selected.kind if self.selected else DiskKind.UNKNOWN)
 
+    @property
+    def storage_line(self) -> str:
+        """#158: one-line summary of storage_notice for the Method screen."""
+        from beamo_wipe.models import DiskKind
+        from beamo_wipe.storage_limits import line
+
+        return line(self.selected.kind if self.selected else DiskKind.UNKNOWN)
+
     def open_advanced(self) -> None:
         with self._lock:
             if self.screen in (Screen.SPLASH, Screen.KEYBOARD, Screen.CHECKING, Screen.STOPPING, Screen.WORKING, Screen.ADVANCED, Screen.REFRESHING, Screen.REFRESH_CONFIRM, Screen.DIAGNOSTIC, Screen.REPORT_HELP):

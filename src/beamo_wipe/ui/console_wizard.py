@@ -1342,8 +1342,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(C.SELECTED_DISK)
                 _print_view(wizard.disk_view(wizard.selected))
                 print(f"{_identity.SYSTEM_PATH_NOTE}: {wizard.selected.path}")
-            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}")
-            print(limits.BUTTON)
+            # #158: one limits line before the choices; the full notice
+            # (unchanged) and the L route follow them.
+            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_line}")
             for method, spec in METHODS.items():
                 card = C.METHOD_CARDS[method]
                 mark = f" [{card['mark']}]" if card["mark"] else ""
@@ -1363,6 +1364,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 for note in (C.METHOD_CARDS[method]["extra"], C.METHOD_CARDS[method]["limits"]):
                     if note:
                         print(f"{spec.title}: {note}")
+            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}")
+            print(limits.BUTTON)
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
                 wizard.open_advanced()
@@ -2040,7 +2043,9 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if wizard.selected:
                 lines.extend(_lines(C.SELECTED_DISK, w))
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}", w))
+            # #158: one limits line before the choices; the full notice
+            # (unchanged) is paged right after them (Up/Down, or L).
+            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_line}", w))
             lines.append("")
             for i, method in enumerate((MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1):
                 star = ">" if wizard.method == method else " "
@@ -2057,6 +2062,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     )
                 )
                 lines.append("")
+            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}", w))
+            lines.append("")
             # Rough durations follow the choices so the first page keeps
             # every method; taller consoles show them without scrolling.
             guides = [

@@ -1788,6 +1788,9 @@ class TkWizard:
             # #159: method cards whose details are open (view only).
             self._method_more: set[MethodId] = set()
             self._method_more_buttons: dict[MethodId, _Button] = {}
+            # #158: the Method screen's storage limits line is open (view only).
+            self._limits_open = False
+            self._limits_more_button: Optional[_Button] = None
             # #175: Help & settings menu. View state only; opening it never
             # changes the wizard.
             self._help_open = False
@@ -6180,44 +6183,89 @@ class TkWizard:
         more.pack(side=tk.RIGHT, anchor="n", padx=(8, 0), before=clock)
         self._method_more_buttons[method] = more
 
+    def _limits_line(self, parent: tk.Widget) -> _Box:
+        """#158: one storage limits line between the disk and the cards.
+
+        Closed, it is one plain sentence for this disk's kind
+        (``Wizard.storage_line``) with Show more and Storage limits (L) on
+        the same row, so it stays above the fold at 800x600 and every text
+        size (Ref #18). Show more puts the full, unchanged notice
+        (``Wizard.storage_notice``) in its place; Storage limits (L) opens
+        the full limits page, as the L key does.
+        """
+        # getattr: some checks draw with a partially built window.
+        open_ = bool(getattr(self, "_limits_open", False))
+        fill = SURFACE
+        box = _Box(parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1, padx=12, pady=4)
+        # The cards' zone adds 4 px above them: 6 px either side.
+        box.pack(fill=tk.X, pady=(6, 2), padx=4)
+        row = tk.Frame(box.inner, bg=fill)
+        row.pack(fill=tk.X)
+        icon = _icon_alert(row, "limits", 20)
+        icon.configure(bg=fill)
+        icon.pack(side=tk.LEFT, anchor="n", pady=2)
+
+        def toggle() -> None:
+            # View only: never chooses or changes the method.
+            self._limits_open = not open_
+            self._draw()
+            again = self._limits_more_button
+            if again is not None:
+                again.focus_set()
+                shown = getattr(again, "_beamo_limits_box", None)
+                if shown is not None:
+                    self._reveal_in_body(shown)
+
+        # Buttons are packed before the text so the text wraps to what they
+        # leave on the row.
+        pages = _Button(
+            row, text=limits.BUTTON, command=self._nav(self.w.open_limits),
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        pages.pack(side=tk.RIGHT, anchor="n")
+        more = _Button(
+            row, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle,
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        more.pack(side=tk.RIGHT, anchor="n")
+        more._beamo_limits_box = box  # type: ignore[attr-defined]
+        self._limits_more_button = more
+        # Severity word first, like every limits panel (readable without
+        # colour); then the line, or the full notice when open.
+        text = f"{C.SEVERITY_LIMITS}: " + (
+            self.w.storage_notice if open_ else self.w.storage_line
+        )
+        label = tk.Label(
+            row, text=text, font=self.font_s, fg=INK, bg=fill, anchor="w",
+            justify=tk.LEFT, wraplength=max(160, self._method_card_wrap() - 200),
+        )
+        label._beamo_limits_line = True  # type: ignore[attr-defined]
+
+        def fit(event) -> None:
+            width = max(1, int(event.width) - 4)
+            if width >= 80 and int(label.cget("wraplength")) != width:
+                label.configure(wraplength=width)
+
+        label.bind("<Configure>", fit)
+        label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(8, 4), pady=(2, 0))
+        return box
+
     def _method(self) -> None:
         col = self._column(self._body, fill_height=True)
         # Identity is informational only; method changes keep the bound target.
         # The shared scrolling body accommodates long identities and small screens.
         self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True)
-        # Details share the summary's caption row at every size. Short
-        # windows (800x600, 1024x600, 720p) put the three choices right
-        # under the disk and the general limits follow the cards. Each card
-        # keeps its own limits note.
-        short = self.lay.short
+        # Details share the summary's caption row at every size. #158: one
+        # storage limits line sits between the disk and the cards at every
+        # size, so it is never below the fold; each card keeps its own note.
         if self.w.selected:
             self._disk_summary(col, self.w.selected, more=True).pack(fill=tk.X)
-
-        def storage_limits(parent: tk.Widget) -> None:
-            notice = self.w.storage_notice
-            host = parent
-            if notice:
-                panel = self._panel(parent, kind="limits", text=notice, compact=True)
-                panel.pack(fill=tk.X, pady=(8, 0) if short else (10, 8))
-                if not short:
-                    # The full limits page opens from inside the notice it
-                    # expands, aligned with the notice text.
-                    host = tk.Frame(panel.inner, bg=panel._fill)
-                    # 40 px text inset less the ghost button's 12 px pad.
-                    host.pack(fill=tk.X, padx=(28, 0))
-            _Button(
-                host, text=limits.BUTTON, command=self._nav(self.w.open_limits),
-                font=self.font_s_bold, variant="ghost", compact=True,
-            ).pack(anchor="w", pady=(2, 0) if host is not parent else (4, 4))
-
-        if not short:
-            storage_limits(col)
+        self._limits_more_button = None
+        self._limits_line(col)
         zone = self._center_zone(col)
         self._method_more_buttons = {}
         for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
             self._method_card(zone, method)
-        if short:
-            storage_limits(zone)
         row = self._footer_shell(C.HINT_METHOD)
         self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.METHOD), self.w.continue_method)
@@ -7388,6 +7436,7 @@ class TkWizard:
             return
         self._show_more = False
         self._method_more = set()
+        self._limits_open = False
         self._pick_scroll = 0.0
 
     def _on_f5_release(self, _event=None) -> str:

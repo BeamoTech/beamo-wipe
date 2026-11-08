@@ -181,8 +181,12 @@ def test_tk_blocked_and_storage_sites_use_error_and_limits():
     assert '"danger"' in inspect.getsource(tk_mod.TkWizard._blocked)
     pick = inspect.getsource(tk_mod.TkWizard._pick)
     assert 'kind="limits"' in pick
+    # #158: the Method screen's limits are one line with the limits icon
+    # and severity word, drawn by _limits_line from _method.
     method = inspect.getsource(tk_mod.TkWizard._method)
-    assert 'kind="limits"' in method
+    assert "self._limits_line(col)" in method
+    line = inspect.getsource(tk_mod.TkWizard._limits_line)
+    assert '_icon_alert(row, "limits"' in line and "C.SEVERITY_LIMITS" in line
     last = inspect.getsource(tk_mod.TkWizard._last)
     assert "SEVERITY_WARNING" in last
 

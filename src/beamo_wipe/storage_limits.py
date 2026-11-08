@@ -31,6 +31,22 @@ def notice(kind: DiskKind) -> str:
     return lead + OVERWRITE_LIMITS
 
 
+# #158: the Method screen's one-line summary, between the selected disk and
+# the method cards; Show more opens notice() for the same kind, unchanged.
+# Hard disk and unknown lines are the first sentences of their notice.
+LINE_SSD = "On SSDs, overwriting may not reach every hidden area."
+LINE_HDD = "Hard disk selected. Hidden or remapped sectors may remain."
+LINE_UNKNOWN = "Device type is unknown; do not assume it is a hard disk or SSD."
+
+
+def line(kind: DiskKind) -> str:
+    if kind in (DiskKind.SSD, DiskKind.NVME):
+        return LINE_SSD
+    if kind == DiskKind.HDD:
+        return LINE_HDD
+    return LINE_UNKNOWN
+
+
 SECTION_SUPPORTS_TITLE = "What this tool supports"
 SECTION_SUPPORTS_BODY = (
     "Beamo Wipe uses pinned nwipe v0.42 to overwrite a selected whole disk "
