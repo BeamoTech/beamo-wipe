@@ -439,6 +439,12 @@ func platformElevate(ctx context.Context, fingerprint string) error {
 	cmd := exec.CommandContext(ctx, "/usr/bin/pkexec", exe, "--restart-helper="+fingerprint)
 	return cmd.Run()
 }
+
+// platformMachine reads the SMBIOS brand strings that any user may read (#184).
+// Serial numbers in the same directory are root-only and never read.
+func platformMachine(context.Context) (machineInfo, error) {
+	return readDMI(func(name string) ([]byte, error) { return readSmall("/sys/class/dmi/id/"+name, 256) })
+}
 func openBrowser(url string) error  { return exec.Command("/usr/bin/xdg-open", url).Start() }
 func notifyFailure(message string)  { fmt.Fprintln(os.Stderr, message) }
 func prepareDesktop() (bool, error) { return false, nil }

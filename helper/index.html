@@ -398,7 +398,9 @@
           <li>If the computer starts too quickly to catch a key, use the Windows Settings steps instead of changing firmware.</li>
           <li>Check the sticker, the startup screen, or the computer manufacturer’s instructions if a listed key does nothing.</li>
         </ol>
-        <p>Dell, Lenovo, and Acer often use <span class="kbd">F12</span>. ASUS often uses <span class="kbd">F8</span> or <span class="kbd">Esc</span>. MSI often uses <span class="kbd">F11</span>. Gigabyte often uses <span class="kbd">F12</span>. Intel Mac: <span class="kbd">Option (⌥)</span> at startup. Not Apple Silicon.</p>
+        <!-- boot-keys:summary -->
+        <p>Typical keys (examples only): Dell <span class="kbd">F12</span>; HP <span class="kbd">Esc</span>, then <span class="kbd">F9</span>; Lenovo <span class="kbd">F12</span>; ASUS <span class="kbd">Esc</span> or <span class="kbd">F8</span>; Acer <span class="kbd">F12</span>; MSI <span class="kbd">F11</span>; Gigabyte <span class="kbd">F12</span>; Intel Mac <span class="kbd">Option (⌥)</span> at startup. Not Apple Silicon.</p>
+        <!-- /boot-keys:summary -->
         <details>
           <summary>Technical detail</summary>
           <p>Some computers shorten the moment when a key is accepted. Windows Recovery Environment <strong>Use a device</strong> avoids that race on many UEFI PCs. Do not treat firmware, boot-order, or setup-menu changes as the next automatic step.</p>
@@ -487,14 +489,16 @@
           <tr><th scope="col">Brand</th><th scope="col">Typical key</th></tr>
         </thead>
         <tbody>
+          <!-- boot-keys:table -->
           <tr><td>Dell</td><td class="key"><span class="kbd">F12</span></td></tr>
-          <tr><td>HP</td><td class="key"><span class="kbd">F9</span> or <span class="kbd">Esc</span></td></tr>
+          <tr><td>HP</td><td class="key"><span class="kbd">Esc</span>, then <span class="kbd">F9</span></td></tr>
           <tr><td>Lenovo</td><td class="key"><span class="kbd">F12</span></td></tr>
-          <tr><td>ASUS</td><td class="key"><span class="kbd">F8</span> or <span class="kbd">Esc</span></td></tr>
+          <tr><td>ASUS</td><td class="key"><span class="kbd">Esc</span> or <span class="kbd">F8</span></td></tr>
           <tr><td>Acer</td><td class="key"><span class="kbd">F12</span></td></tr>
           <tr><td>MSI</td><td class="key"><span class="kbd">F11</span></td></tr>
           <tr><td>Gigabyte</td><td class="key"><span class="kbd">F12</span></td></tr>
           <tr><td>Intel Mac</td><td class="key"><span class="kbd">Option (⌥)</span> at startup. Not Apple Silicon.</td></tr>
+          <!-- /boot-keys:table -->
         </tbody>
       </table>
     </div>

@@ -41,6 +41,7 @@ type view struct {
 	SourceCommit  string           `json:"source_commit"`
 	BuildStatus   string           `json:"build_status"`
 	Manufactured  bool             `json:"manufactured"`
+	BootKey       *bootKeyView     `json:"boot_key,omitempty"`
 }
 
 func withUSBIdentity(v view, preview bool) view {
@@ -143,6 +144,12 @@ type app struct {
 	current     view
 	probe       func(context.Context) Snapshot
 	restart     func(context.Context, string) error
+	// machine reads the computer's reported brand (#184). Tests and preview
+	// inject a fake; the result is read once and reused.
+	machine     func(context.Context) (machineInfo, error)
+	machineRead bool
+	machineInfo machineInfo
+	machineErr  error
 	close       chan struct{}
 	closeOnce   sync.Once
 	lastSeen    time.Time
@@ -276,14 +283,33 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
 			return
 		case "/api/check":
 			a.busy = true
+			needMachine := !a.machineRead
 			a.mu.Unlock()
 			ctx, cancel := context.WithTimeout(r.Context(), mediaProbeTimeout)
 			defer cancel()
+			type machineResult struct {
+				m   machineInfo
+				err error
+			}
+			machineDone := make(chan machineResult, 1)
+			if needMachine {
+				go func() {
+					m, err := readMachineBounded(ctx, a.machine)
+					machineDone <- machineResult{m, err}
+				}()
+			}
 			p := inspectPlan(ctx, a.probe)
+			if needMachine {
+				r := <-machineDone
+				a.mu.Lock()
+				// A brand that could not be read is tried again next time.
+				a.machineInfo, a.machineErr, a.machineRead = r.m, r.err, r.err == nil
+				a.mu.Unlock()
+			}
 			a.mu.Lock()
 			a.revision++
 			a.p = p
-			a.current = planView(p, a.preview)
+			a.current = withBootKey(planView(p, a.preview), a.machineInfo, a.machineErr)
 			a.current.Revision = a.revision
 			a.busy = false
 			v := a.current
@@ -404,9 +430,11 @@ func run() error {
 	if _, err := rand.Read(tokenBytes); err != nil {
 		return err
 	}
-	a := &app{token: hex.EncodeToString(tokenBytes), host: ln.Addr().String(), preview: preview, probe: platformProbe, restart: platformElevate, close: make(chan struct{}), lastSeen: time.Now()}
+	a := &app{token: hex.EncodeToString(tokenBytes), host: ln.Addr().String(), preview: preview, probe: platformProbe, restart: platformElevate, machine: platformMachine, close: make(chan struct{}), lastSeen: time.Now()}
 	if preview {
 		a.probe = func(context.Context) Snapshot { return Snapshot{} }
+		// Preview reads nothing from this computer, including its brand.
+		a.machine = func(context.Context) (machineInfo, error) { return machineInfo{}, errMachineUnsupported }
 	}
 	a.current = withUSBIdentity(view{Preview: preview, Version: version, Title: "Check before restarting", Detail: "The check reads compatibility information. It does not erase anything or change boot settings."}, preview)
 	if preview {

@@ -399,7 +399,9 @@
           <li>Si l’ordinateur démarre trop vite pour que vous ayez le temps d’appuyer sur la touche, utilisez les étapes depuis les Paramètres Windows plutôt que de modifier le micrologiciel.</li>
           <li>Si une touche de la liste ne fait rien, vérifiez l’autocollant, l’écran de démarrage ou les instructions du constructeur de l’ordinateur.</li>
         </ol>
-        <p>Dell, Lenovo et Acer utilisent souvent <span class="kbd">F12</span>. ASUS utilise souvent <span class="kbd">F8</span> ou <span class="kbd">Esc</span>. MSI utilise souvent <span class="kbd">F11</span>. Gigabyte utilise souvent <span class="kbd">F12</span>. Mac Intel : <span class="kbd">Option (⌥)</span> au démarrage. Pas les Mac Apple Silicon.</p>
+        <!-- boot-keys:summary -->
+        <p>Touches habituelles (exemples seulement) : Dell <span class="kbd">F12</span>; HP <span class="kbd">Esc</span>, puis <span class="kbd">F9</span>; Lenovo <span class="kbd">F12</span>; ASUS <span class="kbd">Esc</span> ou <span class="kbd">F8</span>; Acer <span class="kbd">F12</span>; MSI <span class="kbd">F11</span>; Gigabyte <span class="kbd">F12</span>; Mac Intel <span class="kbd">Option (⌥)</span> au démarrage. Pas les Mac Apple Silicon.</p>
+        <!-- /boot-keys:summary -->
         <details>
           <summary>Détail technique</summary>
           <p>Certains ordinateurs réduisent le délai pendant lequel une touche est acceptée. <strong>Utiliser un périphérique</strong> dans l’environnement de récupération Windows évite cette contrainte de temps sur de nombreux PC UEFI. Ne considérez pas les changements de micrologiciel, d’ordre de démarrage ou du menu de configuration comme l’étape automatique suivante.</p>
@@ -487,14 +489,16 @@
           <tr><th scope="col">PC</th><th scope="col">Touche habituelle</th></tr>
         </thead>
         <tbody>
+          <!-- boot-keys:table -->
           <tr><td>Dell</td><td class="key"><span class="kbd">F12</span></td></tr>
-          <tr><td>HP</td><td class="key"><span class="kbd">F9</span> ou <span class="kbd">Esc</span></td></tr>
+          <tr><td>HP</td><td class="key"><span class="kbd">Esc</span>, puis <span class="kbd">F9</span></td></tr>
           <tr><td>Lenovo</td><td class="key"><span class="kbd">F12</span></td></tr>
-          <tr><td>ASUS</td><td class="key"><span class="kbd">F8</span> ou <span class="kbd">Esc</span></td></tr>
+          <tr><td>ASUS</td><td class="key"><span class="kbd">Esc</span> ou <span class="kbd">F8</span></td></tr>
           <tr><td>Acer</td><td class="key"><span class="kbd">F12</span></td></tr>
           <tr><td>MSI</td><td class="key"><span class="kbd">F11</span></td></tr>
           <tr><td>Gigabyte</td><td class="key"><span class="kbd">F12</span></td></tr>
           <tr><td>Mac Intel</td><td class="key"><span class="kbd">Option (⌥)</span> au démarrage. Pas les Mac Apple Silicon.</td></tr>
+          <!-- /boot-keys:table -->
         </tbody>
       </table>
     </div>

@@ -15,6 +15,14 @@ asks for ownership, exact target confirmation, and the existing delay. A
 restart never authorizes an erase after boot.
 Ordinary BIOS/UEFI boot remains independent of the desktop launcher.
 
+Boot-menu key (#184): the check also reads the computer's reported
+manufacturer (Windows WMI `Win32_ComputerSystem`/`Win32_BaseBoard`, Linux
+`/sys/class/dmi/id`; no elevation, no serial numbers) and shows "Most <brand>
+computers: press <key> at power-on" with the full table under **Show more**.
+An unknown or unread brand shows the table open. The keys come from the one
+table in `desktop/bootkeys.json`, shared with the Boot helper and the boot
+card; see [boot-keys.md](boot-keys.md).
+
 The first delivery keeps both system and separate-drive erasure offline. The
 current nwipe-only boundary has no native Windows implementation. Installed
 Linux erasure needs a separate running-system ancestry and exclusive-access
