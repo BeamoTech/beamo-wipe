@@ -285,14 +285,41 @@ def test_gtk_enter_presses_only_a_focused_enabled_action():
             app._key_press(app.window, event)
             app._key_release(app.window, SimpleNamespace(keyval=Gdk.KEY_Return, time=t + 50))
 
+        def focus():
+            drain()
+            return app.window.get_focus()
+
         enter(1000)  # arrival focus is the warning, not a button
-        assert starts == []
+        assert starts == [] and wiz.screen == Screen.LAST_CHANCE
+        assert focus() is not app.primary
+        # During the countdown Erase now is insensitive. GTK never gives an
+        # insensitive widget focus, so a grab cannot put Enter on it.
+        assert not app.primary.get_sensitive()
         app.primary.grab_focus()
-        enter(2000)  # focused but insensitive during the countdown
-        assert starts == []
+        assert focus() is not app.primary
+        enter(2000)
+        assert starts == [] and wiz.screen == Screen.LAST_CHANCE
+        # The countdown ending enables Erase now but never moves focus to it.
         _ready(wiz)
         app.update_status()
+        assert app.primary.get_sensitive() and focus() is not app.primary
         enter(3000)
+        assert starts == [] and wiz.screen == Screen.LAST_CHANCE
+        # Focused, then made insensitive again (a restarted review period):
+        # the sensitivity check refuses it even if GTK keeps the focus there.
+        app.primary.grab_focus()
+        assert focus() is app.primary
+        _restart(wiz)
+        app.update_status()
+        assert not app.primary.get_sensitive()
+        enter(4000)
+        assert starts == [] and wiz.screen == Screen.LAST_CHANCE
+        # Only a deliberate move to the enabled Erase now, then a new Enter.
+        _ready(wiz)
+        app.update_status()
+        app.primary.grab_focus()
+        assert focus() is app.primary and app.primary.get_sensitive()
+        enter(5000)
         assert starts == [Screen.LAST_CHANCE]
     finally:
         app.close()
