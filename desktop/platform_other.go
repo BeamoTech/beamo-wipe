@@ -18,6 +18,9 @@ func openBrowser(url string) error                  { return exec.Command("/usr/
 func notifyFailure(message string)                  { fmt.Fprintln(os.Stderr, message) }
 func prepareDesktop() (bool, error)                 { return false, nil }
 
+// Restart to boot options (#183) is Windows only.
+func platformAdvancedStartup(context.Context) error { return errAdvancedStartupUnavailable }
+
 // The launcher does not ship for macOS and refuses to plan a restart there, so
 // it reads no brand (no sysctl or ioreg). The Boot helper lists the Intel Mac
 // key instead.

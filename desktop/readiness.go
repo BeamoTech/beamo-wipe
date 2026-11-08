@@ -74,6 +74,9 @@ func explainReadiness(s Snapshot, p Plan) ([]readinessCheck, string) {
 		route.State = "unsupported"
 		route.Detail = "Use the boot menu. Windows may cancel a requested restart after accepting it, so the launcher cannot safely set a one-time startup entry."
 		route.Next = "Save your work, use Windows Restart, then choose the Beamo USB from the computer's boot menu."
+		if p.AdvancedStartup {
+			route.Next = "Save your work, then choose Restart to boot options below and pick the Beamo USB under Use a device. Or use Windows Restart and the computer's boot menu."
+		}
 	case "pending":
 		route.State = "blocked"
 		route.Detail = "Already scheduled. Another special startup request is present; Beamo will not replace it."

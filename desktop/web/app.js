@@ -36,10 +36,14 @@ if (!tokenSaved && token) {
 let busy = false;
 let ready = false;
 let reviewedRevision = 0;
+// #183: Windows restart to boot options, offered only by a reviewed check.
+let bootOptions = false;
 function clearChecks(message) {
   ready = false;
+  bootOptions = false;
   reviewedRevision = 0;
   $("saved").checked = false; $("restart").disabled = true; $("confirm").hidden = true;
+  $("boot-options-saved").checked = false; $("boot-options-restart").disabled = true; $("boot-options").hidden = true;
   $("checks").replaceChildren();
   const item = document.createElement("li"); item.textContent = message; $("checks").append(item);
   $("technical").hidden = true; $("technical-detail").textContent = "";
@@ -65,6 +69,8 @@ function show(v) {
       typeof v.version !== "string" || !v.version ||
       typeof v.build_id !== "string" || typeof v.source_commit !== "string" ||
       typeof v.manufactured !== "boolean" ||
+      (v.advanced_startup !== undefined && typeof v.advanced_startup !== "boolean") ||
+      (v.advanced_startup === true && v.ready) ||
       (v.boot_key !== undefined && (!v.boot_key || typeof v.boot_key !== "object" ||
         ["brand", "hint", "note"].some(k => typeof v.boot_key[k] !== "string") ||
         !v.boot_key.brand !== !v.boot_key.hint)) ||
@@ -72,7 +78,8 @@ function show(v) {
     throw new Error("The readiness results were incomplete. Choose Check again or reopen the launcher from the USB.");
   }
   ready = v.ready;
-  reviewedRevision = v.ready ? v.revision : 0;
+  bootOptions = v.advanced_startup === true && v.revision > 0;
+  reviewedRevision = (v.ready || bootOptions) ? v.revision : 0;
   $("checks").replaceChildren();
   for (const check of v.checks) {
     const item = document.createElement("li");
@@ -84,6 +91,7 @@ function show(v) {
   $("technical-detail").textContent = v.technical; $("technical").hidden = false;
   showBootKey(v.boot_key);
   $("saved").checked=false; $("restart").disabled=true;
+  $("boot-options-saved").checked=false; $("boot-options-restart").disabled=true; $("boot-options").hidden=!bootOptions;
   $("preview").hidden = !v.preview;
   $("title").textContent = v.title; $("detail").textContent = v.detail;
   const buildId = v.build_id || "not packaged";
@@ -125,6 +133,7 @@ async function action(fn, focusId = "title") {
     $("readiness")?.setAttribute("aria-busy", "false");
     busy=false; document.querySelectorAll("button").forEach(b => b.disabled=false);
     if ($("restart")) $("restart").disabled=!ready||!$("saved").checked;
+    if ($("boot-options-restart")) $("boot-options-restart").disabled=!bootOptions||!$("boot-options-saved").checked;
     // Announce the result without moving focus onto an action that a held key
     // could activate. Preserve focus if the user moved elsewhere while waiting.
     if (fromButton && document.activeElement === document.body) $(focusId)?.focus();
@@ -132,6 +141,15 @@ async function action(fn, focusId = "title") {
 }
 $("inspect").onclick=()=>action(async()=>{clearChecks("Checking the Beamo USB, startup settings, and restart route…");show(await api("check"));$("status").textContent="Readiness checks updated.";});
 $("saved").onchange=()=>{$("restart").disabled=busy||!ready||!$("saved").checked;};
+$("boot-options-saved").onchange=()=>{$("boot-options-restart").disabled=busy||!bootOptions||!$("boot-options-saved").checked;};
+$("boot-options-restart").onclick=()=>action(async()=>{
+  if (!bootOptions || !$("boot-options-saved").checked) return;
+  const revision = reviewedRevision;
+  clearChecks("Restart to boot options requested. Check readiness again before making another request.");
+  $("status").textContent="Asking Windows to restart to its boot options…";
+  const result=await api("advanced-startup",true,revision);
+  $("status").textContent=result.message; $("inspect").hidden=false;
+}, "status");
 $("restart").onclick=()=>action(async()=>{
   if (!ready || !$("saved").checked) return;
   const revision = reviewedRevision;
@@ -160,12 +178,14 @@ function disarmStaleReadiness(message) {
 setInterval(async()=>{
   if (!token || busy) return;
   const polledRevision = reviewedRevision;
+  const armed = () => (ready || bootOptions) && reviewedRevision === polledRevision;
   try {
     const state = await api("state");
-    if (ready && reviewedRevision === polledRevision && (!state || state.ready !== true || !Number.isSafeInteger(state.revision) || state.revision !== reviewedRevision)) {
+    if (armed() && (!state || !Number.isSafeInteger(state.revision) || state.revision !== reviewedRevision ||
+        (ready && state.ready !== true) || (bootOptions && state.advanced_startup !== true))) {
       disarmStaleReadiness("Readiness changed in another window. Choose Check again before requesting a restart.");
     }
   } catch (_) {
-    if (ready && reviewedRevision === polledRevision) disarmStaleReadiness("The launcher is no longer connected. Open it again from the USB before requesting a restart.");
+    if (armed()) disarmStaleReadiness("The launcher is no longer connected. Open it again from the USB before requesting a restart.");
   }
 },30000);
