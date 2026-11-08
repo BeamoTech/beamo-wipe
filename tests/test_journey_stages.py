@@ -184,8 +184,21 @@ def test_curses_80x24_names_preparation_without_hiding_pick_count(monkeypatch):
 
     wiz = _at_pick()
     shown, packed, _term = _draw(monkeypatch, wiz, h=24, w=80)
-    # The Preparation step, as in the Tk header (#130).
-    assert C.journey_step_caption(wiz) in packed
+    # The Preparation step, as in the Tk header (#130). #144 appends the
+    # power badge to the same header row and, when both do not fit in 80
+    # columns, keeps the badge with the short step form (never a second
+    # row). The step name returns whenever the badge leaves room.
+    header = _term.frames[-1][0]
+    # The badge the monitor reported when this frame was painted.
+    assert header.endswith("]") and "  [" in header
+    badge = header[header.rindex("  [") + 2:]
+    title = console._screen_title(wiz)
+    full = f"{C.APP_NAME} — {C.journey_step_caption(wiz)} — {title}  {badge}"
+    if console._display_cols(full) <= 78:
+        assert header == full
+    else:
+        assert header == f"{C.APP_NAME} — {C.journey_step_short(wiz)} — {title}  {badge}"
+    assert C.journey_step_short(wiz).startswith("Step 3 of ")
     assert "3 disks available to erase" in packed
     assert wiz.selectable[0].serial in packed
     assert "Step 1 of 8" not in shown
