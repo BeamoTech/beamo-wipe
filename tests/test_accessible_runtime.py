@@ -154,11 +154,27 @@ def test_accessible_results_use_canonical_announcement(ui, case):
     wizard, _, _ = case_evidence(case)
     app = ui(wizard)
     expected = VIEWS[case[0]]
+    assert wizard.result_view == expected
     shown = text(app)
     names = [w.get_accessible().get_name() for w in widgets(app.window)]
     if expected.success:
-        assert expected.announcement in shown
-        assert expected.announcement in names
+        # #134: a finished erase says its outcome as the plain headline,
+        # note and What next list; the canonical status line stays readable
+        # under Technical details. The headline must match the outcome.
+        from beamo_wipe import outcomes as O
+
+        plain = wizard.result_plain
+        assert plain.headline == {
+            "verified": O.HEADLINE_VERIFIED,
+            "unverified": O.HEADLINE_UNVERIFIED,
+        }[expected.code]
+        assert plain.headline in shown
+        assert plain.headline in names
+        assert plain.note in shown
+        for item in plain.numbered:
+            assert item in shown
+        assert wizard.result_technical in shown
+        assert expected.message in wizard.result_technical
     else:
         assert expected.message in shown
         assert expected.next_step in shown
@@ -1033,8 +1049,14 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     w = make_demo_wizard()
     w.skip_intro()
     app = ui(w)
-    app.actions[C.REPORT_HELP_TITLE].clicked()
+    # #145/#175: report help opens from the Owner notice's Learn more (the
+    # footer "Need a report?" button moved into Help & settings).
+    learn = app.actions[C.LEARN_MORE]
+    assert learn.get_accessible().get_name() == C.LEARN_MORE_REPORT_NAME
+    learn.clicked()
     drain()
+    assert w.screen == Screen.REPORT_HELP
+    assert C.REPORT_HELP_TITLE in text(app)
     reader = next(
         item for item in widgets(app.window) if isinstance(item, Gtk.TextView)
     )
@@ -1064,8 +1086,9 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     wait_refresh(app)
     assert w.report_wanted is wanted and w.screen == Screen.OWNER
     assert w.selected is None and not w.owner_ok and not w.confirm_input
-    app.actions[C.REPORT_HELP_TITLE].clicked()
+    app.actions[C.LEARN_MORE].clicked()
     drain()
+    assert w.screen == Screen.REPORT_HELP
     choice = next(
         item for item in widgets(app.window) if isinstance(item, Gtk.CheckButton)
     )
@@ -1167,7 +1190,9 @@ def test_accessible_evidence_failure_retry(ui, tmp_path, monkeypatch):
     retry = app.actions['Retry evidence save']
     assert retry.get_sensitive() and retry.get_can_focus()
     assert retry.get_accessible().get_name() == 'Retry evidence save'
-    assert not app.actions['Save report to USB'].get_sensitive()
+    # #135/#153: while evidence is unsaved the panel offers Retry only;
+    # Save report to USB is not offered at all.
+    assert 'Save report to USB' not in app.actions
     monkeypatch.setattr(evidence, 'write_evidence_atomic', writer)
     retry.clicked()
     deadline = time.monotonic() + 3
@@ -1177,6 +1202,8 @@ def test_accessible_evidence_failure_retry(ui, tmp_path, monkeypatch):
     app.tick()
     assert not w.evidence_error and w.can_save_report
     assert 'Retry evidence save' not in app.actions
+    app.render()
+    assert 'Save report to USB' in app.actions
 
 
 def wait_transition(app):
@@ -1268,10 +1295,15 @@ def test_accessible_progress_has_shared_text_without_duplicate_announcements(ui)
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        # Glance (#132): the big line first, the paced summary as its name.
-        assert label.get_text().splitlines()[:3] == list(view.glance_lines)
+        # Glance (#132): the big line first, then the time line (no stage
+        # list here, so no step line), then the phase note; the paced
+        # summary is its name.
+        assert label.get_text().splitlines() == [*view.glance_lines, *view.glance_notes]
+        assert len(view.glance_lines) == 2 and view.glance_notes
         assert label.get_accessible().get_name() == view.spoken_summary
-        assert "About 2 hours left" in text(app)
+        # #167: when it started and about how long is left, on one line.
+        assert "about 2 hours left" in view.glance_lines[1]
+        assert view.glance_lines[1] in text(app)
 
 
 def test_accessible_working_finish_sound_toggle_and_walk_away(ui):
@@ -1349,7 +1381,10 @@ def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        assert label.get_text().splitlines()[:3] == list(view.glance_lines)
+        # The glance lines first, then the quiet-progress block.
+        assert label.get_text().splitlines() == [
+            *view.glance_lines, *view.glance_stale.splitlines(), *view.glance_notes
+        ]
         assert label.get_accessible().get_name() == view.spoken_summary
         assert STALE_MEANING in text(app)
         assert STALE_NEXT in text(app)
@@ -1842,7 +1877,11 @@ def test_done_announcement_is_first_heading(ui):
         if widget.get_accessible().get_role() == Atk.Role.HEADING
     ]
     view = wizard.result_view
-    expected = view.announcement if view.success else view.message
+    # No evidence was written for this result, so it cannot be confirmed;
+    # #134: the plain headline for that outcome is the first heading.
+    assert view.code == "indeterminate" and not view.success
+    expected = wizard.result_plain.headline
+    assert expected == "Not confirmed — the result is unknown"
     assert ordered[0] == expected
     assert "Erase status" not in ordered
     assert C.REPORT_STATUS_TITLE in ordered
@@ -2050,7 +2089,10 @@ def test_accessible_confirm_names_the_field_and_marks_the_characters(ui, serial)
         assert C.CONFIRM_MARKED in prompt
     else:
         # Older fallback: the prompt prints the token; nothing is marked.
-        assert not identity.get_use_markup()
+        # #177: the identifier is still set in monospace (markup), but no
+        # characters are underlined or bolded.
+        markup = identity.get_label()
+        assert 'underline=' not in markup and 'weight="bold"' not in markup
         assert spec.token in prompt
     assert not wizard.runner.started
 
