@@ -965,8 +965,8 @@ STRINGS = {
         "RECOVERY_TERMINAL_RESULT_CANNOT_BE_PROVED": "Le résultat terminal ne peut pas être prouvé",
     },
     "safety": {
-        "BOOT_APPEARED_SELECTABLE": "La clé USB de démarrage est apparue comme disque sélectionnable. Refus de continuer.",
-        "BOOT_APPEARED_ALIAS": "La clé USB de démarrage est apparue via un autre chemin de périphérique. Refus de continuer.",
+        "BOOT_APPEARED_SELECTABLE": "La clé USB Beamo est apparue comme disque sélectionnable. Refus de continuer.",
+        "BOOT_APPEARED_ALIAS": "La clé USB Beamo est apparue via un autre chemin de périphérique. Refus de continuer.",
         "TOKEN_MISMATCH": "Le jeton de confirmation ne correspond pas.",
     },
     "discover": {

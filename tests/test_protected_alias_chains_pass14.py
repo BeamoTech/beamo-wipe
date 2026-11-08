@@ -82,5 +82,5 @@ def test_final_boot_guard_rechecks_complete_alias_context(monkeypatch, chain, la
     unsafe = replace(leaf, is_boot=False, mountpoints=())
     observations = tuple(unsafe if d.path == unsafe.path else d for d in result.disks)
     injected = replace(result, disks=observations, selectable=(unsafe,))
-    with pytest.raises(SafetyError, match='Boot USB appeared'):
+    with pytest.raises(SafetyError, match='Beamo USB appeared'):
         assert_boot_excluded(injected)

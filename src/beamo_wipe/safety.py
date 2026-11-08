@@ -546,8 +546,8 @@ def token_matches(typed: str, spec: ConfirmSpec) -> bool:
     return got.casefold() == want.casefold()
 
 
-BOOT_APPEARED_SELECTABLE = "Boot USB appeared as a selectable disk. Refusing to continue."
-BOOT_APPEARED_ALIAS = "Boot USB appeared through another device path. Refusing to continue."
+BOOT_APPEARED_SELECTABLE = "The Beamo USB appeared as a selectable disk. Refusing to continue."
+BOOT_APPEARED_ALIAS = "The Beamo USB appeared through another device path. Refusing to continue."
 TOKEN_MISMATCH = "Confirm token does not match."  # noqa: S105 — UI message, not a secret
 
 

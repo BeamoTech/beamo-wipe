@@ -970,8 +970,8 @@ STRINGS = {
         "RECOVERY_TERMINAL_RESULT_CANNOT_BE_PROVED": "No se puede demostrar el resultado final",
     },
     "safety": {
-        "BOOT_APPEARED_SELECTABLE": "La memoria USB de arranque apareció como un disco seleccionable. No se puede continuar.",
-        "BOOT_APPEARED_ALIAS": "La memoria USB de arranque apareció mediante otra ruta de dispositivo. No se puede continuar.",
+        "BOOT_APPEARED_SELECTABLE": "La memoria USB Beamo apareció como un disco seleccionable. No se puede continuar.",
+        "BOOT_APPEARED_ALIAS": "La memoria USB Beamo apareció mediante otra ruta de dispositivo. No se puede continuar.",
         "TOKEN_MISMATCH": "El código de confirmación no coincide.",
     },
     "discover": {

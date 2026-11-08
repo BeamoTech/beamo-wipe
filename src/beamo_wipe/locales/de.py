@@ -965,8 +965,8 @@ STRINGS = {
         "RECOVERY_TERMINAL_RESULT_CANNOT_BE_PROVED": "Abschlussergebnis kann nicht belegt werden",
     },
     "safety": {
-        "BOOT_APPEARED_SELECTABLE": "Der Start-USB-Stick erschien als wählbarer Datenträger. Fortsetzung verweigert.",
-        "BOOT_APPEARED_ALIAS": "Der Start-USB-Stick erschien über einen anderen Gerätepfad. Fortsetzung verweigert.",
+        "BOOT_APPEARED_SELECTABLE": "Der Beamo-USB-Stick erschien als wählbarer Datenträger. Fortsetzung verweigert.",
+        "BOOT_APPEARED_ALIAS": "Der Beamo-USB-Stick erschien über einen anderen Gerätepfad. Fortsetzung verweigert.",
         "TOKEN_MISMATCH": "Das Bestätigungstoken stimmt nicht überein.",
     },
     "discover": {

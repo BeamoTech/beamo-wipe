@@ -961,8 +961,8 @@ STRINGS = {
         "RECOVERY_TERMINAL_RESULT_CANNOT_BE_PROVED": "Impossibile dimostrare il risultato finale",
     },
     "safety": {
-        "BOOT_APPEARED_SELECTABLE": "La chiavetta USB di avvio è comparsa come disco selezionabile. Impossibile continuare.",
-        "BOOT_APPEARED_ALIAS": "La chiavetta USB di avvio è comparsa con un altro percorso di dispositivo. Impossibile continuare.",
+        "BOOT_APPEARED_SELECTABLE": "La chiavetta USB Beamo è comparsa come disco selezionabile. Impossibile continuare.",
+        "BOOT_APPEARED_ALIAS": "La chiavetta USB Beamo è comparsa con un altro percorso di dispositivo. Impossibile continuare.",
         "TOKEN_MISMATCH": "Il codice di conferma non corrisponde.",
     },
     "discover": {
