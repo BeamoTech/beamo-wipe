@@ -44,6 +44,16 @@ if (redraws !== 1) throw Error('held Space redrew the method choice');
     assert result.returncode == 0, result.stderr
 
 
+def _function(script, name):
+    start = script.index(f"function {name}(")
+    depth, index = 0, script.index("{", start)
+    while True:
+        depth += {"{": 1, "}": -1}.get(script[index], 0)
+        if depth == 0:
+            return script[start:index + 1]
+        index += 1
+
+
 def test_keyboard_setup_choices_keep_focus():
     node = shutil.which("node")
     if node is None:
@@ -52,34 +62,53 @@ def test_keyboard_setup_choices_keep_focus():
     start = script.index('    main.querySelectorAll("[data-layout]").forEach(el => {')
     end = script.index('    const box = main.querySelector("#kbcheck")', start)
     handlers = script[start:end]
+    # #155: a layout pick runs the production layoutChanged(); away from
+    # Confirm it still starts over (owner tick, entry and disk cleared).
+    # #179: the contrast choices are a third group that must keep focus too.
     program = """
-let keyboardLayout = 'us', owner = true, token = 'old', selected = {};
-let textSize = 'standard', active = {id: 'body'};
+let keyboardLayout = 'us', layoutChosen = false, owner = true, token = 'old', selected = {};
+let keyboardFrom = null, confirmMismatch = false;
+function tokenOk() { return false; }
+let textSize = 'standard', highContrast = false, active = {id: 'body'};
 const oldLayout = {dataset: {layout: 'fr'}, focus() { active = this; }};
 const newLayout = {dataset: {layout: 'fr'}, focus() { active = this; }};
 const oldSize = {dataset: {text: 'large'}, focus() { active = this; }};
 const newSize = {dataset: {text: 'large'}, focus() { active = this; }};
-let layouts = [oldLayout], sizes = [oldSize];
+const oldContrast = {dataset: {contrast: 'true'}, focus() { active = this; }};
+const newContrast = {dataset: {contrast: 'true'}, focus() { active = this; }};
+let layouts = [oldLayout], sizes = [oldSize], contrasts = [oldContrast];
 const main = {
-  querySelectorAll(selector) { return selector === '[data-layout]' ? layouts : sizes; },
+  querySelectorAll(selector) {
+    if (selector === '[data-layout]') return layouts;
+    if (selector === '[data-text]') return sizes;
+    if (selector === '[data-contrast]') return contrasts;
+    throw Error('unexpected selector ' + selector);
+  },
   querySelector(selector) {
     if (selector === '[data-layout="fr"]') return layouts[0];
     if (selector === '[data-text="large"]') return sizes[0];
+    if (selector === '[data-contrast="true"]') return contrasts[0];
     return null;
   },
 };
 function draw() {
-  layouts = [newLayout]; sizes = [newSize]; active = {id: 'body'};
+  layouts = [newLayout]; sizes = [newSize]; contrasts = [newContrast]; active = {id: 'body'};
 }
-""" + handlers + """
+""" + _function(script, "layoutChanged") + "\n" + handlers + """
 oldLayout.focus();
 oldLayout.onkeydown({key: ' ', repeat: false, preventDefault() {}});
 if (keyboardLayout !== 'fr' || active !== newLayout)
   throw Error('layout selection lost keyboard focus');
+if (owner !== false || token !== '' || selected !== null)
+  throw Error('a layout change away from Confirm did not start over');
 oldSize.focus();
 oldSize.onclick();
 if (textSize !== 'large' || active !== newSize)
   throw Error('text-size selection lost keyboard focus');
+oldContrast.focus();
+oldContrast.onclick();
+if (highContrast !== true || active !== newContrast)
+  throw Error('contrast selection lost keyboard focus');
 """
     result = subprocess.run([node, "-e", program], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr

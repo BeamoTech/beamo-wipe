@@ -179,11 +179,23 @@ def test_gallery_identity_selectors_cannot_clip():
         for line in style.splitlines()
         if "white-space" in line and "nowrap" in line
     ]
-    # Only fixed short copy may opt out of wrapping: step counts and the
-    # formatted capacity ("931 GB"). Identity selectors must never appear.
-    assert nowrap_rules, "expected the two documented nowrap rules"
+    # Only fixed short copy may opt out of wrapping: step counts, the
+    # formatted capacity ("931 GB") and the #144 header power badge (one of
+    # four fixed short states). Identity selectors must never appear. The
+    # #163 screen-reader-only status is never painted (1 px, clipped), so
+    # its standard visually-hidden nowrap cannot clip visible text.
+    assert nowrap_rules, "expected the documented nowrap rules"
     for rule in nowrap_rules:
-        assert ".steptext" in rule or ".card .size" in rule, rule
+        selector = rule.split("{", 1)[0].strip()
+        if selector == ".sr-only":
+            assert "width: 1px" in rule and "clip: rect(0 0 0 0)" in rule, rule
+            continue
+        assert (".steptext" in selector or ".card .size" in selector
+                or selector == ".powerbadge"), rule
+    from beamo_wipe import power
+    for text in (power.BADGE_PLUGGED, power.BADGE_BATTERY,
+                 power.BADGE_UNKNOWN, power.BADGE_MAINS):
+        assert len(text) <= 24, text
     for selector in (".card .title", ".card .meta", ".ser", ".panel > div",
                      ".review-warning"):
         assert selector in style, selector
