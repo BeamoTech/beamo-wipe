@@ -1505,6 +1505,7 @@ GALLERY_NOTE = (
 )
 GALLERY_HAPPY = "Happy path"
 GALLERY_EMPTY = "No other disks"
+GALLERY_HIDDEN = "Disk hidden by Intel VMD"
 GALLERY_BLOCKED = "Cannot identify USB"
 GALLERY_FAIL = "Failed erase"
 GALLERY_FAKE_POWER = "Fake power"

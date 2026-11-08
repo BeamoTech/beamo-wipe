@@ -65,9 +65,9 @@ def _parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--scenario",
-        choices=("happy", "empty", "blocked", "fail"),
+        choices=("happy", "empty", "hidden", "blocked", "fail"),
         default="happy",
-        help="Preview disk list: happy, empty, blocked, or fail.",
+        help="Preview disk list: happy, empty, hidden (Intel VMD), blocked, or fail.",
     )
     p.add_argument("--empty", action="store_true", help="Preview: only the Beamo USB.")
     p.add_argument("--blocked", action="store_true", help="Preview: cannot identify USB.")
@@ -237,7 +237,13 @@ def _build_wizard(args: argparse.Namespace, progress=None) -> Wizard:
             return discover(lsblk_payload=fresh_payload, boot_path=args.boot_device)
         return Wizard(discovery, runner, dry_run=True, rediscover=fresh_fake_discovery)
     live_runner = NwipeRunner()
-    return Wizard(discovery, live_runner, dry_run=False)
+    wizard = Wizard(discovery, live_runner, dry_run=False)
+    # #185: read-only sysfs PCI identity for the empty list's Intel VMD /
+    # RST hint. Display only; discovery above already decided the disks.
+    from beamo_wipe import hidden_storage
+
+    wizard.hidden_storage_probe = hidden_storage.read_sysfs
+    return wizard
 
 
 def _shutdown() -> bool:

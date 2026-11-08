@@ -829,7 +829,8 @@ class AccessibleWizard:
             )
             self._inventory_count()
             if screen == Screen.PICK_EMPTY:
-                self.recovery(recovery_for_empty())
+                # #185: Intel VMD / RST steps only when detection is certain.
+                self.recovery(recovery_for_empty(getattr(self.w, "empty_storage_hint", "")))
                 self.label(C.support_text(), focusable=True)
                 self._protected_boot()
             else:

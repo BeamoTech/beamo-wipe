@@ -1,0 +1,7 @@
+00:00.0 Host bridge [0600]: Intel Corporation 8th Gen Core Processor Host Bridge/DRAM Registers [8086:3e34] (rev 0c)
+00:14.0 USB controller [0c03]: Intel Corporation Cannon Point-LP USB 3.1 xHCI Controller [8086:9ded] (rev 30) (prog-if 30 [XHCI])
+	Kernel driver in use: xhci_hcd
+00:17.0 SATA controller [0106]: Intel Corporation Cannon Point-LP SATA Controller [AHCI Mode] [8086:9dd3] (rev 30) (prog-if 01 [AHCI 1.0])
+	Kernel driver in use: ahci
+02:00.0 Non-Volatile memory controller [0108]: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983 [144d:a808] (prog-if 02 [NVM Express])
+	Kernel driver in use: nvme

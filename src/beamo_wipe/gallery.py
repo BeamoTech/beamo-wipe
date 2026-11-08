@@ -115,6 +115,16 @@ def _recovery_payload(sections) -> dict | None:
     }
 
 
+def _hidden_preview_hint() -> str:
+    """#185: the detector's verdict for the fake "hidden" preview."""
+    from beamo_wipe import hidden_storage
+    from beamo_wipe.demo import demo_pci_functions
+
+    return hidden_storage.classify(
+        demo_pci_functions(), discovery_for_scenario("hidden")
+    ).kind
+
+
 def _record_payload(ok: bool) -> dict:
     """Preview erase record (#127): same builder and code as the live screen."""
     from beamo_wipe import NWIPE_PINNED_VERSION, __version__
@@ -595,6 +605,10 @@ def _gallery_html_for_current_language(lang: str) -> str:
         },
         "blockedRecovery": _recovery_payload(recovery_for_blocked(C.IDENTIFY_ERROR)),
         "emptyRecovery": _recovery_payload(recovery_for_empty()),
+        # #185: the same empty list when the fake lspci capture shows an
+        # Intel VMD controller. Classified by the real detector, so a
+        # detector that gives up shows the generic text here too.
+        "hiddenRecovery": _recovery_payload(recovery_for_empty(_hidden_preview_hint())),
         "compareTitle": inventory.COMPARE_TITLE,
         "compareIntro": inventory.COMPARE_INTRO,
         "comparison": inventory.comparison_entries(
@@ -877,6 +891,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "note": C.GALLERY_NOTE.format(helper=helper_href_for(lang)),
             "happy": C.GALLERY_HAPPY,
             "empty": C.GALLERY_EMPTY,
+            "hidden": C.GALLERY_HIDDEN,
             "blocked": C.GALLERY_BLOCKED,
             "fail": C.GALLERY_FAIL,
             "fakePower": C.GALLERY_FAKE_POWER,
@@ -938,6 +953,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         .replace("__GALLERY_NOTE__", chrome["note"])
         .replace("__GALLERY_HAPPY__", chrome["happy"])
         .replace("__GALLERY_EMPTY__", chrome["empty"])
+        .replace("__GALLERY_HIDDEN__", chrome["hidden"])
         .replace("__GALLERY_BLOCKED__", chrome["blocked"])
         .replace("__GALLERY_FAIL__", chrome["fail"])
         .replace("__GALLERY_FAKE_POWER__", chrome["fakePower"])
@@ -1433,6 +1449,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   <div class="scenarios">
     <button type="button" onclick="boot('happy')">__GALLERY_HAPPY__</button>
     <button type="button" onclick="boot('empty')">__GALLERY_EMPTY__</button>
+    <button type="button" onclick="boot('hidden')">__GALLERY_HIDDEN__</button>
     <button type="button" onclick="boot('blocked')">__GALLERY_BLOCKED__</button>
     <button type="button" onclick="boot('fail')">__GALLERY_FAIL__</button>
     <label>__GALLERY_FAKE_POWER__ <select id="power-choice" onchange="updatePower(this.value)">
@@ -1617,7 +1634,7 @@ function boot(m) {
 function disks() {
   let list;
   if (mode === "blocked") list = [];
-  else if (mode === "empty") list = P.disks.filter(d => d.isBoot);
+  else if (mode === "empty" || mode === "hidden") list = P.disks.filter(d => d.isBoot);
   else list = P.disks.slice();
   // #151: internal disks first, then external, in the order Python computed.
   list.sort((a, b) => (a.isBoot - b.isBoot) || (a.order - b.order));
@@ -1753,7 +1770,7 @@ function recoveryHtml(sections) {
   let html = `<section class="recovery">
     <h2>${esc(L.happened)}</h2><p>${esc(sections.happened)}</p>
     <h2>${esc(L.meaning)}</h2><p>${esc(sections.meaning)}</p>
-    <h2>${esc(L.next)}</h2><p>${esc(sections.next)}</p>`;
+    <h2>${esc(L.next)}</h2><p>${esc(sections.next).replace(/\n/g, "<br>")}</p>`;
   if (sections.technical) {
     html += `<details class="recovery-tech"><summary>${esc(L.technical)}</summary>
       <p class="small muted">${esc(sections.technical)}</p></details>`;
@@ -2073,7 +2090,7 @@ function draw() {
     btnsR.append(btn(P.buttons.closePreview, closePreview, "primary"));
   } else if (screen === "empty") {
     let html = `<div class="centerstage"><div class="badgehalo info">${badge("info", 51)}</div>
-      <h1>${P.titles.empty}</h1>${recoveryHtml(P.emptyRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.empty)}</p>${supportBlock()}${supportCodeBlock(P.sampleEmptyCode)}</div>`;
+      <h1>${P.titles.empty}</h1>${mode === "hidden" ? recoveryHtml(P.hiddenRecovery) : recoveryHtml(P.emptyRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.empty)}</p>${supportBlock()}${supportCodeBlock(P.sampleEmptyCode)}</div>`;
     html += `<div class="disklist">` + disks().map(diskCard).join("") + `</div>`;
     main.innerHTML = html;
     renderOtherDevices();
@@ -2689,7 +2706,7 @@ function renderOtherDevices() {
   const text = document.createElement("div");
   text.tabIndex = 0;
   text.className = "inventory-reader";
-  text.textContent = P.otherDevices[mode === "empty" ? "empty" : "happy"];
+  text.textContent = P.otherDevices[(mode === "empty" || mode === "hidden") ? "empty" : "happy"];
   section.append(heading, text);
   const list = main.querySelector(".disklist");
   (list || main).append(section);

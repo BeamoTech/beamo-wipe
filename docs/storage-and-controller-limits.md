@@ -113,6 +113,68 @@ The canonical storage notice is prominent at method selection and is also includ
 
 Back-office policy: a support ticket that asks to bypass ownership, EDID, or the 5 s delay must be closed with the fail-closed copy plus a link to this doc. No script or flag is offered.
 
+## 6a. Disk hidden by Intel VMD or RST (#185)
+
+Many newer laptops ship with the Intel storage controller in **VMD** or
+**RAID (Intel RST)** mode. The live kernel then may not show the computer's
+own disk, so Pick a disk lists only the protected Beamo USB. When the wizard
+can tell that this is the reason, the empty screen replaces its generic
+What happened / What to do next text with:
+
+- What happened: "This computer's disk may be hidden by Intel VMD (RST)."
+- What to do next: "1. Restart and open the BIOS/UEFI setup." "2. Find the
+  storage setting (often called SATA mode, RST or VMD). Change it to AHCI,
+  or turn VMD off." "3. Save, then start from the Beamo USB again." and
+  "Windows may not start until you change this setting back. If BitLocker
+  is on, Windows may ask for its recovery key."
+
+What it means for your disk stays "Nothing can be erased …". The owner
+approved this wording on 2026-11-07 with "This PC's disk"; it says "This
+computer's disk" because [glossary.md](glossary.md) names the computer
+"computer" (enforced by `tests/test_glossary_180.py`).
+
+**How it is detected (`src/beamo_wipe/hidden_storage.py`).** Read-only and
+display-only. It reads `vendor`, `device`, `class` and the `driver` link of
+each `/sys/bus/pci/devices/*` entry. It never writes sysfs, starts a
+process, or changes driver binding, kernel parameters or firmware. The live
+image ships without `pciutils`, so `lspci -nn`/`-nnk` text is parsed only for
+preview fixtures and tests. The specific text is shown only when **all** of
+these hold; otherwise the generic text stays (fail closed):
+
+1. Discovery identified the Beamo USB, reported no error, lists no
+   selectable disk, and saw no disk node other than the Beamo USB, its
+   partitions and loop/optical/RAM devices.
+2. Every PCI entry was readable and well formed (a missing `driver` link
+   counts as "unbound").
+3. No NVMe controller (class `0x0108`) is visible, and no RAID-class
+   (`0x0104`) controller other than a known Intel one is present.
+4. An Intel (`8086`) VMD controller from the kernel's `vmd_ids[]`, or an
+   Intel SATA controller from `ahci_pci_tbl[]` reporting the RAID class, is
+   present. Its driver state (bound `vmd`/`ahci`, or unbound) is logged only.
+
+Device IDs come from the Linux kernel tables, cited in the module:
+`drivers/pci/controller/vmd.c` `vmd_ids[]` (v6.12: 201d, 28c0, 467f, 4c3d,
+a77f, 7d0b, ad0b, 9a0b; mainline a41e364995bb adds 28c1, b60b, b06f, b07f,
+d70b, d73b; a VMD controller newer than the running kernel has no driver,
+so its disks are hidden too) and `drivers/ata/ahci.c` `ahci_pci_tbl[]`
+(every Intel entry, 163 IDs, identical in v6.12 and mainline). Classes are
+`PCI_CLASS_STORAGE_RAID` and `PCI_CLASS_STORAGE_EXPRESS` from
+`include/linux/pci_ids.h`. `ahci_remap_check()` in `ahci.c` prints the same
+remedy: "Switch your BIOS from RAID to AHCI mode".
+
+**What it never does.** The hint never adds, removes or reorders a disk.
+`discover.py` and `safety.py` alone decide the selectable list and the boot
+USB exclusion; the detector only chooses between two texts on a screen that
+already lists no disk. The support code (`no_eligible_disks`) is unchanged.
+The diagnostic log records one line, `wizard empty_storage_hint
+kind=vmd|rst driver=…` or `kind=generic reason=…`, with no serial or path.
+The steps tell the owner to change a firmware setting themselves; Beamo
+changes no firmware and does not claim the disk will then be erasable.
+
+Preview: `./preview --scenario hidden` (Tk) and **Disk hidden by
+Intel VMD** in `./preview --web`, both from fake lsblk and fake `lspci -nnk`
+data (`demo.DEMO_LSPCI_VMD`).
+
 ---
 
 ## 7. Honest supported / degraded / unsupported — summarized
