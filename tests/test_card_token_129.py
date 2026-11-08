@@ -453,24 +453,30 @@ def test_tk_boxes_and_underlines_the_characters_in_place(tk_app, size, text_size
     ident = next(w for w in labels if str(w.cget("text")) == view.id_value)
     assert C.confirm_prompt(spec) in texts
     assert not any(spec.token in t for t in texts if t not in (view.id_value, spec.token))
-    marks = [w for w in _descendants(app._body) if getattr(w, "_beamo_token_mark", False)]
-    frame = next(w for w in marks if w.winfo_class() == "Frame")
-    chars = next(w for w in marks if w.winfo_class() == "Label")
-    assert chars.cget("text") == spec.token and frame.winfo_ismapped()
-    # A box (dark frame around the characters) plus an underline bar: not colour only.
+    # #177g: the characters are drawn one per cell on the identifier's own
+    # canvas, over the plain label's exact text; the token cells are bold.
+    face = ident._beamo_serial_face
+    assert face.drawn_text() == view.id_value and not face.plain
     from beamo_wipe.ui import tk_wizard as tkui
 
-    assert frame.cget("bg") == tkui.INK
-    bar = [w for w in frame.winfo_children() if w is not chars]
-    assert len(bar) == 1 and _px(bar[0], "height") == 2
-    assert chars.cget("bg") == tkui.CONFIRM_MARK_BG
-    # Placed over the identifier's last characters.
-    font = app.font_mono_bold
-    head = view.id_value[: view.token_start]
-    x = chars.winfo_rootx() - ident.winfo_rootx()
-    start = _px(ident, "bd") + _px(ident, "highlightthickness") + _px(ident, "padx")
-    assert abs(x - (start + font.measure(head))) <= 1
-    assert ident.winfo_rooty() <= chars.winfo_rooty() <= ident.winfo_rooty() + ident.winfo_height()
+    bold = [i for i in range(len(view.id_value))
+            if str(face.itemcget(face.find_withtag(f"ch{i}")[0], "font")) == str(app.font_mono_bold)]
+    assert bold == list(range(view.token_start, view.token_end))
+    assert view.id_value[view.token_start:].casefold() == spec.token.casefold()
+    # A box (INK outline on the mark tint) plus a 2 px underline: not colour only.
+    (box,) = face.find_withtag("token_box")
+    (bar,) = face.find_withtag("token_bar")
+    assert face.itemcget(box, "outline") == tkui.INK
+    assert face.itemcget(box, "fill") == tkui.CONFIRM_MARK_BG
+    x0, y0, x1, y1 = face.coords(bar)
+    assert y1 - y0 == 2 and face.itemcget(bar, "fill") == tkui.INK
+    # Placed over the identifier's last characters: exactly their cells.
+    cell = face._metrics()[2]
+    first = face.coords(face.find_withtag(f"ch{view.token_start}")[0])
+    last = face.coords(face.find_withtag(f"ch{view.token_end - 1}")[0])
+    bx0, by0, bx1, by1 = face.coords(box)
+    assert bx0 == first[0] - cell / 2 - 1 and bx1 == last[0] + cell / 2 + 1
+    assert by0 <= first[1] < by1 <= face.winfo_height()
     assert not wiz.runner.started
 
 
@@ -515,9 +521,10 @@ def test_tk_mark_survives_distances_returned_as_tcl_objects(tk_app, monkeypatch)
     _settle(app, 80)
     assert wiz.screen == Screen.CONFIRM
     assert app.root.winfo_exists()
-    marks = [w for w in _descendants(app._body) if getattr(w, "_beamo_token_mark", False)]
-    frame = next(w for w in marks if w.winfo_class() == "Frame")
-    assert frame.winfo_ismapped()
+    faces = [w._beamo_serial_face for w in _descendants(app._body)
+             if getattr(w, "_beamo_serial_face", None) is not None]
+    assert len(faces) == 1 and not faces[0].plain  # #177g: drawn, not fallen back
+    assert faces[0].find_withtag("token_box")
     assert not wiz.runner.started
 
 

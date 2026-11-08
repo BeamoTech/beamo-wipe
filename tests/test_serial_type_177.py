@@ -7,7 +7,8 @@ footed 1, tailed l, serifed I). The #129 confirmation characters and the
 #152 differing characters are still drawn bold over it, so they stand out
 more than before. GTK and the web preview add slight letter spacing (Pango
 letter_spacing, CSS letter-spacing); Tk has no letter-spacing option, so
-Tk relies on the font's shapes. Fake disks only.
+Tk draws each character in its own cell with a small gap (#177g,
+test_serial_tracking_177g). Fake disks only.
 """
 
 from __future__ import annotations
@@ -92,14 +93,21 @@ def test_serial_is_regular_and_fits(size, text_size):
 
 
 def test_confirmation_characters_stay_bold_over_the_regular_serial():
+    import tkinter.font as tkfont
+
     wiz = _wizard("confirm")
     app = _tk(wiz, (1280, 820))
     try:
         (serial,) = [w for w in _walk(app._body) if getattr(w, "_beamo_serial", False)]
         assert _weight(app, serial) == "normal"
-        marks = [w for w in _walk(app._body)
-                 if getattr(w, "_beamo_token_mark", False) and w.winfo_class() == "Label"]
-        assert marks and all(_weight(app, m) == "bold" for m in marks)
+        face = serial._beamo_serial_face  # #177g: one canvas item per character
+        view = wiz.disk_view(wiz.selected)
+        assert face.drawn_text() == view.id_value
+        for i in range(len(view.id_value)):
+            item = face.find_withtag(f"ch{i}")[0]
+            font = tkfont.Font(root=app.root, font=face.itemcget(item, "font"))
+            want = "bold" if view.token_start <= i < view.token_end else "normal"
+            assert font.actual("weight") == want
     finally:
         app._teardown()
 

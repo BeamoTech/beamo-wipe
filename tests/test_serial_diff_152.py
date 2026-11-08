@@ -339,16 +339,23 @@ def test_gtk_disk_button_marks_bold_underline_and_reads_where_it_differs():
 
 
 def _marks(app):
+    """#177g: the bold, underlined characters on each serial's canvas, as runs."""
     found = []
 
     def walk(widget):
-        if getattr(widget, "_beamo_serial_mark", False) and widget.winfo_ismapped():
-            found.append(widget)
+        face = getattr(widget, "_beamo_serial_face", None)
+        if face is not None and widget.winfo_ismapped():
+            found.append(face)
         for child in widget.winfo_children():
             walk(child)
 
     walk(app.root)
-    return sorted(found, key=lambda w: (w.winfo_rooty(), w.winfo_rootx()))
+    runs = []
+    for face in found:
+        for a, b in face.diff:
+            if face.find_withtag(f"diff{a}"):
+                runs.append((face, a, b))
+    return runs
 
 
 def _serial_label(app):
@@ -391,31 +398,33 @@ def test_tk_marks_sit_on_the_differing_characters(size, text_size, path, serial,
         shown = str(label.cget("text"))
         assert shown.replace("\n", "") == serial  # the plain serial, no brackets
         assert str(label.cget("font")) == str(app.font_mono)
+        face = label._beamo_serial_face
+        assert face.drawn_text() == serial and not face.plain
         marks = _marks(app)
-        assert [str(m._beamo_mark_text) for m in marks] == chars
-        # Each mark covers exactly its characters on the shown line.
-        lines = shown.split("\n")
-        flat = 0
-        starts = {}
-        for row, line in enumerate(lines):
-            for col in range(len(line)):
-                starts[flat + col] = (row, col)
-            flat += len(line)
+        assert [serial[a:b] for _f, a, b in marks] == chars
         view = wiz.disk_view(wiz.selected)
-        offsets = [a for a, b in view.comparison_marks for _ in [0]]
-        for mark, offset in zip(marks, offsets):
-            row, col = starts[offset]
-            dx = mark.winfo_rootx() - label.winfo_rootx()
-            expect = app.font_mono.measure(lines[row][:col])
-            assert abs(dx - expect) <= 4, (dx, expect)
-            assert label.winfo_rootx() <= mark.winfo_rootx()
-            assert mark.winfo_rootx() + mark.winfo_width() <= label.winfo_rootx() + label.winfo_width() + 1
-        # A changed label text never leaves a mark on other characters.
-        label.configure(text="SOMETHING ELSE")
-        label.event_generate("<Configure>")
+        assert [(a, b) for _f, a, b in marks] == list(view.comparison_marks)
+        # Each mark is the bold font on exactly its characters, with an
+        # underline under exactly their cells.
+        cell = face._metrics()[2]
+        bold = [i for i in range(len(serial))
+                if str(face.itemcget(face.find_withtag(f"ch{i}")[0], "font")) == str(app.font_mono_bold)]
+        assert bold == [i for a, b in view.comparison_marks for i in range(a, b)]
+        for _f, a, b in marks:
+            for bar in face.find_withtag(f"diff{a}"):
+                x0, _y0, x1, y1 = face.coords(bar)
+                xs = [face.coords(face.find_withtag(f"ch{i}")[0])[0] for i in range(a, b)]
+                inside = [x for x in xs if x0 <= x <= x1]
+                assert inside and x0 == inside[0] - cell / 2 and x1 == inside[-1] + cell / 2
+        # A drawing that does not read back as the serial never leaves a
+        # mark on other characters: the plain serial, no marks.
+        import tkinter as tk
+
+        face.create_text = lambda *args, **kw: tk.Canvas.create_text(face, *args, **{**kw, "text": "#"})
+        face.layout(face._width)
         for _ in range(4):
             app.root.update()
-        assert _marks(app) == []
+        assert face.plain and _marks(app) == []
     finally:
         app._teardown()
 
