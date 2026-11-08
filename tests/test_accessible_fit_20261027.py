@@ -10,6 +10,7 @@ import pytest
 
 pytest.importorskip("gi")
 from beamo_wipe import copy as C  # noqa: E402
+from beamo_wipe import inventory  # noqa: E402
 from beamo_wipe import lang  # noqa: E402
 from beamo_wipe.demo import make_demo_wizard  # noqa: E402
 from beamo_wipe.lang import LANGUAGE_NAMES  # noqa: E402
@@ -126,6 +127,36 @@ def test_focused_method_choice_scrolls_into_view_with_extra_large_text(gtk, code
     assert not wizard.runner.started
 
 
+@pytest.mark.parametrize("screen", [Screen.OWNER, Screen.PICK, Screen.METHOD])
+@pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
+def test_extra_large_footer_tools_never_widen_the_window_past_800(code, screen):
+    # Regression from #175: the Help & settings menu button did not wrap like
+    # the other footer tools; the equal-width utilities grid then asked for
+    # 941 px in German at Extra large, so the 800x600 window could not fit.
+    wizard = _wizard(code, text_size="extra")
+    wizard.skip_intro()
+    if screen != Screen.OWNER:
+        wizard.set_owner(True)
+        wizard.continue_owner()
+    if screen == Screen.METHOD:
+        wizard.select_disk("/dev/sda")
+        wizard.continue_pick()
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+    assert wizard.screen == screen
+    app = AccessibleWizard(wizard)
+    try:
+        drain()
+        minimum, _natural = app.window.get_preferred_size()
+        assert minimum.width <= 800, (code, screen, minimum.width)
+        help_label = app.help_button.get_child()
+        assert isinstance(help_label, Gtk.Label) and help_label.get_line_wrap()
+        assert help_label.get_text() == C.MENU_TITLE
+    finally:
+        app.close()
+        drain()
+
+
 @pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
 def test_pick_rows_speak_and_show_what_each_disk_holds(gtk, code):
     wizard = _wizard(code, contents=CONTENTS)
@@ -146,11 +177,16 @@ def test_pick_rows_speak_and_show_what_each_disk_holds(gtk, code):
         assert key.startswith("Select ") == (code == "en")
         hint = expected[CONTENTS[disk.path]]
         name = app.actions[key].get_accessible().get_name()
+        # #154/#187 tags and the #147 partition summary are spoken with the
+        # row as well, after the hint; the hint itself is unchanged.
+        tags = " · ".join(wizard.disk_tags(disk))
+        summary = inventory.contents_summary(wizard.nested_components(disk))
+        assert name == ". ".join(part for part in (key, tags, hint, summary) if part)
         if hint:
-            assert name == f"{key}. {hint}"
+            assert f". {hint}" in name
             assert shown.count(hint) == 1
         else:  # no recognised system: nothing is claimed, by ear either
-            assert name == key
+            assert not any(claim in name for claim in set(expected.values()) - {""})
     # One label per recognised disk; the data disk adds none.
     assert sum(shown.count(hint) for hint in set(expected.values()) - {""}) == 2
     assert wizard.selected is None and not wizard.runner.started
@@ -162,9 +198,16 @@ def test_unknown_contents_keep_the_plain_select_name(gtk):
     wizard.set_owner(True)
     wizard.continue_owner()
     app = gtk(wizard)
+    hints = {C.CONTENTS_HINT_WINDOWS, C.CONTENTS_HINT_SYSTEM}
     for disk in wizard.selectable:
         key = C.ACCESSIBLE_SELECT_DISK.format(disk=wizard.disk_view(disk).announcement)
-        assert app.actions[key].get_accessible().get_name() == key
+        name = app.actions[key].get_accessible().get_name()
+        # No contents hint is claimed; only the #147 partition summary and
+        # any #154/#187 tags follow the plain select name.
+        tags = " · ".join(wizard.disk_tags(disk))
+        summary = inventory.contents_summary(wizard.nested_components(disk))
+        assert name == ". ".join(part for part in (key, tags, summary) if part)
+        assert not any(hint in name for hint in hints)
 
 
 @pytest.mark.parametrize("code", [c for c in lang.LANGUAGE_ORDER if c != "en"])
