@@ -24,9 +24,15 @@ GLOSSARY = ROOT / "docs" / "glossary.md"
 # Never checked: brand and engine names, placeholders.
 BRANDS = re.compile(r"Beamo Wipe|beamo-wipe|beamo_wipe|BEAMO_WIPE|nwipe|Nwipe|\{[A-Za-z_]+\}")
 
-# Modules whose text is guard/engine output: kept until a separate safety:
-# review (docs/glossary.md, "Not renamed").
-SKIPPED_MODULES = {"safety.py", "nwipe_runner.py"}
+SAFETY = "src/beamo_wipe/safety.py"
+RUNNER = "src/beamo_wipe/nwipe_runner.py"
+# safety.py and nwipe_runner.py are checked like every other module (#180
+# follow-up, a safety: review). Their guard messages that reach a screen use
+# the glossary names. The exceptions below are nwipe's own output, persisted
+# evidence text, and SafetyError texts the owner never sees: the wizard
+# replaces a refused start with PREFLIGHT_BLOCKED or STARTUP_UNCONFIRMED and
+# never shows str(exc) (docs/glossary.md, "Not renamed").
+_NEVER_SHOWN = "developer SafetyError text; the wizard shows PREFLIGHT_BLOCKED instead, never str(exc)"
 
 # Exceptions: (surface prefix, exact phrase, reason). Each must still occur.
 ALLOWED = [
@@ -37,6 +43,18 @@ ALLOWED = [
     ("", "x64 PCs", "hardware scope mirrors docs/claims.md (release listing copy)"),
     ("src/beamo_wipe/wizard.py", "unsafe wipe log", "internal OSError text for nwipe's log file, never shown"),
     ("src/beamo_wipe/ui/accessible_wizard.py", "Refresh wake also failed", "exception note for developers"),
+    (RUNNER, "--force is not set, not wiping it", "nwipe's own output text, matched by the IN USE regexes"),
+    (RUNNER, "exited without wiping", "completion summary persisted as evidence failure_reason; tests pin it"),
+    (RUNNER, "A wipe is already running.", _NEVER_SHOWN + " (the wizard's own is ALREADY_RUNNING)"),
+    (RUNNER, "Wipe lock changed during acquisition.", _NEVER_SHOWN),
+    (RUNNER, "Wipe lock is not a regular file.", _NEVER_SHOWN),
+    (RUNNER, "Cannot create wipe lock", _NEVER_SHOWN + "; names the wipe.lock file"),
+    (RUNNER, "Unknown wipe method.", _NEVER_SHOWN + " (argv builder/validator)"),
+    (SAFETY, "Unknown wipe method.", _NEVER_SHOWN + " (assert_ready_to_wipe)"),
+    (SAFETY, "No target disk selected.", _NEVER_SHOWN + " (assert_ready_to_wipe)"),
+    (SAFETY, "Refusing to erase an optical drive.", _NEVER_SHOWN + "; other callers swallow it"),
+    (SAFETY, "Refusing to write logs onto the target disk.",
+     _NEVER_SHOWN + "; evidence writes show EVIDENCE_INVALID"),
 ]
 
 
@@ -142,7 +160,7 @@ def _doc_text(path: pathlib.Path) -> list[tuple[str, str]]:
 def surfaces() -> list[tuple[str, str]]:
     rows = _copy_strings()
     for path in sorted((ROOT / "src" / "beamo_wipe").rglob("*.py")):
-        if "locales" in path.parts or path.name in SKIPPED_MODULES:
+        if "locales" in path.parts:
             continue
         rows += _python_prose(path)
     rows += _python_prose(ROOT / "scripts" / "stage_live_assets.py")
@@ -234,8 +252,12 @@ LOCALE_BANNED = {
     "es": ("memoria USB de arranque",),
     "it": ("chiavetta USB di avvio",),
 }
-# Safety-module messages keep their wording until their own review.
-LOCALE_SKIPPED_KEYS = {"BOOT_APPEARED_SELECTABLE", "BOOT_APPEARED_ALIAS"}
+LOCALE_BEAMO_USB = {
+    "fr": "clé USB Beamo",
+    "de": "Beamo-USB-Stick",
+    "es": "memoria USB Beamo",
+    "it": "chiavetta USB Beamo",
+}
 
 
 @pytest.mark.parametrize("code", sorted(LOCALE_BANNED))
@@ -246,10 +268,30 @@ def test_translations_use_one_name_for_the_beamo_usb(code):
     hits = []
     for module, table in strings.items():
         for key, value in table.items():
-            if key in LOCALE_SKIPPED_KEYS or not isinstance(value, str):
+            if not isinstance(value, str):
                 continue
             hits += [f"{module}.{key}: {w}" for w in LOCALE_BANNED[code] if w in value]
     assert hits == []
+
+
+def test_guard_and_engine_modules_are_checked():
+    """safety.py and nwipe_runner.py are no longer skipped (#180 follow-up)."""
+    where = {row[0].rsplit(":", 1)[0] for row in surfaces()}
+    assert {SAFETY, RUNNER} <= where
+
+
+@pytest.mark.parametrize("code", ["en", *sorted(LOCALE_BEAMO_USB)])
+def test_shown_boot_guard_messages_name_the_beamo_usb(code):
+    """The two boot guards reach the blocked screen as its body text."""
+    from beamo_wipe import lang, safety
+
+    try:
+        lang.set_language(code)
+        name = LOCALE_BEAMO_USB.get(code, "Beamo USB")
+        for message in (safety.BOOT_APPEARED_SELECTABLE, safety.BOOT_APPEARED_ALIAS):
+            assert name in message, (code, message)
+    finally:
+        lang.set_language("en")
 
 
 def test_translation_glossary_points_at_the_glossary():

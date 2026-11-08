@@ -42,8 +42,18 @@ to make an exception, add it to that test's `ALLOWED` list with a reason.
 - Internal identifiers and APIs: module, function, screen and field names
   (`Screen.REFRESHING`, `Screen.LAST_CHANCE`, `boot_device`, `wipe_lock`,
   `_wipe_request`), environment variables (`BEAMO_WIPE_*`) and file names.
-- Guard and engine messages in `safety.py` and `nwipe_runner.py` (and their
-  translations). They keep their text until a separate `safety:` review
-  changes them; the test lists them in `ALLOWED`.
+- Some guard and engine text in `safety.py` and `nwipe_runner.py`. Both
+  modules are checked like the others, and the guard messages that reach a
+  screen (the Beamo USB appearing as a disk) use the names above in every
+  language. Kept, each listed in the test's `ALLOWED` with its reason
+  (`safety:` review, 2026-11-07):
+  - nwipe's own output that the runner matches ("…not wiping it");
+  - the completion summary "nwipe exited without wiping", which is saved as
+    the evidence `failure_reason`;
+  - refusals the owner never sees ("A wipe is already running.", the wipe
+    lock messages, "Unknown wipe method.", "No target disk selected.", the
+    optical-drive and log-on-target-disk refusals): the wizard shows its
+    own message, such as "An erase is already running." or the preflight
+    refusal, never the exception text.
 - Legal text (the GPL written offer) and quoted names from other software
   (Windows **Use a device**, OVMF/QEMU options).

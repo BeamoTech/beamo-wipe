@@ -86,7 +86,7 @@ reads naturally:
 | English | French | German | Spanish | Italian | Why |
 |---|---|---|---|---|---|
 | USB stick / the Beamo USB | clé USB / la clé USB Beamo | USB-Stick / der Beamo-USB-Stick | memoria USB / la memoria USB Beamo | chiavetta USB / la chiavetta USB Beamo | ES: understood everywhere; *pendrive* is regional |
-| *(not used: boot USB — say the Beamo USB, #180)* | *not* clé USB de démarrage | *not* Start-USB-Stick | *not* memoria USB de arranque | *not* chiavetta USB di avvio | one name for the stick the computer starts from; English names are in [glossary.md](glossary.md). Safety-module messages (`BOOT_APPEARED_*`) keep their wording until their own review |
+| *(not used: boot USB — say the Beamo USB, #180)* | *not* clé USB de démarrage | *not* Start-USB-Stick | *not* memoria USB de arranque | *not* chiavetta USB di avvio | one name for the stick the computer starts from; English names are in [glossary.md](glossary.md) |
 | report USB | clé USB de rapport | Berichts-USB-Stick | memoria USB del informe | chiavetta USB del rapporto | |
 | disk / drive | disque | Datenträger (*Festplatte* only for "hard disk") | disco (*unidad* where English says "drive") | disco (*unità* where English says "drive") | DE: covers SSD, HDD and USB |
 | erase / erasure | effacer / effacement | löschen / das Löschen | borrar / borrado | cancellare / cancellazione | |
@@ -388,3 +388,9 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   `{label}` and `{filesystem}`; filesystem names (FAT32, exFAT, NTFS) are
   not translated. Button names inside sentences must match `BTN_*` /
   `RETRY_SAVE` exactly. Key names stay English (`R`, `E`, `Enter`).
+- `safety.BOOT_APPEARED_SELECTABLE`, `BOOT_APPEARED_ALIAS` (2026-11-07,
+  #180 follow-up `safety:` review; drafts, not yet reviewed): the blocked
+  screen's body when the Beamo USB appears as a disk to erase or under a
+  second device path. Only the stick's name changed, to the Beamo USB of
+  the glossary above; keep the refusal ("Refusing to continue") and never
+  suggest the stick can be erased.
