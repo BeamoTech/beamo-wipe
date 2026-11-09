@@ -2788,6 +2788,9 @@ class TkWizard:
             except BaseException as error:
                 cleanup_error = error
             self._cancel_pick_restore()
+            # #149's "Compare" link opener closes over the comparison row and
+            # its BooleanVar; a retired interface must not keep them alive.
+            self._comparison_opener = None
             for attr in (
                 "_return_release_after",
                 "_space_release_after",
@@ -2938,6 +2941,8 @@ class TkWizard:
         self._clear(self._body)
         self._clear(self._footer)
         self._support_lead = None
+        # The old body's comparison row is gone; drop its opener (#149).
+        self._comparison_opener = None
         unbind = getattr(self, "_unbind_support_copy", None)
         if callable(unbind):
             unbind()

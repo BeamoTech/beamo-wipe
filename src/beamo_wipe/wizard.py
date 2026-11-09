@@ -4068,10 +4068,16 @@ class Wizard:
                 self.sound_revision += 1
 
     def cancel_audio(self) -> None:
+        """Interface teardown: cancel queued sound and the Working check."""
         with self._lock:
             if self._audio_request is not None:
                 self._audio_request[0].cancel()
                 self._audio_request = None
+            # The #133 Working availability check is audio work too; a closed
+            # interface must not leave it queued on the shared worker.
+            if self._audio_probe is not None:
+                self._audio_probe[0].cancel()
+                self._audio_probe = None
 
     def request_hear_both_sounds(self):
         from beamo_wipe import sound
