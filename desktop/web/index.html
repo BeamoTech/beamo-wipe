@@ -4,6 +4,17 @@
 <main id="main"><p id="preview" class="notice" hidden>Preview — nothing on this computer will change.</p>
 <section id="check"><h1 id="title" tabindex="-1">Checking this computer…</h1><p id="detail">Reading compatibility information. Nothing is changed during this check.</p>
 <section id="readiness" aria-labelledby="checks-title" aria-busy="true"><h2 id="checks-title">Before you restart</h2><ul id="checks"><li>Checking the Beamo USB, startup settings, and restart route…</li></ul></section>
+<section id="boot-options" aria-labelledby="boot-options-title" hidden><h2 id="boot-options-title">Restart to boot options</h2>
+<p>Windows can restart straight to its boot options, so you do not need a boot-menu key. This changes no startup settings and erases nothing.</p>
+<ol>
+<li>Save your work and close your applications. Windows restarts as soon as you choose the button. An application with unsaved work may stop the restart.</li>
+<li>On the blue <strong>Choose an option</strong> screen, choose <strong>Use a device</strong>.</li>
+<li>Choose the Beamo USB. It may be listed as <strong>EFI USB Device</strong> or by the USB’s brand name.</li>
+<li>Beamo Wipe starts from the USB. You still choose and confirm the disk before anything is erased.</li>
+</ol>
+<p class="muted">Choose only Use a device. Other choices on that screen, such as Troubleshoot, can ask for the BitLocker recovery key or change Windows; Beamo Wipe does not need them. If Use a device is missing, choose Continue to return to Windows, then use the boot-menu key below.</p>
+<label class="ack"><input id="boot-options-saved" type="checkbox"> I’ve saved my work and closed my applications. Restart this computer now.</label>
+<button id="boot-options-restart" class="primary" disabled>Restart to boot options</button></section>
 <section id="boot-key" aria-labelledby="boot-key-title"><h2 id="boot-key-title">Boot-menu key for this computer</h2>
 <p id="boot-key-hint">The key depends on the computer’s brand. The typical keys are listed below.</p>
 <p id="boot-key-note" class="muted" hidden></p>

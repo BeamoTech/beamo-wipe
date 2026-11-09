@@ -42,6 +42,8 @@ type view struct {
 	BuildStatus   string           `json:"build_status"`
 	Manufactured  bool             `json:"manufactured"`
 	BootKey       *bootKeyView     `json:"boot_key,omitempty"`
+	// AdvancedStartup shows the optional Restart to boot options (#183).
+	AdvancedStartup bool `json:"advanced_startup"`
 }
 
 func withUSBIdentity(v view, preview bool) view {
@@ -80,6 +82,11 @@ func planView(p Plan, preview bool) view {
 		if p.Problem == "runtime" {
 			v.Title = "Keep this computer on"
 		}
+	}
+	if p.AdvancedStartup {
+		v.AdvancedStartup = true
+		v.Title = "Restart to boot options, or use the boot menu"
+		v.Detail = "This launcher will not set a one-time boot request on Windows. Save your work and keep the Beamo USB connected. Then either restart to the Windows boot options and choose the USB there, or use Restart and the computer's boot menu."
 	}
 	v.Checks, v.Technical = p.checks, p.technical
 	if len(v.Checks) == 0 {
@@ -144,6 +151,10 @@ type app struct {
 	current     view
 	probe       func(context.Context) Snapshot
 	restart     func(context.Context, string) error
+	// advancedStartup restarts Windows to its boot options (#183). Only run()
+	// wires the real platform runner; tests inject a fake and preview never
+	// calls it.
+	advancedStartup func(context.Context) error
 	// machine reads the computer's reported brand (#184). Tests and preview
 	// inject a fake; the result is read once and reused.
 	machine     func(context.Context) (machineInfo, error)
@@ -350,6 +361,9 @@ func (a *app) serve(w http.ResponseWriter, r *http.Request) {
 			}
 			sendJSON(w, map[string]string{"message": "Restart requested. Keep the USB connected. You must still choose and confirm the disk after restarting."})
 			return
+		case "/api/advanced-startup":
+			a.advancedStartupRequest(w, body)
+			return
 		default:
 			a.mu.Unlock()
 			http.NotFound(w, r)
@@ -430,11 +444,13 @@ func run() error {
 	if _, err := rand.Read(tokenBytes); err != nil {
 		return err
 	}
-	a := &app{token: hex.EncodeToString(tokenBytes), host: ln.Addr().String(), preview: preview, probe: platformProbe, restart: platformElevate, machine: platformMachine, close: make(chan struct{}), lastSeen: time.Now()}
+	a := &app{token: hex.EncodeToString(tokenBytes), host: ln.Addr().String(), preview: preview, probe: platformProbe, restart: platformElevate, advancedStartup: platformAdvancedStartup, machine: platformMachine, close: make(chan struct{}), lastSeen: time.Now()}
 	if preview {
 		a.probe = func(context.Context) Snapshot { return Snapshot{} }
 		// Preview reads nothing from this computer, including its brand.
 		a.machine = func(context.Context) (machineInfo, error) { return machineInfo{}, errMachineUnsupported }
+		// Preview never restarts; the endpoint answers before any runner.
+		a.advancedStartup = nil
 	}
 	a.current = withUSBIdentity(view{Preview: preview, Version: version, Title: "Check before restarting", Detail: "The check reads compatibility information. It does not erase anything or change boot settings."}, preview)
 	if preview {

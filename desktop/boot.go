@@ -25,6 +25,9 @@ type Snapshot struct {
 	Pending    bool
 	SecureBoot string
 	Problem    string
+	// AdvancedStartup reports that Windows can restart to its boot options
+	// (Advanced startup, #183). Only the Windows probe sets it.
+	AdvancedStartup bool
 }
 
 type Plan struct {
@@ -34,6 +37,9 @@ type Plan struct {
 	Entry       uint16
 	Fingerprint string
 	Problem     string
+	// AdvancedStartup offers the optional Windows restart to boot options
+	// (#183). It never sets BootNext or any other startup setting.
+	AdvancedStartup bool
 }
 
 func guidString(b []byte) string {
@@ -223,6 +229,9 @@ func parseBootOption(data []byte) (string, error) {
 
 func makePlan(s Snapshot) Plan {
 	p := restartPlan(s)
+	// Offer the Windows boot-options restart only after the Beamo USB was
+	// identified on a supported 64-bit UEFI Windows computer.
+	p.AdvancedStartup = p.Problem == "windows-manual" && s.AdvancedStartup
 	p.checks, p.technical = explainReadiness(s, p)
 	return p
 }
@@ -233,6 +242,9 @@ func makePlan(s Snapshot) Plan {
 func makePlanForHost(s Snapshot, host string) Plan {
 	if host == "windows" && s.Problem == "" {
 		s.Problem = "windows-manual"
+	}
+	if host != "windows" {
+		s.AdvancedStartup = false
 	}
 	return makePlan(s)
 }

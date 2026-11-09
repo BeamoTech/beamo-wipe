@@ -79,6 +79,17 @@ func TestReadinessExplainsEachCheck(t *testing.T) {
 			}
 		})
 	}
+	// #183: Windows with an identified Beamo USB offers Restart to boot options.
+	advanced := good
+	advanced.Entries = nil
+	advanced.AdvancedStartup = true
+	ap := makePlanForHost(advanced, "windows")
+	if !ap.AdvancedStartup || ap.Direct {
+		t.Fatalf("advanced fixture = %+v", ap)
+	}
+	av := planView(ap, false)
+	av.Revision = 1
+	fixtures["advanced"] = av
 	if path := os.Getenv("BEAMO_READINESS_FIXTURES"); path != "" {
 		data, err := json.Marshal(fixtures)
 		if err != nil {

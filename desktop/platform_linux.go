@@ -440,6 +440,9 @@ func platformElevate(ctx context.Context, fingerprint string) error {
 	return cmd.Run()
 }
 
+// Restart to boot options (#183) is Windows only.
+func platformAdvancedStartup(context.Context) error { return errAdvancedStartupUnavailable }
+
 // platformMachine reads the SMBIOS brand strings that any user may read (#184).
 // Serial numbers in the same directory are root-only and never read.
 func platformMachine(context.Context) (machineInfo, error) {
