@@ -113,8 +113,11 @@ def test_every_method_choice_is_above_the_footer_at_800x600(gtk, code, path, pre
     notice = f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}"
     labels = [w for w in widgets(app.body) if isinstance(w, Gtk.Label) and w.get_text() == notice]
     assert len(labels) == 1 and labels[0].get_can_focus()
-    assert isinstance(labels[0].get_parent(), Gtk.Expander)
-    assert not labels[0].get_parent().get_expanded()
+    expander = labels[0].get_parent()
+    while expander is not None and not isinstance(expander, Gtk.Expander):
+        expander = expander.get_parent()
+    assert expander is not None, "the full notice is under a Show more expander"
+    assert not expander.get_expanded()
     assert not wizard.runner.started
 
 

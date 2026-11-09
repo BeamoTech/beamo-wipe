@@ -3124,15 +3124,18 @@ class TkWizard:
         subtitle: Optional[str] = None,
         *,
         compact: bool = False,
+        bottom: Optional[int] = None,
     ) -> None:
         """The one screen-header pattern: bold title, optional muted subtitle.
 
         Every working screen opens with the same rhythm so the eye lands in
         the same place on each step. ``compact`` squeezes the method screen
         further; short and narrow windows already use compact layout pads.
+        ``bottom`` caps the gap under the header (the Method screen, #158).
         """
         top = min(10, self.lay.title_top) if compact else self.lay.title_top
-        bottom = min(6, self.lay.title_bottom) if compact else self.lay.title_bottom
+        under = min(6, self.lay.title_bottom) if compact else self.lay.title_bottom
+        bottom = under if bottom is None else min(bottom, under)
         self._h(col, title).pack(fill=tk.X, pady=(top, 4 if subtitle else bottom))
         if subtitle:
             self._p(col, subtitle, fg=MUTED, font=self.font_b).pack(
@@ -6335,7 +6338,9 @@ class TkWizard:
         # vertically: the row is as tall as Show more (#161 chip at 800x600
         # extra text stays above the fold).
         box = _Box(parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1, padx=12, pady=0)
-        box.pack(fill=tk.X, pady=(4, 0), padx=4)  # the cards' zone adds 4 px below
+        # 2 px from the disk above; the cards' zone sits 2 px below (#158:
+        # the #161 chip stays above the fold at 800x600 Extra large).
+        box.pack(fill=tk.X, pady=(2, 0), padx=4)
         row = tk.Frame(box.inner, bg=fill)
         row.pack(fill=tk.X)
         icon = _icon_alert(row, "limits", 20)
@@ -6396,7 +6401,10 @@ class TkWizard:
         col = self._column(self._body, fill_height=True)
         # Identity is informational only; method changes keep the bound target.
         # The shared scrolling body accommodates long identities and small screens.
-        self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True)
+        # #158: the limits line costs a row, so the Method screen trims its
+        # own gaps (header 6 -> 4 px, around the line 4 -> 2 px each) rather
+        # than the cards.
+        self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True, bottom=4)
         # Details share the summary's caption row at every size. #158: one
         # storage limits line sits between the disk and the cards at every
         # size, so it is never below the fold; each card keeps its own note.
@@ -6405,6 +6413,7 @@ class TkWizard:
         self._limits_more_button = None
         self._limits_line(col)
         zone = self._center_zone(col)
+        zone.pack_configure(pady=(2, 0))
         self._method_more_buttons = {}
         for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
             self._method_card(zone, method)

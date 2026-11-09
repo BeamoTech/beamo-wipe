@@ -45,7 +45,8 @@ disabled for the five-second countdown and never activates automatically.
 F5 checks disks again before erasure. Escape goes back where allowed. Full
 **Storage limits** are available from method selection and return to that method.
 On method selection a one-line storage limits summary is read before the choices;
-the full notice follows them in a collapsed **Show more: Limits** expander (#158).
+the full notice and the **Storage limits (L)** button follow them in a collapsed
+**Show more: Limits** expander (#158). L opens the full limits from method selection.
 Disk identity announcements say **Serial number:** before the value, including
 when a serial is missing. Hardware ID stays Hardware ID when that is the
 strongest identifier.
