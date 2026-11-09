@@ -10,7 +10,6 @@ screen offers Esc or going back into a completed erase. Fake disks only.
 
 from __future__ import annotations
 
-import re
 
 import pytest
 
@@ -19,6 +18,7 @@ from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 
 @pytest.fixture(autouse=True)
@@ -80,7 +80,7 @@ def test_web_preview_result_hint_and_enter():
     from beamo_wipe.gallery import gallery_html
 
     html = gallery_html()
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     done = script[script.index('} else if (screen === "done")'):]
     done = done[:6000]
     assert "renderHint(P.hints.donePreview)" in done

@@ -22,6 +22,7 @@ from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -112,7 +113,7 @@ def test_preview_ready_state_has_check_word_and_status():
     payload = json.loads(re.search(r"const P = (\{.*?\});\n", html, re.S).group(1))
     assert payload["countdownReadyWord"] == "Ready"
     assert payload["countdownAvailable"] == C.COUNTDOWN_AVAILABLE
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     last = script[script.index('} else if (screen === "last")'):]
     last = last[: last.index('} else if (screen === "working")')]
     assert '${ready ? "0"' not in last

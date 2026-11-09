@@ -23,6 +23,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.methods import METHODS
 from beamo_wipe.models import MethodId, Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -126,7 +127,7 @@ def test_preview_keeps_the_caveat_in_the_opened_details_only():
     from beamo_wipe.gallery import gallery_html
 
     html = gallery_html()
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     method = script[script.index('} else if (screen === "method")'):]
     method = method[: method.index("renderHint(P.hints.method)")]
     details = method[method.index('class="methoddetails"'):]

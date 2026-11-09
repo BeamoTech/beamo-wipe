@@ -12,7 +12,6 @@ key lines (keys are its only input). Fake disks only.
 
 from __future__ import annotations
 
-import re
 import shutil
 import subprocess
 
@@ -22,6 +21,7 @@ from beamo_wipe import copy as C
 from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
+from preview_page import inline_script
 
 
 @pytest.fixture(autouse=True)
@@ -206,7 +206,7 @@ def test_web_preview_shortcuts_logic_in_node():
         pytest.skip("Node.js unavailable")
     from beamo_wipe.gallery import gallery_html
 
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     start = script.index("let helpOpen = false")
     end = script.index("function renderHelpTrigger", start)
     program = """

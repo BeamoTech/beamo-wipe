@@ -22,6 +22,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.methods import METHODS
 from beamo_wipe.models import Disk, DiskKind, MethodId, Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 ORDER = (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO)
 UNKNOWN_SIZE = [
@@ -340,7 +341,7 @@ def test_preview_cards_carry_time_lines_and_a_view_only_toggle():
         assert set(disk["methodTimes"]) == {m.value for m in ORDER}
         for value in disk["methodTimes"].values():
             assert value and ("not promised" in value or value == C.TIME_GUIDE_UNKNOWN)
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     method = script[script.index('} else if (screen === "method")'):]
     method = method[: method.index("renderHint(P.hints.method)")]
     # Title, sentence and time line on the card; details only when opened.

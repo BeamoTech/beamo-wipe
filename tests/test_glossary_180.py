@@ -133,7 +133,9 @@ def _python_prose(path: pathlib.Path) -> list[tuple[str, str]]:
 
 def _page_text(path: pathlib.Path) -> list[tuple[str, str]]:
     s = path.read_text(encoding="utf-8")
-    s = re.sub(r"<script.*?</script>|<style.*?</style>", " ", s, flags=re.S)
+    # Drop script/style blocks from our own helper pages before linting the
+    # visible words; any case, and an end tag may carry spaces before ">".
+    s = re.sub(r"<(script|style)\b.*?</\1\s*>", " ", s, flags=re.S | re.I)
     attrs = re.findall(r'(?:aria-label|title|alt|placeholder)="([^"]*)"', s)
     s = re.sub(r"<[^>]+>", " ", s)
     rel = path.relative_to(ROOT).as_posix()

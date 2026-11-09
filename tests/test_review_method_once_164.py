@@ -13,7 +13,6 @@ method lines. Fake disks only; nothing starts the engine.
 from __future__ import annotations
 
 import pathlib
-import re
 
 import pytest
 
@@ -23,6 +22,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.methods import METHODS
 from beamo_wipe.models import MethodId, Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 LINES = {
@@ -121,7 +121,7 @@ def test_preview_review_uses_the_one_line():
     from beamo_wipe.gallery import gallery_html
 
     html = gallery_html()
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     last = script[script.index('} else if (screen === "last")'):]
     last = last[: last.index('} else if (screen === "working")')]
     assert "P.methods[method].reviewLine" in last

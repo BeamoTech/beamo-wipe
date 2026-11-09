@@ -30,6 +30,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard as console
 from test_ui_system import _contrast
+from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -299,7 +300,7 @@ def test_web_preview_contrast():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     payload = re.search(r"const P = (\{.*?\});\n", script, re.S)
     start = script.index("let helpOpen = false")
     end = script.index("function renderHelpTrigger", start)

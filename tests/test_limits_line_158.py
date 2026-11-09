@@ -30,6 +30,7 @@ from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.methods import METHODS
 from beamo_wipe.models import DiskKind, MethodId, Screen
 from beamo_wipe.ui import console_wizard
+from preview_page import inline_script
 
 ROOT = Path(__file__).resolve().parents[1]
 ORDER = (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO)
@@ -491,7 +492,7 @@ def test_preview_carries_the_line_per_disk_and_a_view_only_show_more():
         kind = DiskKind(disk["kind"])
         assert disk["storageLine"] == limits.line(kind)
         assert disk["storageNotice"] == limits.notice(kind)
-    (script,) = re.findall(r"<script>(.*?)</script>", html, re.S)
+    script = inline_script(html)
     method = script[script.index('} else if (screen === "method")'):]
     method = method[: method.index("renderHint(P.hints.method)")]
     # Between the disk summary and the cards.

@@ -27,6 +27,7 @@ from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard as console
+from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 ENTER, ESC, TAB = 10, 27, 9
@@ -570,7 +571,7 @@ def test_preview_payload_follows_the_wizard_rules():
 def test_preview_footer_has_one_fixed_menu():
     from beamo_wipe.gallery import gallery_html
 
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     assert "renderHelpTrigger(utilities);" in script
     assert 'btn(P.reportHelpTitle' not in script and "text-size-utility" not in script
     assert "P.buttons.advanced" not in script
@@ -586,7 +587,7 @@ def test_preview_menu_logic_in_node():
         pytest.skip("Node.js unavailable")
     from beamo_wipe.gallery import gallery_html
 
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     payload = re.search(r"const P = (\{.*?\});\n", script, re.S)
     start = script.index("let helpOpen = false")
     end = script.index("function renderHelpTrigger")
