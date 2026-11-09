@@ -6078,3 +6078,14 @@ another very thorough and comprehensive pass of this." Repo
 - 2026-11-08 lead: full Go suite on integration 27ecb6a (Windows): go vet
   clean, `go test ./...` ok (39.7 s); see below for linux/darwin vet.
   Linux/darwin amd64: go vet and test build ok.
+
+- 2026-11-08 lead: #158 option (b) done — branch feat/limits-line-158b @
+  6bc3322 (pushed), merged into integration (clean auto-merge). Storage
+  limits (L) shows only when the line is opened (Tk + web); L works in both
+  states; new shortcut line "L opens the storage limits." (Tk/GTK/web, 4
+  locale drafts). test_rarely_needed_161 unchanged and passing. Quick zero
+  at 800x600 standard: 46–51 px short before #158, 83–88 px now (title
+  below the fold; cards not redesigned). Windows on the merged tree: ruff,
+  S-set, mypy (61 files) clean; 7 new-feature test files pass. Linux 72 DPI
+  on the merged tree still to run. Owner: native review of the new locale
+  strings; sign-off on prominence vs docs/claims.md / Ref #18.
