@@ -5812,3 +5812,269 @@ another very thorough and comprehensive pass of this." Repo
 - LINUX: WSL works again (2026-11-07; 2.9 GB RAM, 2 CPUs, shared with a
   peer lab self-test). Full-suite runs of main 58c677f and 699825a started
   at low priority in /home/beamo-qual/bw-linux-20261107 (out/status.txt).
+- 2026-11-08, Claude (Opus 5.5), takeover after the original thread wedged
+  (its turns died before the provider started; C: had filled to 0.5 GB):
+  * LINUX (verified, not assumed): both runs FINISHED. main 58c677f:
+    320 failed / 11109 passed / 477 skipped (1:14:28). Combined 699825a:
+    588 failed / 14185 passed / 490 skipped / 26 errors (2:23:01). 295
+    failure ids are new versus main (AssertionError 292 vs 10; no ENOSPC,
+    OOM, segfault or display loss). Largest groups: test_tk_runtime 83,
+    test_sound_dialog_state_pass12 48, test_accessible_fit_20261027 32,
+    test_accessible_runtime 28, console stop-hold/key-origin errors 22.
+    Isolated rerun of those 295 ids started 2026-11-08T21:46:59Z
+    (out/rerun.log) to separate regressions from order/load effects.
+  * HELPERS: all six helper agents of 2026-11-07 were dead (cancelled at
+    the session restart); none had committed. Their uncommitted work was
+    intact in beamo-wipe-{158,177g,180f,184,185,186}-20261107. #183 had
+    not started. The lead scratchpad with the task texts was deleted in
+    the disk cleanup; texts were recovered verbatim from the subagent
+    transcripts to C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\
+    (with RESUME.md). All six restarted 2026-11-08 ~21:45Z as delegated
+    tasks to finish from the existing worktrees.
+  * LINUX TRIAGE (2026-11-08): the isolated rerun reproduced 294 of the 295
+    new ids (268 failed, 26 errors, 27 passed; 1 was order-dependent), so
+    they are deterministic. Likely cause: the task branches were tested
+    on native Windows, where test_tk_runtime, test_adaptive_layout, the
+    GTK runtime and termios console tests are skipped, so pins drifted
+    across the stack. Logs copied to
+    C:\Users\Jack\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
+    rerun.log, rerun.ids, main.log, top.log). Three delegated triage
+    branches started: fix/linux-tk-20261108, fix/linux-console-20261108,
+    fix/linux-gtkweb-20261108 (WSL runs serialised by
+    /home/beamo-qual/triage-wsl.lock).
+  * MERGED into integrate/ui-review-20261107 locally: #180F
+    safety/guard-wording-180f @ 921b39e (merge f641541; not yet pushed).
+
+## BW-180F-GUARD-WORDING — Beamo USB wording in the shown boot-guard messages (DONE LOCALLY, safety: commit; MERGED INTO INTEGRATION; LINUX 72 DPI, NATIVE REVIEW, HOSTED GATE, MAIN MERGE PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch `safety/guard-wording-180f`
+  @ 921b39e (pushed), base 84efc57; merged into
+  `integrate/ui-review-20261107` as f641541.
+- WHAT CHANGED: safety.BOOT_APPEARED_SELECTABLE/ALIAS (shown as the blocked
+  screen body) say "The Beamo USB ..." in EN plus FR/DE/ES/IT drafts.
+  Reword only; guards, raise sites and constant comparisons unchanged.
+  tests/test_glossary_180.py now lints safety.py and nwipe_runner.py with
+  per-text ALLOWED reasons (nwipe's own "not wiping it" output; evidence
+  failure_reason "nwipe exited without wiping"; never-shown SafetyError
+  texts mapped to PREFLIGHT_BLOCKED / STARTUP_UNCONFIRMED /
+  EVIDENCE_INVALID). docs/glossary.md and docs/translations.md updated.
+- TESTS: +6. New file on base: 10 failed; on branch: 95 passed.
+- CHECKS (Windows native): ruff clean; mypy same as base; 12 focused
+  files 965 passed / 1 skipped / 29 failed with identical failure ids on
+  base.
+- NOT VERIFIED: Linux 72 DPI full suite; PICK_BLOCKED screenshots; native
+  review of the 8 locale strings.
+- OWNER QUESTION (optional): "nwipe exited without wiping" is kept because
+  it is persisted evidence text; renaming it needs its own decision.
+
+## BW-186 — SSD firmware erase decision record (PROPOSAL READY; OWNER DECISION PENDING; MERGED INTO INTEGRATION)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch
+  `docs/ssd-erase-decision-186` @ 6d73615 (pushed), base 84efc57; merged
+  into `integrate/ui-review-20261107` as 249d1eb.
+- WHAT CHANGED: new docs/decisions/ssd-firmware-erase.md (options, risks,
+  verification limits, draft outcome copy, exact claims.md lines affected,
+  safety gates, test matrix, effort, staged rollout, 8 owner decisions in
+  §12); one link line in docs/compatibility-matrix.md §14. No code, claims
+  or product copy changed.
+- RECOMMENDATION: keep today's nwipe overwrite (Option A). Only with owner
+  approval, stage NVMe Sanitize on internal NVMe disks before the normal
+  overwrite; never ATA Security Erase; refuse behind USB bridges/RAID/VMD.
+  Needs a physical lab (blocked on this remote-only host); estimate 8–12
+  engineer-weeks plus the lab.
+- CHECKS: 11 focused docs/claims files on a full copy: base 231 passed /
+  11 skipped / 0 failed; with the change identical.
+- NOT VERIFIED: no hardware; IEEE 2883, ACS-3, NVM Command Set and TCG Opal
+  not read; frozen/Sanitize prevalence, QEMU sanitize, VMD behaviour,
+  nvme-cli licence and Format timeout unverified; effort is an estimate.
+- NEXT ACTION: owner answers §12. Any implementation first needs AGENTS.md
+  and docs/claims.md rule changes, a safety: commit and a physical lab.
+- CLEANUP: work186-scratch-20261107\base84 (319 MB) can be deleted after
+  integration.
+
+## BW-185 — Intel VMD/RST hint on the empty disk list (IMPLEMENTED, safety: commit; MERGED INTO INTEGRATION; GTK RUNTIME, SYSFS-TREE TESTS, LINUX 72 DPI, REAL HARDWARE, NATIVE REVIEW, OWNER WORDING OK PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch `feat/vmd-rst-empty-185`
+  @ 092353d (pushed), base 84efc57; merged into
+  `integrate/ui-review-20261107` as 7e781f0 (lead reviewed the wizard/app
+  hook: display only, probed only when nothing is selectable, cached per
+  discovery, any error keeps the generic text).
+- WHAT CHANGED: new src/beamo_wipe/hidden_storage.py (read-only sysfs PCI
+  reader + lspci parser + fail-closed classifier; Intel IDs from kernel
+  vmd.c vmd_ids[] v6.12+mainline and ahci.c Intel entries in RAID class
+  0x0104). Wizard.empty_storage_hint; recovery_for_empty(hint) shows the
+  owner-approved text only for vmd/rst. Tk, GTK, curses, plain console,
+  web preview (scenario "hidden"), ./preview --scenario hidden. FR/DE/ES/IT
+  drafts. Docs: storage-and-controller-limits §6a, screens.md, runbook §4.c.
+- WORDING: "This PC's disk" became "This computer's disk" because the
+  glossary bans "PC" (enforced by tests/test_glossary_180.py). Owner to
+  confirm.
+- TESTS: +59 (test_hidden_storage_185.py 52, _tk 3, _gtk 2 needing gi);
+  fixtures tests/fixtures/pci_185/. Fail before, pass after on Windows.
+- CHECKS (Windows): ruff, mypy pass; 51 focused files: failure ids
+  identical to base (88 env failures).
+- SCREENS: C:\Users\Jack\dev\BeamoTech\work185-scratch-20261107\shots\.
+- NOT VERIFIED: GTK runtime, real sysfs-tree tests, Linux 72 DPI, real
+  VMD/RST hardware or ISO boot (the live image has no lspci; sysfs only).
+- OWNER QUESTIONS: approve "computer's"; show the hint when vmd is bound
+  but no NVMe controller is visible (it shows now, worded "may be hidden")?
+
+## BW-LINUX-GTKWEB-20261108 — GTK/web-preview share of the Linux 72 DPI regressions (PARTIAL; MERGED INTO INTEGRATION; FOLLOW-UP NEEDED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-gtkweb-20261108
+  @ fb4851c (pushed), from f641541; merged into integrate as the merge after
+  7e781f0 (lead reviewed the product fix and the safety: test rewrite).
+- ENV ROOT CAUSE: the WSL route kept XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir,
+  so GDK used WSLg Wayland (852x689). A private XDG_RUNTIME_DIR (as
+  scripts/ci-hosted.sh) gives X11 / Sans 10 / 800x600; main's
+  test_accessible_runtime goes from 165 failures to 1.
+- FIXED: #175 regression (GTK Help & settings label did not wrap; window
+  941 px at Extra large DE) + test over 5 languages × 3 screens; stale tests
+  for #147/#154/#187 spoken names, #144/#175 fakes, #149/#155/#163/#175/#179
+  web harnesses; safety: #165 GTK Enter test rewritten (it failed at its own
+  commit 1603a08; the new one is stricter, test-only).
+- CHECKS: 4 GTK files 71/71 in WSL with the CI env; 8 web files 62/62 on
+  native Windows only (not WSL); ruff clean; mypy not run.
+- OPEN: 9 test_accessible_runtime failures newly exposed by the correct env
+  (canonical_announcement[verified]/[unverified] — outcome text, check
+  carefully; report_help_intent_refresh_and_scroll ×2; evidence_failure_retry;
+  progress_has_shared_text…; stale_progress…;
+  done_announcement_is_first_heading; confirm_names[ABCD12-3]). Web files
+  not yet run in WSL. test_ui_fit confirm-preview ×5 handed to the Tk agent.
+- INCIDENT 2026-11-08: ~10 full-tree extractions (~322 MB each) grew the
+  WSL vhdx and filled C: to 21 MB; WSL ext4 went read-only. WSL was NOT
+  stopped. Lead freed space: removed 43 clean, pushed old task worktrees
+  (#137–#180 except #143 dirty and #158-20261105 unpushed) and 2.4 GB of
+  re-creatable base/fb source copies + a Go cache in work134–147/180
+  scratch (screenshots and logs kept); deleted the 2.9 GB gtkweb WSL dir
+  and old main/top trees inside WSL. C: back to 3.6 GB; WSL alive again.
+  The vhdx itself was not compacted (needs wsl --shutdown — not done).
+
+## BW-158-LIMITSLINE-B — One-line limits under the selected disk (IMPLEMENTED @ f72aec0; OWNER CHOSE FIX (b) 2026-11-08; REWORK IN PROGRESS; NOT MERGED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/limits-line-158b
+  @ f72aec0 (pushed), base 84efc57, worktree beamo-wipe-158-20261107.
+- Built option B in Tk, GTK, curses/plain console and web preview: one line
+  per disk type (SSD/NVMe "On SSDs, overwriting may not reach every hidden
+  area."; HDD/unknown reuse their notice's opening), full notice under Show
+  more, Storage limits (L) unchanged. +37 tests (36 fail on base).
+- CONFLICT: at 800x600 Extra the line wraps and pushes the #161 "Rarely
+  needed" chip 21 px below the fold (test_rarely_needed_161 fails). Quick
+  zero at 800x600 standard was 46–51 px short; now 93–98 px (title hidden).
+- OWNER DECISION 2026-11-08 (AskUserQuestion): option (b) — show the
+  Storage limits (L) button only after Show more is opened; L key works in
+  every state; keep the #161 test unchanged. Sent back to the #158 helper.
+- NEXT ACTION: helper reports; lead reviews and merges into integration.
+
+## BW-LINUX-CONSOLE-20261108 — console/curses share of the Linux 72 DPI regressions (DONE; MERGED INTO INTEGRATION as a9c684e)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-console-20261108
+  @ cd6554c (pushed), base f641541.
+- REGRESSION fixed (29e103c): the curses Done page at 80x24 had lost the
+  support link for failed results and, after a report save, "You can remove
+  the report USB now." from page 1 (rows added by #134/#135/#171/#175). New
+  tests/test_console_done_first_page_20261108.py (12).
+- STALE tests updated (cd6554c): stop-hold/key-origin fixtures (the #133
+  sound check reached the forbidden read_cmdline on Linux; stop/consent
+  assertions were already passing), console_pick monotonic (#132),
+  export_stages console (#135 panel), journey 80x24 header (#144 badge),
+  German Working wrap (#132).
+- "Not confirmed — the result is unknown" on the USB fixtures is CORRECT
+  (exit-1 failed erase, indeterminate on main too; all 11 result codes equal).
+- CHECKS: WSL 72 DPI: 8 area files + new test 179 passed; neighbours pass.
+- OWNER NOTES: at 80 columns the power badge wins over the step name in the
+  header (per #144); saved panel repeats the removal line on purpose; dead
+  code copy.EXPORT_STAGES / export_stage_lines / report_aftercare.
+
+## BW-LINUX-GTK2-20261108 — GTK runtime tests follow #132–#177 (DONE; MERGED as 4b8a6e9)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-gtk2-20261108
+  @ cbb50ce (pushed), base 623d4f5. Test-only.
+- GTK announces the CORRECT outcome: canonical_announcement verified /
+  unverified failed only because #134 (owner-approved) made the plain
+  headline the heading; the no-evidence fixture is correctly unconfirmed.
+  Other 7 failures stale for #135/#145/#167/#175/#177/#132.
+- CHECKS: WSL 72 DPI, private XDG_RUNTIME_DIR: 13 GTK + web files 330
+  passed / 0 failed / 0 skipped.
+- WATCH: slow_sound_discovery (60 ms limit, also fails on main) and
+  test_orca_announces_every_result are timing-sensitive under load.
+
+## BW-184 — Detect the PC brand and show the right boot key (IMPLEMENTED; MERGED as 6955082; GO SUITE RE-RUN BY LEAD, LINUX 72 DPI, NATIVE REVIEW PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/boot-key-brand-184
+  @ 949218d (pushed), base 84efc57.
+- desktop/bootkeys.json is the single key table (sources in
+  docs/boot-keys.md); scripts/gen_boot_keys.py generates the helper (5
+  languages), launcher and boot-card lists, with a drift test. Brand read
+  without elevation (WMI / sysfs DMI), injected bounded reader. "Most
+  <brand> computers: press <key> at power-on." + table under Show more.
+  Reconciled HP "Esc, then F9", ASUS "Esc or F8".
+- TESTS: Go bootkeys_test.go (11), tests/test_boot_keys_184.py (13).
+- OWNER QUESTIONS: approve HP/ASUS wording; docs/runbook.md and
+  docs/compatibility-matrix.md still say "HP F9/Esc" — update?
+  FR/DE/ES/IT drafts need native review. Lenovo/MSI source pages 403.
+
+## BW-183 — Restart to boot options in the Windows launcher (IMPLEMENTED; MERGED as 7926c45; VM ACCEPTANCE BLOCKED / NOT TESTED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch
+  feat/restart-boot-options-183 @ 6b2b119 (pushed), stacked on 949218d.
+- Optional, confirmed restart on Win10+ UEFI x64 after the Beamo USB is
+  identified: %WINDIR%\System32\shutdown.exe /r /o /t 0 (no /f, no
+  elevation, no BootNext). Explains Choose an option > Use a device > USB.
+  Saved-work tick; failure falls back to the #184 key. Lead verified: the
+  real runner's first statement is advancedStartupGuard() (refuses under
+  testing.Testing()); wired only in run(); AST test mutation-checked.
+- TESTS: Go advanced_startup_test.go (9), tests/test_restart_boot_options_183.py (7).
+- NOT TESTED: Windows 10/11 VM acceptance (real restart, WinRE screens, EFI
+  USB Device naming, BitLocker, standard/admin, policy-denied shutdown
+  right, cancelled restart) — needs an owner-authorized isolated guest; this
+  host must never restart. Playwright not run locally.
+
+## BW-177G-TRACKING — Tk letter spacing for serials (IMPLEMENTED, safety: commit; MERGED as b5ba1ee; LINUX 72 DPI PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/serial-tracking-177g
+  @ 0df1f27 (pushed), base 84efc57. Closes the BW-177-SERIAL gap.
+- Each serial/hardware-ID character is its own canvas item (1 px gap
+  Standard, 2 px Large/Extra); #129 token and #152 marks drawn on the same
+  cells. Characters are read back after every draw and must equal the
+  identifier, else the plain label shows with no marks. GTK/web/console
+  unchanged. Spoken/console/evidence text unchanged.
+- TESTS: tests/test_serial_tracking_177g.py (51; 49 fail on base).
+- OWNER NOTE: a 55-character serial wraps one row sooner at Large/Extra.
+
+- 2026-11-08 lead: 27ecb6a adds `# noqa: S105` to the nine #156 TOKEN_*
+  UI strings in copy.py (ci-hosted.sh's S105 gate would fail otherwise).
+  CI lint block re-run on Windows: ruff (src, tests, developer_tests,
+  security sets), ruff format --check, mypy --platform linux (61 files),
+  compileall: all pass.
+
+## BW-LINUX-TK-20261108 — Tk share of the Linux 72 DPI regressions (DONE; MERGED as a5eb605)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-tk-20261108
+  @ 6da4fe9 (pushed), base f641541.
+- STALE tests updated with the same safety meaning: #134 heading/What
+  happened, #135 panel/QEMU marker, #136 guarded refresh (a second F5 or the
+  F8 reader switch never accepts the dialog), #142, #144, #152, #157 reveal,
+  #163, #164, #171, #174, #175. No owner-facing outcome was wrong; the
+  "indeterminate" Done fixtures carry minimal evidence and fail closed.
+- FAKES given later fields (power_badge, screen, high_contrast,
+  take_handoff); pass6 fixture answers the #133 sound check (read_cmdline
+  stays forbidden).
+- REGRESSIONS fixed (6da4fe9, display only): footer tools drop "(F5)/(F8)"
+  only when the line would wrap (#174 made 3 rows at 800x600 Extra on
+  Linux); Working left actions use full width; Confirm always uses the
+  scrolling body (#155 Change was squeezed to 16 px on large windows).
+- ENVIRONMENT: sound_dialog_state_pass12 (48) = WSLg XDG_RUNTIME_DIR leak;
+  120 pass with the fix.
+- CHECKS (WSL 72 DPI): all Tk-area files pass; 14 neighbouring suites
+  350 passed / 2 skipped.
+- FLAKY: test_held_space_from_save_cannot_repeat_onto_shutdown (redraw
+  racing focus_set; failed 1 of 3 runs and in the first combined run).
+- OWNER QUESTIONS: (1) at 800x600 Extra the footer shows "Check disks
+  again" / "Screen-reader view" without "(F5)/(F8)" (keys still on the
+  Keyboard shortcuts page) — acceptable? (2) DE/FR/ES/IT footers at
+  Large/Extra still need 3 rows (852–989 px vs 768) — accept, or move tools?
+
+- 2026-11-08 lead: full Go suite on integration 27ecb6a (Windows): go vet
+  clean, `go test ./...` ok (39.7 s); see below for linux/darwin vet.
+  Linux/darwin amd64: go vet and test build ok.
