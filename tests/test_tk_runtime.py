@@ -1137,6 +1137,19 @@ def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypa
 
     wiz._report_exporter = exporter
     app._draw()
+    # Done starts background work (report USB detection, the #133 finish
+    # sound) whose answers redraw the screen. Let those land first, so the
+    # Save control found below is the live one rather than a widget a late
+    # redraw replaces between focus_set() and the key press.
+    settle = time.monotonic() + 3
+    while time.monotonic() < settle:
+        app.root.update()
+        if (wiz.report_view.revision == getattr(app, "_shown_report_revision", None)
+                and getattr(wiz, "_audio_request", None) is None
+                and getattr(wiz, "sound_revision", 0) == getattr(app, "_shown_sound_revision", 0)):
+            break
+        app._tick()
+        time.sleep(0.02)
     save = _button_named(app, "Save report to USB")
     save.focus_set()
     app.root.update()

@@ -24,11 +24,18 @@ def test_native_power_remains_readable_and_updates_without_redraw(ui, screen, si
     # redraws once when that answer arrives. Let it settle first, so the
     # baseline below measures power updates only.
     import time
-    for _ in range(200):
+    # The probe is wizard._audio_probe; its first answer moves
+    # audio_available from None and bumps sound_revision once. The next
+    # probe is AUDIO_PROBE_S (60 s) later, well after this test.
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
         app._tick()
         app.root.update()
-        if (getattr(wizard, "_audio_request", None) is None
-                and getattr(app, "_shown_sound_revision", 0) == getattr(wizard, "sound_revision", 0)):
+        if (screen != Screen.WORKING or (
+                getattr(wizard, "audio_available", None) is not None
+                and getattr(wizard, "_audio_probe", None) is None
+                and getattr(wizard, "_audio_request", None) is None)) and (
+                getattr(app, "_shown_sound_revision", 0) == getattr(wizard, "sound_revision", 0)):
             break
         time.sleep(0.02)
     focus = app.root.focus_get()
