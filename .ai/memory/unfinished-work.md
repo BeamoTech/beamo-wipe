@@ -6126,3 +6126,64 @@ another very thorough and comprehensive pass of this." Repo
   clean, fast-forward PR 94's branch fix/release-readiness-20261026 from
   9c16e13 to the verified integration HEAD; that pull_request event is the
   one ci.yml run (plus free CodeQL). No dispatch, no merge, no release.
+- 2026-11-09 lead: full Linux 72 DPI run on 0c33c90 (with #158 and the
+  integration fixes): 72 failed / 14929 passed / 478 skipped (1:51:15).
+  All 10 earlier integration failures fixed (Orca timing test passed). 62
+  failures also on main (environment). 10 new, all #158 on Linux 72 DPI:
+  test_storage_limits_visible_and_keyboard_reachable ×6 (stale: full notice
+  now under Show more); test_rarely_needed_161 [size1-extra-en] (chip 5 px
+  under the footer on Linux; passed on Windows); GTK
+  test_every_method_choice_is_above_the_footer_at_800x600 es nvme/sda, fr
+  sda (last radio 17 px over the footer). Sent back to the #158 helper as
+  branch fix/limits-line-158c (from 25e6d1d) with WSL access via the flock.
+- #181 reading level (never assigned by the 2026-11-07 round) started
+  2026-11-09 as feat/reading-level-181 from 25e6d1d (task text recovered
+  to agent-tasks-20261108\181.txt; Notion body was truncated).
+- NOTION batch update NOT done: the old Notion automation script was in
+  the deleted Temp scratchpad; rebuilding desktop UI automation risks the
+  wrong-field pastes seen on 2026-11-07. Pending: mark #158, #183, #184,
+  #185, #186 Done + note (owner's "Done + note" rule), #181 when merged;
+  #182 stays deferred; #116 blocked (physical).
+
+## BW-181 — Bring long sentences down to an 8th-grade reading level (IMPLEMENTED; MERGED INTO INTEGRATION as 645d041; LINUX 72 DPI FULL RUN, NATIVE REVIEW PENDING)
+
+- 2026-11-09, Claude (Opus 5.5, delegated). Branch feat/reading-level-181
+  @ f289657 (pushed), base 25e6d1d.
+- tests/test_reading_level_181.py: every sentence of lang.surface() +
+  copy.py <=20 words, FK grade <9 from 10 words (dependency-free syllable
+  counter; glossary/product/file names count as one word); ALLOWED with
+  reasons (#128 erase warning, two persisted engine-check details,
+  REPORT_OVERWRITE_LIMITS). 19 tests; 7 fail on base (33 sentences).
+- Rewrites: report help, Advanced note, storage-limits notice and page,
+  disk help, Check disks again dialogs, empty list, Diagnostic PREPARE,
+  media/sound/power copy. Meanings, warnings and limits kept; no claims
+  added. FR/DE/ES/IT drafts (two Italian words changed to pass the
+  English-stopword check).
+- Saved reports keep their wording (storage_limits.report_notice() /
+  REPORT_OVERWRITE_LIMITS; goldens unchanged); screens use notice().
+  Choice per Jack's 2026-11-09 rule "pick the Recommended option": keep the
+  persisted report text unchanged (evidence/golden contract) — revisit only
+  if the owner asks.
+- CHECKS: ruff + CI security sets, mypy clean; WSL 72 DPI 39 files: only
+  failures also on base 25e6d1d (the #158 items being fixed in
+  fix/limits-line-158c, sound timing, Orca flake).
+- NOT VERIFIED: native review; helper pages / screen-reader.md still
+  paraphrase some old sentences.
+
+## BW-LINUX-158C-20261109 — #158 fixes for Linux 72 DPI (DONE; MERGED INTO INTEGRATION)
+
+- 2026-11-09, Claude (Opus 5.5, delegated). Branch fix/limits-line-158c
+  @ 87ef77d (pushed), base 25e6d1d.
+- GTK Storage limits (L) moved from the footer into the "Show more:
+  Limits" expander (option (b) parity with Tk/web; the FR/ES footer label
+  wrapped into a second footer row). Tk Method trims its own gaps by 6 px
+  (_title_block(bottom=) used only by Method); cards unchanged; the #161
+  test is unchanged and passes. test_storage_limits_visible_and_keyboard_
+  reachable rewritten to the one-line design with equal strength. New GTK
+  tests: 5 languages × SSD/HDD/unknown fit; L and the button open limits.
+- CHECKS (WSL 72 DPI): before 10 failed / 19 passed; after 232 + 6 passed;
+  accessible_runtime + ui_fit 458 passed / 1 failed (slow_sound_discovery,
+  also on main).
+- Placement treated as covered by the owner's option (b). FOLLOW-UP
+  (pre-existing, not changed): collapsed GTK expander content stays
+  Tab-reachable at 1 px height (all expanders #141/#146/#160/#161/#158).
