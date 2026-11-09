@@ -183,7 +183,11 @@ def test_selected_disk_expands_with_serial_partitions_and_notes(tk_pick):
     card = app._pick_cards[disk.path]
     assert not _compact(card)
     flat = _flat(card)
-    assert view.marked_id.replace(" ", "") in flat  # S4EVNX0N[111111], once
+    # #152: Tk shows the plain serial and draws the differing characters
+    # bold and underlined over it (no brackets), once.
+    shown = view.id_value if view.comparison_marks else view.marked_id
+    assert view.comparison_marks
+    assert shown.replace(" ", "") in flat
     assert flat.count(disk.serial[:8]) == 1
     assert view.comparison_note.replace(" ", "") in flat
     nesting = inventory.card_nesting_text(wiz.nested_components(disk))

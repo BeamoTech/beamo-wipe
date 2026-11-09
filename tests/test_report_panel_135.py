@@ -631,8 +631,11 @@ def test_tk_footer_has_two_actions_in_every_result_state(done_ui, tk_case, state
     texts = [_text(b) for b in _buttons(app, app._footer)]
     assert C.BTN_SAVE_REPORT not in texts and C.RETRY_SAVE not in texts
     # #175: Help & settings (with Sounds on/off) and Hear again are tools.
+    # #174: the footer key hints collapse into one Keyboard shortcuts item.
     utilities = [b for b in _buttons(app, app._footer) if b._variant == "quiet"]
-    assert [_text(b) for b in utilities] == [C.MENU_TITLE, C.SOUND_HEAR_AGAIN]
+    assert [_text(b) for b in utilities] == [
+        C.MENU_TITLE, C.MENU_SHORTCUTS, C.SOUND_HEAR_AGAIN,
+    ]
     # Every greyed control has its reason on screen.
     labels = _mapped_labels(app)
     for button in _buttons(app):

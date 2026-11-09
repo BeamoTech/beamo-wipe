@@ -411,7 +411,13 @@ def test_tk_record_follows_next_steps_and_warnings_for_every_outcome():
             texts = [str(w.cget("text")) for w in labels]
             record_at = texts.index(C.RECORD_TITLE)
             assert texts.index(C.REPORT_STATUS_TITLE) < record_at
-            assert texts.index(wiz.method_summary) < record_at
+            # #171 removed the repeated method line; the next steps are the
+            # What next list (#134) or the recovery next step.
+            plain = wiz.result_plain
+            last_step = (plain.numbered[-1] if plain.checklist
+                         else wiz.result_view.next_step)
+            step_at = next(i for i, text in enumerate(texts) if last_step in text)
+            assert step_at < record_at
             for alert in wiz.check_alerts:
                 assert texts.index(alert) < record_at, alert
         finally:

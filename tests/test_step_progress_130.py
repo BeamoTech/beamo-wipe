@@ -339,8 +339,17 @@ def test_tk_long_translations_fit_at_800x600(ui, code, text_size):  # noqa: F811
         full, short = C.journey_step_caption(wiz), C.journey_step_short(wiz)
         # The whole caption, or the shortened "Step N of 6"; never a cut word.
         assert full in texts or short in texts, texts
+        # #144: the header also carries the power badge, whole.
+        badge = wiz.power_badge.display
+        assert badge in texts, texts
         for text in texts:
-            assert text in (C.APP_NAME, full, short) or text in C.JOURNEY_LABELS, text
+            assert text in (C.APP_NAME, full, short, badge) or text in C.JOURNEY_LABELS, text
+        # Nothing in the header overlaps: the badge never runs into the step.
+        boxes = [box for _text, box in _header_texts(app) if box]
+        for i, (ax0, ay0, ax1, ay1) in enumerate(boxes):
+            for bx0, by0, bx1, by1 in boxes[i + 1:]:
+                apart = ax1 <= bx0 or bx1 <= ax0 or ay1 <= by0 or by1 <= ay0
+                assert apart, texts
         lang.set_language("en")
 
 

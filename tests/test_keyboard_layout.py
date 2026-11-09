@@ -493,7 +493,10 @@ def test_keyboard_hints_name_every_layout_shortcut():
             # first (#131), and Up/Down for the layout.
             assert C.HINT_KEYBOARD.startswith("Left/Right"), code
             assert "Up/Down" in C.HINT_KEYBOARD, code
-            assert "1–" not in C.HINT_KEYBOARD, code
+            # #142: digits choose a layout outside the check box (their
+            # badges show with keyboard focus), so the hint names 1–7 after
+            # Up/Down, which always works.
+            assert C.HINT_KEYBOARD.index("Up/Down") < C.HINT_KEYBOARD.index("1–7"), code
             # The curses screen keeps every digit for the typing check.
             assert C.CON_KEYBOARD_FOOTER.startswith("Left/Right"), code
     finally:

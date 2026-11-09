@@ -16,7 +16,7 @@ QEMU_TARGET_SERIAL=123456
 REPORT_RAW=unused
 send_key_for_marker() { printf 'marker %s %s\\n' "$3" "$4"; }
 send_key() { printf 'key %s\\n' "$2"; }
-wait_for_marker() { :; }
+wait_for_marker() { printf 'await %s\\n' "$2"; }
 type_token_for_marker() { :; }
 qmp_request() { :; }
 wait_for_report_saved() { :; }
@@ -31,7 +31,12 @@ sleep() { printf 'wait %s\\n' "$1"; }
     assert actions[final + 1:final + 4] == [
         'wait 6', 'key tab', 'marker ret BEAMO_WIPE_SCREEN_WORKING',
     ]
-    report = actions.index('wait 5')
-    assert actions[report + 1:report + 4] == [
-        'key tab', 'key tab', 'marker spc BEAMO_WIPE_EXPORT_CONTROLLER_STARTED',
+    # #135: Save report is greyed until the result screen's read-only
+    # detection finds the stick, so the driver waits for that marker (not a
+    # fixed 5 s sleep) after the result screen, then Tab, Tab, Space.
+    done = actions.index('await BEAMO_WIPE_SCREEN_DONE')
+    report = actions.index('await BEAMO_WIPE_REPORT_USB_FOUND')
+    assert done < report
+    assert actions[report + 1:report + 5] == [
+        'wait 1', 'key tab', 'key tab', 'marker spc BEAMO_WIPE_EXPORT_CONTROLLER_STARTED',
     ]

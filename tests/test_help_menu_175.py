@@ -347,7 +347,42 @@ def test_tk_shortcuts_page_lists_the_screen_keys_and_esc_returns(tk_at):
             visit(child)
 
     visit(app._help_popup)
-    assert C.HINT_PICK in texts and C.MENU_SHORTCUTS_MENU in texts and C.MENU_SHORTCUTS_REFRESH in texts
+    assert C.MENU_SHORTCUTS_MENU in texts and C.MENU_SHORTCUTS_REFRESH in texts
+    # #174: the screen's hint is drawn with key-caps (#153 draws the arrow
+    # keys), so its words are split around the keys; all of them are there.
+    from beamo_wipe.ui.tk_wizard import _Box
+
+    hint = []
+
+    def find(w):
+        if getattr(w, "_beamo_shortcuts_hint", False):
+            hint.append(w)
+        for child in w.winfo_children():
+            find(child)
+
+    find(app._help_popup)
+    (box,) = hint
+    words = []
+
+    def collect(w):
+        if w.winfo_class() == "Label":
+            words.append(str(w.cget("text")))
+        for child in w.winfo_children():
+            collect(child)
+
+    collect(box)
+    shown = " ".join(" ".join(words).split())
+    assert shown == " ".join(C.HINT_PICK.replace("Up/Down", " ").split())
+    caps = []
+
+    def boxes(w):
+        if isinstance(w, _Box):
+            caps.append(w)
+        for child in w.winfo_children():
+            boxes(child)
+
+    boxes(box)
+    assert caps  # key-caps
     _press(app, "Escape", 12_000)
     assert app._help_open and app._help_view == "menu"
     assert app.root.focus_get()._beamo_help_item == M.SHORTCUTS

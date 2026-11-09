@@ -141,7 +141,9 @@ def test_review_warning_is_a_red_callout_with_the_countdown_beside_its_caption(t
     assert _boxes_above(warning)[0] == tkui.DANGER_TINT
     ring, caption = app._countdown_ring, app._countdown_label
     # One row: the caption is right of the ring and overlaps it vertically.
-    assert ring.master is caption.master
+    # #163: the caption sits in a text column ("Ready" heads it when ready)
+    # packed beside the ring in the same row.
+    assert caption.master.master is ring.master
     assert caption.winfo_rootx() >= ring.winfo_rootx() + ring.winfo_width()
     assert caption.winfo_rooty() < ring.winfo_rooty() + ring.winfo_height()
     assert ring.winfo_rooty() < caption.winfo_rooty() + caption.winfo_height()
@@ -195,11 +197,27 @@ def test_sound_and_another_disk_actions_are_links(tk_app, phase):  # noqa: F811
         w.itemcget(w._label, "text"): w
         for w in _descendants(app._footer) if isinstance(w, tkui._Button)
     }
-    links = [wiz.sound_toggle_text, C.SOUND_HEAR if phase == "working" else C.SOUND_HEAR_AGAIN]
-    if phase == "done":
-        links.append(C.BTN_ERASE_ANOTHER)
-    for text in links:
-        assert buttons[text]._variant == "ghost", text
+    everywhere = {
+        w.itemcget(w._label, "text"): w
+        for w in _descendants(app.root) if isinstance(w, tkui._Button)
+    }
+    if phase == "working":
+        assert everywhere[C.SOUND_HEAR]._variant == "ghost"
+    else:
+        # #135: Hear again is a quiet tool beside Help & settings, and the
+        # result footer keeps two actions: Erase another disk (outlined,
+        # secondary) and Shut down (filled). Neither tool is a filled button.
+        assert buttons[C.SOUND_HEAR_AGAIN]._variant == "quiet"
+        assert buttons[C.BTN_ERASE_ANOTHER]._variant == "secondary"
+        assert buttons[C.BTN_SHUTDOWN]._variant == "primary"
+    # #175: Sounds on/off lives in Help & settings, not in the footer.
+    assert wiz.sound_toggle_text not in buttons
+    app._open_help_menu()
+    app.root.update_idletasks()
+    menu = [w.itemcget(w._label, "text")
+            for w in _descendants(app.root) if isinstance(w, tkui._Button)]
+    assert wiz.sound_toggle_text in menu
+    app._close_help_menu()
     if phase == "working":
         assert buttons[C.STOP_ASK]._variant == "secondary"
         wiz.cancel_wipe()

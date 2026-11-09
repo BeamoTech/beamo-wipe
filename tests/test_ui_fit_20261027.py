@@ -180,8 +180,19 @@ def test_opening_focus_never_slices_a_title_or_line(tk_app, screen, code, size, 
         assert 0 <= top and bottom <= view, (top, bottom, view)
         offset = focus.winfo_rooty() - app._body_inner.winfo_rooty()
         if offset + focus.winfo_height() <= view:
-            # It fits with the body at the top: the screen opens at the top.
-            assert canvas.canvasy(0) == 0
+            scrolled = canvas.canvasy(0)
+            if screen == Screen.CONFIRM and scrolled:
+                # #157: Confirm scrolls just enough that the status line
+                # under the entry is in view too (it would be cut at the
+                # top), never past the disk card.
+                _ptop, pbottom = _extent(app._match_pill, canvas)
+                assert pbottom <= view + 1, (pbottom, view)
+                assert pbottom + scrolled > view, (pbottom, scrolled, view)
+                ctop, _cbottom = _extent(app._confirm_card, canvas)
+                assert ctop >= 0, ctop
+            else:
+                # It fits with the body at the top: the screen opens at the top.
+                assert scrolled == 0
 
 
 @pytest.mark.parametrize("size", (MIN_SIZE, LAPTOP_SIZE), ids=lambda s: f"{s[0]}x{s[1]}")
