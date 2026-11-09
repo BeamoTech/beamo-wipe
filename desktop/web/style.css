@@ -145,3 +145,12 @@ a:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-
 #checks p { margin-bottom: 6px; }
 #technical { margin: 20px 0; padding-top: 16px; }
 #technical-detail { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
+
+/* #184: likely boot-menu key for the reported brand, full table under Show more. */
+#boot-key { margin: 28px 0; }
+#boot-key-hint { font-size: 20px; font-weight: 600; }
+#boot-key-more { margin-top: 16px; padding-top: 16px; }
+#boot-key table { border-collapse: collapse; width: 100%; max-width: 520px; margin: 0 0 12px; }
+#boot-key caption { text-align: left; color: var(--muted); font-size: 16px; padding-bottom: 8px; }
+#boot-key th, #boot-key td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; vertical-align: top; }
+.kbd { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; padding: 1px 7px; border: 1px solid #6E7C8A; border-bottom-width: 2px; border-radius: 4px; background: #fff; }

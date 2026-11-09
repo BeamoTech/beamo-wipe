@@ -21,23 +21,26 @@ this image's build. Older sticks may use different startup files.
 
 ## Open the boot menu (typical keys)
 
+<!-- Generated from desktop/bootkeys.json by scripts/gen_boot_keys.py; see docs/boot-keys.md. -->
 | PC | Boot menu key |
 | --- | --- |
+<!-- boot-keys:boot-card-table -->
 | Dell | F12 |
-| HP | F9 or Esc |
+| HP | Esc, then F9 |
 | Lenovo | F12 |
-| ASUS | F8 or Esc |
+| ASUS | Esc or F8 |
 | Acer | F12 |
 | MSI | F11 |
 | Gigabyte | F12 |
+<!-- /boot-keys:boot-card-table -->
 
 Brand notes (they vary by model):
 
-- **Lenovo:** many laptops need **Fn+F12**, or the small **Novo** button or
-  pinhole (press it while the laptop is off, then choose the boot menu).
-- **Acer:** on many models the F12 boot menu may first need to be turned on
-  in firmware setup. That is a firmware change: read the BitLocker note below
-  first, or use the Windows steps instead.
+<!-- boot-keys:boot-card-notes -->
+- **Lenovo:** Many Lenovo laptops need Fn+F12, or the small Novo button or pinhole (press it while the laptop is off, then choose the boot menu).
+- **ASUS:** ASUS laptops usually use Esc; ASUS desktop motherboards usually use F8.
+- **Acer:** On many Acer models the F12 boot menu must first be turned on in firmware setup. That is a firmware change: confirm you can reach the BitLocker recovery key first, or use the Windows steps instead.
+<!-- /boot-keys:boot-card-notes -->
 
 Windows 11 fallback: Settings → System → Recovery → Advanced startup →
 Restart now → Use a device (UEFI).

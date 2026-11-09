@@ -65,6 +65,9 @@ function show(v) {
       typeof v.version !== "string" || !v.version ||
       typeof v.build_id !== "string" || typeof v.source_commit !== "string" ||
       typeof v.manufactured !== "boolean" ||
+      (v.boot_key !== undefined && (!v.boot_key || typeof v.boot_key !== "object" ||
+        ["brand", "hint", "note"].some(k => typeof v.boot_key[k] !== "string") ||
+        !v.boot_key.brand !== !v.boot_key.hint)) ||
       (v.ready && v.checks.some(c => c.state !== "pass"))) {
     throw new Error("The readiness results were incomplete. Choose Check again or reopen the launcher from the USB.");
   }
@@ -79,6 +82,7 @@ function show(v) {
     item.append(label, detail, next); $("checks").append(item);
   }
   $("technical-detail").textContent = v.technical; $("technical").hidden = false;
+  showBootKey(v.boot_key);
   $("saved").checked=false; $("restart").disabled=true;
   $("preview").hidden = !v.preview;
   $("title").textContent = v.title; $("detail").textContent = v.detail;
@@ -93,6 +97,16 @@ function show(v) {
   $("version").textContent = `Version ${v.version} · Release build ${buildId} · Runs locally on this computer`;
   $("inspect").hidden = v.ready; $("confirm").hidden = !v.ready;
   if (!v.ready) $("help").open = true;
+}
+// #184: one likely key for the reported brand, with the full table under
+// Show more. An unknown or unread brand shows the table open.
+const unknownBootKey = $("boot-key-hint").textContent;
+function showBootKey(bootKey) {
+  const known = !!(bootKey && bootKey.brand && bootKey.hint);
+  $("boot-key-hint").textContent = known ? bootKey.hint : unknownBootKey;
+  $("boot-key-note").textContent = known ? bootKey.note : "";
+  $("boot-key-note").hidden = !known || !bootKey.note;
+  $("boot-key-more").open = !known;
 }
 async function action(fn, focusId = "title") {
   if (busy) return; busy = true;

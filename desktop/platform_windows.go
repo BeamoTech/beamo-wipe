@@ -137,6 +137,33 @@ func platformProbe(ctx context.Context) Snapshot {
 	return s
 }
 
+// windowsMachine reads the brand that Windows reports (#184). WMI
+// Win32_ComputerSystem and Win32_BaseBoard are readable without elevation.
+// Serial numbers are not requested.
+const windowsMachine = `$ErrorActionPreference='Stop'
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$c=Get-CimInstance -ClassName Win32_ComputerSystem
+$board=''
+$b=@(Get-CimInstance -ClassName Win32_BaseBoard -ErrorAction SilentlyContinue)
+if ($b.Count -gt 0) { $board=[string]$b[0].Manufacturer }
+[ordered]@{manufacturer=[string]$c.Manufacturer;model=[string]$c.Model;board=$board} | ConvertTo-Json -Compress
+`
+
+func platformMachine(ctx context.Context) (machineInfo, error) {
+	win := windowsDirectory()
+	if win == "" {
+		return machineInfo{}, errors.New("Windows directory unavailable")
+	}
+	ps := filepath.Join(win, "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+	cmd := exec.CommandContext(ctx, ps, "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", windowsMachine)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	data, err := boundedOutput(cmd, 64<<10)
+	if err != nil {
+		return machineInfo{}, err
+	}
+	return parseMachineJSON(data)
+}
+
 var errWindowsManual = errors.New("Windows guided restart is unavailable; use the boot menu")
 
 func platformRestart(string) error                  { return errWindowsManual }
