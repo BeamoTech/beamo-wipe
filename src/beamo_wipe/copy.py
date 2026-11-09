@@ -1447,15 +1447,15 @@ CONFIRM_LAYOUT_CHANGE = "Change"
 CON_CONFIRM_LAYOUT_KEY = "F2: Change"
 # #156: which typed confirmation characters are wrong (token_feedback).
 # Never the expected characters; the card shows them.
-TOKEN_TYPED = "You typed: {typed}"
-TOKEN_WRONG_ONE = "Character {n} doesn't match."
-TOKEN_WRONG_MANY = "Characters {list} don't match."
-TOKEN_MISSING_ONE = "1 character is missing."
-TOKEN_MISSING_MANY = "{count} characters are missing."
-TOKEN_EXTRA_ONE = "1 character too many."
-TOKEN_EXTRA_MANY = "{count} characters too many."
-TOKEN_SPACE_NOTE = "Spaces between characters count; remove them."
-TOKEN_SPACE_WORD = "space"
+TOKEN_TYPED = "You typed: {typed}"  # noqa: S105 — UI message, not a secret
+TOKEN_WRONG_ONE = "Character {n} doesn't match."  # noqa: S105 — UI message, not a secret
+TOKEN_WRONG_MANY = "Characters {list} don't match."  # noqa: S105 — UI message, not a secret
+TOKEN_MISSING_ONE = "1 character is missing."  # noqa: S105 — UI message, not a secret
+TOKEN_MISSING_MANY = "{count} characters are missing."  # noqa: S105 — UI message, not a secret
+TOKEN_EXTRA_ONE = "1 character too many."  # noqa: S105 — UI message, not a secret
+TOKEN_EXTRA_MANY = "{count} characters too many."  # noqa: S105 — UI message, not a secret
+TOKEN_SPACE_NOTE = "Spaces between characters count; remove them."  # noqa: S105 — UI message, not a secret
+TOKEN_SPACE_WORD = "space"  # noqa: S105 — UI message, not a secret
 
 # Language selection. Option names are endonyms: identical in every language.
 TITLE_LANGUAGE = "Choose your language"
