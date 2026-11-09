@@ -192,13 +192,17 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
     monkeypatch.setattr(gallery, "discovery_for_scenario", lambda _: wizard.discovery)
     check = '''<script>
     window.addEventListener('load', () => {
-      const rows = [...document.querySelectorAll('.pickable')].map(card => {
+      // #149: on Pick only the selected disk expands to show its serial;
+      // compact rows carry none. Measure every card that shows one.
+      const cards = [...document.querySelectorAll('.pickable')].filter(card => card.querySelector('.ser'));
+      const rows = cards.map(card => {
         const label = card.querySelector('.serial-label');
         const serial = card.querySelector('.ser');
         const range = document.createRange(); range.selectNodeContents(label);
-        return {labelLines: range.getClientRects().length,
+        return {path: card.dataset.path, labelLines: range.getClientRects().length,
                 injected: !!window.injected || !!card.querySelector('img'),
                 serial: serial.textContent,
+                marked: [...serial.querySelectorAll('b.diff')].map(b => b.textContent),
                 fits: serial.getBoundingClientRect().right <= card.getBoundingClientRect().right};
       });
       document.documentElement.setAttribute('data-serial-check', JSON.stringify(rows));
@@ -212,16 +216,24 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
             executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"]
         )
         try:
-            rendered = browser.new_page(viewport={"width": 1024, "height": 1160})
-            rendered.goto(page.as_uri() + '#s=pick')
-            raw = rendered.locator("html").get_attribute("data-serial-check")
-            assert raw is not None
-            rows = json.loads(raw)
-            picker = rendered.evaluate("screen") == "pick"
+            found = {}
+            for index in range(len(wizard.selectable)):
+                rendered = browser.new_page(viewport={"width": 1024, "height": 1160})
+                rendered.goto(page.as_uri() + f'#s=pick&disk={index}')
+                raw = rendered.locator("html").get_attribute("data-serial-check")
+                assert raw is not None
+                rows = json.loads(raw)
+                picker = rendered.evaluate("screen") == "pick"
+                # The picker expands exactly the selected disk (#149).
+                assert len(rows) == (1 if picker else len(wizard.selectable))
+                for row in rows:
+                    found[row["path"]] = row
+                rendered.close()
         finally:
             browser.close()
-    assert len(rows) == 2
-    for row, disk in zip(rows, wizard.selectable):
+    assert set(found) == {disk.path for disk in wizard.selectable}
+    for disk in wizard.selectable:
+        row = found[disk.path]
         assert not row['injected']
         assert row['labelLines'] == 1
         assert row['fits']
@@ -230,7 +242,11 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
         # comparison marks are intentionally exclusive to the picker.
         if not view.confirmable:
             assert not picker
-        assert row['serial'] == (view.marked_id if picker else view.id_value)
+        # #152: the browser shows the differing characters in bold (a shape,
+        # not brackets); text consoles use marked_id's [brackets].
+        assert row['serial'] == view.id_value
+        expected_marks = [text for text, marked in view.comparison_segments if marked]
+        assert row['marked'] == (expected_marks if picker else [])
 
 
 def test_comparison_is_only_shown_while_choosing():

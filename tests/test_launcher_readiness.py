@@ -173,7 +173,7 @@ def test_explained_checks_and_safe_next_actions(browser_cases, case):
     page, calls, _ = open_launcher(browser, fixtures[case])
     try:
         assert page.locator("#checks h3").all_text_contents() == [
-            "Original USB detection", "Startup-settings readability", "Supported restart route"]
+            "Beamo USB detection", "Startup-settings readability", "Supported restart route"]
         assert page.locator("#checks li").count() == 3
         for check in fixtures[case]["checks"]:
             assert check["detail"] in page.locator("#checks").inner_text()
@@ -185,7 +185,7 @@ def test_explained_checks_and_safe_next_actions(browser_cases, case):
         page.keyboard.press("Enter")
         assert page.locator("#technical-detail").is_visible()
         assert page.locator("#technical-detail").inner_text() == fixtures[case]["technical"]
-        assert 'heading "Original USB detection"' in page.locator("#readiness").aria_snapshot()
+        assert 'heading "Beamo USB detection"' in page.locator("#readiness").aria_snapshot()
         assert page.locator("#status").get_attribute("role") == "status"
         assert "restart" not in calls
     finally:

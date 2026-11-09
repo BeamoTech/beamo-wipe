@@ -17,7 +17,16 @@ def test_power_status_has_accessible_text_and_keeps_focus(ui, screen):  # noqa: 
         app.w.power.status = state
         app.update_status()
         drain()
-        assert state.text in text(app)
-        assert app.power_label.get_can_focus()
-        assert state.text in app.power_label.get_accessible().get_name()
+        # Every screen has the focusable header badge (#144); What/Owner rely
+        # on it, while the erase screens keep the full power line too.
+        badge = app.power_badge_label
+        assert state.badge.display in text(app)
+        assert badge.get_can_focus()
+        assert badge.get_accessible().get_name() == state.badge.spoken
+        if screen in {Screen.WHAT, Screen.OWNER}:
+            assert state.text not in text(app)
+        else:
+            assert state.text in text(app)
+            assert app.power_label.get_can_focus()
+            assert state.text in app.power_label.get_accessible().get_name()
         assert app.window.get_focus() is focused

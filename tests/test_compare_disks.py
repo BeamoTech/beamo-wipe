@@ -127,6 +127,10 @@ def test_browser_comparison_keyboard_reflow_and_selection(tmp_path, width, colum
         try:
             page = browser.new_page(viewport={"width": width, "height": 800})
             page.goto(path.as_uri() + "#s=pick&disk=1&owner=1")
+            # disk=1 follows the #151 list order; the comparison must keep
+            # whatever that selected, never change it.
+            chosen = page.evaluate("selected && selected.path")
+            assert chosen and chosen.startswith("/dev/")
             summary = page.get_by_text(inventory.COMPARE_TITLE, exact=True)
             summary.focus()
             page.keyboard.press("Enter")
@@ -139,11 +143,11 @@ def test_browser_comparison_keyboard_reflow_and_selection(tmp_path, width, colum
             assert (abs(boxes[0]["y"] - boxes[1]["y"]) < 2) == (columns == 2)
             page.keyboard.press("Tab")
             assert cards.first.evaluate("(e) => document.activeElement === e")
-            assert page.evaluate("selected.path") == "/dev/sda"
+            assert page.evaluate("selected.path") == chosen
             summary.focus()
             page.keyboard.press("Enter")
             assert not page.locator("details").evaluate("(e) => e.open")
-            assert page.evaluate("selected.path") == "/dev/sda"
+            assert page.evaluate("selected.path") == chosen
             assert page.evaluate("screen") == "pick"
         finally:
             browser.close()

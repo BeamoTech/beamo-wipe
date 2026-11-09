@@ -78,6 +78,17 @@ def _visible_label(app):
     )
 
 
+def _scroll_mid(canvas):
+    """Park the body halfway through its scroll range.
+
+    A fixed fraction such as 0.2 sits at the bottom once a screen overflows
+    by less than that (the Owner screen at 800x600 overflows by about 9%
+    since #141/#145/#146), and then a downward wheel cannot move it.
+    """
+    first, last = canvas.yview()
+    canvas.yview_moveto((1 - (last - first)) / 2)
+
+
 @pytest.mark.parametrize("key", [Gdk.KEY_Escape, Gdk.KEY_Return, Gdk.KEY_KP_Enter, Gdk.KEY_space])
 @pytest.mark.parametrize("fullscreen", [False, True])
 @pytest.mark.parametrize("pointer", ["inside", "far_corner"])
@@ -180,9 +191,12 @@ def test_first_run_restores_each_screen_focus_without_changing_state(native, scr
     def inspect():
         try:
             focus = app.root.focus_get()
-            if screen in {Screen.KEYBOARD, Screen.CONFIRM}:
-                variable = app._typing_var if screen is Screen.KEYBOARD else app._confirm_var
-                seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(variable))
+            if screen is Screen.KEYBOARD:
+                # First arrival focuses the chosen language, the first
+                # control on the setup screen (#131/#139).
+                seen.append(focus is app._keyboard_language_cards.get(wizard.language))
+            elif screen is Screen.CONFIRM:
+                seen.append(isinstance(focus, tk.Entry) and focus.cget("textvariable") == str(app._confirm_var))
             elif screen is Screen.OWNER:
                 seen.append(isinstance(focus, _Box) and "owner_key" in focus.bind("<space>"))
             else:
@@ -228,7 +242,7 @@ def test_body_wheel_over_prose_scrolls_once_without_changing_focus_or_consent(ta
     app = _app()
     try:
         canvas = app._body_canvas
-        canvas.yview_moveto(0.2)
+        _scroll_mid(canvas)
         app.root.update()
         label = _visible_label(app)
         target = {"label": label, "canvas": canvas, "inner": app._body_inner,
@@ -256,7 +270,7 @@ def test_small_wheel_deltas_do_not_move_body(delta):
     app = _app()
     try:
         canvas = app._body_canvas
-        canvas.yview_moveto(0.2)
+        _scroll_mid(canvas)
         before = canvas.yview()
         _visible_label(app).event_generate("<MouseWheel>", delta=delta)
         app.root.update()
@@ -316,7 +330,7 @@ def test_wheel_uses_current_body_after_redraw_and_leaves_picker_controls_intact(
         assert current is not old
         # The focused owner control is now revealed at the bottom on redraw.
         # Give the downward wheel probe room to move in either layout.
-        current.yview_moveto(0.2)
+        _scroll_mid(current)
         app.root.update()
         before = current.yview()
         _visible_label(app).event_generate("<Button-5>")
@@ -350,7 +364,7 @@ def test_native_wheel_over_hit_tested_prose_works(button):
     connection = None
     try:
         canvas = app._body_canvas
-        canvas.yview_moveto(0.2)
+        _scroll_mid(canvas)
         app.root.update()
         label = _visible_label(app)
         point = (label.winfo_rootx() + 10, label.winfo_rooty() + 10)
