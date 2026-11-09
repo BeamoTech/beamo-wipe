@@ -1,20 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The preview splash must honor its visible any-key instruction."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def test_splash_any_key_advances_without_stealing_scenario_controls():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     start = script.index('document.addEventListener("keydown"')
     end = script.index("function renderOtherDevices()", start)
     handler = script[start:end]

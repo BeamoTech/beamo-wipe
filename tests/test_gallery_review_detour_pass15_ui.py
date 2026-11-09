@@ -1,12 +1,12 @@
 """The click-through's final review must last five visible seconds."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize("return_action", ("escape", "button"))
@@ -14,7 +14,7 @@ def test_refresh_confirmation_cannot_consume_preview_review_countdown(return_act
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    scripts = [inline_script(gallery_html())]
     assert len(scripts) == 1
     source = scripts[0]
     assert "btn(P.buttons.back, cancelRefresh)" in source

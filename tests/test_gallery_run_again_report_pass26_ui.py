@@ -8,6 +8,7 @@ import subprocess
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize("screen", ("stopped", "done"))
@@ -16,7 +17,7 @@ def test_run_again_from_result_requires_discard_decision(screen, report_wanted):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     callbacks = re.findall(
         r'btnsR\.append\(btn\(P\.buttons\.runAgain,\s*(.*?)\s*,\s*"primary"\)\);',
         script,

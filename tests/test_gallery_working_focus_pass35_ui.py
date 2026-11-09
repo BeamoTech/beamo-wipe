@@ -1,20 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Progress redraws must leave the preview's keyboard controls reachable."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def test_working_progress_redraw_keeps_keyboard_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     start = script.index("function draw() {")
     end = script.index('document.addEventListener("keydown"', start)
     draw = script[start:end]

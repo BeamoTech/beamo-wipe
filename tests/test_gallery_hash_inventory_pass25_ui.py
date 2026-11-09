@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Preview inventory pages must describe the selected fake scenario."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize(
@@ -23,7 +23,7 @@ def test_hash_inventory_screen_matches_scenario(fragment, expected):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     handler = script[script.index("function applyHash() {"):script.index("if (location.hash) applyHash()")]
     program = f"""
 let screen = 'splash', mode = 'happy', selected = null, token = '', owner = false;

@@ -1,19 +1,19 @@
 """Keyboard method selection keeps focus on the rebuilt choice."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def test_keyboard_method_selection_keeps_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     method = script.index('} else if (screen === "method")')
     start = script.index('    main.querySelectorAll(".card.pickable").forEach(el => {', method)
     end = script.index('    main.querySelector("#limits")', start)
@@ -58,7 +58,7 @@ def test_keyboard_setup_choices_keep_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     start = script.index('    main.querySelectorAll("[data-layout]").forEach(el => {')
     end = script.index('    const box = main.querySelector("#kbcheck")', start)
     handlers = script[start:end]
@@ -118,7 +118,7 @@ def test_text_size_utility_keeps_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     # #175: text size is in Help & settings; the redraw keeps focus on it.
     start = script.index("let helpOpen = false")
     end = script.index("function renderHelpTrigger", start)

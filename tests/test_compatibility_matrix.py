@@ -607,8 +607,12 @@ def test_matrix_live_build_uses_https_and_bootloaders():
     # source-level compatibility contract must also run in a clean trigger
     # checkout, before the ISO phase invokes lb config.
     assert 'lb config \\' in inside
-    assert "https://deb.debian.org/debian/" in inside
-    assert "https://security.debian.org/" in inside
+    # Compare whole mirror URLs as written in the build script, not substrings.
+    import re
+
+    mirrors = set(re.findall(r"https://[^\s\"'\\]+", inside))
+    assert "https://deb.debian.org/debian/" in mirrors
+    assert "https://security.debian.org/" in mirrors
     assert "--bootloaders syslinux,grub-efi" in inside
     assert '--bootappend-live "boot=live components' in inside
     assert "nox11autologin" in inside

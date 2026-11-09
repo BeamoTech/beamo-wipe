@@ -11,6 +11,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import urllib.error
+import urllib.parse
 import urllib.request
 
 import pytest
@@ -365,11 +366,10 @@ def test_cited_microsoft_sources_are_current(url):
     except urllib.error.URLError as exc:
         pytest.skip(f"network unavailable for {url}: {exc.reason}")
     assert status < 400
-    assert (
-        "microsoft" in final.lower()
-        or "learn.microsoft.com" in final.lower()
-        or "support.microsoft.com" in final.lower()
-    )
+    # The source must still land on a Microsoft host, compared by parsed
+    # host name (a substring check would accept e.g. microsoft.com.example).
+    host = (urllib.parse.urlsplit(final).hostname or "").lower()
+    assert host == "microsoft.com" or host.endswith(".microsoft.com"), final
     if "bitlocker" in url:
         assert "recovery" in body
     if "windows-recovery-environment" in url or "windows-re" in url:
