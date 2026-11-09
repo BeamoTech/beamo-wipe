@@ -6301,3 +6301,17 @@ another very thorough and comprehensive pass of this." Repo
   profile redirects https://www.notion.so to /login (not signed in);
   signing in needs Jack. Notes stay ready to paste in
   C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
+
+### BW-NOTION-20261109 (Claude, 2026-11-09) — Notion updates applied
+
+- Posted by the supervising agent through its own signed-in Notion
+  connector from agent-tasks-20261108/notion-notes-20261109.md (reported
+  back here; this session did not read Notion itself).
+- Wipe To Do refs 158, 181, 183, 184, 185, 186: "Claude, 2026-11-09"
+  comment added first, then Status = Done; re-read verified. 158, 181 and
+  186 already archived by "Project To Do Cleanup". Comments on 184 and 185
+  render the quoted phrases without quotation marks; wording otherwise
+  exact.
+- 182 (unsigned, deferred) and 116 (physical, BLOCKED) left In progress.
+- Remaining open items are only those in BW-PR94-RECHECK-20261109 and the
+  STILL BLOCKED list above; PR 94 merge stays Jack's decision.
