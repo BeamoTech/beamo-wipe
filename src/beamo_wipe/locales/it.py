@@ -620,7 +620,7 @@ STRINGS = {
         "REASON_ELIGIBILITY": "impossibile confermare se è cancellabile",
         "REASON_UNPROVEN_TRANSPORT": "impossibile confermare il collegamento locale",
         "CANNOT_ERASE": "Impossibile cancellare: {reasons}.",
-        "EMPTY_STEPS": "Nessun disco cancellabile disponibile. Esamini i motivi qui sotto. Tenga collegata la chiavetta USB Beamo. Spenga il computer prima di controllare i collegamenti delle unità. Se un disco resta non disponibile, o non è sicuro di quale disco sia, contatti l’assistenza. Non aggiri la protezione. Se manca l’unità interna del computer, l’archiviazione potrebbe essere configurata in modalità Intel RST, VMD o RAID. Questa chiavetta USB non può usare queste modalità. Chieda all’assistenza prima di modificare le impostazioni del firmware.",
+        "EMPTY_STEPS": "Nessun disco cancellabile disponibile. Esamini i motivi qui sotto. Tenga collegata la chiavetta USB Beamo. Spenga il computer prima di controllare i collegamenti delle unità. Se un disco resta non disponibile o non è sicuro di quale sia, contatti l’assistenza. Non aggiri la protezione. Se manca l’unità interna del computer, l’archiviazione potrebbe essere configurata in modalità Intel RST, VMD o RAID. Questa chiavetta USB non può usare queste modalità. Chieda all’assistenza prima di modificare le impostazioni del firmware.",
         "UNKNOWN_COUNT": "Impossibile confermare l’elenco dei dischi. Nessun disco è disponibile per la cancellazione.",
         "USB_PROTECTED": "Chiavetta USB Beamo protetta",
         "DISC_PROTECTED": "Disco di avvio Beamo protetto",
@@ -1209,7 +1209,7 @@ STRINGS = {
         "NEXT_BLOCKED_BOOT": "Spenga il computer. Non cancelli. La chiavetta USB Beamo deve restare protetta.",
         "NEXT_BLOCKED_STARTUP": "Salvi un rapporto diagnostico per l’assistenza. Non aggiri la protezione.",
         "NEXT_BLOCKED_REFRESH": "La cancellazione non è iniziata. Tenga collegati i dischi e scelga Ricontrolla i dischi, oppure spenga il computer.",
-        "NEXT_EMPTY": "Esamini i motivi qui sotto. Tenga collegata la chiavetta USB Beamo. Spenga il computer prima di controllare i collegamenti delle unità. Se un disco resta non disponibile, o non è sicuro di quale disco sia, contatti l’assistenza.",
+        "NEXT_EMPTY": "Esamini i motivi qui sotto. Tenga collegata la chiavetta USB Beamo. Spenga il computer prima di controllare i collegamenti delle unità. Se un disco resta non disponibile o non è sicuro di quale sia, contatti l’assistenza.",
         "HIDDEN_STORAGE_HAPPENED": "Il disco di questo computer potrebbe essere nascosto da Intel VMD (RST).",
         "HIDDEN_STORAGE_STEPS": (
             "1. Riavvii e apra la configurazione del BIOS/UEFI.",

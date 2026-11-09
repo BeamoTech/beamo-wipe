@@ -26,8 +26,8 @@ CANNOT_ERASE = "Cannot erase: {reasons}."
 NESTED_SILENT_REASONS = frozenset({REASON_UNSUPPORTED})
 EMPTY_STEPS = (
     "No eligible disk is available. Review the reasons below. Keep the Beamo USB "
-    "connected. Shut down before checking disk connections. If a disk is still "
-    "not available, or you are not sure which disk it is, contact support. Do not bypass protection. "
+    "connected. Shut down before checking disk connections. If a disk stays "
+    "unavailable or you are unsure which it is, contact support. Do not bypass protection. "
     "If the computer's own disk is missing, its storage may be set to Intel RST, VMD "
     "or RAID mode. This USB cannot use those modes. Ask support before changing firmware settings."
 )

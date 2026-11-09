@@ -621,7 +621,7 @@ STRINGS = {
         "REASON_ELIGIBILITY": "admissibilité non confirmée",
         "REASON_UNPROVEN_TRANSPORT": "connexion locale non confirmée",
         "CANNOT_ERASE": "Effacement impossible : {reasons}.",
-        "EMPTY_STEPS": "Aucun disque admissible disponible. Lisez les raisons ci-dessous. Gardez la clé USB Beamo branchée. Éteignez avant de vérifier les branchements. Si un disque reste indisponible, ou si vous ne savez pas avec certitude de quel disque il s’agit, contactez l’assistance. Ne contournez pas la protection. Si le disque interne de l’ordinateur n’apparaît pas, son stockage est peut-être en mode Intel RST, VMD ou RAID. Cette clé USB ne peut pas utiliser ces modes. Demandez conseil à l’assistance avant de modifier les réglages du micrologiciel.",
+        "EMPTY_STEPS": "Aucun disque admissible disponible. Lisez les raisons ci-dessous. Gardez la clé USB Beamo branchée. Éteignez avant de vérifier les branchements. Si un disque reste indisponible ou si vous ne savez pas lequel c’est, contactez l’assistance. Ne contournez pas la protection. Si le disque interne de l’ordinateur n’apparaît pas, son stockage est peut-être en mode Intel RST, VMD ou RAID. Cette clé USB ne peut pas utiliser ces modes. Demandez conseil à l’assistance avant de modifier les réglages du micrologiciel.",
         "UNKNOWN_COUNT": "La liste des disques n’a pas pu être confirmée. Aucun disque n’est disponible à effacer.",
         "USB_PROTECTED": "Clé USB Beamo protégée",
         "DISC_PROTECTED": "Disque de démarrage Beamo protégé",
@@ -1213,7 +1213,7 @@ STRINGS = {
         "NEXT_BLOCKED_BOOT": "Éteignez. N’effacez pas. La clé USB Beamo doit rester protégée.",
         "NEXT_BLOCKED_STARTUP": "Enregistrez un rapport de diagnostic pour l’assistance. Ne contournez pas la protection.",
         "NEXT_BLOCKED_REFRESH": "L’effacement n’a pas commencé. Laissez les disques branchés et essayez Vérifier à nouveau les disques, ou éteignez.",
-        "NEXT_EMPTY": "Lisez les raisons ci-dessous. Gardez la clé USB Beamo branchée. Éteignez avant de vérifier les branchements. Si un disque reste indisponible, ou si vous ne savez pas avec certitude de quel disque il s’agit, contactez l’assistance.",
+        "NEXT_EMPTY": "Lisez les raisons ci-dessous. Gardez la clé USB Beamo branchée. Éteignez avant de vérifier les branchements. Si un disque reste indisponible ou si vous ne savez pas lequel c’est, contactez l’assistance.",
         "HIDDEN_STORAGE_HAPPENED": "Le disque de cet ordinateur est peut-être masqué par Intel VMD (RST).",
         "HIDDEN_STORAGE_STEPS": (
             "1. Redémarrez et ouvrez la configuration du BIOS/UEFI.",

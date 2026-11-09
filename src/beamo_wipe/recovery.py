@@ -79,7 +79,7 @@ NEXT_BLOCKED_REFRESH = (
 NEXT_EMPTY = (
     "Review the reasons below. Keep the Beamo USB connected. "
     "Shut down before checking disk connections. "
-    "If a disk is still not available, or you are not sure which disk it is, contact support."
+    "If a disk stays unavailable or you are unsure which it is, contact support."
 )
 # #185: the empty list when an Intel VMD / RST RAID controller is detected
 # (hidden_storage.py). Owner-approved wording, 2026-11-07, with "PC's" made

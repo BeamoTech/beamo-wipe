@@ -626,7 +626,7 @@ STRINGS = {
         "REASON_ELIGIBILITY": "no se pudo confirmar si se puede borrar",
         "REASON_UNPROVEN_TRANSPORT": "no se pudo confirmar la conexión local",
         "CANNOT_ERASE": "No se puede borrar: {reasons}.",
-        "EMPTY_STEPS": "No hay ningún disco disponible para borrar. Revise los motivos de abajo. Mantenga conectada la memoria USB Beamo. Apague antes de revisar las conexiones de las unidades. Si un disco sigue sin estar disponible, o no está seguro de qué disco es, contacte con el soporte técnico. No eluda la protección. Si falta la unidad interna del equipo, es posible que su almacenamiento esté en modo Intel RST, VMD o RAID. Esta memoria USB no puede usar esos modos. Consulte al soporte técnico antes de cambiar la configuración del firmware.",
+        "EMPTY_STEPS": "No hay ningún disco disponible para borrar. Revise los motivos de abajo. Mantenga conectada la memoria USB Beamo. Apague antes de revisar las conexiones de las unidades. Si un disco sigue sin estar disponible o no sabe seguro cuál es, contacte con el soporte técnico. No eluda la protección. Si falta la unidad interna del equipo, es posible que su almacenamiento esté en modo Intel RST, VMD o RAID. Esta memoria USB no puede usar esos modos. Consulte al soporte técnico antes de cambiar la configuración del firmware.",
         "UNKNOWN_COUNT": "No se pudo confirmar la lista de discos. No hay ningún disco disponible para borrar.",
         "USB_PROTECTED": "Memoria USB Beamo protegida",
         "DISC_PROTECTED": "Disco de arranque Beamo protegido",
@@ -1218,7 +1218,7 @@ STRINGS = {
         "NEXT_BLOCKED_BOOT": "Apague. No borre. La memoria USB Beamo debe seguir protegida.",
         "NEXT_BLOCKED_STARTUP": "Guarde un informe de diagnóstico para el soporte técnico. No eluda la protección.",
         "NEXT_BLOCKED_REFRESH": "El borrado no empezó. Mantenga los discos conectados y pruebe Volver a comprobar los discos, o apague.",
-        "NEXT_EMPTY": "Revise los motivos de abajo. Mantenga conectada la memoria USB Beamo. Apague antes de revisar las conexiones de las unidades. Si un disco sigue sin estar disponible, o no está seguro de qué disco es, contacte con el soporte técnico.",
+        "NEXT_EMPTY": "Revise los motivos de abajo. Mantenga conectada la memoria USB Beamo. Apague antes de revisar las conexiones de las unidades. Si un disco sigue sin estar disponible o no sabe seguro cuál es, contacte con el soporte técnico.",
         "HIDDEN_STORAGE_HAPPENED": "Es posible que Intel VMD (RST) oculte el disco de este equipo.",
         "HIDDEN_STORAGE_STEPS": (
             "1. Reinicie y abra la configuración de BIOS/UEFI.",

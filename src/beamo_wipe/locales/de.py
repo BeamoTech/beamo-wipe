@@ -621,7 +621,7 @@ STRINGS = {
         "REASON_ELIGIBILITY": "Eignung nicht bestätigt",
         "REASON_UNPROVEN_TRANSPORT": "lokale Verbindung nicht bestätigt",
         "CANNOT_ERASE": "Kann nicht gelöscht werden: {reasons}.",
-        "EMPTY_STEPS": "Es ist kein geeigneter Datenträger verfügbar. Lesen Sie die Gründe unten. Lassen Sie den Beamo-USB-Stick angeschlossen. Fahren Sie herunter, bevor Sie Anschlüsse prüfen. Wenn ein Datenträger weiter nicht verfügbar ist oder Sie nicht sicher wissen, welcher Datenträger es ist, wenden Sie sich an den Support. Umgehen Sie den Schutz nicht. Wenn das eingebaute Laufwerk des Computers fehlt, ist sein Speicher möglicherweise auf Intel RST, VMD oder RAID eingestellt. Diese Modi kann dieser USB-Stick nicht verwenden. Fragen Sie den Support, bevor Sie Firmware-Einstellungen ändern.",
+        "EMPTY_STEPS": "Es ist kein geeigneter Datenträger verfügbar. Lesen Sie die Gründe unten. Lassen Sie den Beamo-USB-Stick angeschlossen. Fahren Sie herunter, bevor Sie Anschlüsse prüfen. Wenn ein Datenträger nicht verfügbar bleibt oder Sie unsicher sind, welcher es ist, wenden Sie sich an den Support. Umgehen Sie den Schutz nicht. Wenn das eingebaute Laufwerk des Computers fehlt, ist sein Speicher möglicherweise auf Intel RST, VMD oder RAID eingestellt. Diese Modi kann dieser USB-Stick nicht verwenden. Fragen Sie den Support, bevor Sie Firmware-Einstellungen ändern.",
         "UNKNOWN_COUNT": "Die Datenträgerliste konnte nicht bestätigt werden. Es steht kein Datenträger zum Löschen zur Verfügung.",
         "USB_PROTECTED": "Beamo-USB-Stick geschützt",
         "DISC_PROTECTED": "Beamo-Start-Disc geschützt",
@@ -1213,7 +1213,7 @@ STRINGS = {
         "NEXT_BLOCKED_BOOT": "Fahren Sie herunter. Löschen Sie nicht. Der Beamo-USB-Stick muss geschützt bleiben.",
         "NEXT_BLOCKED_STARTUP": "Speichern Sie einen Diagnosebericht für den Support. Umgehen Sie den Schutz nicht.",
         "NEXT_BLOCKED_REFRESH": "Das Löschen hat nicht begonnen. Lassen Sie die Datenträger angeschlossen und versuchen Sie Datenträger erneut prüfen, oder fahren Sie herunter.",
-        "NEXT_EMPTY": "Lesen Sie die Gründe unten. Lassen Sie den Beamo-USB-Stick angeschlossen. Fahren Sie herunter, bevor Sie Anschlüsse prüfen. Wenn ein Datenträger weiter nicht verfügbar ist oder Sie nicht sicher wissen, welcher Datenträger es ist, wenden Sie sich an den Support.",
+        "NEXT_EMPTY": "Lesen Sie die Gründe unten. Lassen Sie den Beamo-USB-Stick angeschlossen. Fahren Sie herunter, bevor Sie Anschlüsse prüfen. Wenn ein Datenträger nicht verfügbar bleibt oder Sie unsicher sind, welcher es ist, wenden Sie sich an den Support.",
         "HIDDEN_STORAGE_HAPPENED": "Der Datenträger dieses Computers wird möglicherweise von Intel VMD (RST) verborgen.",
         "HIDDEN_STORAGE_STEPS": (
             "1. Starten Sie neu und öffnen Sie das BIOS/UEFI-Setup.",
