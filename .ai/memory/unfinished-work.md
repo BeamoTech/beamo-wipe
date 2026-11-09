@@ -6208,3 +6208,34 @@ another very thorough and comprehensive pass of this." Repo
   fix/release-readiness-20261026 from 9c16e13 to this head (the single
   owner-approved hosted ci.yml run via pull_request); update the PR body;
   read every review comment and fix valid points.
+
+## BW-INT-20261107 — hosted run 1 on 23e9ef5 failed; fixes (2026-11-09, lead)
+
+- Hosted ci.yml run 42577287668 (PR 94 head 23e9ef5): Windows launcher
+  tests PASS; Linux image gate FAIL, 44 failed / 15793 passed / 16 skipped
+  / 2 errors; CI gate FAIL; ISO/QEMU not reached. CodeQL: no new alerts.
+  Old PR head 9c16e13 passed hosted on 2026-11-01.
+- Cause: every failure is in a test that skips locally without Chrome,
+  Go or BEAMO_ISOLATED_X11_TEST=1, so the local gate never ran them.
+- Local route now matches hosted (WSL BeamoComboQualification-20261001):
+  Playwright Chromium 1243 in ~/.cache/ms-playwright (658 MB), NSS from
+  libnss3_3.98-1ubuntu0.3 + libnspr4 unpacked to
+  /home/beamo-qual/bw-userlibs-20261109 (LD_LIBRARY_PATH), pinned Go 1.26.8
+  in /home/beamo-qual/bw-go-20261109, chromium symlink in
+  /home/beamo-qual/bw-bin-20261109; runner bw-linux-20261107/hrun.sh sets
+  BEAMO_ISOLATED_X11_TEST=1, PYTHONPATH=<tree>/src (the venv's editable
+  install points at an old audit checkout) and xvfb-run -n 200 (tests
+  refuse :99).
+- Real product fixes (43bf711): TkWizard._comparison_opener (#149) kept the
+  Pick comparison row and BooleanVar alive after redraw/teardown; cleared
+  now. Wizard.cancel_audio now also cancels the #133 Working availability
+  probe at interface teardown.
+- Stale tests updated to the intentional UI changes (f22493b): #180, #136,
+  #144, #132, #151, #149/#152, #131/#139, Owner overflow for wheel probes,
+  Done redraw settle for the space-release test.
+- Targeted rerun of the 12 files: all pass except two fixed afterwards
+  (decorator placement, bold marks); full hosted-like local run in progress
+  (out/full1.log).
+- NEXT: full run clean -> push f22493b+ to fix/release-readiness-20261026
+  and integrate/ui-review-20261107 (triggers the PR ci.yml run), watch,
+  read comments, repeat. No merge, no release.
