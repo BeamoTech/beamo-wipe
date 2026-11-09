@@ -89,6 +89,7 @@ STRINGS = {
         "MENU_KEY": "F10: Guida e impostazioni",
         "MENU_SHORTCUTS_COMMON": "Tab passa da un controllo all’altro. Enter o Space preme quello selezionato.",
         "MENU_SHORTCUTS_MENU": "F10 apre o chiude questo menu. Esc lo chiude.",
+        "MENU_SHORTCUTS_LIMITS": "L apre i limiti di archiviazione.",
         "MENU_SHORTCUTS_REFRESH": "F5 controlla di nuovo i dischi.",
         "MENU_SHORTCUTS_READER": "F8 apre la vista per lettore di schermo.",
         "CON_MENU_KEYS": "Up/Down o 1–7 sceglie. Enter seleziona. Esc chiude.",

@@ -1378,6 +1378,8 @@ class AccessibleWizard:
 
     def _help_shortcut_lines(self) -> list[str]:
         lines = [C.MENU_SHORTCUTS_COMMON]
+        if self.w.screen == Screen.METHOD:
+            lines.append(C.MENU_SHORTCUTS_LIMITS)  # #158
         if self.w.refresh_offered:
             lines.append(C.MENU_SHORTCUTS_REFRESH)
         lines.append(C.MENU_SHORTCUTS_MENU)

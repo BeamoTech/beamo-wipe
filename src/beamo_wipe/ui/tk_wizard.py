@@ -1791,6 +1791,7 @@ class TkWizard:
             # #158: the Method screen's storage limits line is open (view only).
             self._limits_open = False
             self._limits_more_button: Optional[_Button] = None
+            self._limits_pages_button: Optional[_Button] = None
             # #175: Help & settings menu. View state only; opening it never
             # changes the wizard.
             self._help_open = False
@@ -5512,6 +5513,8 @@ class TkWizard:
         if hint:
             lines.append(hint)
         lines.append(C.MENU_SHORTCUTS_COMMON)
+        if self.w.screen == Screen.METHOD:
+            lines.append(C.MENU_SHORTCUTS_LIMITS)  # #158
         if self.w.refresh_offered:
             lines.append(C.MENU_SHORTCUTS_REFRESH)
         if sys.platform.startswith("linux") and self.w.can_refresh:
@@ -6187,23 +6190,27 @@ class TkWizard:
         """#158: one storage limits line between the disk and the cards.
 
         Closed, it is one plain sentence for this disk's kind
-        (``Wizard.storage_line``) with Show more and Storage limits (L) on
-        the same row, so it stays above the fold at 800x600 and every text
-        size (Ref #18). Show more puts the full, unchanged notice
-        (``Wizard.storage_notice``) in its place; Storage limits (L) opens
-        the full limits page, as the L key does.
+        (``Wizard.storage_line``) with Show more on the same row, so it
+        stays above the fold at 800x600 and every text size (Ref #18).
+        Show more puts the full, unchanged notice (``Wizard.storage_notice``)
+        in its place and adds Storage limits (L) beside Show less (owner,
+        2026-11-08: the closed row keeps its width for the sentence). The L
+        key opens the full limits page in both states; the Keyboard
+        shortcuts list names it (C.MENU_SHORTCUTS_LIMITS).
         """
         # getattr: some checks draw with a partially built window.
         open_ = bool(getattr(self, "_limits_open", False))
         fill = SURFACE
-        box = _Box(parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1, padx=12, pady=4)
-        # The cards' zone adds 4 px above them: 6 px either side.
-        box.pack(fill=tk.X, pady=(6, 2), padx=4)
+        # The ghost buttons carry their own padding, so the box adds none
+        # vertically: the row is as tall as Show more (#161 chip at 800x600
+        # extra text stays above the fold).
+        box = _Box(parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1, padx=12, pady=0)
+        box.pack(fill=tk.X, pady=(4, 0), padx=4)  # the cards' zone adds 4 px below
         row = tk.Frame(box.inner, bg=fill)
         row.pack(fill=tk.X)
         icon = _icon_alert(row, "limits", 20)
         icon.configure(bg=fill)
-        icon.pack(side=tk.LEFT, anchor="n", pady=2)
+        icon.pack(side=tk.LEFT, anchor="n", pady=(6, 0))
 
         def toggle() -> None:
             # View only: never chooses or changes the method.
@@ -6218,11 +6225,14 @@ class TkWizard:
 
         # Buttons are packed before the text so the text wraps to what they
         # leave on the row.
-        pages = _Button(
-            row, text=limits.BUTTON, command=self._nav(self.w.open_limits),
-            font=self.font_s_bold, variant="ghost", compact=True,
-        )
-        pages.pack(side=tk.RIGHT, anchor="n")
+        self._limits_pages_button = None
+        if open_:
+            pages = _Button(
+                row, text=limits.BUTTON, command=self._nav(self.w.open_limits),
+                font=self.font_s_bold, variant="ghost", compact=True,
+            )
+            pages.pack(side=tk.RIGHT, anchor="n")
+            self._limits_pages_button = pages
         more = _Button(
             row, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle,
             font=self.font_s_bold, variant="ghost", compact=True,
@@ -6247,7 +6257,9 @@ class TkWizard:
                 label.configure(wraplength=width)
 
         label.bind("<Configure>", fit)
-        label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(8, 4), pady=(2, 0))
+        # Level with the buttons' text; the bottom pad spaces a wrapped or
+        # opened notice from the border.
+        label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(8, 4), pady=(6, 6))
         return box
 
     def _method(self) -> None:

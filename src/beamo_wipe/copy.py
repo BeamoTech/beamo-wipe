@@ -271,6 +271,9 @@ MENU_SHORTCUTS_COMMON = 'Tab moves between controls. Enter or Space presses the 
 MENU_SHORTCUTS_MENU = 'F10 opens or closes this menu. Esc closes it.'
 MENU_SHORTCUTS_REFRESH = 'F5 checks disks again.'
 MENU_SHORTCUTS_READER = 'F8 opens the screen-reader view.'
+# #158: on the Method screen the Storage limits (L) button shows only with
+# the limits line opened, so the shortcuts list names the L key there.
+MENU_SHORTCUTS_LIMITS = 'L opens the storage limits.'
 CON_MENU_KEYS = 'Up/Down or 1–7 chooses. Enter selects. Esc closes.'
 CON_MENU_HINT = 'Type MENU for Help & settings.'
 CON_MENU_PROMPT = 'Number (Enter closes): '

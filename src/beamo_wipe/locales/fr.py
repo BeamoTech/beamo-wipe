@@ -82,6 +82,7 @@ STRINGS = {
         "MENU_KEY": "F10 : Aide et réglages",
         "MENU_SHORTCUTS_COMMON": "Tab passe d’une commande à l’autre. Enter ou Space active celle qui est sélectionnée.",
         "MENU_SHORTCUTS_MENU": "F10 ouvre ou ferme ce menu. Esc le ferme.",
+        "MENU_SHORTCUTS_LIMITS": "L ouvre les limites de stockage.",
         "MENU_SHORTCUTS_REFRESH": "F5 vérifie à nouveau les disques.",
         "MENU_SHORTCUTS_READER": "F8 ouvre la vue pour lecteur d’écran.",
         "CON_MENU_KEYS": "Up/Down ou 1–7 pour choisir. Enter pour valider. Esc pour fermer.",

@@ -5,10 +5,12 @@ On the Method screen the storage limits panel became one plain line between
 the selected disk and the method cards, for every disk kind: SSD/NVMe "On
 SSDs, overwriting may not reach every hidden area."; hard disk and unknown
 keep the first sentence(s) of their existing notice. Show more puts the
-full, unchanged notice in view and "Storage limits (L)" still opens the full
-page. The line must be visible without scrolling at 800x600 and the largest
-text size (Ref #18). View only: nothing here chooses a method. Fake disks
-only; nothing starts the engine.
+full, unchanged notice in view. Owner, 2026-11-08 (option b): in Tk and the
+web preview the "Storage limits (L)" button shows only with the line opened;
+the L key opens the full page in both states and the Keyboard shortcuts list
+names it on the Method screen. The line must be visible without scrolling at
+800x600 and the largest text size (Ref #18). View only: nothing here chooses
+a method. Fake disks only; nothing starts the engine.
 """
 
 from __future__ import annotations
@@ -17,6 +19,7 @@ import json
 import re
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -83,6 +86,16 @@ def test_hdd_and_unknown_lines_keep_their_existing_wording(code):
     assert limits.notice(DiskKind.HDD) == limits.NOTICE_HDD_LEAD + limits.OVERWRITE_LIMITS
 
 
+def test_l_shortcut_line_is_translated_and_names_the_key():
+    english = C.MENU_SHORTCUTS_LIMITS
+    assert english == "L opens the storage limits."
+    for code in lang.LANGUAGE_ORDER:
+        lang.set_language(code)
+        text = C.MENU_SHORTCUTS_LIMITS
+        assert text.startswith("L ") and text.endswith(".")
+        assert (text == english) == (code == "en"), code
+
+
 def test_lines_are_translated_and_claim_nothing_new():
     english = {limits.LINE_SSD, limits.LINE_HDD, limits.LINE_UNKNOWN}
     for code in lang.LANGUAGE_ORDER:
@@ -144,6 +157,17 @@ def method_app():
         app._teardown()
 
 
+def _button_texts(row):
+    from beamo_wipe.ui.tk_wizard import _Button
+
+    return [w.itemcget(w._label, "text") for w in row.winfo_children() if isinstance(w, _Button)]
+
+
+def _press_l(app):
+    assert app._on_key(SimpleNamespace(keysym="l", char="l")) == "break"
+    _settle(app)
+
+
 def _line_label(app):
     (label,) = [w for w in _walk(app._body) if getattr(w, "_beamo_limits_line", False)]
     return label
@@ -184,6 +208,9 @@ def test_tk_line_sits_between_disk_and_cards_and_is_above_the_fold(
     assert _in_view(app, label), (label.winfo_rooty(), app._footer.winfo_rooty())
     more = app._limits_more_button
     assert more is not None and _in_view(app, more)
+    # Closed: Show more only; Storage limits (L) waits for the opened line.
+    assert app._limits_pages_button is None
+    assert limits.BUTTON not in _button_texts(more.master)
     # Order: disk summary (serial shown) above the line, cards below it.
     serial = [w for w in _walk(app._body) if w.winfo_class() == "Label"
               and str(w.cget("text")) == wiz.selected.serial]
@@ -221,26 +248,61 @@ def test_tk_show_more_shows_the_full_notice_and_never_chooses(method_app, kind):
     assert wiz.method == MethodId.EXTRA
 
 
-def test_tk_storage_limits_button_still_opens_the_full_page(method_app):
-    from beamo_wipe.ui.tk_wizard import _Button
-
-    wiz, app = method_app((800, 600))
-    row = app._limits_more_button.master
-    (pages,) = [w for w in row.winfo_children() if isinstance(w, _Button)
-                and w.itemcget(w._label, "text") == limits.BUTTON]
+@pytest.mark.parametrize("text_size", ["standard", "extra"])
+def test_tk_storage_limits_button_shows_when_open_and_opens_the_full_page(method_app, text_size):
+    wiz, app = method_app((800, 600), text_size=text_size)
+    assert app._limits_pages_button is None
+    app._limits_more_button._command()
+    _settle(app)
+    pages = app._limits_pages_button
+    assert pages is not None and pages.itemcget(pages._label, "text") == limits.BUTTON
+    assert _button_texts(app._limits_more_button.master) == [limits.BUTTON, C.BTN_LESS]
     assert _in_view(app, pages)
     pages._command()
     _settle(app)
     assert wiz.screen == Screen.LIMITS
     assert not wiz.runner.started
+    # Show less hides it again.
+    wiz.back()
+    app._draw()
+    _settle(app)
+    assert wiz.screen == Screen.METHOD
+    app._limits_more_button._command()
+    _settle(app)
+    assert app._limits_pages_button is None
 
 
-@pytest.mark.parametrize("size,text_size", [((800, 600), "standard"), ((800, 600), "extra"),
-                                            ((1280, 820), "large")])
-def test_tk_line_does_not_clip_open_or_closed(method_app, size, text_size):
+@pytest.mark.parametrize("opened", [False, True], ids=["closed", "open"])
+def test_tk_l_key_opens_the_full_page_in_both_states(method_app, opened):
+    wiz, app = method_app((800, 600))
+    if opened:
+        app._limits_more_button._command()
+        _settle(app)
+    assert (app._limits_pages_button is not None) == opened
+    _press_l(app)
+    assert wiz.screen == Screen.LIMITS
+    assert not wiz.runner.started
+
+
+def test_tk_shortcuts_list_names_the_l_key_on_the_method_screen_only(method_app):
+    wiz, app = method_app((800, 600))
+    assert C.MENU_SHORTCUTS_LIMITS in app._help_shortcut_lines()
+    wiz.back()
+    app._draw()
+    _settle(app)
+    assert wiz.screen != Screen.METHOD
+    assert C.MENU_SHORTCUTS_LIMITS not in app._help_shortcut_lines()
+
+
+@pytest.mark.parametrize("kind", ["ssd", "hdd"])
+@pytest.mark.parametrize("size,text_size", [
+    ((800, 600), "standard"), ((800, 600), "large"), ((800, 600), "extra"),
+    ((1280, 820), "standard"), ((1280, 820), "large"), ((1280, 820), "extra"),
+])
+def test_tk_line_does_not_clip_open_or_closed(method_app, size, text_size, kind):
     from test_tk_runtime import _clipping_problems, _off_window_problems
 
-    _wiz, app = method_app(size, kind="hdd", text_size=text_size)
+    _wiz, app = method_app(size, kind=kind, text_size=text_size)
     assert _clipping_problems(app) == []
     assert not _off_window_problems(app)
     app._limits_more_button._command()
@@ -265,6 +327,10 @@ def test_gtk_line_precedes_the_choices_and_the_notice_is_under_show_more():
     assert 'set_name(f"{C.BTN_MORE}: {C.SEVERITY_LIMITS}")' in tail
     assert 'Gtk.Label(label=f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}")' in tail
     assert "self.button(storage_limits.BUTTON, self.w.open_limits" in tail
+    shortcuts = src[src.index("def _help_shortcut_lines"):]
+    shortcuts = shortcuts[: shortcuts.index("return lines")]
+    assert "if self.w.screen == Screen.METHOD:" in shortcuts
+    assert "C.MENU_SHORTCUTS_LIMITS" in shortcuts
     # The full notice is no longer a plain always-shown label.
     assert 'self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}"' not in block
 
@@ -340,7 +406,16 @@ def test_preview_carries_the_line_per_disk_and_a_view_only_show_more():
     assert page.index("summaryCard(selected)") < page.index("${limitsLine()}") < page.index('<div class="cz">')
     assert 'id="limits-more" aria-expanded="${limitsMore}"' in method
     assert "selected.storageNotice" in method and "selected.storageLine" in method
-    assert 'id="limits" class="linkbtn"' in method
+    # Storage limits (L) only with the line opened (owner, 2026-11-08).
+    assert re.search(r'\$\{limitsMore \? `<button type="button" id="limits" class="linkbtn"', method)
+    assert 'main.querySelector("#limits")?.addEventListener("click"' in method
+    # The L key does not depend on the line's state, and the shortcuts list
+    # names it on the Method screen.
+    assert 'if (screen === "method" && e.key.toLowerCase() === "l") {' in script
+    assert 'if (screen === "method") lines.push(P.helpMenu.limits);' in script
+    assert data["helpMenu"]["limits"] == C.MENU_SHORTCUTS_LIMITS
+    # Returning from the full page focuses a control that exists.
+    assert 'main.querySelector("#limits").focus()' not in script
     handler = method[method.index('querySelector("#limits-more")'):]
     handler = handler[: handler.index("};")]
     assert "limitsMore = !limitsMore" in handler and "method =" not in handler

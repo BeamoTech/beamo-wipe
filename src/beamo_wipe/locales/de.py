@@ -82,6 +82,7 @@ STRINGS = {
         "MENU_KEY": "F10: Hilfe und Einstellungen",
         "MENU_SHORTCUTS_COMMON": "Tab wechselt zwischen den Bedienelementen. Enter oder Space betätigt das ausgewählte.",
         "MENU_SHORTCUTS_MENU": "F10 öffnet oder schließt dieses Menü. Esc schließt es.",
+        "MENU_SHORTCUTS_LIMITS": "L öffnet die Speichergrenzen.",
         "MENU_SHORTCUTS_REFRESH": "F5 prüft die Laufwerke erneut.",
         "MENU_SHORTCUTS_READER": "F8 öffnet die Ansicht für Bildschirmleser.",
         "CON_MENU_KEYS": "Up/Down oder 1–7 wählt. Enter bestätigt. Esc schließt.",

@@ -480,6 +480,7 @@ def _help_menu_payload() -> dict:
         "shortcutsTitle": C.MENU_SHORTCUTS,
         "common": C.MENU_SHORTCUTS_COMMON,
         "refresh": C.MENU_SHORTCUTS_REFRESH,
+        "limits": C.MENU_SHORTCUTS_LIMITS,
         "menuKeys": C.MENU_SHORTCUTS_MENU,
         "contrastOn": C.MENU_HIGH_CONTRAST_ON,
         "contrastOff": C.MENU_HIGH_CONTRAST_OFF,
@@ -2189,11 +2190,12 @@ function draw() {
     btnsR.append(cont);
   } else if (screen === "method") {
     // #158: one plain limits line between the disk and the cards; Show
-    // more puts the full, unchanged notice in its place, and Storage
-    // limits (L) opens the full page. View only: never chooses a method.
+    // more puts the full, unchanged notice in its place and adds Storage
+    // limits (L) (owner, 2026-11-08). The L key opens the full page in both
+    // states. View only: never chooses a method.
     const limitsLine = () => {
       const text = limitsMore ? (selected ? selected.storageNotice : P.ssd) : (selected ? selected.storageLine : P.limitsLineSsd);
-      return `<div class="limitsline" role="note">${badge("limits", 20)}<div class="grow" id="storage-notice"><span class="sevword">${esc(P.sevLimits)}:</span> ${esc(text)}</div><button type="button" class="linkbtn" id="limits-more" aria-expanded="${limitsMore}" aria-controls="storage-notice" aria-label="${esc((limitsMore ? P.buttons.less : P.buttons.more) + ": " + P.sevLimits)}">${limitsMore ? P.buttons.less : P.buttons.more}</button><button type="button" id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button></div>`;
+      return `<div class="limitsline" role="note">${badge("limits", 20)}<div class="grow" id="storage-notice"><span class="sevword">${esc(P.sevLimits)}:</span> ${esc(text)}</div><button type="button" class="linkbtn" id="limits-more" aria-expanded="${limitsMore}" aria-controls="storage-notice" aria-label="${esc((limitsMore ? P.buttons.less : P.buttons.more) + ": " + P.sevLimits)}">${limitsMore ? P.buttons.less : P.buttons.more}</button>${limitsMore ? `<button type="button" id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button>` : ""}</div>`;
     };
     let html = `<h1 class="compact sub">${P.titles.method}</h1><p class="subtitle" style="margin-bottom:6px">${P.methodLead}</p>${selected ? summaryCard(selected) + moreLink("more-detail") : ""}${limitsLine()}<div class="cz"><div class="czc">`;
     ["everyday","extra","quick_zero"].forEach(id => {
@@ -2235,7 +2237,8 @@ function draw() {
         }
       };
     });
-    main.querySelector("#limits").onclick = () => { screen = "limits"; draw(); };
+    // Present only with the limits line opened (#158).
+    main.querySelector("#limits")?.addEventListener("click", () => { screen = "limits"; draw(); });
     main.querySelector("#limits-more").onclick = () => {
       limitsMore = !limitsMore;
       draw();
@@ -2320,7 +2323,7 @@ function draw() {
     main.innerHTML = `<h1>${P.limitsTitle}</h1><div id="limits-text" class="help-reader" role="region" aria-label="${esc(P.limitsTitle)}" tabindex="0"></div>`;
     main.querySelector("#limits-text").textContent = P.limitsText;
     main.querySelector("#limits-text").focus();
-    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); main.querySelector("#limits").focus(); }));
+    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus(); }));
   } else if (screen === "advanced") {
     let html = `<h1 class="compact sub">${P.titles.advanced}</h1><p class="subtitle" style="margin-bottom:6px">${P.advancedLead}</p><div class="cz"><div class="czc"><div class="card hero" style="padding:12px 20px">`;
     ["everyday","extra","quick_zero"].forEach(id => {
@@ -2508,6 +2511,7 @@ function helpShortcutLines() {
   const hint = document.getElementById("hint").textContent.trim();
   if (hint && screen !== "splash") lines.push(hint);
   lines.push(P.helpMenu.common);
+  if (screen === "method") lines.push(P.helpMenu.limits);  // #158
   if (typeof REFRESH_OFFERED !== "undefined" && REFRESH_OFFERED.includes(screen)) lines.push(P.helpMenu.refresh);
   lines.push(P.helpMenu.menuKeys);
   return lines;
@@ -2701,7 +2705,7 @@ document.addEventListener("keydown", e => {
   if (screen === "method" && e.key.toLowerCase() === "l") {
     e.preventDefault(); screen = "limits"; draw();
   } else if (screen === "limits" && e.key === "Escape") {
-    e.preventDefault(); screen = "method"; draw(); main.querySelector("#limits").focus();
+    e.preventDefault(); screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus();
   }
 });
 function renderOtherDevices() {
