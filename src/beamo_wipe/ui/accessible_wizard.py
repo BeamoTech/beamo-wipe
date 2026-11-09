@@ -881,7 +881,8 @@ class AccessibleWizard:
             # choices, as on every view; the full notice is under its Show
             # more after the choices (one line here keeps all three radios
             # above the footer at 800x600).
-            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_line}", focusable=True)
+            limits_line = self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_line}", focusable=True)
+            self.body.child_set_property(limits_line, "padding", 2)
             group = None
             guides = []
             for method, spec in METHODS.items():
@@ -929,7 +930,13 @@ class AccessibleWizard:
             notice_text.set_max_width_chars(70)
             notice_text.set_can_focus(True)
             notice_text.set_selectable(True)
-            limits_more.add(notice_text)
+            # Owner 2026-11-08 (option b, as Tk and the web preview): Storage
+            # limits (L) sits with the opened notice, not in the footer, where
+            # its long translations took a second footer row and pushed the
+            # third choice under it at 800x600. The L key works either way.
+            limits_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            limits_box.pack_start(notice_text, False, False, 0)
+            limits_more.add(limits_box)
             self.body.pack_start(limits_more, False, False, 4)
             for text in guides:
                 self.label(text)
@@ -957,7 +964,10 @@ class AccessibleWizard:
                 note_text.set_selectable(True)
                 more.add(note_text)
                 self.body.pack_start(more, False, False, 4)
-            self.button(storage_limits.BUTTON, self.w.open_limits, utility=True)
+            pages = self.button(storage_limits.BUTTON, self.w.open_limits, in_body=True)
+            self.body.remove(pages)
+            pages.set_halign(Gtk.Align.START)
+            limits_box.pack_start(pages, False, False, 0)
             # #175: Advanced is in Help & settings (still from Method only).
             self.button(C.primary_action(Screen.METHOD), self.w.continue_method)
         elif screen == Screen.DISK_HELP:

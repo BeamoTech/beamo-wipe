@@ -310,6 +310,95 @@ def test_tk_line_does_not_clip_open_or_closed(method_app, size, text_size, kind)
     assert _clipping_problems(app) == []
 
 
+# --- GTK accessible view at runtime (Linux; skipped without gi) ----------
+
+
+@pytest.mark.parametrize("kind", KINDS)
+@pytest.mark.parametrize("code", lang.LANGUAGE_ORDER)
+def test_gtk_line_and_every_choice_fit_above_the_footer_at_800x600(code, kind):
+    """#158: the line sits before the radios and all three stay above the
+    footer at 800x600 in every language and disk kind (preview stripe on,
+    the tightest case); the full notice stays reachable under Show more."""
+    pytest.importorskip("gi")
+    from test_accessible_fit_20261027 import _to_method, _window_y, _wizard
+    from test_accessible_runtime import drain, wait_for_window_size, widgets
+
+    from beamo_wipe.ui.accessible_wizard import AccessibleWizard, Gtk
+
+    wizard = _wizard(code, preview=True)
+    _to_method(wizard, "/dev/nvme0n1" if kind == "ssd" else "/dev/sda")
+    if kind == "unknown":
+        wizard.selected = replace(wizard.selected, kind=DiskKind.UNKNOWN)
+    app = AccessibleWizard(wizard)
+    try:
+        app.window.resize(800, 600)
+        wait_for_window_size(app.window, (800, 600))
+        drain()
+        footer = _window_y(app, app.footer)
+        labels = [w for w in widgets(app.body) if isinstance(w, Gtk.Label)]
+        (line,) = [w for w in labels if w.get_text() == f"{C.SEVERITY_LIMITS}: {wizard.storage_line}"]
+        radios = [w for w in widgets(app.body) if isinstance(w, Gtk.RadioButton)]
+        assert len(radios) == 3
+        assert line.get_can_focus()
+        assert _window_y(app, line) + line.get_allocated_height() <= _window_y(app, radios[0])
+        for radio in radios:
+            bottom = _window_y(app, radio) + radio.get_allocated_height()
+            assert bottom <= footer, (code, kind, bottom, footer)
+        (notice,) = [w for w in labels if w.get_text() == f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}"]
+        expander = notice.get_parent().get_parent()
+        assert isinstance(expander, Gtk.Expander) and notice.get_can_focus()
+        assert not expander.get_expanded()
+        # Storage limits (L) is with the notice, not in the footer.
+        pages = app.actions[limits.BUTTON]
+        assert pages.get_parent() is notice.get_parent()
+        assert pages not in list(widgets(app.utilities))
+        # The button is the expander's content with the notice (as the #160
+        # and #161 Show more expanders hold their notes), and opening it
+        # never changes the screen or the method.
+        assert expander.get_child() is pages.get_parent() and pages.get_sensitive()
+        method = wizard.method
+        expander.set_expanded(True)
+        drain()
+        assert expander.get_expanded()
+        assert wizard.screen == Screen.METHOD and wizard.method == method
+        assert not wizard.runner.started
+    finally:
+        app.close()
+        drain()
+        lang.set_language("en")
+
+
+@pytest.mark.parametrize("opened", [False, True], ids=["closed", "open"])
+def test_gtk_storage_limits_button_and_l_key_open_the_full_page(opened):
+    pytest.importorskip("gi")
+    from test_accessible_fit_20261027 import _to_method, _wizard
+    from test_accessible_runtime import drain, wait_for_window_size
+
+    from beamo_wipe.ui.accessible_wizard import AccessibleWizard, Gdk
+
+    wizard = _wizard("en", preview=True)
+    _to_method(wizard, "/dev/nvme0n1")
+    app = AccessibleWizard(wizard)
+    try:
+        app.window.resize(800, 600)
+        wait_for_window_size(app.window, (800, 600))
+        drain()
+        if opened:
+            pages = app.actions[limits.BUTTON]
+            pages.get_parent().get_parent().set_expanded(True)
+            drain()
+            pages.clicked()
+        else:
+            assert app._key_press(app.window, SimpleNamespace(keyval=Gdk.KEY_l))
+        drain()
+        assert wizard.screen == Screen.LIMITS
+        assert not wizard.runner.started
+    finally:
+        app.close()
+        drain()
+        lang.set_language("en")
+
+
 # --- GTK accessible view (read as text: gi is not importable everywhere) ---
 
 
@@ -326,7 +415,11 @@ def test_gtk_line_precedes_the_choices_and_the_notice_is_under_show_more():
     assert "limits_more.set_expanded(False)" in tail
     assert 'set_name(f"{C.BTN_MORE}: {C.SEVERITY_LIMITS}")' in tail
     assert 'Gtk.Label(label=f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}")' in tail
-    assert "self.button(storage_limits.BUTTON, self.w.open_limits" in tail
+    assert "self.button(storage_limits.BUTTON, self.w.open_limits, in_body=True)" in tail
+    # Option b in GTK too: the button lives with the opened notice, not in
+    # the footer utilities.
+    assert "limits_box.pack_start(pages" in tail and "limits_more.add(limits_box)" in tail
+    assert "storage_limits.BUTTON, self.w.open_limits, utility=True" not in src
     shortcuts = src[src.index("def _help_shortcut_lines"):]
     shortcuts = shortcuts[: shortcuts.index("return lines")]
     assert "if self.w.screen == Screen.METHOD:" in shortcuts

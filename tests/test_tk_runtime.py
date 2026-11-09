@@ -1355,14 +1355,38 @@ def test_storage_limits_visible_and_keyboard_reachable(ui, kind, size):
     method = wiz.method
     app._draw()
     app.root.update()
-    texts = []
-    def visit(widget):
-        if widget.winfo_ismapped() and widget.winfo_class() == "Label":
-            texts.append(str(widget.cget("text")))
-        for child in widget.winfo_children():
-            visit(child)
-    visit(app.root)
-    assert limits.notice(selected.kind) in texts
+    from beamo_wipe import copy as C
+
+    def shown():
+        texts = []
+
+        def visit(widget):
+            if widget.winfo_ismapped() and widget.winfo_class() == "Label":
+                texts.append(str(widget.cget("text")))
+            for child in widget.winfo_children():
+                visit(child)
+        visit(app.root)
+        return texts
+
+    # #158: the Method screen states the limits as one visible line for this
+    # disk's kind; the full notice is one keyboard press away (Show more).
+    assert f"{C.SEVERITY_LIMITS}: {limits.line(selected.kind)}" in shown()
+    assert not _clipping_problems(app)
+    assert not _off_window_problems(app)
+    toggle = app._limits_more_button
+    assert toggle is not None and toggle.winfo_ismapped()
+    assert str(toggle.cget("takefocus")) not in ("0", "")  # a Tab stop
+    app.root.focus_force()
+    toggle.focus_set()
+    app.root.update()
+    (app.root.focus_get() or toggle).event_generate("<Return>", time=90_000)
+    app.root.update()
+    app.root.event_generate("<KeyRelease-Return>", time=90_100)
+    app.root.update()
+    assert wiz.screen == Screen.METHOD and wiz.method == method
+    texts = shown()
+    assert f"{C.SEVERITY_LIMITS}: {limits.notice(selected.kind)}" in texts
+    assert limits.OVERWRITE_LIMITS in texts[texts.index(f"{C.SEVERITY_LIMITS}: {limits.notice(selected.kind)}")]
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
     app._on_key(SimpleNamespace(keysym="l", char="l"))
