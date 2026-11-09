@@ -6276,3 +6276,28 @@ another very thorough and comprehensive pass of this." Repo
   badge vs step name at 80 cols; #180f evidence text; #177g extra wrap
   row; #158 Quick zero below the fold at 800x600 and GTK button in the
   expander); merge approval.
+
+### BW-PR94-RECHECK-20261109 (Claude, 2026-11-09) — re-verified from the PR
+
+- `gh pr view 94`: head f00e55ca526c400b4a4a1c75bbd780d79aa9efae, OPEN,
+  MERGEABLE, not draft. `gh pr checks 94`: Linux image gate (56m56s),
+  Windows launcher tests, CI gate, CodeQL and Analyze
+  (actions/go/javascript-typescript/python) all pass.
+- Review threads (GraphQL): 14 total, 0 unresolved.
+- CORRECTION to the entry above: "0 open code-scanning alerts" holds for
+  refs/pull/94/merge only. refs/pull/94/head shows 9 open alerts (#1-#6
+  py/clear-text-storage-sensitive-data in docs/evidence/usb-lab-20260907
+  seed recipes; #10, #11 py/incomplete-url-substring-sanitization in
+  tests/test_live_image.py:134/158; #36 same rule in
+  docs/evidence/release-tk-pool-review-20261017/codeql/trace-findings.py).
+  All 9 are also open on main (main has 30 open) and date from
+  2026-09-23/2026-10-18; PR 94 adds none. The test_live_image hits are
+  false positives (asserting on script text); the evidence files are
+  preserved historical records. Not fixed in PR 94 (out of scope; a push
+  would rerun the full hosted gate). Triage on main separately:
+  BW-CODEQL-MAIN-BACKLOG, owner decision whether to dismiss or fix.
+- Notion: still DEFERRED. ToolSearch finds no Notion connector (only a
+  Claude Docs "notion" export format). The T3 preview browser's default
+  profile redirects https://www.notion.so to /login (not signed in);
+  signing in needs Jack. Notes stay ready to paste in
+  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
