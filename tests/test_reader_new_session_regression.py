@@ -32,6 +32,9 @@ def test_reader_starts_before_second_session_after_tk_switch(monkeypatch):
                 keyboard_layout="us",
                 language="en",
                 text_size="normal",
+                # The real Wizard handoff carries these (#179, #187).
+                high_contrast=False,
+                take_handoff=lambda: (None, ()),
                 diagnostic_ui="accessible",
             )
         return 0

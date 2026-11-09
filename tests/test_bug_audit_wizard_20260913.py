@@ -127,8 +127,10 @@ def test_tk_normal_tick_keeps_status_monitor_scheduled():
         wants_new_session=False,
         tick=lambda: calls.append("poll"),
         report_view=SimpleNamespace(revision=0),
+        power_badge=None,  # #144: the real wizard's header badge state
     )
     app._shown = Screen.WORKING
+    app._shown_power_badge = None
     app._shown_report_revision = 0
     app._fatal_ui = False
     app._pick_canvas = None

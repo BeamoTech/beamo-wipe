@@ -53,6 +53,15 @@ def running_ui(monkeypatch, tmp_path):
         "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
     ):
         monkeypatch.setattr(boundary, forbidden)
+    # #133: Working checks on the audio worker whether a finish sound could
+    # be heard; that check reads the live-USB boot line. It is not under
+    # test here, so answer it without reaching the forbidden boundaries.
+    from beamo_wipe import sound
+
+    monkeypatch.setattr(
+        sound, "output_status",
+        lambda: sound.SoundResult(False, C.FINISH_SOUND_REASON_PREVIEW),
+    )
     clock = [0.0]
     runner = DryRunRunner(clock=lambda: clock[0], duration_s=100)
     wizard = Wizard(discovery_for_scenario("happy"), runner,
