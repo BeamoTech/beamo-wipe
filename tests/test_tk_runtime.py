@@ -235,6 +235,38 @@ def _button_named(app, text):
     return found[0]
 
 
+def _label_texts(app):
+    return [str(w.cget("text")) for w in descendants(app.root) if isinstance(w, tk.Label)]
+
+
+def _assert_outcome_message_reachable(app, labels=None):
+    """#134: the exact status message never leaves the result screen.
+
+    Failures and unconfirmed outcomes show it under What happened; finished
+    outcomes keep it, with the result code, as the technical line behind
+    Show more. The plain headline above both names the outcome.
+    """
+    from beamo_wipe import recovery as Rec
+
+    view = app.w.result_view
+    shown = " ".join(str(t) for t in (labels if labels is not None else _label_texts(app)))
+    if not app.w.result_plain.checklist:
+        assert view.message in shown
+        return
+    technical = f"{Rec.RECOVERY_TECHNICAL}: {app.w.result_technical}"
+    assert view.message in app.w.result_technical
+    assert technical not in shown
+    app._show_more = True
+    app._draw()
+    app.root.update()
+    try:
+        assert technical in " ".join(_label_texts(app))
+    finally:
+        app._show_more = False
+        app._draw()
+        app.root.update()
+
+
 def _drive_to(wiz, app, screen, size=WINDOW):
     """Walk the real wizard state machine to a screen, then redraw."""
     if wiz.screen == Screen.SPLASH and screen != Screen.SPLASH:
@@ -1292,7 +1324,16 @@ def test_method_facts_render_for_every_choice(ui, method, screen):
         assert wiz.review_method_line in text
         assert METHODS[method].summary not in text
     else:
-        assert METHODS[method].summary in text
+        # #171: the result card names the method once, as a fact row; the
+        # repeated method line is gone.
+        from beamo_wipe import result_summary as RS
+
+        card = wiz.result_card
+        assert card is not None
+        method_rows = [value for label, value in card.detail_rows if label == RS.H_METHOD]
+        assert method_rows == [METHODS[method].title]
+        assert f"{RS.H_METHOD}:" in texts and METHODS[method].title in texts
+        assert METHODS[method].summary not in text
     if screen == Screen.DONE:
         assert wiz.method_result in text
     assert not _clipping_problems(app)
@@ -1397,23 +1438,33 @@ def test_every_terminal_result_renders_consistent_text(ui, case, size):
         for child in widget.winfo_children():
             visit(child)
     visit(app.root)
-    assert wiz.result_view.message in texts
-    assert wiz.result_view.next_step in texts
+    plain = wiz.result_plain
+    # #134: the plain headline names the outcome on every result.
+    assert plain.headline in texts
     assert evidence["presentation"]["announcement"] == wiz.result_view.announcement
     from beamo_wipe import recovery as Rec
     if wiz.result_view.success:
         assert Rec.RECOVERY_HAPPENED not in texts
+        # #134: a finished erase shows its note and the short What next
+        # list in place of the next-step paragraph.
+        assert plain.note in texts
+        assert list(plain.numbered) == [t for t in texts if t in plain.numbered]
     else:
+        assert wiz.result_view.next_step in texts
         assert Rec.RECOVERY_HAPPENED in texts
         assert Rec.RECOVERY_MEANING in texts
         assert Rec.RECOVERY_NEXT in texts
         assert Rec.recovery_for_view(wiz.result_view).meaning in texts
-    from beamo_wipe.outcomes import AFTERCARE_SUCCESS
+    _assert_outcome_message_reachable(app, texts)
+    from beamo_wipe.outcomes import AFTERCARE_SUCCESS, NEXT_ITEM_KEEP
     shown = " ".join(texts)
     if wiz.result_view.success:
-        assert AFTERCARE_SUCCESS in shown
+        # #134: "Keeping this computer?" replaces the aftercare paragraph.
+        assert NEXT_ITEM_KEEP in shown
+        assert AFTERCARE_SUCCESS not in shown
     else:
         assert AFTERCARE_SUCCESS not in shown
+        assert NEXT_ITEM_KEEP not in shown
         assert "was processed" not in shown
     from beamo_wipe.ui.tk_wizard import OK, WARN, DANGER
     tone = {"ok": OK, "warn": WARN, "danger": DANGER}[wiz.result_view.tone]
@@ -1431,8 +1482,16 @@ def test_held_f5_cannot_skip_refresh_wording(ui):
     assert wiz.selected is not None and wiz.owner_ok
     app._on_key(SimpleNamespace(keysym="F5", char=""))
     assert wiz.screen == Screen.REFRESH_CONFIRM
+    # #136: Review holds confirmations, so even a released and pressed
+    # again F5 never accepts the guarded dialog; only its own button does.
     app._on_f5_release()
     app._on_key(SimpleNamespace(keysym="F5", char=""))
+    assert wiz.screen == Screen.REFRESH_CONFIRM
+    assert wiz.selected is not None and wiz.owner_ok
+    from beamo_wipe import copy as C
+
+    app._draw()
+    _button_named(app, C.BTN_REFRESH)._command()
     assert wiz.screen == Screen.REFRESHING
     assert _await_scan_done(app) == Screen.OWNER
 
@@ -1440,6 +1499,10 @@ def test_held_f5_cannot_skip_refresh_wording(ui):
 @pytest.mark.parametrize("screen", [Screen.PICK, Screen.PICK_EMPTY, Screen.PICK_BLOCKED, Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE])
 def test_graphical_refresh_restarts_full_authorization(ui, screen):
     from types import SimpleNamespace
+
+    from beamo_wipe import copy as C
+    from beamo_wipe.wizard import REFRESH_DIRECT_SCREENS
+
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, Screen.LAST_CHANCE)
     wiz.screen = screen
@@ -1449,6 +1512,13 @@ def test_graphical_refresh_restarts_full_authorization(ui, screen):
     assert wiz.selected is not None
     app._on_f5_release()
     app._on_key(SimpleNamespace(keysym="F5", char=""))
+    if screen not in REFRESH_DIRECT_SCREENS:
+        # #136: on screens holding confirmations a second F5 never accepts;
+        # only the dialog's own Check disks again button clears them.
+        assert wiz.screen == Screen.REFRESH_CONFIRM
+        assert wiz.selected is not None and wiz.owner_ok
+        app._draw()
+        _button_named(app, C.BTN_REFRESH)._command()
     assert wiz.screen == Screen.REFRESHING
     assert _await_scan_done(app) == Screen.OWNER
     assert wiz.selected is None and not wiz.owner_ok and not wiz.confirm_input
@@ -1472,6 +1542,15 @@ def test_screen_reader_switch_clears_authorization(ui, monkeypatch, fresh_ok):
             raise OSError("fake discovery failure")
         wiz._rediscover = fail
     app._click_accessible()
+    # #136: Confirm holds confirmations, so the reader switch asks first
+    # and clears nothing until the dialog's own button is pressed.
+    from beamo_wipe import copy as C
+
+    assert wiz.screen == Screen.REFRESH_CONFIRM and wiz.refresh_then_reader
+    assert wiz.selected is not None and wiz.owner_ok and wiz.confirm_input
+    assert not app._accessible_requested
+    app._draw()
+    _button_named(app, C.BTN_REFRESH)._command()
     # Refresh now scans off the UI thread: the handoff lands once applied.
     assert wiz.screen == Screen.REFRESHING
     deadline = time.monotonic() + 15.0
@@ -1609,7 +1688,15 @@ def test_report_aftercare_errors_and_lifetime_at_minimum_size(ui, tmp_path, mess
         for child in w.winfo_children():
             visit(child)
     visit(app.root)
-    assert any(message in value and C.REPORT_VOLATILE in value for value in rendered)
+    # #135: the failed-save panel says what happened (the exact refusal)
+    # and, in its own notice line, that an unsaved report is lost at shut
+    # down; both stay on screen at 800x600.
+    from beamo_wipe import recovery as Rec
+
+    panel = wiz.report_panel
+    assert panel.kind == "failed"
+    assert any(f"{Rec.RECOVERY_HAPPENED}: {message}" in str(value) for value in rendered)
+    assert panel.notice in rendered and C.REPORT_VOLATILE in panel.notice
 
 
 @pytest.mark.parametrize("size", [WINDOW, MIN_WINDOW])
@@ -2292,8 +2379,19 @@ def test_serial_comparison_markers_wrap_and_leave_controls_visible(size, long):
                     visit(child)
             visit(app._pick_cards[disk.path])
             view = wiz.disk_view(disk)
-            assert any(str(label.cget('text')).replace('\n', '') == view.marked_id for label in labels)
+            # #152: Tk keeps the plain serial in the label and draws the
+            # differing characters bold and underlined over it (no brackets).
+            assert view.comparison_marks
+            marked = [label for label in labels if getattr(label, "_beamo_serial_marked", False)]
+            assert len(marked) == 1
+            assert str(marked[0].cget('text')).replace('\n', '') == view.id_value
             assert any(view.comparison_note == str(label.cget('text')) for label in labels)
+            if not long:
+                for _ in range(3):
+                    app.root.update()
+                marks = [w for w in descendants(app._pick_cards[disk.path])
+                         if getattr(w, "_beamo_serial_mark", False) and w.winfo_ismapped()]
+                assert "".join(getattr(w, "_beamo_mark_text", "") for w in marks) in ("3", "4")
             for label in labels:
                 assert label.winfo_reqwidth() <= label.winfo_width() + 2
                 assert label.winfo_reqheight() <= label.winfo_height() + 2
@@ -2509,12 +2607,15 @@ def test_done_separates_report_status_at_minimum_size(ui, case, status):
             yield from walk(child)
     labels = {widget.cget("text"): widget for widget in walk(app.root) if isinstance(widget, tk.Label)}
     # #95: the specific outcome is the main heading; the generic label is gone.
-    message = app.w.result_view.message
-    assert message in labels
+    # #134: that heading is the outcome's plain headline; the exact status
+    # message stays on screen (What happened) or behind Show more.
+    headline = app.w.result_plain.headline
+    assert headline in labels
     assert "Erase status" not in labels
     assert C.REPORT_STATUS_TITLE in labels
     assert app.w.report_view.headline in labels
-    assert labels[message].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    assert labels[headline].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    _assert_outcome_message_reachable(app, labels)
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
 
@@ -2683,11 +2784,18 @@ def test_done_heading_is_outcome_message(ui, size, code):
     labels = {w.cget("text"): w for w in descendants(app.root) if isinstance(w, tk.Label)}
     message = VIEWS[code].message
     assert app.w.result_view.message == message
-    assert message in labels
+    # #134: the heading is this outcome's own plain headline (never a
+    # generic "Erase status"); the exact message stays reachable.
+    from beamo_wipe import outcomes
+
+    headline = outcomes.plain_result(VIEWS[code]).headline
+    assert app.w.result_plain.headline == headline
+    assert headline in labels
     assert "Erase status" not in labels
-    font_size = tkfont.nametofont(labels[message].cget("font")).actual("size")
+    font_size = tkfont.nametofont(labels[headline].cget("font")).actual("size")
     assert font_size == app.font_h.actual("size")
-    assert labels[message].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    assert labels[headline].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    _assert_outcome_message_reachable(app, labels)
     assert not _clipping_problems(app)
 
 
@@ -2725,11 +2833,22 @@ def test_done_post_erase_boot_note(ui, size, code, shown):
     app.w, _, _ = case_evidence(case)
     app._draw()
     app.root.update()
+    from beamo_wipe import outcomes
+
     labels = {w.cget("text"): w for w in descendants(app.root) if isinstance(w, tk.Label)}
-    assert (C.POST_ERASE_BOOT in labels) == shown
-    if shown:
-        message = app.w.result_view.message
-        assert labels[message].winfo_rooty() < labels[C.POST_ERASE_BOOT].winfo_rooty()
+    headline = app.w.result_plain.headline
+    if app.w.result_plain.checklist:
+        # #134: a finished erase says it once, as the What next item
+        # "Keeping this computer? ... install an operating system", not as a
+        # second separate note.
+        assert C.POST_ERASE_BOOT not in labels
+        keep = next(t for t in labels if outcomes.NEXT_ITEM_KEEP in str(t))
+        assert labels[headline].winfo_rooty() < labels[keep].winfo_rooty()
+        assert labels[keep].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    else:
+        assert (C.POST_ERASE_BOOT in labels) == shown
+    if shown and not app.w.result_plain.checklist:
+        assert labels[headline].winfo_rooty() < labels[C.POST_ERASE_BOOT].winfo_rooty()
         assert labels[C.POST_ERASE_BOOT].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
     assert not _clipping_problems(app)
 
@@ -2814,16 +2933,23 @@ def test_pick_report_media_notice_follows_preference(ui, wanted):
 
 
 @pytest.mark.parametrize(
-    "status,message,marked,unmarked",
+    "status,message,kind",
     [
-        ("idle", "", ("1. ", "(now)"), ()),
-        ("saving", None, ("(done)", "(now)"), ()),
-        ("saved", None, ("(done)", "(now)"), ()),
-        ("error", "Report USB was removed.", ("Save report to USB again",), ("Insert the report USB",)),
+        ("idle", "", "ready"),
+        ("saving", None, "saving"),
+        ("saved", None, "saved"),
+        ("error", "Report USB was removed.", "failed"),
     ],
 )
-def test_done_export_stages_per_state(ui, tmp_path, status, message, marked, unmarked):
+def test_done_export_stages_per_state(ui, tmp_path, status, message, kind):
+    """#135: the Save a report panel shows numbered steps for each state.
+
+    The panel replaced the old export stage list; every state still shows
+    which step is done and which is now, and a failed save offers Save again
+    with what happened.
+    """
     from beamo_wipe import copy as C
+    from beamo_wipe import progress as P
     from test_usb_report_workflow import _done_wizard, _success_receipt
 
     _, app = ui(size=MIN_WINDOW)
@@ -2843,12 +2969,32 @@ def test_done_export_stages_per_state(ui, tmp_path, status, message, marked, unm
     app.root.update()
     labels = {w.cget("text") for w in descendants(app.root) if isinstance(w, tk.Label)}
     blob = "\n".join(labels)
+    panel = wiz.report_panel
+    assert panel.kind == kind
+    assert C.REPORT_STATUS_TITLE in labels
+    assert len(panel.step_lines) == 5
+    for line in panel.step_lines:
+        assert line in labels
     for index, stage in enumerate(C.EXPORT_STAGES, 1):
-        assert (f"{index}. {stage}" in blob) == (status != "error")
-    for needle in marked:
-        assert needle in blob
-    for needle in unmarked:
-        assert needle not in blob
+        assert f"{index}. {stage}" not in blob  # the old stage list is gone
+    done, now = P.STAGE_DONE_MARK, P.STAGE_NOW_MARK
+    expected = {
+        "idle": (f"1. {C.REPORT_STEP_INSERT}{now}", f"3. {C.REPORT_STEP_SAVE}{now}"),
+        "saving": (f"1. {C.REPORT_STEP_INSERT}{done}", f"3. {C.REPORT_STEP_SAVING}{now}"),
+        "saved": (f"3. {C.REPORT_STEP_SAVED}{done}", f"5. {C.REPORT_STEP_REMOVE_NOW}{now}"),
+        "error": (f"1. {C.REPORT_STEP_INSERT}{now}", f"3. {C.REPORT_STEP_SAVE}{now}"),
+    }[status]
+    for line in expected:
+        assert line in labels
+    save = [b for b in descendants(app.root) if isinstance(b, _Button)
+            and b.itemcget(b._label, "text") == C.BTN_SAVE_REPORT]
+    if status in ("idle", "error"):
+        # Save is offered (again after a failure) and enabled.
+        assert len(save) == 1 and save[0]._enabled and save[0].winfo_ismapped()
+    else:
+        assert not save
+    if status == "error":
+        assert panel.detail and panel.detail in labels  # what happened, what to do
     assert not _clipping_problems(app)
 
 

@@ -31,10 +31,14 @@ def test_result_is_top_aligned_not_vertically_centered():
     """Would fail when _done packed expanding spacers above and below."""
     source = inspect.getsource(TkWizard._done)
     assert "tk.Frame(col, bg=BG).pack(fill=tk.BOTH, expand=True)" not in source
-    # #95: the Done heading is the outcome message, not a generic title.
-    assert "title = result.message" in source
+    # #95: the Done heading names the outcome, not a generic title.
+    # #134: it is the outcome's plain headline.
+    assert "title = plain.headline" in source
+    assert "heading = self._h(col, title)" in source
     assert "ERASE_STATUS_TITLE" not in source
-    assert "REPORT_STATUS_TITLE" in source
+    # #135: the report status heading belongs to the Save a report panel.
+    assert "self._report_save_panel(col, panel)" in source
+    assert "REPORT_STATUS_TITLE" in inspect.getsource(TkWizard._report_save_panel)
     assert "_disk_summary" in source
     splash = inspect.getsource(TkWizard._splash)
     assert "tk.Frame(col, bg=BG).pack(fill=tk.BOTH, expand=True)" in splash

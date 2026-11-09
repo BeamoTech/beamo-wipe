@@ -23,14 +23,18 @@ def test_text_size_default_and_rejects_unknown():
 def test_text_size_survives_refresh_and_keyboard_layout():
     wiz = authorized()
     assert wiz.set_text_size("large")
-    wiz.set_keyboard_layout("fr")
-    assert wiz.text_size == "large"
+    # #136: Check disks again is offered from Review (it holds
+    # confirmations), not from Owner. Where a layout applies, it clears the
+    # confirmations and lands on Owner, so refresh first, then the layout.
+    assert wiz.screen == Screen.LAST_CHANCE
     assert wiz.open_refresh_confirm()
     assert wiz.confirm_refresh()
     assert wiz.screen == Screen.OWNER and not wiz.owner_ok
     assert wiz.text_size == "large"
     assert wiz.method == MethodId.EVERYDAY
     assert wiz.selected is None
+    wiz.set_keyboard_layout("fr")
+    assert wiz.text_size == "large"
     wiz.reset_for_preview()
     assert wiz.text_size == "standard"
     assert wiz.text_scale == 1.0
