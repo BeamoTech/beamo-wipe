@@ -27,7 +27,8 @@ def test_method_screen_sets_expectations_without_promising_a_time():
 
 def test_interrupted_erase_says_to_start_again():
     assert "does not resume automatically" in C.POWER_EVENTS
-    assert "start it again from the beginning" in C.POWER_EVENTS
+    # #181: now its own sentence, so it starts with a capital.
+    assert "Start it again from the beginning." in C.POWER_EVENTS
 
 
 def test_empty_list_explains_hidden_raid_storage_without_prescribing_firmware_changes():

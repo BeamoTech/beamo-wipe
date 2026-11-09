@@ -244,7 +244,8 @@ def test_prelaunch_code_is_untouched_by_the_guard():
 def test_dialog_copy_says_what_is_cleared_and_where_it_starts():
     assert C.TITLE_REFRESH == "Check disks again?"
     lead = C.REFRESH_GUARD_LEAD
-    assert lead.startswith("This clears your confirmations and you will start again from choosing a disk")
+    # #181: two sentences; the meaning is unchanged.
+    assert lead.startswith("This clears your confirmations. You will start again from choosing a disk")
     assert C.BTN_REFRESH_CANCEL == "Cancel"
 
 

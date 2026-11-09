@@ -27,7 +27,7 @@ from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__
 from beamo_wipe.build_identity import evidence_identity
 from beamo_wipe.methods import METHODS, RANDOM_DATA_NWIPE_METHODS
 from beamo_wipe import storage_limits as _limits
-from beamo_wipe.storage_limits import notice
+from beamo_wipe.storage_limits import report_notice
 from beamo_wipe.models import Disk, MethodId, WipeRequest, WipeResult
 import beamo_wipe.safety as safety
 from beamo_wipe.safety import SafetyError, assert_log_not_on_target
@@ -180,7 +180,7 @@ def _warnings_for(disk: Optional[Disk], selectable: Sequence[Disk]) -> List[str]
     warns: List[str] = []
     if disk is None:
         return warns
-    warns.append(notice(disk.kind))
+    warns.append(report_notice(disk.kind))
     # Same-size hint
     if disk and selectable:
         labels = [d.size_gb_label for d in selectable]

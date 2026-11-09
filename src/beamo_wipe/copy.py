@@ -323,7 +323,7 @@ POWER_EVENTS = (
     "and disables sleep. Firmware or a held power button can still stop the erase. "
     "Use Stop erase to stop; wait for the result before shutting down. "
     "A power cut can leave the disk partly erased and lose unsaved reports. "
-    "An interrupted erase does not resume automatically; start it again from the beginning."
+    "An interrupted erase does not resume automatically. Start it again from the beginning."
 )
 
 # #168: shown only by the console fallbacks; the X screen stays lit while
@@ -662,23 +662,24 @@ REPORT_VOLATILE = (
 REPORT_HELP_PHOTO = (
     "No report USB? Photograph the code\n"
     "After the erase, the result screen shows a square code. Take a photo of it "
-    "with your phone. The phone's camera shows it as plain text: the result, the "
-    "disk and its serial number, the method and the time. No app or internet is "
+    "with your phone. The phone's camera shows it as plain text. The text gives the "
+    "result, the disk and its serial number, the method and the time. No app or internet is "
     "needed. It is a summary, not a certificate. Anyone who sees the photo can "
     "read the disk's serial number."
 )
 REPORT_HELP_NEED = (
     "Saving the full report to a USB\n"
-    "Saving a report is optional. You need a separate removable FAT32 or exFAT USB device, "
-    "with one writable, unmounted volume. It must be different from the Beamo USB and "
+    "Saving a report is optional. You need a separate removable USB stick, formatted "
+    "FAT32 or exFAT. It must have one writable, unmounted volume. It must be different "
+    "from the Beamo USB and "
     "the disk you erase. NTFS, FAT12 and FAT16 are not supported. "
     "Beamo Wipe does not format or repair report media."
 )
 REPORT_HELP_INSERT = (
-    "Keep the report USB unplugged while choosing, confirming and erasing. Only "
-    "after the erase has stopped and the result screen offers Save report to USB, "
-    "insert exactly one report USB, then choose Save report to USB. Leave the "
-    "Beamo USB and the selected disk connected."
+    "Keep the report USB unplugged while you choose, confirm and erase. Wait "
+    "until the erase has stopped and the result screen offers Save report to USB. "
+    "Only then insert exactly one report USB. Then choose Save report to USB. "
+    "Leave the Beamo USB and the selected disk connected."
 )
 REPORT_HELP_STAGES = (
     "The result screen then guides you in five steps: 1. Insert the report USB. "
@@ -698,8 +699,8 @@ REPORT_HELP_CONTAINS = (
     "What the report contains\n"
     "{volatile} This checkbox remembers only your preference for this "
     "session. It does not choose media or save a report. If you request a report "
-    "and no verified export has completed, Shut down asks before discarding it. "
-    "A report is available only if the operation produced eligible evidence. "
+    "and it has no verified export, Shut down asks before discarding it. "
+    "If the operation produced no evidence that can be saved, there is no report. "
     "The original report (result.json and RESULT.txt) includes disk identifiers. "
     "A sharing copy (SHARE.json and SHARE.txt) omits serials, hardware IDs, "
     "device paths, and engine logs. Do not use the sharing copy where full "
@@ -707,8 +708,8 @@ REPORT_HELP_CONTAINS = (
 )
 REPORT_HELP_START = (
     "If the erase cannot start\n"
-    "If the erase cannot start, Diagnostic report has a separate flow: keep the "
-    "report USB unplugged for Prepare and insert it only when prompted. "
+    "If the erase cannot start, Diagnostic report has a separate flow. Keep the "
+    "report USB unplugged for Prepare. Insert it only when asked. "
     "Diagnostics are not erase evidence and do not establish that an erase ran."
 )
 
@@ -728,8 +729,8 @@ def _report_help_sections() -> tuple[str, ...]:
 REPORT_HELP_SECTIONS = _report_help_sections()
 REPORT_HELP_TEXT = "\n\n".join(REPORT_HELP_SECTIONS)
 REPORT_SHARE_REDACTED = (
-    "Also save a labeled sharing copy without serials, hardware IDs, device paths, "
-    "or engine logs. It is not identity evidence. The original report is kept."
+    "Also save a labeled sharing copy. It leaves out serials, hardware IDs, device "
+    "paths and engine logs. It is not identity evidence. The original report is kept."
 )
 
 REPORT_INSERT = (
@@ -754,8 +755,8 @@ REPORT_MEDIA_WANTED = (
     "Check disks again."
 )
 ADVANCED_LOG_LEAD = (
-    "Keep the separate FAT32 or exFAT report USB unplugged until the erase has stopped "
-    "and Save report to USB is offered. Then insert it before choosing Save. "
+    "Keep the separate FAT32 or exFAT report USB unplugged until the erase has stopped. "
+    "When Save report to USB is offered, insert it before choosing Save. "
     "Leave the Beamo USB and the selected disk connected. "
 )
 ADVANCED_LOG_TAIL = " Open Need a report? for requirements and safe removal."
@@ -983,16 +984,16 @@ HINT_REFRESH = "Esc keeps your answers. Enter checks disks again."
 # Guarded Check disks again (#136): from Confirm, Method and Review the
 # dialog defaults to Cancel; Enter and Esc keep the answers.
 REFRESH_GUARD_LEAD = (
-    "This clears your confirmations and you will start again from choosing "
+    "This clears your confirmations. You will start again from choosing "
     "a disk: you tick the ownership box again, then choose the disk."
 )
 REFRESH_THEN_READER = "Afterwards the screen-reader view opens."
 BTN_REFRESH_CANCEL = "Cancel"
 HINT_REFRESH_GUARD = "Enter or Esc keeps your answers. Tab to Check disks again to clear them."
 REFRESH_LEAD = (
-    "This clears the selected disk, the ownership acknowledgement, the typed "
-    "confirmation, the erase method, and the countdown. Preparation starts "
-    "again from the beginning."
+    "This clears the selected disk and unticks the ownership box. It also "
+    "clears the typed confirmation, the erase method and the countdown. "
+    "Preparation starts again from the beginning."
 )
 REFRESH_UTILITY_NOTE = "Check disks again (clears preparation)"
 HINT_DONE = "Enter requests shutdown."
@@ -1026,8 +1027,8 @@ MEDIA_STEP_RESTART = (
     "to come back here. Anything unsaved is still lost."
 )
 MEDIA_STEP_UNSURE = (
-    "If more than one USB is plugged in, or anything was unplugged and "
-    "plugged back in, do not guess which is which. Shut down first, then "
+    "Is more than one USB plugged in? Was anything unplugged and plugged "
+    "back in? Then do not guess which is which. Shut down first, then "
     "sort the USB sticks while the computer is off."
 )
 MEDIA_STEP_ANOTHER = (
@@ -1181,17 +1182,17 @@ DISK_HELP_TITLE = "Let's identify the disk first"
 DISK_HELP_STOP = "Stop and shut down"
 DISK_HELP_TEXT = """You do not need to choose now. No disk is selected while you read this help.
 
-The disk you want to erase may be inside this computer, an external disk, or a disk from another computer. Do not choose a disk just because it is listed here.
+The disk you want to erase may be inside this computer. It may also be an external disk or a disk from another computer. Do not choose a disk just because it is listed here.
 
-Compare the name or model, capacity, and serial or hardware ID with a trusted label or record for the disk you intend to erase. Use Show more in the disk list for technical details where available.
+Compare the name or model, capacity, and serial or hardware ID. Check them against a trusted label or record for the disk you intend to erase. Use Show more in the disk list for technical details where available.
 
 If disks look alike or have the same capacity, compare their serial or hardware ID. Size alone is not enough. If identity is missing, duplicated, or does not match your record, do not guess. Ask someone you trust to help identify the disk.
 
-Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo USB; the connection type alone does not identify a disk. The Beamo USB remains protected.
+Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo USB. The connection type alone does not identify a disk. The Beamo USB remains protected.
 
 Still unsure? Stop and shut down before checking labels or changing connections. Wait until the computer is fully off. Keep the Beamo USB for restarting. Do not disconnect hardware while this session is running.
 
-Back returns to the disk list with no disk selected. Continue only when you can identify the intended disk with confidence. You will still need to select it, type its confirmation, and wait through the final safety countdown."""
+Back returns to the disk list with no disk selected. Continue only when you are sure you can identify the disk to erase. You will still need to select it, type its confirmation, and wait through the final safety countdown."""
 
 STOP_TITLE = "Stop this erase?"
 STOP_ASK = "Stop erase"
@@ -1249,8 +1250,8 @@ SOUND_ORCA_MISSING = (
     "but nothing will be spoken until Orca returns."
 )
 SOUND_RECOVERY = (
-    "If you hear nothing: check that speakers or headphones are plugged in, "
-    "then choose each output in turn and play the speech test. Make sure sound "
+    "If you hear nothing, check that speakers or headphones are plugged in. "
+    "Then choose each output in turn and play the speech test. Make sure sound "
     "is not muted and the volume is up. Unplug extra USB sound devices and try "
     "again. If sound comes from the wrong place, choose a different output. "
     "If nothing works, shut down, check the connections, and start from the USB "
