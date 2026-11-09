@@ -833,6 +833,224 @@ def _soft_break_tokens(
     return "\n".join(out)
 
 
+# #177g: letter spacing for serial numbers and hardware IDs, about 0.1 em
+# (the web preview uses .06 em, GTK 0.75 pt): 1 px at 12-14 px text, 2 px
+# from 15 px (Large and Extra large text), 3 px from 25 px.
+SERIAL_TRACKING_EM = 0.1
+
+
+def _serial_tracking(px: int) -> int:
+    return max(1, int(abs(px) * SERIAL_TRACKING_EM + 0.5))
+
+
+def _serial_rows(
+    count: int, cols: int, keep: Iterable[tuple[int, int]] = ()
+) -> list[tuple[int, int]]:
+    """Split ``count`` characters into rows of at most ``cols``, in order.
+
+    Returns (start, end) offsets that cover 0..count exactly once. A row
+    never ends inside a ``keep`` run (the #129 confirmation characters, a
+    #152 differing run) that fits on a row of its own; the row ends before
+    the run instead. Characters are never dropped, repeated or reordered.
+    """
+    cols = max(1, int(cols))
+    runs = [(a, b) for a, b in keep if 0 <= a < b <= count]
+    rows: list[tuple[int, int]] = []
+    start = 0
+    while start < count:
+        end = min(count, start + cols)
+        if end < count:
+            for a, b in runs:
+                if a < end < b and b - a <= cols and a > start:
+                    end = a
+                    break
+        rows.append((start, end))
+        start = end
+    return rows or [(0, 0)]
+
+
+class _SerialFace(tk.Canvas):
+    """#177g: an identifier drawn one character per cell, with letter spacing.
+
+    Tk fonts have no tracking, and spaces or thin spaces would change the
+    text (and take a whole cell in a monospace font). Each character of
+    ``text`` is its own canvas text item, in order, ``tracking`` pixels
+    apart; nothing is ever inserted into the text. The #129 confirmation
+    characters (``token``) are bold, boxed and underlined and the #152
+    differing characters (``diff`` runs) bold and underlined on those same
+    items and cells, so a mark can only sit on its own character.
+
+    ``label`` is a plain Label with the exact text (row breaks only, as
+    before), placed under the canvas at the same size: text readers, the
+    layout checks and tests read it. If drawing fails, or the drawn
+    characters do not read back as exactly ``text``, the canvas is cleared
+    and the label is lifted into view: the plain identifier, never a wrong
+    or partial one.
+    """
+
+    def __init__(
+        self,
+        parent: tk.Misc,
+        text: str,
+        *,
+        font: tkfont.Font,
+        bold: tkfont.Font,
+        fg: str,
+        bg: str,
+        token: Optional[tuple[int, int]] = None,
+        diff: tuple[tuple[int, int], ...] = (),
+        width: int = 0,
+    ) -> None:
+        super().__init__(parent, bg=bg, bd=0, highlightthickness=0, takefocus=0,
+                         width=1, height=1)
+        self.text = text
+        self.font = font
+        self.bold = bold
+        self.fg = fg
+        self.token = token
+        self.diff = tuple(diff)
+        runs = ([token] if token is not None else []) + list(self.diff)
+        # Offsets outside the text can mark nothing safely: show it plain.
+        self.valid = all(0 <= a < b <= len(text) for a, b in runs)
+        self.rows: list[tuple[int, int]] = [(0, len(text))]
+        self.tracking = 1
+        self.plain = False
+        self._width = int(width)
+        self.label = tk.Label(parent, text=text, font=font, fg=fg, bg=bg,
+                              anchor="w", justify=tk.LEFT)
+        setattr(self.label, "_beamo_serial_face", self)
+        # Width follows the canvas; the height is the label's own, so a
+        # font change resizes it and the <Configure> below re-lays the cells.
+        self.label.place(in_=self, x=0, y=0, relwidth=1, bordermode="outside")
+        self.label.lower(self)
+        self.label.bind("<Configure>", self._relayout, add="+")
+
+    def _relayout(self, _event: Any = None) -> None:
+        if self._width > 0:
+            self.layout(self._width)
+
+    def _px(self, option: str) -> int:
+        # Distances can come back as Tcl objects (Debian 12's Tk 8.6.13).
+        return int(round(float(self.label.winfo_fpixels(str(self.label.cget(option))))))
+
+    def _metrics(self) -> tuple[int, int, int, int, int]:
+        edge = self._px("bd") + self._px("highlightthickness")
+        # The token box reaches 1 px left/right and 1 px above / 2 px below
+        # each row: keep at least that much room so it is never clipped.
+        inset_x = max(1, edge + self._px("padx"))
+        inset_y = max(2, edge + self._px("pady"))
+        cell = max(
+            max(self.font.measure(ch), self.bold.measure(ch)) for ch in set(self.text) or {"0"}
+        )
+        line = int(self.font.metrics("linespace"))
+        return inset_x, inset_y, cell, line, _serial_tracking(int(str(self.font.cget("size"))))
+
+    def layout(self, width: int) -> None:
+        """Break into rows for ``width`` px (the parent's), size and draw."""
+        self._width = int(width)
+        if self.plain:
+            self._fit_plain()
+            return
+        try:
+            if not self.valid:
+                raise ValueError("mark offsets outside the identifier")
+            inset_x, inset_y, cell, line, tracking = self._metrics()
+            pitch = cell + tracking
+            avail = max(1, self._width - 2 * inset_x - 4)
+            keep = ([self.token] if self.token is not None else []) + list(self.diff)
+            rows = _serial_rows(len(self.text), (avail + tracking) // pitch, keep)
+            shown = "\n".join(self.text[a:b] for a, b in rows)
+            if str(self.label.cget("text")) != shown:
+                self.label.configure(text=shown)
+            self._wrap_label()
+            longest = max(b - a for a, b in rows)
+            self.rows, self.tracking = rows, tracking
+            want_w = 2 * inset_x + max(0, longest * pitch - tracking)
+            want_h = 2 * inset_y + line * len(rows)
+            have = (int(float(str(self.cget("width")))), int(float(str(self.cget("height")))))
+            if have != (want_w, want_h):
+                self.configure(width=want_w, height=want_h)
+            self.paint(inset_x, inset_y, cell, line, tracking)
+        except (tk.TclError, TypeError, ValueError, IndexError):
+            self.show_plain()
+
+    def paint(self, inset_x: int, inset_y: int, cell: int, line: int, tracking: int) -> None:
+        self.delete("all")
+        pitch = cell + tracking
+        marked: set[int] = set()
+        for a, b in ([self.token] if self.token is not None else []) + list(self.diff):
+            marked.update(range(a, b))
+        for row, (start, end) in enumerate(self.rows):
+            y = inset_y + row * line
+
+            def span(a: int, b: int) -> Optional[tuple[int, int]]:
+                a, b = max(a, start), min(b, end)
+                if a >= b:
+                    return None
+                return inset_x + (a - start) * pitch, inset_x + (b - start) * pitch - tracking
+
+            box = span(*self.token) if self.token is not None else None
+            if box is not None:
+                # 1 px box, tint and a 2 px underline: a shape, not only colour.
+                x0, x1 = box
+                self.create_rectangle(x0 - 1, y - 1, x1 + 1, y + line + 2, fill=CONFIRM_MARK_BG,
+                                      outline=self.fg, width=1, tags=("token", "token_box"))
+                self.create_rectangle(x0 - 1, y + line, x1 + 1, y + line + 2, fill=self.fg,
+                                      outline="", tags=("token", "token_bar"))
+            for a, b in self.diff:
+                bar = span(a, b)
+                if bar is not None:
+                    self.create_rectangle(bar[0], y + line - 2, bar[1], y + line, fill=self.fg,
+                                          outline="", tags=("diff", f"diff{a}"))
+            for i in range(start, end):
+                self.create_text(
+                    inset_x + (i - start) * pitch + cell / 2, y, text=self.text[i], anchor="n",
+                    font=self.bold if i in marked else self.font, fill=self.fg,
+                    tags=("ch", f"ch{i}"),
+                )
+        # Read the drawn characters back: exactly the identifier, in order.
+        drawn = "".join(str(self.itemcget(item, "text")) for item in self.find_withtag("ch"))
+        if drawn != self.text or str(self.label.cget("text")).replace("\n", "") != self.text:
+            raise ValueError("drawn identifier differs from the text")
+        self.label.lower(self)
+
+    def drawn_text(self) -> str:
+        """The characters on the canvas, in drawing order (tests, evidence)."""
+        return "".join(str(self.itemcget(item, "text")) for item in self.find_withtag("ch"))
+
+    def show_plain(self) -> None:
+        """Fall back to the plain Label: whole identifier, no spacing, no marks."""
+        self.plain = True
+        try:
+            self.delete("all")
+            self.label.lift(self)
+        except tk.TclError:
+            pass
+        self._fit_plain()
+
+    def _wrap_label(self) -> None:
+        # As _wrapping_label: Tk's own wrap at the allocated width as a last
+        # guard. Every row above already fits it, so it never re-breaks.
+        wrap = max(1, self._width - 4)
+        if int(float(str(self.label.cget("wraplength")))) != wrap:
+            self.label.configure(wraplength=wrap)
+
+    def _fit_plain(self) -> None:
+        # As _wrapping_label: break only where the identifier cannot fit.
+        try:
+            if self._width > 0:
+                shown = _soft_break_tokens(self.text, self.font.measure, max(1, self._width - 4))
+                if str(self.label.cget("text")) != shown:
+                    self.label.configure(text=shown)
+                self._wrap_label()
+            want = (self.label.winfo_reqwidth(), self.label.winfo_reqheight())
+            have = (int(float(str(self.cget("width")))), int(float(str(self.cget("height")))))
+            if have != want:
+                self.configure(width=want[0], height=want[1])
+        except (tk.TclError, TypeError, ValueError):
+            pass
+
+
 def _label_line_cuts(widget: tk.Misc, top: float, height: float) -> tuple[float, ...]:
     """Offsets between the wrapped lines of a Label, where a view edge may cut.
 
@@ -3292,22 +3510,20 @@ class TkWizard:
                  fg=MUTED, bg=bg).pack(side=tk.LEFT, anchor="n", padx=(0, 8), pady=2)
         value = tk.Frame(identity, bg=bg)
         value.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        if view.comparison_marks and not token:
-            # #152: the serial in regular weight with the characters that
-            # differ from the similar disks bold and underlined (a shape,
-            # not only a colour). The label keeps the plain serial.
+        from beamo_wipe import identity as _identity
+
+        diff = () if token else view.comparison_marks
+        mark = (view.token_start, view.token_end) if token and view.token_end > view.token_start else None
+        if view.id_value == _identity.SERIAL_NOT_REPORTED and not diff and mark is None:
+            # Words, not an identifier: wrapped as prose, no letter spacing.
             ident = self._wrapping_label(value, view.id_value, font=self.font_mono, bg=bg)
-            setattr(ident, "_beamo_serial_marked", True)
-            self._mark_differences(ident, view.id_value, view.comparison_marks, bg)
-        else:
-            # #177: regular weight; the #129 token and #152 differences are
-            # drawn bold over it, so they stand out more than before. Tk has
-            # no letter spacing: DejaVu Sans Mono's dotted 0 and serifed 1/I/l
-            # keep the characters apart.
-            ident = self._wrapping_label(value, view.marked_id, font=self.font_mono, bg=bg)
             setattr(ident, "_beamo_serial", True)
-        if token and view.token_end > view.token_start:
-            self._mark_token(ident, view.id_value[view.token_start:view.token_end])
+        else:
+            # #177: regular weight. #177g: slight letter spacing, one cell per
+            # character; the #129 token (boxed, underlined) and the #152
+            # differing characters (underlined) are bold on their own cells.
+            ident = self._serial_value(value, view.id_value, bg=bg, token=mark, diff=diff)
+            setattr(ident, "_beamo_serial_marked" if diff else "_beamo_serial", True)
         for note in view.notes:
             self._wrapping_label(value, note, font=self.font_s, fg=MUTED, bg=bg)
         if self._show_more:
@@ -3325,150 +3541,34 @@ class TkWizard:
             )
         return meta
 
-    def _mark_differences(
-        self, label: tk.Label, serial: str, runs: tuple[tuple[int, int], ...], bg: str
-    ) -> None:
-        """Bold and underline the characters at ``runs`` of ``serial`` in ``label`` (#152).
+    def _serial_value(
+        self,
+        parent: tk.Widget,
+        text: str,
+        *,
+        bg: str,
+        token: Optional[tuple[int, int]] = None,
+        diff: tuple[tuple[int, int], ...] = (),
+    ) -> tk.Label:
+        """A serial number or hardware ID with letter spacing and marks (#177g).
 
-        Same technique as the token mark: copies of those characters in the
-        bold monospace font sit exactly over them (monospace: same advance),
-        each with a 2 px underline inside its own line box. Placement follows
-        the label's wrapping. If the shown text no longer maps character for
-        character onto ``serial`` (or Tk wrapped it natively), every mark is
-        hidden: a mark must never sit on other characters.
+        Wraps to the allocated width like ``_wrapping_label`` (row breaks
+        only, between characters; a marked run is kept on one row when it
+        fits). Returns the plain Label that carries the exact text; the
+        drawn characters are on ``label._beamo_serial_face``.
         """
-        base = self.font_mono
-        bold = self.font_mono_bold
-        pool: list[tuple[tk.Frame, tk.Label]] = []
+        base = max(200, self.lay.wrap - 120)
+        face = _SerialFace(parent, text, font=self.font_mono, bold=self.font_mono_bold,
+                           fg=INK, bg=bg, token=token, diff=diff, width=base)
+        face.pack(fill=tk.X)
+        face.layout(base)
 
-        def hide_all() -> None:
-            for frame, _chars in pool:
-                try:
-                    frame.place_forget()
-                except tk.TclError:
-                    pass
+        def fit(event) -> None:
+            if int(event.width) != face._width:
+                face.layout(int(event.width))
 
-        def segments() -> Optional[list[tuple[int, int, str]]]:
-            shown = str(label.cget("text"))
-            where: list[tuple[int, int]] = []
-            line = col = 0
-            for ch in shown:
-                if ch == "\n":
-                    line, col = line + 1, 0
-                    continue
-                if len(where) >= len(serial) or ch != serial[len(where)]:
-                    return None
-                where.append((line, col))
-                col += 1
-            if len(where) != len(serial):
-                return None
-            out: list[tuple[int, int, str]] = []
-            for a, b in runs:
-                if not (0 <= a < b <= len(serial)):
-                    return None
-                start = a
-                for i in range(a + 1, b + 1):
-                    if i == b or where[i][0] != where[start][0]:
-                        out.append((where[start][0], where[start][1], serial[start:i]))
-                        start = i
-            return out
-
-        def place(_event=None) -> None:
-            try:
-                parts = segments()
-                lines = str(label.cget("text")).split("\n")
-
-                def px(option: str) -> int:
-                    return int(round(float(label.winfo_fpixels(str(label.cget(option))))))
-
-                edge = px("bd") + px("highlightthickness")
-                linespace = base.metrics("linespace")
-                height = label.winfo_height()
-                inner = height - 2 * (edge + px("pady"))
-                if parts is None or abs(inner - linespace * len(lines)) > linespace // 2:
-                    hide_all()
-                    return
-                left = edge + px("padx")
-                top = max(edge, (height - linespace * len(lines)) // 2)
-                while len(pool) < len(parts):
-                    frame = tk.Frame(label.master, bg=bg, bd=0, highlightthickness=0)
-                    chars = tk.Label(frame, text="", font=bold, fg=INK, bg=bg,
-                                     bd=0, padx=0, pady=0, highlightthickness=0, anchor="w")
-                    chars.place(x=0, y=0, relwidth=1, relheight=1)
-                    bar = tk.Frame(frame, bg=INK, height=2, bd=0, highlightthickness=0)
-                    bar.place(x=0, rely=1, y=-2, relwidth=1, height=2)
-                    setattr(frame, "_beamo_serial_mark", True)
-                    pool.append((frame, chars))
-                for index, (frame, chars) in enumerate(pool):
-                    if index >= len(parts):
-                        frame.place_forget()
-                        continue
-                    row, col, text = parts[index]
-                    chars.configure(text=text)
-                    setattr(frame, "_beamo_mark_text", text)
-                    x = left + base.measure(lines[row][:col])
-                    y = top + linespace * row
-                    frame.place(in_=label, x=x, y=y, width=base.measure(text), height=linespace,
-                                bordermode="outside")
-                    frame.lift(label)
-            except (tk.TclError, TypeError, ValueError, IndexError):
-                hide_all()
-
-        label.bind("<Configure>", place, add="+")
-        label.after_idle(place)
-
-    def _mark_token(self, label: tk.Label, tail: str) -> None:
-        """Box and underline ``tail``, the end of the identifier in ``label``.
-
-        The label keeps the whole identifier as one string (readout, wrapping,
-        evidence). A copy of its ending in the same monospace font sits exactly
-        over those characters, inside a 1 px box with a 2 px underline, so the
-        mark is a shape as well as a colour. It follows wrapping: the ending
-        is always at the end of the label's last line.
-        """
-        font = self.font_mono_bold
-        mark = tk.Frame(label.master, bg=INK, bd=0, highlightthickness=0)
-        chars = tk.Label(mark, text=tail, font=font, fg=INK, bg=CONFIRM_MARK_BG,
-                         bd=0, padx=0, pady=0, highlightthickness=0)
-        chars.pack(padx=1, pady=(1, 0))
-        tk.Frame(mark, bg=INK, height=2, bd=0, highlightthickness=0).pack(fill=tk.X)
-        setattr(mark, "_beamo_token_mark", True)
-        setattr(chars, "_beamo_token_mark", True)
-
-        def place(_event=None) -> None:
-            try:
-                lines = str(label.cget("text")).splitlines() or [""]
-                last = lines[-1]
-                if not last.casefold().endswith(tail.casefold()):
-                    mark.place_forget()
-                    return
-                # Distances can come back as Tcl objects (Debian 12's Python
-                # 3.11 and Tk 8.6.13), which float() rejects; Tk converts its
-                # own distance text, units included.
-                def px(option: str) -> int:
-                    return int(round(float(label.winfo_fpixels(str(label.cget(option))))))
-
-                edge = px("bd") + px("highlightthickness")
-                left = edge + px("padx")
-                line = font.metrics("linespace")
-                height = label.winfo_height()
-                top = max(edge, (height - line * len(lines)) // 2)
-                x = left + font.measure(last[: len(last) - len(tail)]) - 1
-                y = top + line * (len(lines) - 1) - 1
-                # Offsets above already include the label's border.
-                mark.place(in_=label, x=x, y=y, width=font.measure(tail) + 2, height=line + 3,
-                           bordermode="outside")
-                mark.lift(label)
-            except (tk.TclError, TypeError, ValueError):
-                # No safe position: hide the mark rather than retire the
-                # wizard. A stale mark must never sit on other characters.
-                try:
-                    mark.place_forget()
-                except tk.TclError:
-                    pass
-
-        label.bind("<Configure>", place, add="+")
-        label.after_idle(place)
+        parent.bind("<Configure>", fit, add="+")
+        return face.label
 
     def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False,
                       token: bool = False, caption_text: Optional[str] = None,
