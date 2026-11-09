@@ -33,6 +33,11 @@ def session(monkeypatch, tmp_path):
         "beamo_wipe.app._shutdown",
     ):
         monkeypatch.setattr(target, forbidden)
+    # #133's Working-screen finish-sound probe asks sound._on_live(), which
+    # reads the kernel command line on Linux. This is not the live USB; say
+    # so directly so the probe makes no native read (read_cmdline stays
+    # forbidden for every other path).
+    monkeypatch.setattr("beamo_wipe.sound._on_live", lambda: False)
     original_lstat = os.lstat
     fake_nodes = {
         "/dev/" + name: index

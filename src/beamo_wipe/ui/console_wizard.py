@@ -2190,9 +2190,15 @@ def _loop(stdscr, wizard: Wizard) -> int:
             report = wizard.report_view
             sections = recovery_for_view(wizard.result_view)
             # First 80x24 page keeps the pre-#107 landmarks: outcome, next
-            # step, post-erase note, Report status, then paged aftercare.
-            # Disk identity stays reachable; support/meaning follow in the tail.
+            # step, where to get help when it is needed, post-erase note,
+            # the report panel heading and (once saved) that the report USB
+            # can be removed; then paged aftercare. Disk identity stays
+            # reachable; the support code and meaning follow in the tail.
             error_report = bool(report.evidence_error) or report.status == "error"
+            # The help destination follows the step that says to contact
+            # support, as on Tk (#134); the result card (#171), F10 line
+            # (#175) and longer steps (#135) pushed it below the first page.
+            support = _lines(C.support_text(), w) if wizard.done_support_needed else []
             lines = []
             if wizard.selected and not error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
@@ -2204,6 +2210,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_result_card_lines(wizard, w))  # #171
                 for line in _what_next_lines(plain):
                     lines.extend(_lines(line, w))
+                lines.extend(support)
             else:
                 # Failures: the exact status message (What happened) under
                 # the plain title, unless they are the same (preview).
@@ -2211,15 +2218,21 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     lines.extend(_lines(wizard.method_result, w))
                 lines.extend(_result_card_lines(wizard, w))  # #171
                 lines.extend(_lines(wizard.result_view.next_step, w))
+                lines.extend(support)
                 if may_have_erased(wizard.result_view.code):
                     lines.extend(_lines(C.POST_ERASE_BOOT, w))
             lines.extend(_lines(C.REPORT_STATUS_TITLE, w))
-            for panel_line in _panel_lines(wizard, wizard.report_panel):
+            panel = wizard.report_panel
+            panel_lines = _panel_lines(wizard, panel)
+            if panel.kind == "saved" and panel_lines:
+                # The saved panel's removal step comes after the receipt,
+                # several rows down. Say it under the headline too so the
+                # first 80x24 page still says the report USB can come out.
+                panel_lines.insert(1, C.REPORT_STEP_REMOVE_NOW)
+            for panel_line in panel_lines:
                 lines.extend(_lines(panel_line, w))
             if wizard.selected and error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            if wizard.done_support_needed:
-                lines.extend(_lines(C.support_text(), w))
             ident = _support_identity_text(wizard)
             if ident:
                 lines.extend(_lines(ident, w))

@@ -180,6 +180,12 @@ def test_plain_loop_ctrl_c_while_working_cancels(monkeypatch):
             if _Time.calls == 1:
                 raise KeyboardInterrupt
 
+        @staticmethod
+        def monotonic():
+            # The Working loop paces spoken progress with time.monotonic()
+            # (#132); a fixed clock keeps this test about Ctrl-C only.
+            return 0.0
+
     monkeypatch.setattr(C, "time", _Time)
     monkeypatch.setattr(
         "builtins.input", lambda _prompt="": (wiz.shutdown(), "x")[1]
