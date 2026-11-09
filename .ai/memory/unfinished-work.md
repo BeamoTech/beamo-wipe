@@ -6187,3 +6187,24 @@ another very thorough and comprehensive pass of this." Repo
 - Placement treated as covered by the owner's option (b). FOLLOW-UP
   (pre-existing, not changed): collapsed GTK expander content stays
   Tab-reachable at 1 px height (all expanders #141/#146/#160/#161/#158).
+
+## BW-INT-20261107 — final local gate before the hosted run (2026-11-09, lead)
+
+- Full Linux 72 DPI run on e1f9634 (all merges incl. #181 and #158c;
+  private XDG_RUNTIME_DIR; /home/beamo-qual/bw-linux-20261107/out/
+  int-e1f9634.log): 64 failed / 14973 passed / 478 skipped (0:54:59).
+  62 failures identical to main 58c677f (CI-evidence/receipt/release-
+  manifest tests that need .git and CI files in an archive copy;
+  slow_sound_discovery). 2 not on main, both intermittent test races:
+  test_laptop_power_ui[size3-working] (settle loop watched the wrong
+  attribute) and test_held_space_from_save_cannot_repeat_onto_shutdown
+  (late Done redraw). ff0e33d stabilises both (test-only); in WSL: 3
+  consecutive passes, then all of test_tk_runtime.py +
+  test_laptop_power_ui.py pass in one run.
+- Windows: ruff (src, tests, developer_tests, CI security sets), ruff
+  format check, mypy --platform linux (61 files), compileall: clean. Go:
+  vet + `go test ./...` ok on Windows; linux/darwin vet + test build ok.
+- NEXT: push integrate/ui-review-20261107; fast-forward PR 94's branch
+  fix/release-readiness-20261026 from 9c16e13 to this head (the single
+  owner-approved hosted ci.yml run via pull_request); update the PR body;
+  read every review comment and fix valid points.
