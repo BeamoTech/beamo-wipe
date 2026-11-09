@@ -167,6 +167,8 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "kind": disk.kind.value,
                 "kindLabel": view.kind_chip,
                 "storageNotice": limits.notice(disk.kind),
+                # #158: the Method screen's one line for this disk's kind.
+                "storageLine": limits.line(disk.kind),
                 # #159: each method card's time line for this disk.
                 "methodTimes": {
                     mid.value: C.method_time_line(mid, disk)
@@ -488,6 +490,7 @@ def _help_menu_payload() -> dict:
         "shortcutsTitle": C.MENU_SHORTCUTS,
         "common": C.MENU_SHORTCUTS_COMMON,
         "refresh": C.MENU_SHORTCUTS_REFRESH,
+        "limits": C.MENU_SHORTCUTS_LIMITS,
         "menuKeys": C.MENU_SHORTCUTS_MENU,
         "contrastOn": C.MENU_HIGH_CONTRAST_ON,
         "contrastOff": C.MENU_HIGH_CONTRAST_OFF,
@@ -656,6 +659,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "mediaSteps": C.media_steps(),
         "mediaStepsAnother": C.media_steps(stay_in_session=True),
         "limitsButton": limits.BUTTON,
+        "limitsLineSsd": limits.LINE_SSD,
         "limitsText": limits.full_text(),
         "previewBanner": C.PREVIEW_BANNER,
         "splash": C.SPLASH_TAGLINE,
@@ -1404,6 +1408,12 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .meta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; }
   .connection { grid-column: 1 / -1; }
   .compact-notice { padding: 8px 16px; font-size: 14px; }
+  /* #158: one limits line between the disk and the method cards. */
+  .limitsline { display: flex; gap: 8px; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 5px 12px; margin: 6px 0; font-size: 14px; line-height: 1.4; }
+  .limitsline svg { flex: none; margin-top: 1px; }
+  .limitsline .grow { flex: 1; min-width: 0; }
+  .limitsline .sevword { color: var(--primary); font-weight: 700; }
+  .limitsline .linkbtn { flex: none; font-size: 14px; }
   .card .meta .ser { display: block; }
   .page, .shell, .body, .col { min-width: 0; }
   @media (max-width: 1000px) { .hdr { padding: 0 16px; } }
@@ -1523,6 +1533,7 @@ let demoFrac = null;
 let progressKey = "";
 let showMore = false;
 let methodMore = new Set();
+let limitsMore = false;
 
 document.getElementById("stripe").textContent = P.previewBanner;
 document.getElementById("brand").textContent = P.app;
@@ -1628,6 +1639,7 @@ function boot(m) {
   progressKey = "";
   showMore = false;
   methodMore = new Set();
+  limitsMore = false;
   if (timer) clearInterval(timer);
   draw();
 }
@@ -1888,7 +1900,7 @@ function refreshPreview() {
   if (["working", "done", "splash"].includes(screen)) return;
   if (timer) clearInterval(timer);
   timer = null; selected = null; token = ""; owner = false;
-  method = "everyday"; tLeft = 5; showMore = false; methodMore = new Set(); demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
+  method = "everyday"; tLeft = 5; showMore = false; methodMore = new Set(); limitsMore = false; demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
   draw();
 }
 function headerCaption(info) {
@@ -2194,7 +2206,15 @@ function draw() {
     cont.id = "cont";
     btnsR.append(cont);
   } else if (screen === "method") {
-    let html = `<h1 class="compact sub">${P.titles.method}</h1><p class="subtitle" style="margin-bottom:6px">${P.methodLead}</p>${selected ? summaryCard(selected) + moreLink("more-detail") : ""}<div id="storage-notice" role="note">${panel("limits", selected ? selected.storageNotice : P.ssd, true)}</div><button id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button><div class="cz"><div class="czc">`;
+    // #158: one plain limits line between the disk and the cards; Show
+    // more puts the full, unchanged notice in its place and adds Storage
+    // limits (L) (owner, 2026-11-08). The L key opens the full page in both
+    // states. View only: never chooses a method.
+    const limitsLine = () => {
+      const text = limitsMore ? (selected ? selected.storageNotice : P.ssd) : (selected ? selected.storageLine : P.limitsLineSsd);
+      return `<div class="limitsline" role="note">${badge("limits", 20)}<div class="grow" id="storage-notice"><span class="sevword">${esc(P.sevLimits)}:</span> ${esc(text)}</div><button type="button" class="linkbtn" id="limits-more" aria-expanded="${limitsMore}" aria-controls="storage-notice" aria-label="${esc((limitsMore ? P.buttons.less : P.buttons.more) + ": " + P.sevLimits)}">${limitsMore ? P.buttons.less : P.buttons.more}</button>${limitsMore ? `<button type="button" id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button>` : ""}</div>`;
+    };
+    let html = `<h1 class="compact sub">${P.titles.method}</h1><p class="subtitle" style="margin-bottom:6px">${P.methodLead}</p>${selected ? summaryCard(selected) + moreLink("more-detail") : ""}${limitsLine()}<div class="cz"><div class="czc">`;
     ["everyday","extra","quick_zero"].forEach(id => {
       const m = P.methods[id];
       const sel = method === id;
@@ -2234,7 +2254,13 @@ function draw() {
         }
       };
     });
-    main.querySelector("#limits").onclick = () => { screen = "limits"; draw(); };
+    // Present only with the limits line opened (#158).
+    main.querySelector("#limits")?.addEventListener("click", () => { screen = "limits"; draw(); });
+    main.querySelector("#limits-more").onclick = () => {
+      limitsMore = !limitsMore;
+      draw();
+      main.querySelector("#limits-more")?.focus();
+    };
     // #159: Show more is view-only; it never chooses a method.
     main.querySelectorAll(".methodmore").forEach(b => {
       b.onclick = (e) => {
@@ -2314,7 +2340,7 @@ function draw() {
     main.innerHTML = `<h1>${P.limitsTitle}</h1><div id="limits-text" class="help-reader" role="region" aria-label="${esc(P.limitsTitle)}" tabindex="0"></div>`;
     main.querySelector("#limits-text").textContent = P.limitsText;
     main.querySelector("#limits-text").focus();
-    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); main.querySelector("#limits").focus(); }));
+    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus(); }));
   } else if (screen === "advanced") {
     let html = `<h1 class="compact sub">${P.titles.advanced}</h1><p class="subtitle" style="margin-bottom:6px">${P.advancedLead}</p><div class="cz"><div class="czc"><div class="card hero" style="padding:12px 20px">`;
     ["everyday","extra","quick_zero"].forEach(id => {
@@ -2502,6 +2528,7 @@ function helpShortcutLines() {
   const hint = document.getElementById("hint").textContent.trim();
   if (hint && screen !== "splash") lines.push(hint);
   lines.push(P.helpMenu.common);
+  if (screen === "method") lines.push(P.helpMenu.limits);  // #158
   if (typeof REFRESH_OFFERED !== "undefined" && REFRESH_OFFERED.includes(screen)) lines.push(P.helpMenu.refresh);
   lines.push(P.helpMenu.menuKeys);
   return lines;
@@ -2695,7 +2722,7 @@ document.addEventListener("keydown", e => {
   if (screen === "method" && e.key.toLowerCase() === "l") {
     e.preventDefault(); screen = "limits"; draw();
   } else if (screen === "limits" && e.key === "Escape") {
-    e.preventDefault(); screen = "method"; draw(); main.querySelector("#limits").focus();
+    e.preventDefault(); screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus();
   }
 });
 function renderOtherDevices() {

@@ -877,6 +877,11 @@ class AccessibleWizard:
         elif screen == Screen.METHOD:
             heading.set_text(C.TITLE_METHOD)
             self.identity()
+            # #158: one storage limits line between the disk and the
+            # choices, as on every view; the full notice is under its Show
+            # more after the choices (one line here keeps all three radios
+            # above the footer at 800x600).
+            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_line}", focusable=True)
             group = None
             guides = []
             for method, spec in METHODS.items():
@@ -911,10 +916,21 @@ class AccessibleWizard:
                     if widget.get_active() and generation == self.generation
                     else None,
                 )
-            # The general storage limits follow the choices (the next Tab
-            # stop after them): above the radios this notice pushed the third
-            # choice under the footer at 800x600 for hard disks and German.
-            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
+            # The full storage limits notice follows the choices (the next
+            # Tab stop after them) under Show more (#158): above the radios
+            # it pushed the third choice under the footer at 800x600 for
+            # hard disks and German. Same text as before, unchanged.
+            limits_more = Gtk.Expander.new(C.BTN_MORE)
+            limits_more.set_expanded(False)
+            limits_more.get_accessible().set_name(f"{C.BTN_MORE}: {C.SEVERITY_LIMITS}")
+            notice_text = Gtk.Label(label=f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}")
+            notice_text.set_line_wrap(True)
+            notice_text.set_xalign(0)
+            notice_text.set_max_width_chars(70)
+            notice_text.set_can_focus(True)
+            notice_text.set_selectable(True)
+            limits_more.add(notice_text)
+            self.body.pack_start(limits_more, False, False, 4)
             for text in guides:
                 self.label(text)
             for spec in METHODS.values():
@@ -1371,6 +1387,8 @@ class AccessibleWizard:
 
     def _help_shortcut_lines(self) -> list[str]:
         lines = [C.MENU_SHORTCUTS_COMMON]
+        if self.w.screen == Screen.METHOD:
+            lines.append(C.MENU_SHORTCUTS_LIMITS)  # #158
         if self.w.refresh_offered:
             lines.append(C.MENU_SHORTCUTS_REFRESH)
         lines.append(C.MENU_SHORTCUTS_MENU)

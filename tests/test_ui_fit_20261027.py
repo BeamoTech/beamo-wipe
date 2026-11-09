@@ -293,9 +293,10 @@ def test_first_method_card_is_visible_without_scrolling(tk_app, code, size, prev
         assert _extent(lead, canvas)[1] <= view, (_extent(lead, canvas), view)
     else:
         assert bottom <= view, (top, bottom, view)
-    # Limits stay on the screen, after the choices; each card keeps its own note.
+    # Limits stay on the screen as one line above the choices (#158; Show
+    # more opens the full notice); each card keeps its own note.
     shown = [str(w.cget("text")) for w in _descendants(app._body_inner) if w.winfo_class() == "Label"]
-    assert wiz.storage_notice in shown
+    assert f"{C.SEVERITY_LIMITS}: {wiz.storage_line}" in shown
     _assert_actions_on_window(app)
     assert not wiz.runner.started
 
