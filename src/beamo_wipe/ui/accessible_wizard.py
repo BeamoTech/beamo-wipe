@@ -1839,9 +1839,17 @@ class AccessibleWizard:
         ):
             self._sync_finish_sound()
         if (
+            self.shown == self.w.screen == Screen.DONE
+            and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0)
+        ):
+            # Done shows no sound state (#135: the Sound check utility holds
+            # it), so a finish-sound play, repeat or availability answer
+            # (#133) must not rebuild the result a screen reader is reading.
+            self.sound_revision = getattr(self.w, "sound_revision", 0)
+        if (
             self.shown != self.w.screen
             or self.report_revision != self.w.report_view.revision
-            or (self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
+            or (self.w.screen == Screen.WORKING and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
         ):
             self.render()
         else:

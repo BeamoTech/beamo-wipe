@@ -509,3 +509,47 @@ def test_tk_key_or_click_on_the_result_stops_repeats(live_ui):
     assert wiz._finish_plays == 1 and not wiz._finish_ack
     app._on_key(type("E", (), {"keysym": "a", "state": 0, "char": "a"})())
     assert wiz._finish_ack is True
+
+
+# --- Rendered GTK ----------------------------------------------------------------
+
+
+def test_gtk_done_is_not_rebuilt_by_finish_sound_updates(monkeypatch):
+    """A finish-sound play, repeat or availability answer must not rebuild
+    the GTK result a screen reader is reading (#133 with #135: Done shows
+    no sound state). Real Orca lost result announcements to these rebuilds."""
+    pytest.importorskip("gi")
+    from beamo_wipe.ui.accessible_wizard import AccessibleWizard
+    from test_accessible_runtime import drain
+
+    monkeypatch.setattr(sound, "play_test", lambda _kind: sound.SoundResult(True, ""))
+    wiz = _done()
+    app = AccessibleWizard(wiz)
+    try:
+        drain()
+        app.tick()
+        drain()
+        assert app.shown is Screen.DONE
+        children = list(app.body.get_children())
+        renders = []
+        original = app.render
+
+        def counted(*args, **kwargs):
+            renders.append(True)
+            return original(*args, **kwargs)
+
+        monkeypatch.setattr(app, "render", counted)
+        for _ in range(3):
+            wiz.sound_revision += 1
+            app.tick()
+            drain()
+        assert renders == []
+        assert list(app.body.get_children()) == children
+        assert app.sound_revision == wiz.sound_revision
+        # A real change to the result still redraws it.
+        wiz._report_revision += 1
+        app.tick()
+        drain()
+        assert renders
+    finally:
+        app.close()
