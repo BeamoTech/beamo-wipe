@@ -2257,6 +2257,18 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     lines.extend(_lines(f"{C.SEVERITY_WARNING}: {alert}", w))
             for record_line in _record_lines(wizard):
                 lines.extend(_lines(record_line, w))
+            # When the result pages, the pager's own "More below. Use Up and
+            # Down." already says how to read on, so the footer's read hint
+            # would say it twice. Give that row to the first page instead:
+            # with the help destination (#134) on page 1, longer languages
+            # otherwise lose the Save a report heading below the fold.
+            read_hint = _lines(C.CON_DONE_READ, w)
+            if len(lines) > y_max - y and read_hint:
+                for start in range(len(footer) - len(read_hint) + 1):
+                    if footer[start:start + len(read_hint)] == read_hint:
+                        footer = footer[:start] + footer[start + len(read_hint):]
+                        y_max = max(1, h - len(footer))
+                        break
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         _paint_footer(stdscr, footer)
         stdscr.refresh()
