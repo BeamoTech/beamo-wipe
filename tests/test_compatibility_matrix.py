@@ -610,9 +610,9 @@ def test_matrix_live_build_uses_https_and_bootloaders():
     # Compare whole mirror URLs as written in the build script, not substrings.
     import re
 
-    mirrors = set(re.findall(r"https://[^\s\"'\\]+", inside))
-    assert "https://deb.debian.org/debian/" in mirrors
-    assert "https://security.debian.org/" in mirrors
+    mirrors = re.findall(r"https://[^\s\"'\\]+", inside)
+    for expected in ("https://deb.debian.org/debian/", "https://security.debian.org/"):
+        assert any(url == expected for url in mirrors), (expected, mirrors)
     assert "--bootloaders syslinux,grub-efi" in inside
     assert '--bootappend-live "boot=live components' in inside
     assert "nox11autologin" in inside
