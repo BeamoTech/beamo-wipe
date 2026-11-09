@@ -158,6 +158,40 @@ def _walk(widget):
         yield from _walk(child)
 
 
+@pytest.mark.parametrize("size,text_size,keys", [((800, 600), "extra", False),
+                                                  ((1280, 820), "standard", True)])
+def test_tools_drop_key_names_only_when_the_line_is_full(size, text_size, keys):
+    """Linux 72 DPI (2026-11-08): at 800x600 Extra large the full tools line
+    ("Check disks again (F5)", "Screen-reader view (F8)") wrapped into a
+    third footer row. The tools then drop their key names; the Keyboard
+    shortcuts page beside them still names F5 and F8. Roomy windows keep
+    the key names. Every tool stays in the footer either way."""
+    import sys
+
+    from beamo_wipe.ui.tk_wizard import _Button
+
+    if not keys and not sys.platform.startswith("linux"):
+        pytest.skip("measured with the live image's Linux fonts at 72 DPI")
+    app = _tk(_at("confirm", text_size), size)
+    try:
+        tools = [str(b.itemcget(b._label, "text")) for b in _walk(app._footer)
+                 if isinstance(b, _Button) and b._variant == "quiet" and b.winfo_ismapped()]
+        refresh = C.BTN_REFRESH_UTILITY if keys else C.BTN_REFRESH_UTILITY.replace(" (F5)", "")
+        assert tools[:3] == [C.MENU_TITLE, C.MENU_SHORTCUTS, refresh]
+        if sys.platform.startswith("linux"):
+            reader = C.SCREEN_READER_VIEW if keys else C.SCREEN_READER_VIEW.replace(" (F8)", "")
+            assert tools[3:] == [reader]
+        assert all(("(F" in text) == keys for text in tools[2:])
+        lines = app._help_shortcut_lines()
+        assert C.MENU_SHORTCUTS_REFRESH in lines
+        assert "F5" in C.MENU_SHORTCUTS_REFRESH
+        if sys.platform.startswith("linux"):
+            assert C.MENU_SHORTCUTS_READER in lines and "F8" in C.MENU_SHORTCUTS_READER
+        assert _footer_rows(app) <= 2
+    finally:
+        app._teardown()
+
+
 def test_web_preview_has_the_shortcuts_item_and_no_hint_row():
     from beamo_wipe.gallery import gallery_html
 

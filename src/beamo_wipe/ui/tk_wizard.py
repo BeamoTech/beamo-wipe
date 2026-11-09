@@ -269,6 +269,10 @@ def _step_order() -> dict:
 # itself is copy.journey_step_caption (#130).
 _STEP_ORDER = _step_order()
 
+# A footer utility's trailing key name, "(F5)" / "(F8)" in every language;
+# dropped only when the tools line would otherwise wrap (#174).
+_FOOTER_KEY_NAME = re.compile(r"\s*\(F\d+\)$")
+
 # Spans of hint copy that render as key-caps instead of plain text.
 # Whole words only: Spanish "Escriba" must not become an Esc cap plus "riba".
 _KEY_TOKEN_RE = re.compile(r"\b(Left/Right|Up/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)\b")
@@ -2158,6 +2162,10 @@ class TkWizard:
             or self.w.screen in {
                 Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE,
                 Screen.WORKING, Screen.DONE, Screen.DIAGNOSTIC, Screen.KEYBOARD,
+                # A long identity plus the wrong-entry keyboard help (#155)
+                # can outgrow even a large window; scroll rather than squeeze
+                # the help's Change button.
+                Screen.CONFIRM,
             }
         ):
             return
@@ -3542,9 +3550,28 @@ class TkWizard:
         tool_row = tk.Frame(tools, bg=FOOTER_BG)
         tool_row.pack(anchor="w")
         tool_width = 0
+        # #174: the footer is two rows (tools, then actions). When the whole
+        # tools line would not fit (larger text on a small window), the
+        # utilities drop their "(F5)"/"(F8)" key names, which the Keyboard
+        # shortcuts page beside them lists, before wrapping to a second line.
+        tool_texts = [C.MENU_TITLE, C.MENU_SHORTCUTS]
+        if self.w.refresh_offered:
+            tool_texts.append(C.BTN_REFRESH_UTILITY)
+        if (self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM
+                and sys.platform.startswith("linux")):
+            tool_texts.append(C.SCREEN_READER_VIEW)
+        if self.w.can_open_diagnostic:
+            tool_texts.append(C.DIAGNOSTIC_TITLE)
+        if self.w.screen == Screen.DONE:
+            tool_texts.append(C.SOUND_HEAR_AGAIN)
+        # A compact quiet button is its text plus 2 * 12 padding and 6 px of
+        # edge, packed with 4 px between tools (see utility below).
+        drop_keys = sum(self.font_s.measure(t) + 2 * 12 + 6 + 4 for t in tool_texts) > self.lay.content_w
 
         def utility(text: str, command: Callable[[], None]) -> _Button:
             nonlocal tool_row, tool_width
+            if drop_keys:
+                text = _FOOTER_KEY_NAME.sub("", text)
             button = _Button(tool_row, text=text, font=self.font_s, command=command,
                              variant="quiet", compact=True)
             width = button.winfo_reqwidth() + 4
@@ -3638,7 +3665,9 @@ class TkWizard:
 
     def _footer_left_parent(self, row: tk.Frame, width: int) -> tk.Frame:
         """Next left-action row that still leaves room for the primary."""
-        budget = max(280, self.lay.content_w - 168)
+        # A footer without a primary on the right (Working) may use the
+        # whole width before wrapping.
+        budget = getattr(row, "_left_budget", 0) or max(280, self.lay.content_w - 168)
         used = getattr(row, "_left_width", 0)
         if used and used + width > budget:
             left = tk.Frame(row._left_host, bg=FOOTER_BG)  # type: ignore[attr-defined]
@@ -6612,6 +6641,10 @@ class TkWizard:
             )
         # Stopping is always reachable, with consent before signalling.
         row = self._footer_shell(C.HINT_WORKING)
+        # No primary sits on the right of Working's footer: Stop, the finish
+        # sound check and Hear sounds share one row instead of wrapping into
+        # a third footer row at larger text (#174's two-row footer).
+        row._left_budget = self.lay.content_w  # type: ignore[attr-defined]
         self._secondary_btn(row, C.STOP_ASK, self._click_cancel)
         self._finish_sound_toggle(row)
         self._link_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
