@@ -6089,3 +6089,40 @@ another very thorough and comprehensive pass of this." Repo
   S-set, mypy (61 files) clean; 7 new-feature test files pass. Linux 72 DPI
   on the merged tree still to run. Owner: native review of the new locale
   strings; sign-off on prominence vs docs/claims.md / Ref #18.
+
+## BW-INT-20261107 — 2026-11-09 integration verification round (lead)
+
+- Full Linux 72 DPI run on 7267153 (all merges except #158; private
+  XDG_RUNTIME_DIR): 72 failed / 14878 passed / 478 skipped (1:18:22); 62
+  of the 72 also fail on main (no-.git copy, receipts). 10 new, all
+  integration interactions between separately merged branches:
+  * console 80x24 Done (de/it verification_failed lost the Save a report
+    heading; report-error step off page 1) after 29e103c put the help
+    destination on page 1 -> 4a99b82 drops the duplicate footer read hint
+    ("Up/Down, PgUp/PgDn: read aftercare.") only when the result pages
+    (the pager's "More below. Use Up and Down." stays). 10 console files
+    pass in WSL.
+  * test_canvas_layout negative control and test_tk_runtime serial markers
+    read #152 overlay labels that #177g replaced -> 0c33c90 updates both
+    (checker still reports the forced clip; serial cannot clip now; bold
+    cells read from _SerialFace).
+  * test_laptop_power_ui Working: not a power redraw — the #133 Working
+    finish-sound check bumps sound_revision once when it resolves (timing
+    dependent) -> test waits for it before the no-redraw baseline. Passed
+    twice in WSL.
+  * test_orca_announces_every_result: intermittent Orca/AT-SPI timing,
+    already flagged by both GTK passes; watched, not changed.
+- 80088cb (with #158) run stopped by the lead at 44% (my own PID, rc=143)
+  as superseded; up to 44% its failure count matched 7267153 exactly (63),
+  i.e. #158 added none there. Final full run on 0c33c90 started 03:06Z.
+- SATA release-ack risk (BW-129 run 41528619370): evidence shows the
+  release was never emitted after DONE; QEMU's repeated key-ups did not
+  help, so the guest kernel most likely saw the first release. Lead probe
+  on 0c33c90: every result case at 800x600/1024x768/1280x800/1280x1024
+  reaches Tk idle (12/12 idle callbacks, 0 redraws in 3 s), so the
+  idle-starvation explanation does not reproduce on the current tree.
+  Root cause UNPROVEN; the hosted run is the test.
+- HOSTED PLAN (owner-approved single run): when the final Linux run is
+  clean, fast-forward PR 94's branch fix/release-readiness-20261026 from
+  9c16e13 to the verified integration HEAD; that pull_request event is the
+  one ci.yml run (plus free CodeQL). No dispatch, no merge, no release.
