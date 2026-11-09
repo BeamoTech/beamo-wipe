@@ -57,3 +57,14 @@ to make an exception, add it to that test's `ALLOWED` list with a reason.
     refusal, never the exception text.
 - Legal text (the GPL written offer) and quoted names from other software
   (Windows **Use a device**, OVMF/QEMU options).
+
+## Reading level
+
+Owner-facing English is written for an 8th-grade reader (#181).
+`tests/test_reading_level_181.py` checks every sentence of the strings the UI
+translates (`lang.surface()`, which includes `copy.py`): at most 20 words,
+and a Flesch-Kincaid grade below 9 for sentences of 10 words or more. Names
+in its `TERMS` (the names above, product, file-system and file names) count
+as one short word. To keep a sentence that cannot be plainer (persisted
+report or evidence text, exact nwipe terms), add it to that test's `ALLOWED`
+list with a reason. Split long sentences; never drop a warning or a limit.

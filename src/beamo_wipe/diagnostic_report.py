@@ -55,7 +55,8 @@ NOTICE = (
 )
 PREPARE = (
     "Leave all existing disks connected. Remove the report USB, then choose "
-    "Prepare. After the baseline is checked, insert one separate removable FAT32 or exFAT USB."
+    "Prepare. After the baseline is checked, insert one separate USB stick. It must be "
+    "removable and formatted FAT32 or exFAT."
 )
 
 

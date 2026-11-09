@@ -394,3 +394,20 @@ All languages (added 2026-11-02 for #128, not yet reviewed)
   second device path. Only the stick's name changed, to the Beamo USB of
   the glossary above; keep the refusal ("Refusing to continue") and never
   suggest the stick can be erased.
+- Reading level (2026-11-09 for #181; drafts, not yet reviewed): long English
+  sentences were split so each reads at an 8th-grade level
+  (`tests/test_reading_level_181.py`). Every translation of a changed string
+  was split the same way, keeping each warning and limit: `copy.POWER_EVENTS`
+  (FR adds *Dans ce cas* to keep *recommencez*), `REPORT_HELP_PHOTO`,
+  `REPORT_HELP_NEED` (IT now *una chiavetta USB … separata*, so *diversa*),
+  `REPORT_HELP_INSERT`, `REPORT_HELP_CONTAINS`, `REPORT_HELP_START`,
+  `REPORT_SHARE_REDACTED`, `ADVANCED_LOG_LEAD`, `MEDIA_STEP_UNSURE` (now two
+  questions), `REFRESH_GUARD_LEAD`, `REFRESH_LEAD` (the ownership
+  acknowledgement is now "unticks the ownership box"), `DISK_HELP_TEXT`,
+  `SOUND_RECOVERY`; `inventory.EMPTY_STEPS`, `recovery.NEXT_EMPTY`,
+  `diagnostic_report.PREPARE`; `storage_limits.OVERWRITE_LIMITS` and the
+  `SECTION_*_BODY` texts of the storage limits page. Button names inside
+  sentences still match `BTN_*` exactly. New key
+  `storage_limits.REPORT_OVERWRITE_LIMITS` holds the earlier
+  `OVERWRITE_LIMITS` translation unchanged: saved reports keep that wording,
+  so do not edit it with the screens.

@@ -61,7 +61,7 @@ those answers. Where it is offered (#136): not on What/Owner (no disk list
 exists yet); on Pick and its empty, blocked and help screens as a normal
 action (the dialog's Check disks again is focused; Enter or a second F5
 accepts); from Confirm, Method, Review, Advanced and Limits only through a
-guarded dialog — "Check disks again? This clears your confirmations and you
+guarded dialog — "Check disks again? This clears your confirmations. You
 will start again from choosing a disk: you tick the ownership box again, then
 choose the disk." — whose default focus is **Cancel**. Enter and Esc keep the
 answers, a second F5 does nothing, and clearing them needs Tab to **Check
