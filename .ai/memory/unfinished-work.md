@@ -6239,3 +6239,40 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: full run clean -> push f22493b+ to fix/release-readiness-20261026
   and integrate/ui-review-20261107 (triggers the PR ci.yml run), watch,
   read comments, repeat. No merge, no release.
+
+## BW-INT-20261107 — PR 94 hosted CI GREEN on f00e55c (2026-11-09, lead)
+
+- STATUS: readiness pass complete for everything that can run here. PR 94
+  head f00e55c (fix/release-readiness-20261026). NOT merged, NOT released
+  (owner decision 2026-11-07 stands).
+- Hosted ci.yml run 42602052511 on f00e55c: Linux image gate success
+  (lint, tests 15838 passed / 16 skipped, preview, desktop-launchers,
+  negative, iso 344s, qemu 711s; Orca separate run 1 passed); QEMU cases
+  incl. bios-sata-usb report export pass (closes the SATA release-ack
+  risk from 41528619370); Windows launcher tests success; CI gate success.
+  CodeQL actions/go/js/python pass; 0 open code-scanning alerts; no
+  unresolved review threads. PR body updated to f00e55c.
+- Fixes since 23e9ef5: 43bf711 (Tk #149 comparison opener leak; #133
+  probe cancelled at teardown), f22493b (tests follow intentional
+  changes), f00e55c (GTK Done not rebuilt by #133 sound updates).
+- Local note: test_orca_announces_every_result is intermittent only under
+  WSL's Orca 46 (heading reported [DEAD] after the dense result screen);
+  9c16e13 passes 3/3 there. Hosted/ISO Orca 43.1 passes. Watch it on
+  future hosted runs.
+- This record entry is committed on integrate/ui-review-20261107 only
+  (one docs commit ahead of the PR head) so the verified PR SHA and its
+  hosted evidence stay exact; fold it into the PR with the next real push.
+- Notion: DEFERRED. No Notion connector/API in this session; old UI
+  automation is gone and mis-pasted on 2026-11-07. Ready-to-paste notes:
+  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
+  (#158, #181, #183, #184, #185, #186 -> Done; #182 stays deferred, owner
+  chose unsigned; #116 stays blocked).
+- STILL BLOCKED / OPEN: #183 Windows 10/11 VM acceptance (no VM
+  authorized; host must never restart); #116 physical hardware (no
+  physical access); FR/DE/ES/IT native-speaker review of all new strings;
+  owner questions (#184 HP/ASUS keys + runbook/matrix "HP F9/Esc"; #185
+  "computer's" wording and VMD-bound/no-NVMe case; #186 §12 decisions;
+  Tk footer keys at Extra and 3-row translated footers; console power
+  badge vs step name at 80 cols; #180f evidence text; #177g extra wrap
+  row; #158 Quick zero below the fold at 800x600 and GTK button in the
+  expander); merge approval.
