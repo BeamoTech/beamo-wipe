@@ -20,6 +20,17 @@ def test_native_power_remains_readable_and_updates_without_redraw(ui, screen, si
     wizard.power.status = PowerStatus(ac=True, batteries=(80,), complete=True)
     app._draw()
     app.root.update()
+    # #133: Working checks finish-sound availability in the background and
+    # redraws once when that answer arrives. Let it settle first, so the
+    # baseline below measures power updates only.
+    import time
+    for _ in range(200):
+        app._tick()
+        app.root.update()
+        if (getattr(wizard, "_audio_request", None) is None
+                and getattr(app, "_shown_sound_revision", 0) == getattr(wizard, "sound_revision", 0)):
+            break
+        time.sleep(0.02)
     focus = app.root.focus_get()
     generation = app._draw_generation
     for state in (PowerStatus(ac=False, batteries=(12,), complete=True), PowerStatus(), PowerStatus(complete=True)):

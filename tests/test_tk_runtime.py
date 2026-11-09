@@ -2387,11 +2387,14 @@ def test_serial_comparison_markers_wrap_and_leave_controls_visible(size, long):
             assert str(marked[0].cget('text')).replace('\n', '') == view.id_value
             assert any(view.comparison_note == str(label.cget('text')) for label in labels)
             if not long:
+                from test_serial_tracking_177g import _bold_indices
                 for _ in range(3):
                     app.root.update()
-                marks = [w for w in descendants(app._pick_cards[disk.path])
-                         if getattr(w, "_beamo_serial_mark", False) and w.winfo_ismapped()]
-                assert "".join(getattr(w, "_beamo_mark_text", "") for w in marks) in ("3", "4")
+                # #177 follow-up: the marks are drawn on the serial's own
+                # canvas cells (_SerialFace), not as overlay labels.
+                face = getattr(marked[0], "_beamo_serial_face", None)
+                assert face is not None and face.text == view.id_value
+                assert "".join(face.text[i] for i in _bold_indices(face)) in ("3", "4")
             for label in labels:
                 assert label.winfo_reqwidth() <= label.winfo_width() + 2
                 assert label.winfo_reqheight() <= label.winfo_height() + 2
