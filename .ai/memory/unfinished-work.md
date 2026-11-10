@@ -6420,3 +6420,24 @@ another very thorough and comprehensive pass of this." Repo
   image with the PR 94 UI work, Secure Boot inspection, private evidence
   store); #183 Windows VM acceptance; FR/DE/ES/IT native review; merge of
   this branch's PR (not covered by the owner's PR 94/95 merge instruction).
+- UPDATE 2026-11-10 06:50Z, Claude (Opus 5.5): PR 95 MERGED 2026-11-10T03:56:44Z
+  as 33442561; post-merge main ci.yml 42752675238 SUCCESS (Linux image
+  gate, Windows launcher tests, CI gate) and CodeQL 42752674664 SUCCESS.
+  CodeQL #1-#6 dismissed "used in tests", #36 dismissed "false positive";
+  rebuttal posted on PR 96 (issuecomment-6757823472).
+- PR 96 (`fix/owner-decisions-20261110`): main merged in via
+  update-branch, head 7ede2971. Hosted ci.yml 42764265308 SUCCESS on
+  7ede2971 (Linux image gate incl. ISO + QEMU 58m27s, Windows launcher
+  tests, CI gate); CodeQL 42764260902 SUCCESS (actions, go,
+  javascript-typescript, python); 0 open alerts, 0 reviews, 0 unresolved
+  threads. MERGED by the owner on GitHub as 66082da4 (2026-11-10, about
+  14:44Z). Post-merge main runs: ci.yml 42837098193 and CodeQL
+  42837096613 (in progress when this entry was written; see the PR that
+  carries this entry for the outcome).
+- This entry was first committed locally (08887bdc) to avoid restarting
+  PR 96's CI, then carried to main on branch
+  `docs/record-pr96-merge-20261110`; main requires the "CI gate" check,
+  enforced for admins, so it goes through a PR.
+- #116 rehearsal scratch folder (sub-agent scratchpad `seeddir`, ~1.9 GB):
+  already deleted by that agent on 2026-11-10 02:41Z; nothing left to
+  reclaim (348 KB of notes remain). C: measured 22.43 GiB free at 06:00Z.
