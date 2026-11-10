@@ -1,5 +1,14 @@
 # Unfinished work
 
+## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
+
+- Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
+- Owner decision (Jack, 2026-11-08): on the Wipe USB that also carries USB Easy Use, keep USB Easy Use's apps (`USB Easy Use (Windows app).exe`, `USB Easy Use (Linux app)`) and its start page `START HERE - USB Easy Use.html`; drop Beamo Wipe's own `Start Beamo Wipe.exe`, `Start Beamo Wipe Linux` and `START-HERE.html` from that USB. Hand off without code.
+- Today: `scripts/build_desktop.py` (`LAUNCHERS`) builds both Wipe launchers; `scripts/build-usb-image.sh` requires "exactly both desktop launchers" in the USB manifest and reads them back; `helper/index.html` is copied to the data partition as `START-HERE.html`. USB Easy Use is added to the Wipe USB root with its own copy tool (usb-easy-use `docs/integration.md`, row "Beamo Wipe writable USB image", now updated to this decision).
+- Check before removing: `START-HERE.html` and the Wipe launcher help hold things USB Easy Use does not (separate Windows 10/11 Recovery Environment steps, kiosk recovery, the Intel Mac Option key, the beamosupport.com card and code); the printed card says "open START-HERE.html". Whether any of that moves to USB Easy Use, and the card wording, are not decided here.
+- Acceptance: a manufactured Wipe USB that carries USB Easy Use has one Windows app, one Linux app and one start page (USB Easy Use's); builder manifest/readback checks and tests updated; the USB still starts Beamo Wipe; evidence retained.
+- Exact next action: in a reviewed beamo-wipe task, remove the two launchers and `START-HERE.html` from the Wipe USB build that carries USB Easy Use and update its checks/tests/docs. Blockers: owner scheduling; that task's own gates. No physical write, push or release here.
+
 ## BW-RELEASE-20261017-ALL — IN PROGRESS / FINAL LOCAL QUALIFIED, PUSH PENDING
 
 - Date/author:2026-10-17–18 / Codex; checkpoint01:12UTC. BeamoTech/beamo-wipe,
