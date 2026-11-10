@@ -75,7 +75,7 @@ def test_every_hint_key_name_renders_as_a_key_cap():
         C.HINT_SPLASH,
     )
     for hint in hints:
-        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "any key"):
+        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "1–7", "any key"):
             if word in hint:
                 assert tkui._KEY_TOKEN_RE.search(hint), hint
                 assert word in tkui._KEY_TOKEN_RE.pattern
@@ -84,6 +84,36 @@ def test_every_hint_key_name_renders_as_a_key_cap():
     assert tkui._KEY_TOKEN_KEYS["1, 2, or 3"] == ("1", "2", "3")
     html = gallery_html()
     assert "1, 2, or 3" in html and "Up/Down" in html
+    # The layout-range cap is language-neutral, so every table keeps it.
+    assert tkui._KEY_TOKEN_RE.fullmatch("1–7")
+    assert "1–7" in html
+    assert "Up/Down" in C.HINT_KEYBOARD
+
+
+def test_key_caps_match_whole_words_in_every_language():
+    """Spanish "Escriba" or "Escanee" must not render an Esc cap plus a stub."""
+    from beamo_wipe import lang
+
+    assert not tkui._KEY_TOKEN_RE.search("Escriba en la casilla")
+    assert not tkui._KEY_TOKEN_RE.search("Entertaste Spaces")
+    assert [m.group(1) for m in tkui._KEY_TOKEN_RE.finditer("1–7 elige. Esc vuelve. Enter.")] == [
+        "1–7", "Esc", "Enter",
+    ]
+    hints = [name for name in lang.keys("fr", "copy") if name.startswith("HINT_")]
+    assert "HINT_KEYBOARD" in hints and "HINT_CONFIRM" in hints
+    try:
+        for code in lang.LANGUAGE_ORDER:
+            lang.set_language(code)
+            for name in hints:
+                text = getattr(C, name)
+                for match in tkui._KEY_TOKEN_RE.finditer(text):
+                    before = text[match.start() - 1:match.start()]
+                    after = text[match.end():match.end() + 1]
+                    assert not before.isalnum() and not after.isalnum(), (code, name, match.group(0))
+    finally:
+        lang.set_language("en")
+    html = gallery_html("es")
+    assert "(?<![\\p{L}\\p{N}])(Left\\/Right|Up\\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\\p{L}\\p{N}])/gu" in html
 
 
 def test_box_component_supports_shadows_and_sync_fit():
@@ -149,11 +179,23 @@ def test_gallery_identity_selectors_cannot_clip():
         for line in style.splitlines()
         if "white-space" in line and "nowrap" in line
     ]
-    # Only fixed short copy may opt out of wrapping: step counts and the
-    # formatted capacity ("931 GB"). Identity selectors must never appear.
-    assert nowrap_rules, "expected the two documented nowrap rules"
+    # Only fixed short copy may opt out of wrapping: step counts, the
+    # formatted capacity ("931 GB") and the #144 header power badge (one of
+    # four fixed short states). Identity selectors must never appear. The
+    # #163 screen-reader-only status is never painted (1 px, clipped), so
+    # its standard visually-hidden nowrap cannot clip visible text.
+    assert nowrap_rules, "expected the documented nowrap rules"
     for rule in nowrap_rules:
-        assert ".steptext" in rule or ".card .size" in rule, rule
+        selector = rule.split("{", 1)[0].strip()
+        if selector == ".sr-only":
+            assert "width: 1px" in rule and "clip: rect(0 0 0 0)" in rule, rule
+            continue
+        assert (".steptext" in selector or ".card .size" in selector
+                or selector == ".powerbadge"), rule
+    from beamo_wipe import power
+    for text in (power.BADGE_PLUGGED, power.BADGE_BATTERY,
+                 power.BADGE_UNKNOWN, power.BADGE_MAINS):
+        assert len(text) <= 24, text
     for selector in (".card .title", ".card .meta", ".ser", ".panel > div",
                      ".review-warning"):
         assert selector in style, selector
@@ -324,7 +366,7 @@ def test_method_tradeoffs_are_comparable():
     extra = METHODS[MethodId.EXTRA]
     quick = METHODS[MethodId.QUICK_ZERO]
     assert everyday.comparison_mark == ""
-    assert extra.comparison_mark == "More overwrites"
+    assert extra.comparison_mark == "Rarely needed"  # #161
     assert quick.comparison_mark == "No check"
     assert "hidden storage" in extra.extra_work
     assert "Everyday" in extra.extra_work
@@ -336,7 +378,7 @@ def test_method_tradeoffs_are_comparable():
     assert cards[MethodId.EVERYDAY]["checks"] is True
     html = gallery_html()
     assert "No check" in html
-    assert "More overwrites" in html
+    assert "Rarely needed" in html
     assert extra.extra_work in html
     assert "does not check the overwrite" in html
     method_src = inspect.getsource(tkui.TkWizard._method_card)
@@ -465,8 +507,9 @@ def test_header_names_the_current_stage_instead_of_eight_equal_pages():
     assert tkui.header_caption(2, C.JOURNEY_LABELS[1]) == "Erase"
     assert tkui.header_caption(3, "Identify the disk") == "Identify the disk"
     assert tkui.header_caption(0, "") == ""
-    source = inspect.getsource(tkui.TkWizard._draw_header)
-    assert "header_caption" in source
+    # The header text is the stage, or the Preparation sub-step (#130).
+    source = inspect.getsource(tkui.TkWizard.header_step_label)
+    assert "journey_step_caption" in source
     strip = inspect.getsource(tkui.TkWizard._draw_strip)
     assert "/ 8" not in strip
     assert "len(C.JOURNEY_LABELS)" in strip

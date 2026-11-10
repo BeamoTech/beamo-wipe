@@ -127,6 +127,10 @@ def test_browser_comparison_keyboard_reflow_and_selection(tmp_path, width, colum
         try:
             page = browser.new_page(viewport={"width": width, "height": 800})
             page.goto(path.as_uri() + "#s=pick&disk=1&owner=1")
+            # disk=1 follows the #151 list order; the comparison must keep
+            # whatever that selected, never change it.
+            chosen = page.evaluate("selected && selected.path")
+            assert chosen and chosen.startswith("/dev/")
             summary = page.get_by_text(inventory.COMPARE_TITLE, exact=True)
             summary.focus()
             page.keyboard.press("Enter")
@@ -139,11 +143,11 @@ def test_browser_comparison_keyboard_reflow_and_selection(tmp_path, width, colum
             assert (abs(boxes[0]["y"] - boxes[1]["y"]) < 2) == (columns == 2)
             page.keyboard.press("Tab")
             assert cards.first.evaluate("(e) => document.activeElement === e")
-            assert page.evaluate("selected.path") == "/dev/sda"
+            assert page.evaluate("selected.path") == chosen
             summary.focus()
             page.keyboard.press("Enter")
             assert not page.locator("details").evaluate("(e) => e.open")
-            assert page.evaluate("selected.path") == "/dev/sda"
+            assert page.evaluate("selected.path") == chosen
             assert page.evaluate("screen") == "pick"
         finally:
             browser.close()
@@ -181,10 +185,18 @@ def test_gtk_comparison_disclosure_is_read_only():
 
 
 def test_equal_capacity_candidates_are_adjacent_without_renumbering_picker():
+    # "Disk N" is the place in the shown list (#151 order); equal capacities
+    # are grouped first without renumbering.
+    from beamo_wipe.disk_order import pick_order
+
     w = make_demo_wizard()
+    numbers = {d.path: f"Disk {i}" for i, d in enumerate(pick_order(w.selectable), 1)}
+    same = {numbers[d.path] for d in w.selectable if d.size_gb_label == "256"}
+    other = {numbers[d.path] for d in w.selectable if d.size_gb_label != "256"}
     entries = inventory.comparison_entries(w.selectable)
-    assert {entry.split("\n")[0] for entry in entries[:2]} == {"Disk 1", "Disk 3"}
-    assert entries[2].startswith("Disk 2\n")
+    assert len(same) == 2 and len(other) == 1
+    assert {entry.split("\n")[0] for entry in entries[:2]} == same
+    assert entries[2].split("\n")[0] in other
     assert "Capacity: 256 GB" in entries[0] and "Capacity: 256 GB" in entries[1]
 
 

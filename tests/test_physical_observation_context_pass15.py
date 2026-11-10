@@ -164,7 +164,7 @@ def test_final_boot_guard_rechecks_retained_physical_evidence(fake_machine, brid
         result, disks=tuple(reset if disk.path == reset.path else disk for disk in result.disks),
         selectable=(reset,),
     )
-    with pytest.raises(SafetyError, match="Boot USB appeared"):
+    with pytest.raises(SafetyError, match="Beamo USB appeared"):
         assert_boot_excluded(injected)
 
 

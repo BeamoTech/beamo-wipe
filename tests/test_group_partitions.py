@@ -200,8 +200,9 @@ def test_parent_identity_stays_on_parent_card():
     nest = card_nesting_text(kids)
     assert NESTED_INTRO in nest
     assert "WD-WCC6Y1234567" not in nest
-    assert "Partition" in nest
-    assert "Encrypted volume" in nest
+    # #147: one compact line names each component by label and format.
+    assert '"DATA"' in nest and '"EFI"' in nest
+    assert '"root" (Encrypted volume)' in nest
     assert "unsupported device" not in nest
     assert "/dev/" not in nest
 
@@ -256,7 +257,7 @@ def test_plain_console_nests_unnumbered_and_keeps_numbers_for_disks(monkeypatch,
     sda = eligible.index("WDC WD10EZEX")
     nest = eligible.index(NESTED_INTRO, sda)
     chunk = eligible[nest:nest + 500]
-    assert "Partition" in chunk
+    assert '"DATA"' in chunk
     assert "Encrypted volume" in chunk
     assert "EFI" in chunk
     assert "[2]" in text
@@ -272,17 +273,19 @@ def test_curses_pick_block_includes_nested_lines():
     sata = next(block for disk, block in blocks if disk is not None and disk.path == "/dev/sda")
     joined = "\n".join(sata)
     assert NESTED_INTRO in joined
-    assert "Partition" in joined
+    assert '"DATA"' in joined
     assert "Encrypted volume" in joined
     nvme = next(block for disk, block in blocks if disk is not None and disk.path == "/dev/nvme0n1")
-    assert sum(1 for line in nvme if "Partition" in line) == 8
+    # #147: eight partitions read as the two largest plus "+6 more".
+    flat = " ".join(line.strip() for line in nvme)
+    assert '"Windows"' in flat and '"Data"' in flat and "+6 more" in flat
 
 
 def test_gallery_mirrors_picker_nesting():
     html = gallery_html()
     assert NESTED_INTRO in html
     assert "nested-intro" in html
-    assert '"heading": "Partition' in html
+    assert '"contentsSummary": "\\"Work\\" (NTFS) 256 GB' in html  # #147
     result = discovery_for_scenario("happy")
     text = full_text(other_devices(result))
     assert "nvme0n1p1" not in text
@@ -354,6 +357,14 @@ def test_tk_nested_rows_are_not_independent_targets():
         app.root.update()
         assert wiz.screen == Screen.PICK
         assert wiz.selected is None
+        nvme = next(d for d in wiz.selectable if d.path == "/dev/nvme0n1")
+        # A partition path is never a target, and the row does not expand.
+        wiz.select_disk("/dev/nvme0n1p1")
+        assert wiz.selected is None
+        # #149: the full partition list is on the selected (expanded) card.
+        app._click_disk(nvme.path)
+        app.root.update()
+        assert wiz.selected is not None and wiz.selected.path == nvme.path
         nested = []
 
         def visit(widget):
@@ -374,13 +385,9 @@ def test_tk_nested_rows_are_not_independent_targets():
             collect(frame)
         blob = "\n".join(labels)
         assert NESTED_INTRO in blob
-        assert "Partition" in blob
+        assert '"Work" (NTFS)' in blob  # #147
         assert "BEAMO_WIPE" in blob
-        nvme = next(d for d in wiz.selectable if d.path == "/dev/nvme0n1")
         wiz.select_disk("/dev/nvme0n1p1")
-        assert wiz.selected is None
-        app._click_disk(nvme.path)
-        app.root.update()
         assert wiz.selected is not None and wiz.selected.path == nvme.path
         assert not wiz.runner.started
         reader_text = []

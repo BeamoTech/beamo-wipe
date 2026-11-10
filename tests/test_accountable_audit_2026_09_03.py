@@ -17,6 +17,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from beamo_wipe.progress import ProgressView
 from beamo_wipe.discover import (
     _validate_real_lsblk_metadata,
     identify_boot_path,
@@ -656,9 +657,7 @@ def test_plain_console_cancel_works_without_sigint(monkeypatch):
         preview=False,
         progress=None,
         power_text="Wall power: unknown.",
-        progress_view=SimpleNamespace(
-            status_text="Preparing. Elapsed: less than 1 minute"
-        ),
+        progress_view=ProgressView("Preparing", None, 0),
         evidence_warning="",
         evidence_error=None,
         error=None,

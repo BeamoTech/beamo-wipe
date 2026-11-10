@@ -96,11 +96,15 @@ def test_repeated_refresh_shows_wording_again():
     assert wiz.open_refresh_confirm()
     assert wiz.confirm_refresh()
     assert wiz.screen == Screen.OWNER
+    # #136: not offered on Owner; from the disk list it shows again.
+    assert not wiz.open_refresh_confirm()
+    wiz.set_owner(True)
+    wiz.continue_owner()
     assert wiz.open_refresh_confirm()
     assert wiz.screen == Screen.REFRESH_CONFIRM
-    wiz.back()
-    assert wiz.screen == Screen.OWNER
-    assert wiz.selected is None and not wiz.owner_ok
+    wiz.back()  # back to where it was opened: the disk list
+    assert wiz.screen == Screen.PICK
+    assert wiz.selected is None and wiz.owner_ok
 
 
 def test_failed_confirm_refresh_leaves_no_stale_target():

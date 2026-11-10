@@ -76,9 +76,11 @@ def test_matrix_duplicate_size_colliding_suffix_uses_device_name():
     assert sda.size_gb_label == sdc.size_gb_label
     spec_a = confirm_spec(sda, listed)
     spec_c = confirm_spec(sdc, listed)
-    # suffix 1234 collides; unique full serials are the tokens. Never kernel names.
-    assert spec_a.token == "AAAA1234"
-    assert spec_c.token == "BBBB1234"
+    # Suffix 1234 collides; one more card character tells them apart (#129).
+    # Never kernel names.
+    assert spec_a.token == "A1234"
+    assert spec_c.token == "B1234"
+    assert spec_a.in_card and spec_c.in_card
     assert spec_a.token != spec_c.token
     assert spec_a.token not in {"sda", "sdc"}
     assert spec_a.token != "500"
@@ -605,8 +607,12 @@ def test_matrix_live_build_uses_https_and_bootloaders():
     # source-level compatibility contract must also run in a clean trigger
     # checkout, before the ISO phase invokes lb config.
     assert 'lb config \\' in inside
-    assert "https://deb.debian.org/debian/" in inside
-    assert "https://security.debian.org/" in inside
+    # Compare whole mirror URLs as written in the build script, not substrings.
+    import re
+
+    mirrors = re.findall(r"https://[^\s\"'\\]+", inside)
+    for expected in ("https://deb.debian.org/debian/", "https://security.debian.org/"):
+        assert any(url == expected for url in mirrors), (expected, mirrors)
     assert "--bootloaders syslinux,grub-efi" in inside
     assert '--bootappend-live "boot=live components' in inside
     assert "nox11autologin" in inside

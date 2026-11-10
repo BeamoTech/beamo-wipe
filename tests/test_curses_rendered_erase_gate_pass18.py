@@ -92,6 +92,15 @@ def test_curses_enter_requires_a_rendered_ready_review(monkeypatch, request, met
         def getch(self):
             if self.frame == 1:
                 return -1
+            # #165: Enter presses only the highlighted button, so the arrivals
+            # that erase first move to Erase now (Tab) on a painted frame.
+            sequence = {"ready-before-frame": {2: 9, 3: enter},
+                        "after-ready-frame": {2: -1, 3: 9, 4: enter}}.get(arrival)
+            if sequence is not None:
+                if self.frame in sequence:
+                    return sequence[self.frame]
+                wizard.wants_shutdown = True
+                return -1
             if self.frame == 2:
                 if arrival == "eof-crosses":
                     raise EOFError("Fake terminal input disappeared")

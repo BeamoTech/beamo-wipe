@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import pytest
 
 from beamo_wipe.models import Screen
+from beamo_wipe.progress import ProgressView
 from beamo_wipe.ui import console_wizard as console
 
 
@@ -27,8 +28,10 @@ def test_curses_escape_requires_quiet_before_second_action(
         can_open_keyboard=False,
         can_open_report_help=False,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
         error="",
-        progress_view=SimpleNamespace(status_text="Working"),
+        progress_view=ProgressView("Writing", 40.0, 60),
         operation_disk=None,
         operation_identity_text="",
         operation_method_text="",

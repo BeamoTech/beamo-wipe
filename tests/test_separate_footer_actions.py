@@ -27,10 +27,8 @@ def test_tk_footer_keeps_hints_out_of_the_action_row():
     assert "_hint_bar(mid" not in source
     assert "assist" in source
     for marker in (
-        "BTN_ADVANCED",
-        "KEYBOARD_UTILITY",
+        "MENU_TITLE",  # #175: Advanced, keyboard and report help are in it
         "BTN_REFRESH_UTILITY",
-        "REPORT_HELP_TITLE",
         "SCREEN_READER_VIEW",
         "DIAGNOSTIC_TITLE",
         "ANOTHER_HINT",
@@ -54,7 +52,7 @@ def test_gallery_hint_lives_in_assist_not_action_row():
     assert 'id="btnsR"' in footrow_html
     assert re.search(r"\.footrow\s*\{[^}]*justify-content:\s*space-between", html)
     assert ".fhint { order: 3" not in html
-    assert "utilities.prepend(btn(P.buttons.advanced" in html
+    assert "renderHelpTrigger(utilities);" in html  # #175: Advanced is in the menu
     assert 'id="adv"' not in html
     # Recovery/support chrome on main stays in the gallery body, not flattened.
     assert "stop_confirm" in html
@@ -86,12 +84,16 @@ def test_assist_nav_labels_stay_on_the_swept_copy_surface():
     keys = set(_swept_surface()["copy"])
     assert "ASSIST_LABEL" in keys
     assert "NAV_LABEL" in keys
-    for code in ("fr", "de"):
+    for code in ("fr", "de", "es", "it"):
         table = set(lang.keys(code, "copy"))
         assert "ASSIST_LABEL" in table
         assert "NAV_LABEL" in table
     assert lang.translated("fr", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
     assert lang.translated("de", "copy", "NAV_LABEL") != C.NAV_LABEL
+    assert lang.translated("es", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
+    assert lang.translated("es", "copy", "NAV_LABEL") != C.NAV_LABEL
+    assert lang.translated("it", "copy", "ASSIST_LABEL") != C.ASSIST_LABEL
+    assert lang.translated("it", "copy", "NAV_LABEL") != C.NAV_LABEL
 
 
 def test_assist_nav_names_do_not_rewrite_result_heading():
@@ -114,7 +116,7 @@ def test_assist_nav_names_do_not_rewrite_result_heading():
     try:
         app.window.resize(800, 600)
         drain()
-        expected = wizard.result_view.announcement
+        expected = wizard.result_plain.headline  # #134
         names = [w.get_accessible().get_name() for w in widgets(app.window)]
         assert expected in names
         assert C.NAV_LABEL in names
@@ -137,7 +139,7 @@ def test_console_keeps_extra_chrome_off_the_primary_action_line():
     lines = inspect.getsource(console._footer_lines)
     assert "CON_DIAGNOSTIC" in extra
     assert "REFRESH_UTILITY_NOTE" in extra
-    assert "CON_LAST_ERASE" in primary
+    assert "_review_buttons" in primary  # #165: Back / Erase now, not "Enter to erase"
     assert "_primary_footer" in lines and "_chrome_extra" in lines
     assert "extra_shown + assist_shown + actions" in lines
 
@@ -156,7 +158,10 @@ def test_last_chance_hint_is_above_navigation_not_between_actions(ui, size):  # 
         app.root.update()
     back = _button_named(app, C.BTN_BACK)
     erase = _button_named(app, C.BTN_ERASE)
-    hint = app._hint
+    # #174: no hint row; the Keyboard shortcuts item sits in the tools row
+    # above the actions, never between them.
+    assert app._hint is None
+    hint = app._shortcuts_button
     assert hint is not None and hint.winfo_ismapped()
     assert back.winfo_ismapped() and erase.winfo_ismapped()
     assert app.root.focus_get() is back
@@ -165,7 +170,13 @@ def test_last_chance_hint_is_above_navigation_not_between_actions(ui, size):  # 
     hint_bottom = hint.winfo_rooty() + hint.winfo_height()
     nav_top = min(back.winfo_rooty(), erase.winfo_rooty())
     assert hint_bottom <= nav_top + 2
-    assert abs(back.winfo_rooty() - erase.winfo_rooty()) <= 4
+    # Same row: vertically centred on each other (compact Back is shorter
+    # than the primary), and overlapping vertically.
+    back_mid = back.winfo_rooty() + back.winfo_height() / 2
+    erase_mid = erase.winfo_rooty() + erase.winfo_height() / 2
+    assert abs(back_mid - erase_mid) <= 4
+    assert back.winfo_rooty() < erase.winfo_rooty() + erase.winfo_height()
+    assert erase.winfo_rooty() < back.winfo_rooty() + back.winfo_height()
     nav_y = back.winfo_rooty()
     nav_bottom = nav_y + back.winfo_height()
     overlapping = []
@@ -189,13 +200,15 @@ def test_method_assist_keeps_advanced_refresh_and_report_help(ui):  # noqa: F811
     wiz, app = ui()
     _drive_to(wiz, app, Screen.METHOD)
     app.root.update()
-    advanced = _button_named(app, C.BTN_ADVANCED)
+    # #175: Advanced and report help are in Help & settings on Method.
+    menu = _button_named(app, C.MENU_TITLE)
     refresh = _button_named(app, C.BTN_REFRESH_UTILITY)
-    report = _button_named(app, C.REPORT_HELP_TITLE)
     back = _button_named(app, C.BTN_BACK)
     primary = app._primary
     assert primary is not None
-    for control in (advanced, refresh, report):
+    enabled = {item.key for item in wiz.help_menu() if item.enabled}
+    assert {"advanced", "report_help"} <= enabled
+    for control in (menu, refresh):
         assert control.winfo_ismapped()
         assert control.winfo_rooty() + control.winfo_height() <= back.winfo_rooty() + 2
     nxt = back.tk_focusNext()

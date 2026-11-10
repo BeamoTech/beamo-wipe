@@ -12,14 +12,14 @@ Elapsed: less than 1 minute
 Result: The disk could not be opened
 What happened: The disk could not be opened
 What it means for your disk: Nothing was erased. This disk is unchanged.
-What to do next: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+What to do next: Files may still be on the disk. Save the report if available. Shut down, check the disk's connection and avoid USB hubs, then start again. If this repeats, contact support.
 Verification: unavailable
 Warnings:
 - SSD limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.
 - Two disks share the same size; verify the serial suffix.
 - The hidden-storage check was not available. That is not a pass.
 - Disk error counts were not available. That is not a pass.
-Limitations: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+Limitations: Files may still be on the disk. Save the report if available. Shut down, check the disk's connection and avoid USB hubs, then start again. If this repeats, contact support.
 Application: Beamo Wipe 0.2.14
 Wrapper commit: unavailable
 Release build: unavailable

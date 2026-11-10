@@ -25,9 +25,9 @@ from typing import Any, List, Optional, Sequence, Tuple
 
 from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION, __version__
 from beamo_wipe.build_identity import evidence_identity
-from beamo_wipe.methods import METHODS
+from beamo_wipe.methods import METHODS, RANDOM_DATA_NWIPE_METHODS
 from beamo_wipe import storage_limits as _limits
-from beamo_wipe.storage_limits import notice
+from beamo_wipe.storage_limits import report_notice
 from beamo_wipe.models import Disk, MethodId, WipeRequest, WipeResult
 import beamo_wipe.safety as safety
 from beamo_wipe.safety import SafetyError, assert_log_not_on_target
@@ -180,7 +180,7 @@ def _warnings_for(disk: Optional[Disk], selectable: Sequence[Disk]) -> List[str]
     warns: List[str] = []
     if disk is None:
         return warns
-    warns.append(notice(disk.kind))
+    warns.append(report_notice(disk.kind))
     # Same-size hint
     if disk and selectable:
         labels = [d.size_gb_label for d in selectable]
@@ -279,6 +279,7 @@ def build_evidence(
     wall_provenance: str = "unavailable",
     language: str = "en",
     keyboard_layout: str = "us",
+    owner_confirmation: Optional[str] = None,
 ) -> dict[str, Any]:
     """Build a truthful, user-safe evidence dict."""
     spec = METHODS.get(method)
@@ -386,6 +387,23 @@ def build_evidence(
     argv_redacted = _sanitize_argv(argv or [])
     # Ensure no /dev/…/.. or control chars leaked beyond validation
     # Keep only allowed flags and the device itself
+    nwipe_record: dict[str, Any] = {
+        "version": NWIPE_PINNED_VERSION,
+        "argv_redacted": argv_redacted,
+    }
+    if result is not None and spec.nwipe_method in RANDOM_DATA_NWIPE_METHODS:
+        # Optional, display-only observation, preferably from the exact log
+        # snapshot whose digest this record carries. After a long erase that
+        # tail no longer reaches nwipe's options manifest; then the same
+        # whole-log projection the outcome is assessed from supplies it.
+        # Unknown stays absent; never an outcome input.
+        from beamo_wipe.nwipe_runner import logged_random_generator
+
+        generator = logged_random_generator(log_text)
+        if generator is None and assessed_log and assessed_log != log_text:
+            generator = logged_random_generator(assessed_log)
+        if generator is not None:
+            nwipe_record["prng"] = generator
 
     # Log checksum (tail only, not full sensitive log)
     log_checksum: Optional[str] = None
@@ -438,10 +456,7 @@ def build_evidence(
             "wall_confidence": walls["wall_confidence"],
             "wall_provenance": walls["wall_provenance"],
         },
-        "nwipe": {
-            "version": NWIPE_PINNED_VERSION,
-            "argv_redacted": argv_redacted,
-        },
+        "nwipe": nwipe_record,
         "exit_evidence": {
             "exit_code": exit_code,
             "signal": signal,
@@ -473,6 +488,12 @@ def build_evidence(
             "keyboard_layout": keyboard_layout if _is_allowed_layout(keyboard_layout) else "us",
         },
     }
+    # #187: how the owner box was satisfied for this erase. Absent when not
+    # known (recovered sessions, older records); never a free-form value.
+    from beamo_wipe.owner_carry import SOURCES as _OWNER_SOURCES
+
+    if owner_confirmation in _OWNER_SOURCES:
+        evidence["authorization"] = {"owner_confirmation": owner_confirmation}
 
     presentation = present_evidence(evidence)
     evidence["presentation"] = presentation.payload()
@@ -1002,6 +1023,7 @@ def build_evidence_for_wizard(
     interrupted: bool = False,
     language: str = "en",
     keyboard_layout: str = "us",
+    owner_confirmation: Optional[str] = None,
 ) -> dict[str, Any]:
     return build_evidence(
         disk=disk,
@@ -1019,4 +1041,5 @@ def build_evidence_for_wizard(
         cancelled=cancelled,
         language=language,
         keyboard_layout=keyboard_layout,
+        owner_confirmation=owner_confirmation,
     )

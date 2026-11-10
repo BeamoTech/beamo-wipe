@@ -2,13 +2,15 @@
 
 > Companion to `docs/compatibility-matrix.md` matrix v1.0. This file maps **every signal** the wizard consults to decide *which disk is the live USB* and *which disks are wipe candidates*, and where adversarial fixtures prove uncertainty → zero targets.
 
-Status: Beamo Wipe 0.1.1, nwipe 0.42. All paths below are traced to executable code; tests and fixtures are listed.
+Status: Beamo Wipe 0.2.14, nwipe 0.42. All paths below are traced to executable code by function or constant name (line numbers drift); tests and fixtures are listed.
 
 ---
 
 ## 1. Signal inventory
 
-### 1.1 lsblk fields (`LSBLK_COLUMNS` in `src/beamo_wipe/discover.py:79`)
+### 1.1 lsblk fields (`LSBLK_COLUMNS` constant in `src/beamo_wipe/discover.py`)
+
+`disk_identity(disk)` in `src/beamo_wipe/safety.py` returns a 10-field tuple: `[0]` realpath of `PATH`, `[1]` `SERIAL`, `[2]` `SIZE` in bytes, `[3]` displayed model (`MODEL`, else label or `"Unknown model"`), `[4]` `WWN`, `[5]` `VENDOR`, `[6]` bus from `TRAN`, `[7]` kind (from `TRAN`/`ROTA`/name), `[8]` `layout_id` (hash of filesystem and partition identity), `[9]` raw `MODEL` without fallback. Indexes below refer to that tuple.
 
 | Field | Source | How used | Fail-closed if |
 | --- | --- | --- | --- |
@@ -16,20 +18,23 @@ Status: Beamo Wipe 0.1.1, nwipe 0.42. All paths below are traced to executable c
 | `PATH` | lsblk | `Disk.path`, `node_path`, `parent_disk_path`, `assert_not_boot`, `normalize_whole_disk` alias set | missing → synthesized `/dev/<name>`; malformed → `SafetyError` in `normalize_whole_disk` |
 | `SIZE` | lsblk | `size_bytes` → `size_gb_label`, `disk_identity`, `assert_size_unchanged`, `is_wipeable_disk` (≤0 → not wipeable) | `null`/empty/0 → `_as_int` 0 → hidden via `is_wipeable_disk`; float string handled via `float()` |
 | `TYPE` | lsblk | `disk` vs `rom` vs `part` vs `loop` vs `ram`; `disk_nodes`, `HIDDEN_TYPES`, `should_hide`, `_node_type` | `loop`/`ram`/`rom` hidden unless it is the identified boot `rom`; unknown → hidden (`type != disk`) |
-| `TRAN` | lsblk | `classify_kind`/`classify_bus`, `REMOTE_BUS_TOKENS` (`iscsi/fc/nbd/nvmeof`), `_looks_like_live_medium` (`tran==usb`) | missing → `bus other`, kind via `rota`; `iscsi`/`fc` → `is_remote_disk` → not wipeable |
-| `ROTA` | lsblk | `classify_kind` HDD vs SSD via `_as_bool` | missing/`null` → `UNKNOWN` |
-| `MODEL` | lsblk | `Disk.model` → `display_name`, `disk_identity[3]` | `null`/empty → fallback to `label` or `"Unknown model"` |
+| `TRAN` | lsblk | `classify_kind`/`classify_bus` → `disk_identity[6]`/`[7]`, `REMOTE_BUS_TOKENS` (`iscsi`, `fc`, `fcoe`, `nbd`, NVMe-oF tokens, `tcp`, `rdma`), `is_unproven_scsi_transport`, `_looks_like_live_medium` (`tran==usb`) | missing → `bus other`, kind via `rota`; remote token → `is_remote_disk` → not wipeable; change → identity fail |
+| `ROTA` | lsblk | `classify_kind` HDD vs SSD via `_as_bool` → `disk_identity[7]` | missing/`null` → `UNKNOWN` |
+| `MODEL` | lsblk | `Disk.model` → `display_name`, `disk_identity[3]`; `Disk.raw_model` → `disk_identity[9]` | `null`/empty → displayed fallback to `label` or `"Unknown model"`; raw model stays empty |
 | `SERIAL` | lsblk | `Disk.serial` → `confirm_spec` token, `disk_identity[1]`; `_first_descendant_field` fallback | missing/null → `""`; affects token chain; change → `assert_disk_identity` fail |
 | `RM` / `HOTPLUG` | lsblk | Parsed but **not** used for boot exclusion (present for completeness); `is_boot` not derived from RM | never decides boot; adversarial fixture proves no hidden bypass via RM |
 | `MOUNTPOINT` / `MOUNTPOINTS` | lsblk | `_node_mountpoints` → `Disk.mountpoints` → `is_protected_mountpoint`, `has_any_mount`, `is_boot` via mount | `/` or `/run/live` etc → `is_boot` forced true; `has_any_mount` → not wipeable |
-| `LABEL` | lsblk | `_volume_label`, `labels_for`, `BOOT_LABELS`, `FIRMWARE_LABELS`, typed source resolver | missing → `""`; duplicate `BEAMO_WIPE` → fail-closed duplicate; `EFI` filtered when real label exists |
-| `FSTYPE` | lsblk | Not directly used for boot decision (present) | — |
+| `LABEL` | lsblk | `_volume_label`, `labels_for`, `BOOT_LABELS`, `FIRMWARE_LABELS`, typed source resolver; `layout_id` → `disk_identity[8]` | missing → `""`; duplicate `BEAMO_WIPE` → fail-closed duplicate; `EFI` filtered when real label exists |
+| `FSTYPE` | lsblk | Not a boot signal. Partition-contents evidence and `layout_id` → `disk_identity[8]` | change → identity fail |
+| `FSVER` | lsblk | Not a boot signal. `support_export` reads it from the same `run_lsblk` scan for the report-USB check (`vfat` must be `FAT32`, `exfat` must be `1.0`) | — |
 | `VENDOR` | lsblk | `Disk.vendor` → `disk_identity[5]` | missing → `""`; change → identity fail |
 | `PKNAME` | lsblk | `parent_disk_path` partition→disk via `pkname` match | missing → fallback to `parent` node or alias scan |
-| `UUID` | lsblk | Typed source `_resolve_typed_source` `UUID`, `disk_identity` not but used for mount resolution | duplicate UUID → `found` list len>1 → resolver returns `None` → fail-closed |
+| `UUID` | lsblk | Typed source `_resolve_typed_source` `UUID`; `layout_id` → `disk_identity[8]` | duplicate UUID → `found` list len>1 → resolver returns `None` → fail-closed |
 | `WWN` | lsblk | `Disk.wwn` → `disk_identity[4]` | missing → `""`; duplicate → identity still per-disk but WWN change triggers fail |
-| `PARTUUID` | lsblk | Typed source `PARTUUID` | duplicate → fail-closed |
-| `PARTLABEL` | lsblk | Typed source `PARTLABEL` | duplicate → fail-closed |
+| `PARTTYPE` / `PARTTYPENAME` | lsblk | Partition-contents evidence and `layout_id` → `disk_identity[8]` | change → identity fail |
+| `PARTUUID` | lsblk | Typed source `PARTUUID`; `layout_id` → `disk_identity[8]` | duplicate → fail-closed |
+| `PARTLABEL` | lsblk | Typed source `PARTLABEL`; `layout_id` → `disk_identity[8]` | duplicate → fail-closed |
+| `RO` | lsblk | `Disk.read_only` → `is_wipeable_disk` | read-only → not wipeable; real lsblk output without `RO` on a disk → discovery error (`_validate_real_lsblk_metadata`) |
 
 Hidden-name regex: `HIDDEN_NAME_RE = ^(loop|ram|zram|sr|fd|mmcblk\d+(boot\d+|rpmb))` — adversarial `lsblk_unusual_controllers.json` proves `mmcblk0boot0` never appears as target.
 
@@ -37,7 +42,7 @@ Live-name regex: `LIVE_NAME_RE = (live|casper|overlay)` — names containing `li
 
 ### 1.2 Mount sources (live medium)
 
-- **Constants** `LIVE_MOUNTS` (6 paths): `/run/live/medium`, `/lib/live/mount/medium`, `/run/initramfs/live`, `/cdrom`, `/mnt/live`, `/live/image`, `/run/live/fromiso`, `/lib/live/mount/fromiso`
+- **Constants** `LIVE_MOUNTS` (8 paths): `/run/live/medium`, `/lib/live/mount/medium`, `/run/initramfs/live`, `/cdrom`, `/mnt/live`, `/live/image`, `/run/live/fromiso`, `/lib/live/mount/fromiso`
 - **Findmnt** (`/usr/bin/findmnt -n -o SOURCE <mountpoint>`) via `_run_findmnt` + `CLEAN_SUBPROCESS_ENV` (no `LD_PRELOAD`, absolute path only `LSBLK_BINARIES`/`FINDMNT_BINARIES`) — adversarial: non-zero exit → ignored (`test_findmnt_nonzero_stdout_is_ignored`).
 - **Mountinfo** (`/proc/self/mountinfo`) via `read_mountinfo_sources` / `parse_mountinfo` / `_mountinfo_unescape` → `live_medium_is_mounted` requires `/dev` or typed source or `KERNEL_NAME_RE` on a live mountpoint; `tmpfs`/`overlay` → false.
 - **Normalization** `normalize_mount_source` — strips `[deleted]`, promotes bare `sda1` → `/dev/sda1` only if `KERNEL_NAME_RE` matches; `overlay` stays `overlay` (adversarial).
@@ -51,7 +56,7 @@ Live-name regex: `LIVE_NAME_RE = (live|casper|overlay)` — names containing `li
 - `WHOLE_DISK_RE` — `^/dev/(sd[a-z]+|hd[a-z]+|vd[a-z]+|xvd[a-z]+|dasd[a-z]+|nvme\d+n\d+|mmcblk\d+|sr\d+)$`; rejects `nbd*`, partitions (`sda1`, `nvme0n1p1`), whitespace/comma; `allow_optical` separates `sr` as boot vs target.
 - `_is_partition_of` — `sda1` is partition of `sda`; `nvme0n1p1` is partition of `nvme0n1` (p+digits); `nvme0n11` is *not* partition of `nvme0n1` (sibling namespace).
 - `normalize_whole_disk` — requires `/dev/` prefix, `realpath` stays under `/dev/`, whole-disk regex, optional allow_optical; symlink via `lstat` → `SafetyError`.
-- `disk_identity` tuple: `(realpath, serial, size_bytes, model, wwn, vendor)`; `assert_disk_identity` re-reads `selectable_disks` and compares full tuple; any change → fail.
+- `disk_identity` tuple (10 fields, see §1.1): `(realpath, serial, size_bytes, model, wwn, vendor, bus, kind, layout_id, raw_model)`. `assert_disk_identity` re-reads `selectable_disks` and compares the full tuple; `assert_rediscovered_identity` compares the target, boot device and whole listed inventory recorded in the `WipeRequest`; any change → fail.
 
 ### 1.4 Removable flags
 
@@ -59,11 +64,16 @@ Live-name regex: `LIVE_NAME_RE = (live|casper|overlay)` — names containing `li
 
 ### 1.5 Metadata refresh (TOCTOU)
 
-- `Wizard.confirm_erase` when not preview/dry-run: `discovery = (self._rediscover or discover)()` → re-reads `lsblk`+mounts+cmdline; `if not boot_identified or boot is None → REDISCOVER_ERROR`; `assert_boot_excluded` + `assert_disk_identity` on fresh discovery; re-selects `disk` from fresh `selectable` by `realpath`; `assert_ready_to_wipe` re-checks `is_wipeable_disk`, `has_protected_mount`, `token_matches`, `countdown`, `normalize_whole_disk`, `assert_not_boot`, `block_rdev`/`assert_size_unchanged`, `logfile_for` + `assert_log_not_on_target` + `_log_filesystem_is_target`.
+Erase now (`Wizard.begin_erase`, or the synchronous `Wizard.confirm_erase`) claims the start on the UI thread, shows `CHECKING`, and runs `Wizard._perform_start`. Two rediscoveries follow:
+
+1. **Wizard rediscovery** (`Wizard._perform_start`, not preview/dry-run): `discovery = (self._rediscover or discover)()` → re-reads `lsblk`+mounts+cmdline; a read failure → `REREAD_FAILED`; `if not boot_identified or boot is None → REDISCOVER_ERROR`; `assert_boot_excluded`, an unchanged boot `disk_identity`, and `assert_disk_identity` on the fresh discovery; re-selects `disk` from fresh `selectable` by `realpath`; the owner's authorization must still match the fresh selection context (else `AUTHORIZATION_STALE` and back to `CONFIRM`). `assert_ready_to_wipe` then re-checks the owner box, `is_wipeable_disk`, `assert_disk_identity`, mounts, `token_matches`, countdown, `normalize_whole_disk`, `assert_not_boot`, block-device nodes, `assert_size_unchanged`, `assert_local_device_transport` and `logfile_for`, and records target/boot `rdev` plus target, boot and inventory `disk_identity` in the `WipeRequest`. `build_nwipe_argv` runs `assert_log_not_on_target` (which uses `_log_filesystem_is_target`).
+2. **Final runner rediscovery** (`NwipeRunner.start`, real engine only): after the pinned-engine check, it re-checks block nodes, size, `rdev` and local transport, then takes the exclusive wipe lock. Under that lock it repeats those checks and `assert_not_boot`, then calls `_reserve_target_under_lock` and only then `_recheck_identity_under_lock`, which runs a fresh `discover()` (any failure → refusal) and `assert_rediscovered_identity` against the confirmed target, boot device and inventory.
+
+- **Target name reservation:** `_reserve_target_under_lock` opens the confirmed disk read-only (`O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC`, non-exclusive, not inherited by nwipe) and requires the held handle's `st_rdev` to equal the confirmed `device_rdev`. It is taken just before the final rediscovery and held until nwipe has exited (or the start is refused), then closed in `_release_wipe_lock`. While it is open the kernel cannot give that disk's name to another disk: if the confirmed disk is unplugged, nwipe's open by name fails instead of reaching a different disk.
 - `assert_size_unchanged` compares `block_size_bytes` from `/sys/block/<name>/size` vs `disk.size_bytes` (preview skips; live requires exact match).
 - `block_rdev` checks `lstat` is `S_ISBLK` and not symlink; `device_rdev == 0` at confirm time → `NwipeRunner.start` raises `"identity"` for real engine (test `test_zero_confirm_rdev_is_fail_closed_for_real_engine`).
 
-All failures set `wizard.error` and stay on `LAST_CHANCE`; `runner.start` is never called; `build_nwipe_argv` is never reached.
+All failures set `wizard.error` and return from `CHECKING` to `LAST_CHANCE` with a fresh five-second countdown (a stale authorization returns to `CONFIRM`); nwipe is never spawned. Wizard-stage failures never call `runner.start`; runner-stage failures refuse before `Popen` and close the reservation.
 
 ---
 
@@ -98,7 +108,8 @@ For every adversarial case:
 - `Wizard.select_disk(boot.path)` → `selected is None`.
 - `Wizard.continue_pick()` / `confirm_erase()` → stays on same screen, `runner.start` not called, `build_nwipe_argv` not reached (spy asserts `Popen` not called, `pass_fds` not set).
 - `assert_boot_excluded` raises `SafetyError` when called on uncertain discovery (spy).
-- TOCTOU: `rediscover` returning changed `serial`/`size_bytes`/`wwn`/`vendor`/`model`/`realpath`/`mount`/`boot`/`topology` → `confirm_erase` sets `error` containing `identity` or `safe list` or `REDISCOVER_ERROR`, stays `LAST_CHANCE`, `runner.start` call count 0.
+- TOCTOU: `rediscover` returning changed `serial`/`size_bytes`/`wwn`/`vendor`/`model`/`realpath`/`mount`/`boot`/`topology` → `confirm_erase` (via `_perform_start`) sets `error` containing `identity` or `safe list` or `REDISCOVER_ERROR`, stays `LAST_CHANCE`, `runner.start` call count 0.
+- Runner TOCTOU: the target reservation is taken before the final rediscovery and outlives the launch; a refused reservation or failed final rediscovery prevents `Popen` and closes the handle; cancel releases it only after engine exit, and an unconfirmed stop keeps it (`tests/test_runner_target_reservation_20261026.py`).
 
 Spies/fakes: `DryRunRunner` (never real `nwipe`), `FakeRunner` with `start` counter, `monkeypatch.setattr(subprocess.Popen, fake_popen)` that raises if called, `monkeypatch.setattr(os.lstat, ...)` for symlink/rdev, `monkeypatch.setattr(os.path.realpath, lambda p: alias)` for symlink, `tmp_path` for log isolation.
 
@@ -113,6 +124,7 @@ Destructive validation (if any) would run only on isolated x86_64 Linux VM with 
 - `tests/test_compatibility_matrix.py` — 23 ST/BM cases.
 - `tests/test_security_hardening.py` — remote, mount, log, symlink, rdev.
 - `tests/test_wizard_flow.py` — happy path, countdown, rediscover identity change, boot alias.
+- `tests/test_runner_target_reservation_20261026.py` — read-only target reservation order, release and refusal.
 - `tests/test_safety.py` — boot exclusion, token, live.
 
 Run: `BEAMO_WIPE_DRY_RUN=1 python3 -m pytest -k "not tk_runtime"` (local) and `xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72" python3 -m pytest` (hosted gate); `BEAMO_WIPE_NO_OPEN=1 ./preview --web` + `./preview --console </dev/null` smoke.

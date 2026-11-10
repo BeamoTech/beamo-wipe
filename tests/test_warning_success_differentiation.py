@@ -181,8 +181,12 @@ def test_tk_blocked_and_storage_sites_use_error_and_limits():
     assert '"danger"' in inspect.getsource(tk_mod.TkWizard._blocked)
     pick = inspect.getsource(tk_mod.TkWizard._pick)
     assert 'kind="limits"' in pick
+    # #158: the Method screen's limits are one line with the limits icon
+    # and severity word, drawn by _limits_line from _method.
     method = inspect.getsource(tk_mod.TkWizard._method)
-    assert 'kind="limits"' in method
+    assert "self._limits_line(col)" in method
+    line = inspect.getsource(tk_mod.TkWizard._limits_line)
+    assert '_icon_alert(row, "limits"' in line and "C.SEVERITY_LIMITS" in line
     last = inspect.getsource(tk_mod.TkWizard._last)
     assert "SEVERITY_WARNING" in last
 
@@ -329,9 +333,16 @@ def test_severity_words_have_one_localization_source():
 
 def test_preview_report_stays_neutral_and_badges_keep_canonical_icons():
     """Guards: preview never takes success styling; erase icons unchanged."""
+    from beamo_wipe.report_panel import build_report_panel
+    from beamo_wipe.wizard import ReportView
+
+    # #135: the report panel model owns the tone; preview is always neutral,
+    # even over a saved snapshot, and Tk draws only ok/warn as non-neutral.
+    saved = ReportView(1, "saved", "Saved.", "", False, False, None)
+    assert build_report_panel(saved, preview=True, usb=None).tone == "info"
     from beamo_wipe.ui import tk_wizard as tk_mod
 
-    done = inspect.getsource(tk_mod.TkWizard._done)
-    assert '"info" if self.w.preview else report.tone' in done
+    panel_src = inspect.getsource(tk_mod.TkWizard._report_save_panel)
+    assert 'panel.tone if panel.tone in ("ok", "warn") else "info"' in panel_src
     for code, view in VIEWS.items():
         assert view.icon == ("check" if view.tone == "ok" else view.tone), code

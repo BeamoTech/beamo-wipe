@@ -31,7 +31,9 @@ def _handlers():
 def test_x11_f5_repeat_cannot_confirm_its_own_refresh():
     handlers = _handlers()
     scans = []
-    wizard = SimpleNamespace(screen=Screen.OWNER, can_refresh=True)
+    # #136: rescans start from Pick (not Owner); its dialog is unguarded.
+    wizard = SimpleNamespace(screen=Screen.PICK, can_refresh=True,
+                             refresh_offered=True, refresh_guarded=False)
     app = SimpleNamespace(
         w=wizard,
         _f5_held=False,
@@ -58,6 +60,40 @@ def test_x11_f5_repeat_cannot_confirm_its_own_refresh():
     app._on_f5_release(SimpleNamespace(keysym="F5", time=250))
     assert app._on_key(SimpleNamespace(keysym="F5", time=300)) == "break"
     assert scans == ["scan"]
+
+
+def test_f5_never_accepts_the_guarded_dialog():
+    """#136: from Review a second, separate F5 still does not scan."""
+    handlers = _handlers()
+    scans = []
+    wizard = SimpleNamespace(screen=Screen.LAST_CHANCE, can_refresh=True,
+                             refresh_offered=True, refresh_guarded=True)
+    app = SimpleNamespace(
+        w=wizard,
+        _f5_held=False,
+        _f5_release_time=None,
+        _key_event_time=lambda event: getattr(event, "time", None),
+    )
+
+    def click_refresh():
+        if wizard.screen == Screen.REFRESH_CONFIRM:
+            scans.append("scan")
+        else:
+            wizard.screen = Screen.REFRESH_CONFIRM
+
+    app._click_refresh = click_refresh
+    for name in ("_on_key", "_on_f5_release"):
+        setattr(app, name, MethodType(handlers[name], app))
+
+    assert app._on_key(SimpleNamespace(keysym="F5", time=100)) == "break"
+    assert wizard.screen == Screen.REFRESH_CONFIRM
+    app._on_f5_release(SimpleNamespace(keysym="F5", time=200))
+    assert app._on_key(SimpleNamespace(keysym="F5", time=200)) == "break"
+    assert scans == []
+
+    app._on_f5_release(SimpleNamespace(keysym="F5", time=250))
+    assert app._on_key(SimpleNamespace(keysym="F5", time=300)) == "break"
+    assert scans == []
 
 
 def test_x11_held_escape_keeps_stop_confirmation_open():

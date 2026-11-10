@@ -33,6 +33,11 @@ def session(monkeypatch, tmp_path):
         "beamo_wipe.app._shutdown",
     ):
         monkeypatch.setattr(target, forbidden)
+    # #133's Working-screen finish-sound probe asks sound._on_live(), which
+    # reads the kernel command line on Linux. This is not the live USB; say
+    # so directly so the probe makes no native read (read_cmdline stays
+    # forbidden for every other path).
+    monkeypatch.setattr("beamo_wipe.sound._on_live", lambda: False)
     original_lstat = os.lstat
     fake_nodes = {
         "/dev/" + name: index
@@ -144,8 +149,11 @@ def test_f5_interrupts_enters_quiet_interval(session, monkeypatch, enter, fresh)
     events = [(0, enter), (0.1, -1), (0.9, curses.KEY_F5), (1.2, -1)]
     events += [(2.3, -1), (2.4, enter)] if fresh else [(1.3, enter)]
     run_keys(monkeypatch, w, events)
-    assert session.scans == ([True] if fresh else [])
-    assert w.screen is (Screen.OWNER if fresh else Screen.REFRESH_CONFIRM)
+    # The held Enter is still suppressed (the dialog stays open). #136: the
+    # dialog from Review is guarded, so even a fresh Enter means Cancel and
+    # nothing is scanned.
+    assert session.scans == []
+    assert w.screen is (Screen.LAST_CHANCE if fresh else Screen.REFRESH_CONFIRM)
     assert not w.runner.started
 
 
@@ -233,7 +241,8 @@ def test_s_from_review_cannot_confirm_stop_after_start(
     w = session.wizard
     prepare(w, Screen.LAST_CHANCE)
     # The first real review frame starts its visible countdown at t=0.
-    events = [(5.1, -1), (5.2, letter), (5.3, 10), (5.4, 27)]
+    # #165: Tab to Erase now before Enter (Enter presses only the focused button).
+    events = [(5.1, -1), (5.2, letter), (5.25, 9), (5.3, 10), (5.4, 27)]
     events += [(5.5, -1), (6.6, -1), (6.7, letter)] if fresh else [(5.5, letter)]
     run_keys(monkeypatch, w, events)
     assert w.runner.started and w.runner.cancelled is fresh
@@ -243,7 +252,8 @@ def test_s_from_review_cannot_confirm_stop_after_start(
 def test_fresh_stop_s_after_start_still_cancels(session, monkeypatch):
     w = session.wizard
     prepare(w, Screen.LAST_CHANCE)
-    run_keys(monkeypatch, w, [(5.1, -1), (5.2, 10), (5.3, 27), (5.4, ord("s"))])
+    # #165: Tab to Erase now before Enter.
+    run_keys(monkeypatch, w, [(5.1, -1), (5.15, 9), (5.2, 10), (5.3, 27), (5.4, ord("s"))])
     assert w.runner.started and w.runner.cancelled and w.screen is Screen.DONE
 
 
@@ -262,21 +272,14 @@ def test_s_from_owner_does_not_toggle_sharing_after_help_opens(
 
 
 @pytest.mark.parametrize("letter", [32, ord("s")])
-def test_refresh_detour_does_not_repeat_report_preference(session, monkeypatch, letter):
+def test_f5_on_report_help_from_owner_does_not_rescan_or_repeat(session, monkeypatch, letter):
+    # #136: no rescan is offered before the disk list, including the report
+    # help opened from Owner; F5 there is inert and the preference is set once.
     w = session.wizard
     prepare(w, Screen.OWNER)
     w.open_report_help()
-    run_keys(
-        monkeypatch,
-        w,
-        [
-            (0, letter),
-            (0.1, -1),
-            (0.9, curses.KEY_F5),
-            (1.0, 27),
-            (1.1, letter),
-        ],
-    )
+    run_keys(monkeypatch, w, [(0, letter), (0.1, -1), (0.9, curses.KEY_F5)])
+    assert session.scans == []
     assert w.screen is Screen.REPORT_HELP
     assert (w.report_wanted if letter == 32 else w.report_share_redacted) is True
 
@@ -303,7 +306,8 @@ def test_literal_confirm_key_cannot_become_consent_after_refresh(
 ):
     w = session.wizard
     prepare(w, Screen.CONFIRM)
-    events = [(0, letter), (0.1, curses.KEY_F5), (0.2, 10)]
+    # #136: the guarded dialog is accepted with its own key, C; Enter cancels.
+    events = [(0, letter), (0.1, curses.KEY_F5), (0.2, ord("c"))]
     if letter == ord("s"):
         events.append((0.3, ord("r")))
     events += [(0.4, -1), (1.5, -1), (1.6, letter)] if fresh else [(0.4, letter)]

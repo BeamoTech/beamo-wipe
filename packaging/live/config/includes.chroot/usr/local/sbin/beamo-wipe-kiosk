@@ -25,6 +25,15 @@ boot_ui_mode() {
 
 UI_MODE="$(boot_ui_mode /proc/cmdline)"
 
+boot_has_word() {
+  set -f
+  # shellcheck disable=SC2013,SC2046
+  for word in $(cat /proc/cmdline 2>/dev/null); do
+    [ "$word" = "$1" ] && return 0
+  done
+  return 1
+}
+
 say() { [ "$UI_MODE" = accessible ] || return 0; command -v espeak-ng >/dev/null 2>&1 || return 0; timeout 15 espeak-ng -- "$1" >/dev/null 2>&1 || true; }
 
 # QEMU's boot gate waits for this marker from the shipped live filesystem.
@@ -42,6 +51,10 @@ if [ -c /dev/ttyS0 ]; then
   if [ "$UI_MODE" = accessible ]; then
     printf '%s\n' BEAMO_WIPE_UI_MODE=accessible >/dev/ttyS0 2>/dev/null || true
   fi
+  # The troubleshoot entry's safe video settings, for the QEMU boot gate.
+  if boot_has_word nomodeset; then
+    printf '%s\n' BEAMO_WIPE_SAFE_VIDEO=1 >/dev/ttyS0 2>/dev/null || true
+  fi
 fi
 
 # These fixed status values survive failed imports and X startup.
@@ -54,15 +67,127 @@ run_console() {
   return "$console_rc"
 }
 
+# Fixed, identifier-free classification of a failed X start for the QEMU
+# gate: which display devices exist and which known X error was logged.
+# No log text, device name or hardware detail is ever printed.
+graphical_diagnostics() {
+  if [ -e /dev/fb0 ]; then echo BEAMO_WIPE_X_FB0=1; else echo BEAMO_WIPE_X_FB0=0; fi
+  if [ -e /dev/dri/card0 ]; then echo BEAMO_WIPE_X_DRI=1; else echo BEAMO_WIPE_X_DRI=0; fi
+  x_log=""
+  for candidate in /var/log/Xorg.0.log /root/.local/share/xorg/Xorg.0.log; do
+    if [ -r "$candidate" ]; then x_log="$candidate"; break; fi
+  done
+  if [ -z "$x_log" ]; then
+    echo BEAMO_WIPE_X_LOG_MISSING
+    return 0
+  fi
+  grep -q 'no screens found' "$x_log" && echo BEAMO_WIPE_X_NO_SCREENS
+  grep -q 'No devices detected' "$x_log" && echo BEAMO_WIPE_X_NO_DEVICES
+  grep -q '(EE) modeset' "$x_log" && echo BEAMO_WIPE_X_MODESET_ERROR
+  grep -q '(EE) FBDEV' "$x_log" && echo BEAMO_WIPE_X_FBDEV_ERROR
+  grep -q 'Unable to find a valid framebuffer device' "$x_log" && echo BEAMO_WIPE_X_FB_NOT_FOUND
+  # Each fixed fbdev/fbdevhw (Xorg 21.1.7, fbdev 0.5.0) failure class.
+  grep -q 'Failed to open framebuffer device' "$x_log" && echo BEAMO_WIPE_X_FB_OPEN_FAILED
+  grep -q 'FBIOGET_[FV]SCREENINFO' "$x_log" && echo BEAMO_WIPE_X_FB_GET_INFO_FAILED
+  grep -q 'FBIOPUT_VSCREENINFO: ' "$x_log" && echo BEAMO_WIPE_X_FB_PUT_VAR_FAILED
+  grep -q 'FBIOPUT_VSCREENINFO succeeded but modified' "$x_log" && echo BEAMO_WIPE_X_FB_MODE_MODIFIED
+  grep -q 'mode initialization failed' "$x_log" && echo BEAMO_WIPE_X_FB_MODE_INIT_FAILED
+  grep -q 'mmap fbmem\|mapping of video memory' "$x_log" && echo BEAMO_WIPE_X_FB_MMAP_FAILED
+  grep -q 'bits per pixel\|not supported at depth\|pixmap depth setup failed' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_DEPTH_UNSUPPORTED
+  grep -q 'shadow framebuffer' "$x_log" && echo BEAMO_WIPE_X_FB_SHADOW_FAILED
+  grep -q 'visual type setup failed\|miCreateDefColormap failed' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_VISUAL_FAILED
+  grep -q 'not yet supported\|text mode is not supported\|unrecognised' "$x_log" &&
+    echo BEAMO_WIPE_X_FB_TYPE_UNSUPPORTED
+  grep -q 'AddScreen/ScreenInit failed' "$x_log" && echo BEAMO_WIPE_X_SCREEN_INIT_FAILED
+  grep -q 'none have a usable configuration' "$x_log" && echo BEAMO_WIPE_X_NO_USABLE_SCREEN
+  grep -q '(EE) VESA' "$x_log" && echo BEAMO_WIPE_X_VESA_ERROR
+  grep -q 'Failed to load module' "$x_log" && echo BEAMO_WIPE_X_MODULE_MISSING
+  grep -q 'Fatal server error' "$x_log" && echo BEAMO_WIPE_X_FATAL
+  qemu_x_details "$x_log"
+  return 0
+}
+
+# QEMU gate only. A virtual machine whose firmware names itself QEMU (never
+# a customer PC) also sends the X server's fbdev mode lines and the kernel
+# framebuffer geometry, printable ASCII only, so a mode mismatch can be
+# named from the gate's private serial evidence.
+qemu_x_details() {
+  [ "$(cat /sys/class/dmi/id/sys_vendor 2>/dev/null)" = QEMU ] || return 0
+  grep -a 'FBDEV(0)\|Modeline\|(EE)' "$1" 2>/dev/null | tr -cd '\11\12\40-\176' |
+    head -n 80 | sed 's/^/BEAMO_WIPE_QEMU_X_LOG /'
+  # The kernel's own fb var/fix (what FBIOPUT_VSCREENINFO hands back).
+  python3 -I -c '
+import fcntl, os, struct
+fd = os.open("/dev/fb0", os.O_RDONLY)
+var = struct.unpack("<40I", fcntl.ioctl(fd, 0x4600, bytes(160)))
+fix = fcntl.ioctl(fd, 0x4602, bytes(80))
+names = ("xres yres xres_virtual yres_virtual xoffset yoffset bits_per_pixel grayscale "
+         "red_off red_len red_msb green_off green_len green_msb blue_off blue_len blue_msb "
+         "transp_off transp_len transp_msb nonstd activate height width accel_flags pixclock "
+         "left_margin right_margin upper_margin lower_margin hsync_len vsync_len sync vmode "
+         "rotate colorspace r0 r1 r2 r3").split()
+print("BEAMO_WIPE_QEMU_FB_VAR " + " ".join("%s=%d" % pair for pair in zip(names, var)))
+print("BEAMO_WIPE_QEMU_FB_FIX smem_len=%d line_length=%d visual=%d type=%d" % (
+    struct.unpack_from("<I", fix, 24)[0], struct.unpack_from("<I", fix, 48)[0],
+    struct.unpack_from("<I", fix, 36)[0], struct.unpack_from("<I", fix, 28)[0]))
+' 2>/dev/null || echo BEAMO_WIPE_QEMU_FB_READ_FAILED
+  return 0
+}
+
+# Safe video on UEFI: nomodeset leaves the firmware framebuffer (/dev/fb0)
+# and no DRM device. X's autodetection then tried only vesa, which cannot
+# work without a legacy video BIOS, and found no screens (QEMU OVMF, CI
+# run 41237147966). Point X at the framebuffer in exactly that case with
+# the shipped /etc/X11/beamo-safe-video.conf (relative -config names are
+# searched in /etc/X11; xorg.conf.d still applies). Nothing is written at
+# runtime: this service runs with ProtectSystem=full, so /etc is read-only
+# (CI run 41255192420). BIOS safe video has no framebuffer and keeps vesa;
+# normal boots use KMS.
+SAFE_VIDEO_X_CONFIG=beamo-safe-video.conf
+safe_video_x_config() {
+  boot_has_word nomodeset || return 0
+  [ -e /dev/fb0 ] || return 0
+  [ -e /dev/dri/card0 ] && return 0
+  printf '%s\n' "$SAFE_VIDEO_X_CONFIG"
+}
+
+# Linux 6.9+ (here 6.12) parents the firmware framebuffer device to the
+# PCI display it scans out from, so /sys/class/graphics/fb0 resolves under
+# devices/pci. Bookworm's Xorg 21.1.7 fbdev helper then refuses fb0 on its
+# non-PCI path and finds no fb directly under the PCI device on its PCI
+# path, so X has no screen whenever no DRM driver is bound (UEFI safe video,
+# or a GPU without a working driver; vesa cannot help without a legacy
+# video BIOS). Later Xorg 21.1 releases (Debian 13) decide by the device's
+# bus instead. In this service's private mount namespace only
+# (PrivateMounts=yes), give X the class link that rule would accept, and
+# only for a firmware framebuffer on the platform bus. Discovery, the host
+# and other sessions never see it.
+FIRMWARE_FB_LINK=../../devices/platform/beamo-firmware-framebuffer/graphics/fb0
+firmware_fb_for_x() {
+  [ -e /dev/fb0 ] || return 0
+  [ -e /dev/dri/card0 ] && return 0
+  link="$(readlink /sys/class/graphics/fb0 2>/dev/null)" || return 0
+  case "$link" in */devices/pci*) ;; *) return 0 ;; esac
+  bus="$(readlink /sys/class/graphics/fb0/device/subsystem 2>/dev/null)" || return 0
+  case "$bus" in */bus/platform) ;; *) return 0 ;; esac
+  mount -t tmpfs -o mode=0755,size=64k,nosuid,nodev,noexec beamo-graphics \
+    /sys/class/graphics 2>/dev/null || return 0
+  ln -s "$FIRMWARE_FB_LINK" /sys/class/graphics/fb0 2>/dev/null || true
+}
+
 run_ui() {
   rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
+  x_config="$(safe_video_x_config)"
+  firmware_fb_for_x
   say "Beamo Wipe is starting with speech. No new erase starts automatically."
   if command -v startx >/dev/null 2>&1; then
     graphical_rc=0
     if [ "$UI_MODE" = accessible ]; then
-      startx /usr/local/bin/beamo-wipe --accessible -- -nolisten tcp vt1 || graphical_rc=$?
+      startx /usr/local/bin/beamo-wipe --accessible -- -nolisten tcp vt1 ${x_config:+-config "$x_config"} || graphical_rc=$?
     else
-      startx /usr/local/bin/beamo-wipe -- -nolisten tcp vt1 || graphical_rc=$?
+      startx /usr/local/bin/beamo-wipe -- -nolisten tcp vt1 ${x_config:+-config "$x_config"} || graphical_rc=$?
     fi
     rm -f /tmp/.X11-unix/X0 /tmp/.X0-lock "$XAUTHORITY" 2>/dev/null || true
     if [ "$graphical_rc" -eq 0 ]; then
@@ -70,6 +195,12 @@ run_ui() {
     fi
   else
     graphical_rc=127
+  fi
+  # Fixed, identifier-free marker for the QEMU gate: the graphical guide did
+  # not run and the keyboard text screens follow (harmless without serial).
+  if [ -c /dev/ttyS0 ]; then
+    printf '%s\n' BEAMO_WIPE_GRAPHICAL_FAILED >/dev/ttyS0 2>/dev/null || true
+    graphical_diagnostics >/dev/ttyS0 2>/dev/null || true
   fi
   say "The spoken screen could not start. A keyboard text screen is showing instead. Speech is not available on it."
   run_console

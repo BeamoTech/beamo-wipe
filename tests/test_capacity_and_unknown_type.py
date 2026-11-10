@@ -45,14 +45,15 @@ def test_unknown_kind_is_labeled_type_unknown():
 
 
 def test_large_disks_use_tb_and_keep_exact_decimal_gb():
-    one_tb = _disk(1_000_000_000_000)
+    # No serial: the size label is the (older, fallback) confirmation token.
+    one_tb = _disk(1_000_000_000_000, serial="")
     assert one_tb.size_gb_label == "1000"
     assert one_tb.size_phrase == "1 TB (1000 GB)"
     assert present_disk(one_tb).capacity == "1 TB (1000 GB)"
     assert confirm_spec(one_tb, [one_tb]).token == "1000"
     assert "1000" in confirm_spec(one_tb, [one_tb]).prompt
 
-    two_tb = _disk(2_000_000_000_000)
+    two_tb = _disk(2_000_000_000_000, serial="")
     assert two_tb.size_phrase == "2 TB (2000 GB)"
     assert confirm_spec(two_tb, [two_tb]).token == "2000"
 
@@ -77,8 +78,11 @@ def test_boundary_sizes_do_not_collide_after_tb_formatting():
     assert gb1000.size_phrase != gb1001.size_phrase
     assert gb1999.size_phrase != gb2000.size_phrase
     assert not same_size_conflict([gb1999, gb2000])
-    assert confirm_spec(gb1999, [gb1999, gb2000]).token == "1999"
-    assert confirm_spec(gb2000, [gb1999, gb2000]).token == "2000"
+    # Without serials the size labels are the fallback tokens, and stay distinct.
+    no_serial = [_disk(d.size_bytes, serial="", path=f"/dev/sd{c}", name=f"sd{c}")
+                 for c, d in zip("xy", (gb1999, gb2000))]
+    assert confirm_spec(no_serial[0], no_serial).token == "1999"
+    assert confirm_spec(no_serial[1], no_serial).token == "2000"
     # Binary 10 GiB stays decimal 11 GB, not 10 GB.
     assert _disk(10_737_418_240).size_phrase == "11 GB"
 

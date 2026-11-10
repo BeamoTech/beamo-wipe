@@ -2,8 +2,8 @@
 """Fail-closed export of a completed wipe report to one newly inserted USB.
 
 The kiosk never accepts a destination path.  The controller identifies one
-new FAT32 USB, then delegates mounting and copying to a short-lived private
-mount namespace.  A report is successful only after a read-only remount,
+new FAT32 or exFAT USB, then delegates mounting and copying to a short-lived
+private mount namespace.  A report is successful only after a read-only remount,
 byte-for-byte verification, and a final ordinary unmount.
 """
 
@@ -23,6 +23,7 @@ import sys
 import unicodedata
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import TypeGuard, Any, Callable, Iterable, Mapping, Optional, Sequence
 
 from beamo_wipe.discover import run_lsblk
@@ -47,7 +48,13 @@ MOUNTINFO_PATH = "/proc/self/mountinfo"
 SYS_DEV_BLOCK_ROOT = Path("/sys/dev/block")
 MOUNT_ROOT = Path("/run/beamo-wipe-export")
 REPORTS_DIR = "BEAMO-WIPE-REPORTS"
-SUPPORTED_FILESYSTEMS = frozenset({"vfat"})
+SUPPORTED_FILESYSTEMS = frozenset({"vfat", "exfat"})
+# The only lsblk/libblkid FSVER accepted for each FSTYPE above. "vfat" also
+# covers FAT12 and FAT16, which stay refused. exFAT has one published
+# revision, 1.00, which libblkid prints as "1.0"; any other revision is
+# refused. Both in-kernel drivers take the same fmask/dmask/VFS mount
+# options, so the mount command differs only in its -t value.
+_REQUIRED_FSVER: Mapping[str, str] = MappingProxyType({"vfat": "FAT32", "exfat": "1.0"})
 TERMINAL_OUTCOMES = frozenset({"completed", "verified", "failed", "interrupted"})
 EXPORT_TIMEOUT_S = 120
 COMMAND_TIMEOUT_S = 15
@@ -88,32 +95,32 @@ USB_MANY_FOUND = "More than one new report USB found."
 USB_MUST_BE_WRITABLE = "The report USB must be writable and not already mounted."
 USB_LAYOUT_MALFORMED = "The report USB layout is malformed."
 USB_LAYOUT_AMBIGUOUS = "The report USB layout is ambiguous."
-USB_NEED_ONE_VOLUME = "The report USB must contain exactly one FAT32 volume."
+USB_NEED_ONE_VOLUME = "The report USB must contain exactly one FAT32 or exFAT volume."
 USB_LAYOUT_UNSUPPORTED = "The report USB layout is unsupported."
 USB_PARTITION_ORPHAN = "The report USB partition does not belong to its parent disk."
 USB_VOLUME_PATH_UNSUPPORTED = "The report USB volume path is unsupported."
 USB_VOLUME_WRITABLE = "The report USB volume must be writable and unmounted."
 USB_VOLUME_SMALL = "The report USB volume is too small."
-USB_FAT32_ONLY = "Use a FAT32 report USB. Other filesystems are not mounted."
-USB_FAT32_NOT_12_16 = "Use a FAT32 report USB. FAT12 and FAT16 are not accepted."
-EVIDENCE_MALFORMED = "The saved wipe evidence is malformed."
-EVIDENCE_SCHEMA = "The saved wipe evidence has an unsupported schema."
-EVIDENCE_NOT_FINISHED = "Only a finished wipe report can be exported."
-EVIDENCE_NO_IDENTITY = "The saved wipe evidence is missing its disk identity."
-EVIDENCE_WRONG_DISK = "The saved wipe evidence is for a different disk."
-EVIDENCE_PROVENANCE = "The saved wipe evidence provenance does not match."
-EVIDENCE_LOG_META = "The saved wipe evidence has malformed log metadata."
+USB_FAT32_ONLY = "Use a FAT32 or exFAT report USB. Other filesystems are not mounted."
+USB_FAT32_NOT_12_16 = "Use a FAT32 or exFAT report USB. FAT12 and FAT16 are not accepted."
+EVIDENCE_MALFORMED = "The saved erase evidence is malformed."
+EVIDENCE_SCHEMA = "The saved erase evidence has an unsupported schema."
+EVIDENCE_NOT_FINISHED = "Only a finished erase report can be exported."
+EVIDENCE_NO_IDENTITY = "The saved erase evidence is missing its disk identity."
+EVIDENCE_WRONG_DISK = "The saved erase evidence is for a different disk."
+EVIDENCE_PROVENANCE = "The saved erase evidence provenance does not match."
+EVIDENCE_LOG_META = "The saved erase evidence has malformed log metadata."
 USB_GONE = "The report USB disappeared before it could be opened."
 USB_NOT_BLOCK = "The report USB path is not a block device."
 PROTECTED_LAYOUT_BAD = "A protected disk layout is malformed or ambiguous."
 PROTECTED_IDENTITY_UNVERIFIED = "A protected disk identity could not be verified."
-REPORT_CHANGED_BEFORE_EXPORT = "The finished wipe report changed before export."
+REPORT_CHANGED_BEFORE_EXPORT = "The finished erase report changed before export."
 BASELINE_PREPARE_FIRST = "Prepare a protected disk baseline before inserting the report USB."
 BOOT_IDENTITY_UNAVAILABLE = "Boot identity unavailable."
 NO_BASELINE = "No bounded baseline available."
 BOOT_ABSENT_BASELINE = "Boot identity is absent from the baseline."
 UNSTABLE_BASELINE = "Unstable baseline."
-CANNOT_VERIFY_BOOT = "Cannot verify the boot USB and connected disks. Diagnostic export is blocked. Leave existing disks connected and try Prepare again."
+CANNOT_VERIFY_BOOT = "Cannot verify the Beamo USB and connected disks. Diagnostic export is blocked. Leave existing disks connected and try Prepare again."
 DISK_CHANGED_PREPARE = "A connected disk changed. Remove the report USB and Prepare again."
 USB_CHANGED_DISCOVERY = "The report USB changed during discovery. Try again."
 DISK_IDENTITY_CHANGED = "A connected disk identity changed before export."
@@ -159,11 +166,11 @@ USB_CHANGED_BEFORE_MOUNT = "The report USB changed before mounting."
 PROTECTED_CHANGED = "A protected disk identity changed before export."
 USB_ALIASES_PROTECTED = "The report USB aliases a connected protected disk."
 USB_IDENTITY_CHANGED_OPEN = "The report USB identity changed while opening it."
-USB_NOT_SINGLE = "{detail} Insert exactly one new FAT32 report USB, then try again."
+USB_NOT_SINGLE = "{detail} Insert exactly one new FAT32 or exFAT report USB, then try again."
 
 NEXT_REPLUG = "Unplug only the report USB, plug it back in, then try again."
 NEXT_DIFFERENT_STICK = (
-    "Use a different USB stick with one FAT32 volume. "
+    "Use a different USB stick with one FAT32 or exFAT volume. "
     "This USB cannot format or repair report media."
 )
 NEXT_TRY_SUPPORT = (
@@ -298,7 +305,7 @@ README_SHARE = (
     "They are not identity evidence."
 )
 README_SHARE_HOW = "To share, copy only SHARE.json and SHARE.txt. Do not share result.json, RESULT.txt, REPORT.html, or engine logs."
-README_SIMPLE = "RESULT.txt is the owner result summary. REPORT.html is the same summary as a readable page. result.json records the wipe outcome and disk identifiers."
+README_SIMPLE = "RESULT.txt is the owner result summary. REPORT.html is the same summary as a readable page. result.json records the erase outcome and disk identifiers."
 README_LOG = "nwipe log: {status} (original report only)."
 README_LOG_SIMPLE = "nwipe log: {status}."
 README_COMPLETE = "COMPLETE authenticates these file contents only. It does not claim that the USB is safe to remove."
@@ -984,7 +991,7 @@ def _require_baseline_present(
 def select_export_volume(
     payload: Mapping[str, Any], baseline: Sequence[DeviceFingerprint]
 ) -> ExportVolume:
-    """Return exactly one new, simple, writable FAT32 USB volume."""
+    """Return exactly one new, simple, writable FAT32 or exFAT USB volume."""
     roots = _root_disks(payload)
     _require_baseline_present(roots, baseline)
     _refuse_duplicate_wwns(roots)
@@ -1049,8 +1056,11 @@ def select_export_volume(
     if fstype not in SUPPORTED_FILESYSTEMS:
         raise SafetyError(USB_FAT32_ONLY)
     fsver = _strict_text(volume_node, "fsver", required=True)
-    if fsver != "FAT32":
-        raise SafetyError(USB_FAT32_NOT_12_16)
+    if fsver != _REQUIRED_FSVER[fstype]:
+        # An unknown exFAT revision is an unsupported filesystem, not FAT12/16.
+        raise SafetyError(
+            USB_FAT32_NOT_12_16 if fstype == "vfat" else USB_FAT32_ONLY
+        )
     uuid = _strict_text(volume_node, "uuid", required=True)
     return ExportVolume(
         parent=parent,
@@ -1061,6 +1071,120 @@ def select_export_volume(
         uuid=uuid,
     )
 
+
+
+# Live report-USB detection for the result screen (#135). Read-only: one
+# lsblk scan through the same selector the export uses. Nothing is mounted,
+# opened or written; Save still runs the export's own two-scan checks.
+PROBE_NONE = "none"
+PROBE_MANY = "many"
+PROBE_FOUND = "found"
+PROBE_FORMAT = "format"
+PROBE_REFUSED = "refused"
+PROBE_UNAVAILABLE = "unavailable"
+FILESYSTEM_NAMES: Mapping[str, str] = MappingProxyType({
+    "vfat": "FAT",
+    "exfat": "exFAT",
+    "ntfs": "NTFS",
+    "ext2": "ext2",
+    "ext3": "ext3",
+    "ext4": "ext4",
+    "btrfs": "Btrfs",
+    "xfs": "XFS",
+    "f2fs": "F2FS",
+    "hfs": "HFS",
+    "hfsplus": "Mac OS Extended (HFS+)",
+    "apfs": "APFS",
+    "iso9660": "ISO 9660",
+    "udf": "UDF",
+    "crypto_LUKS": "LUKS",
+    "BitLocker": "BitLocker",
+    "swap": "swap",
+})
+_FAT_VERSIONS = frozenset({"FAT12", "FAT16", "FAT32"})
+
+
+@dataclass(frozen=True)
+class ReportUsbProbe:
+    """What one read-only scan saw for the report USB. No device paths."""
+
+    state: str
+    label: str = ""
+    filesystem: str = ""
+    detail: str = ""
+
+
+def filesystem_name(fstype: str, fsver: str = "") -> str:
+    """Owner-facing filesystem name, or "" when unknown or unformatted."""
+    if fstype == "vfat":
+        return fsver if fsver in _FAT_VERSIONS else "FAT"
+    return FILESYSTEM_NAMES.get(fstype, "")
+
+
+def _new_usb_volume_type(
+    payload: Mapping[str, Any], baseline: Sequence[DeviceFingerprint]
+) -> tuple[str, str]:
+    """(fstype, fsver) of the single new USB's single volume, best effort."""
+    try:
+        roots = _root_disks(payload)
+        new = [
+            node for node in roots
+            if node.get("type") == "disk"
+            and node.get("tran") == "usb"
+            and not any(_same_device(_fingerprint_node(node), old) for old in baseline)
+        ]
+        if len(new) != 1:
+            return "", ""
+        node = new[0]
+        children = _children(node)
+        if not _strict_text(node, "fstype") and len(children) == 1:
+            node = children[0]
+        return _strict_text(node, "fstype"), _strict_text(node, "fsver")
+    except (SafetyError, AttributeError, TypeError, ValueError):
+        return "", ""
+
+
+def probe_report_usb(
+    *,
+    discovery: DiscoveryResult,
+    target_path: str,
+    scan: Callable[[], Mapping[str, Any]] = run_lsblk,
+) -> ReportUsbProbe:
+    """Classify the report USB from one read-only scan (#135).
+
+    Uses the export's own baseline (boot USB and erased target required)
+    and selector, so "found" here means the export's first check would
+    accept the same stick. Never mounts, opens or writes a device.
+    """
+    required_paths = {target_path}
+    if discovery.boot is not None:
+        required_paths.add(discovery.boot.path)
+    baseline = baseline_fingerprints(discovery.disks, required_paths=required_paths)
+    try:
+        payload = scan()
+    except Exception:  # noqa: BLE001 - a failed scan is "could not check"
+        return ReportUsbProbe(PROBE_UNAVAILABLE)
+    try:
+        volume = select_export_volume(payload, baseline)
+    except SafetyError as exc:
+        detail = str(exc)
+        if detail == USB_NOT_SINGLE.format(detail=USB_NONE_FOUND):
+            return ReportUsbProbe(PROBE_NONE)
+        if detail == USB_NOT_SINGLE.format(detail=USB_MANY_FOUND):
+            return ReportUsbProbe(PROBE_MANY)
+        if detail in (USB_FAT32_ONLY, USB_FAT32_NOT_12_16):
+            fstype, fsver = _new_usb_volume_type(payload, baseline)
+            return ReportUsbProbe(
+                PROBE_FORMAT, filesystem=filesystem_name(fstype, fsver), detail=detail
+            )
+        return ReportUsbProbe(PROBE_REFUSED, detail=detail)
+    except Exception:  # noqa: BLE001 - malformed scan data: could not check
+        return ReportUsbProbe(PROBE_UNAVAILABLE)
+    return ReportUsbProbe(
+        PROBE_FOUND,
+        label=destination_label_for(volume.parent.model, volume.parent.size_bytes),
+        filesystem=filesystem_name(volume.fstype, volume.fsver),
+    )
 
 def prepare_terminal_evidence(path: Path, target_path: str) -> VerifiedEvidence:
     data = _verified_evidence_bytes(Path(path))

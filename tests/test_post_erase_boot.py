@@ -11,7 +11,8 @@ from pathlib import Path
 
 from beamo_wipe import copy as C
 from beamo_wipe.models import Screen, WipeResult
-from beamo_wipe.outcomes import VIEWS
+from beamo_wipe import outcomes as O
+from beamo_wipe.outcomes import VIEWS, plain_result
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -98,9 +99,14 @@ def test_curses_done_shows_note_by_outcome(monkeypatch):
         with patch.object(Wizard, "result_view", new_callable=PropertyMock) as view:
             view.return_value = VIEWS[code]
             shown, _, term = _draw(monkeypatch, wiz)
-        assert C.POST_ERASE_BOOT in shown, code
-        assert shown.index(VIEWS[code].message) < shown.index(C.POST_ERASE_BOOT), code
-        assert shown.index(C.POST_ERASE_BOOT) < shown.index(C.REPORT_STATUS_TITLE), code
+        # #134: finished outcomes say it once, as the What next list's
+        # "Keeping this computer?" item, instead of the separate note.
+        note = O.NEXT_ITEM_KEEP if VIEWS[code].success else C.POST_ERASE_BOOT
+        other = C.POST_ERASE_BOOT if VIEWS[code].success else O.NEXT_ITEM_KEEP
+        assert note in shown and other not in shown, code
+        first = plain_result(VIEWS[code]).headline
+        assert shown.index(first) < shown.index(note), code
+        assert shown.index(note) < shown.index(C.REPORT_STATUS_TITLE), code
         last = term.frames[-1]
         assert max(last) < 24
         assert all(len(line) < 80 for line in last.values())
@@ -130,7 +136,10 @@ def test_plain_done_shows_note_by_outcome(monkeypatch, capsys):
             monkeypatch.setattr("builtins.input", lambda _: "SHUTDOWN")
             assert _plain_loop(wiz) == 0
         out = capsys.readouterr().out
-        assert C.POST_ERASE_BOOT in out, code
+        # #134: finished outcomes carry it in the What next list instead.
+        note = O.NEXT_ITEM_KEEP if VIEWS[code].success else C.POST_ERASE_BOOT
+        assert note in out, code
+        assert (C.POST_ERASE_BOOT in out) is not VIEWS[code].success, code
     for code in HIDDEN:
         wiz = _done_wizard()
         with patch.object(Wizard, "result_view", new_callable=PropertyMock) as view:
@@ -163,7 +172,8 @@ def test_note_shows_for_internal_external_and_unknown_targets(monkeypatch):
         with patch.object(Wizard, "result_view", new_callable=PropertyMock) as view:
             view.return_value = VIEWS["verified"]
             shown, _, _ = _draw(monkeypatch, wiz)
-        assert C.POST_ERASE_BOOT in shown, bus
+        # #134: a verified result says it in its What next list.
+        assert O.NEXT_ITEM_KEEP in shown, bus
 
 
 def test_gallery_done_omits_note_and_shows_message_once():
@@ -190,6 +200,16 @@ def test_helper_after_erasing_card_in_every_language():
             "Wenn der Computer nach dem Löschen nicht startet",
             "möglicherweise",
         ),
+        (
+            "es.html",
+            "Si el equipo no se inicia después del borrado",
+            "es posible",
+        ),
+        (
+            "it.html",
+            "Se il computer non si avvia dopo la cancellazione",
+            "potrebbe",
+        ),
     ):
         raw = (ROOT / "helper" / name).read_text(encoding="utf-8")
         doc = _Doc()
@@ -203,6 +223,7 @@ def test_helper_after_erasing_card_in_every_language():
         assert conditional in card, name
         assert (
             "operating system" in card or "système" in card or "Betriebssystem" in card
+            or "sistema operativo" in card
         ), name
         lowered = card.lower()
         assert "will not start" not in lowered, name

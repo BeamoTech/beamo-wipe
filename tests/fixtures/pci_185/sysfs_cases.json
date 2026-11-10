@@ -1,0 +1,27 @@
+{
+  "_comment": "Fake /sys/bus/pci/devices trees for tests/test_hidden_storage_185.py. Each entry: address -> [vendor, device, class, driver or null]. Built into a temp dir; never read from a real computer.",
+  "vmd_bound": {
+    "0000:00:00.0": ["0x8086", "0x9a14", "0x060000", null],
+    "0000:00:0e.0": ["0x8086", "0x9a0b", "0x010400", "vmd"],
+    "0000:00:14.0": ["0x8086", "0xa0ed", "0x0c0330", "xhci_hcd"]
+  },
+  "vmd_unbound": {
+    "0000:00:00.0": ["0x8086", "0x7d01", "0x060000", null],
+    "0000:00:0e.0": ["0x8086", "0x7d0b", "0x010400", null]
+  },
+  "rst_raid": {
+    "0000:00:17.0": ["0x8086", "0x282a", "0x010400", "ahci"],
+    "0000:00:14.0": ["0x8086", "0x9d2f", "0x0c0330", "xhci_hcd"]
+  },
+  "ahci_normal": {
+    "0000:00:17.0": ["0x8086", "0x9dd3", "0x010601", "ahci"],
+    "0000:02:00.0": ["0x144d", "0xa808", "0x010802", "nvme"]
+  },
+  "nonintel_raid": {
+    "0000:02:00.1": ["0x1022", "0x43c8", "0x010400", "ahci"]
+  },
+  "vmd_with_nvme": {
+    "0000:00:0e.0": ["0x8086", "0xa77f", "0x010400", "vmd"],
+    "10000:e1:00.0": ["0x1c5c", "0x1959", "0x010802", "nvme"]
+  }
+}

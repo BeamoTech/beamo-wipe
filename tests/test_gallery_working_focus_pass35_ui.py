@@ -1,23 +1,26 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Progress redraws must leave the preview's keyboard controls reachable."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def test_working_progress_redraw_keeps_keyboard_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     start = script.index("function draw() {")
     end = script.index('document.addEventListener("keydown"', start)
     draw = script[start:end]
+    # #144: draw() repaints the header power badge on every screen.
+    badge_start = script.index("function renderPowerBadge() {")
+    badge = script[badge_start:script.index("function updatePower(", badge_start)]
     program = r"""
 let active = null, more = null;
 class Bucket {
@@ -29,14 +32,17 @@ class Bucket {
     if (this === elements.main && value.includes('id="more"'))
       more = {id:'more', matches() { return false; }, focus() { active = this; }};
   }
-  append(button) { this.children.push(button); }
-  prepend(button) { this.children.unshift(button); }
+  append(button) { button.parent = this; this.children.push(button); }
+  prepend(button) { button.parent = this; this.children.unshift(button); }
   querySelectorAll() {
     return this === elements.foot
       ? [...elements.utilities.children, ...elements.btnsL.children, ...elements.btnsR.children]
       : this.children;
   }
-  querySelector() { return null; }
+  querySelector(selector) {
+    if (selector !== '.footrow') return null;
+    return this.footrow || (this.footrow = new Bucket());
+  }
 }
 const elements = Object.fromEntries(
   ['step','journey','sfill','main','btnsL','btnsR','foot','utilities','hint']
@@ -50,10 +56,14 @@ const P = {
   journey: ['Prepare','Erase','Result'], methods: {everyday: {summary:'Summary'}},
   titles: {working:'Working'}, eraseProgress:'Progress', previewBanner:'Preview',
   stop: {ask:'Stop erase'}, sounds: {toggleOff:'Enable sounds', toggleOn:'Disable sounds', hear:'Hear sounds'},
+  finishSound: {toggle:'Play a sound', beep:'Beep', quiet:'Quiet', none:'None', reasonPreview:'Preview'},
+  powerKeep: 'Laptop',
   hints: {default:'Hint', working:'Working hint'},
+  helpMenu: {title:'Help & settings', shortcutsTitle:'Keyboard shortcuts'},
 };
 let screen = 'working', renderedScreen = null, showMore = false;
 let selected = {path:'/dev/fake'}, method = 'everyday', soundsOn = false;
+let soundsChosen = false, audioDemo = true;
 function applyTextSize() {}
 function stepInfo() { return [2, 'Erase', 'Working']; }
 function headerCaption(info) { return info[1]; }
@@ -62,14 +72,19 @@ function summaryCard() { return '<div>Fake disk</div>'; }
 function moreLink() { return '<button id="more">More</button>'; }
 function bindMore() {}
 function powerText() { return 'Power'; }
-function currentProgress() { return {percent: 20, percentText:'20%', timingText:'Time', animate:false}; }
+function currentProgress() { return {percent: 20, percentText:'20%', timingText:'Time', animate:false, headline:'20%', timeLine:'Running for 1 minute', stepLine:'Step 1 of 2: Overwriting', staleBlock:'', notes:[]}; }
 function esc(value) { return value; }
 function btn(label, onclick) {
   return {textContent: label, disabled:false, onclick,
     matches(selector) { return selector === '.foot button'; },
+    setAttribute() {}, dataset: {},
+    insertAdjacentElement(_where, other) {
+      other.parent = this.parent;
+      this.parent.children.splice(this.parent.children.indexOf(this) + 1, 0, other);
+    },
     focus() { active = this; }};
 }
-""" + draw + r"""
+""" + badge + draw + r"""
 draw();
 for (let i = 0; i < 3; i++) {
   const oldButton = elements.btnsL.children[i];
@@ -80,10 +95,25 @@ for (let i = 0; i < 3; i++) {
   if (document.activeElement !== newButton)
     throw Error('progress redraw lost keyboard focus on ' + oldButton.textContent);
 }
+// #175: Help & settings and Keyboard shortcuts sit in the footer tools on
+// Working too; a progress repaint must keep focus on them as well.
+for (let i = 0; i < 2; i++) {
+  const oldTool = elements.utilities.children[i];
+  oldTool.focus();
+  draw();
+  const newTool = elements.utilities.children[i];
+  if (!newTool || oldTool === newTool || newTool.textContent !== oldTool.textContent)
+    throw Error('footer tools were not rebuilt in place');
+  if (document.activeElement !== newTool)
+    throw Error('progress redraw lost keyboard focus on ' + oldTool.textContent);
+}
 more.focus();
 draw();
 if (document.activeElement !== more)
   throw Error('progress redraw lost keyboard focus on Show more');
 """
-    result = subprocess.run([node, "-e", program], capture_output=True, text=True)
+    # stdin, not -e: the gallery's draw() alone is near the 32,767-character
+    # Windows command-line limit.
+    result = subprocess.run([node, "-"], input=program, capture_output=True,
+                            text=True, encoding="utf-8")
     assert result.returncode == 0, result.stderr

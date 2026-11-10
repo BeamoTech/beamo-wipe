@@ -54,7 +54,9 @@ def test_curses_does_not_enable_erase_before_paged_warning_is_visible(monkeypatc
             self.presses = 0
 
         def getmaxyx(self):
-            return (16, 80)
+            # Short enough that the review's one warning starts below the
+            # first page (#128 removed the line that used to precede it).
+            return (14, 80)
 
         def keypad(self, *_args):
             pass
@@ -126,6 +128,8 @@ def test_curses_paged_review_can_be_completed_then_waited(monkeypatch):
                 assert wizard.countdown_left == 5
                 return -1
             if self.presses == 17:
+                return 9  # #165: Tab to Erase now; Enter presses only it.
+            if self.presses == 18:
                 return 10
             wizard.wants_shutdown = True
             return -1

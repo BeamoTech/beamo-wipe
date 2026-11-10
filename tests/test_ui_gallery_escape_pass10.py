@@ -1,12 +1,12 @@
 """Held Escape should leave only the current preview overlay."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize("start_screen", ["refresh_confirm", "report_help"])
@@ -14,14 +14,16 @@ def test_gallery_escape_repeat_does_not_cross_two_screens(start_screen):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    scripts = [inline_script(gallery_html())]
     assert len(scripts) == 1
     source = scripts[0]
     start = source.index('document.addEventListener("keydown", e => {')
     end = source.index("function renderOtherDevices()", start)
     handler = source[start:end]
     program = f"""
+// #175: the keydown handler first routes keys to Help & settings when open.
 let screen = {start_screen!r};
+let helpOpen = false;
 let refreshFrom = 'limits', reportHelpFrom = 'limits';
 let callback, redraws = 0;
 const main = {{querySelector() {{ return {{focus() {{}}}}; }}}};
@@ -43,7 +45,7 @@ def test_gallery_enter_repeat_cannot_activate_new_last_chance_focus():
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    scripts = [inline_script(gallery_html())]
     assert len(scripts) == 1
     source = scripts[0]
     assert '(focused || btnsL.querySelector("button")).focus()' in source
@@ -54,6 +56,7 @@ def test_gallery_enter_repeat_cannot_activate_new_last_chance_focus():
 // Method's Continue action has just drawn Last chance, whose safe Back button
 // receives focus. A held Enter now delivers a repeat keydown to that button.
 let screen = 'last', callback;
+let helpOpen = false;
 const document = {{addEventListener(_type, fn) {{ callback = fn; }}}};
 {handler}
 const repeated = {{key: 'Enter', repeat: true, prevented: false,

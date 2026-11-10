@@ -154,14 +154,16 @@ def test_move_selection_does_not_start_on_boot():
     assert wiz.selected.path in paths
 
 
-def test_move_selection_follows_path_sorted_order():
-    """Keyboard highlight must match the on-screen sort (path, boot last)."""
+def test_move_selection_follows_the_on_screen_order():
+    """Keyboard highlight must match the on-screen list (#151 order, boot apart)."""
+    from beamo_wipe.disk_order import pick_order
+
     wiz, _clock = _wiz()
     wiz.skip_intro()
     wiz.accept_what()
     wiz.set_owner(True)
     wiz.continue_owner()
-    ordered = sorted(wiz.selectable, key=lambda d: d.path)
+    ordered = list(pick_order(wiz.selectable))
     wiz.move_selection(1)
     assert wiz.selected is not None
     assert wiz.selected.path == ordered[0].path
@@ -588,12 +590,16 @@ def test_working_uis_never_round_percent_with_point_zero_f():
     from beamo_wipe.ui.console_wizard import _loop
     from beamo_wipe.ui.tk_wizard import TkWizard
 
+    from beamo_wipe.progress import ProgressView
+
     tk_src = inspect.getsource(TkWizard._refresh_working)
-    assert "format_progress_percent" in tk_src
+    assert "glance_percent" in tk_src
+    assert "format_progress_percent" in inspect.getsource(ProgressView.glance_percent.fget)
     assert ":.0f" not in tk_src
     console_src = inspect.getsource(_loop)
-    assert "progress_view.status_text" in console_src
-    from beamo_wipe.progress import ProgressView
+    assert "_working_glance_lines(wizard.progress_view)" in console_src
+    for pct in (99.5, 99.9, 99.99, 100.0):
+        assert ProgressView("Writing", pct, 60).glance_percent == "99%"
     for pct in (99.5, 99.9, 99.99):
         assert ProgressView("Writing", pct, 60).status_text.startswith("99%.")
     assert ":.0f" not in console_src
@@ -678,7 +684,7 @@ def test_confirm_erase_second_start_reports_already_running(monkeypatch, tmp_pat
     wiz.runner.start = lambda request: (starts.append(request), orig_start(request))  # type: ignore[method-assign]
     wiz.confirm_erase()
     assert wiz.screen == Screen.WORKING
-    assert wiz.error == "A wipe is already running."
+    assert wiz.error == "An erase is already running."
     assert starts == []
     assert wiz._wipe_request is first_request
 

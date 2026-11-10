@@ -3,21 +3,21 @@
 
 from __future__ import annotations
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
-@pytest.mark.parametrize("language", ("en", "fr", "de"))
+@pytest.mark.parametrize("language", ("en", "fr", "de", "es", "it"))
 def test_generated_gallery_script_parses(language, tmp_path):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js is unavailable for JavaScript syntax validation")
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(language), re.S)
+    scripts = [inline_script(gallery_html(language))]
     assert len(scripts) == 1
     script = tmp_path / f"gallery-{language}.js"
     script.write_text(scripts[0], encoding="utf-8")

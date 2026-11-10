@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from beamo_wipe.models import DiskKind
+from beamo_wipe.models import DiskKind, Screen
 
 try:
     import tkinter as tk
@@ -61,7 +61,8 @@ def picker():
     app = object.__new__(TkWizard)
     canvas = Canvas()
     card = Card()
-    app.w = SimpleNamespace(selected=SimpleNamespace(path="fake-disk"))
+    # The real wizard always has a screen; _draw reads it first (#131).
+    app.w = SimpleNamespace(selected=SimpleNamespace(path="fake-disk"), screen=Screen.PICK)
     app._pick_canvas = canvas
     app._pick_cards = {"fake-disk": card}
     app._pick_restore_pending = True

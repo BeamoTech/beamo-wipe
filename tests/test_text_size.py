@@ -23,14 +23,18 @@ def test_text_size_default_and_rejects_unknown():
 def test_text_size_survives_refresh_and_keyboard_layout():
     wiz = authorized()
     assert wiz.set_text_size("large")
-    wiz.set_keyboard_layout("fr")
-    assert wiz.text_size == "large"
+    # #136: Check disks again is offered from Review (it holds
+    # confirmations), not from Owner. Where a layout applies, it clears the
+    # confirmations and lands on Owner, so refresh first, then the layout.
+    assert wiz.screen == Screen.LAST_CHANCE
     assert wiz.open_refresh_confirm()
     assert wiz.confirm_refresh()
     assert wiz.screen == Screen.OWNER and not wiz.owner_ok
     assert wiz.text_size == "large"
     assert wiz.method == MethodId.EVERYDAY
     assert wiz.selected is None
+    wiz.set_keyboard_layout("fr")
+    assert wiz.text_size == "large"
     wiz.reset_for_preview()
     assert wiz.text_size == "standard"
     assert wiz.text_scale == 1.0
@@ -54,5 +58,9 @@ def test_tk_still_pins_dpi_scaling():
     assert 'tk.call("tk", "scaling", 1.0)' in src
     assert "_apply_text_size" in inspect.getsource(tkui.TkWizard)
     keyboard = inspect.getsource(tkui.TkWizard._keyboard)
-    assert "TEXT_SIZE_LEAD" in keyboard
-    assert "TEXT_SIZE_LABELS" in keyboard
+    # #139: the keyboard screen draws text size through its own section,
+    # between the language and the keyboard layouts.
+    assert "self._text_size_section(" in keyboard
+    section = inspect.getsource(tkui.TkWizard._text_size_section)
+    assert "TEXT_SIZE_LEAD" in section
+    assert "TEXT_SIZE_LABELS" in section

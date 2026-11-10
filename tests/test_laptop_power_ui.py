@@ -20,13 +20,37 @@ def test_native_power_remains_readable_and_updates_without_redraw(ui, screen, si
     wizard.power.status = PowerStatus(ac=True, batteries=(80,), complete=True)
     app._draw()
     app.root.update()
+    # #133: Working checks finish-sound availability in the background and
+    # redraws once when that answer arrives. Let it settle first, so the
+    # baseline below measures power updates only.
+    import time
+    # The probe is wizard._audio_probe; its first answer moves
+    # audio_available from None and bumps sound_revision once. The next
+    # probe is AUDIO_PROBE_S (60 s) later, well after this test.
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        app._tick()
+        app.root.update()
+        if (screen != Screen.WORKING or (
+                getattr(wizard, "audio_available", None) is not None
+                and getattr(wizard, "_audio_probe", None) is None
+                and getattr(wizard, "_audio_request", None) is None)) and (
+                getattr(app, "_shown_sound_revision", 0) == getattr(wizard, "sound_revision", 0)):
+            break
+        time.sleep(0.02)
     focus = app.root.focus_get()
     generation = app._draw_generation
     for state in (PowerStatus(ac=False, batteries=(12,), complete=True), PowerStatus(), PowerStatus(complete=True)):
         wizard.power.status = state
         app._tick()
         app.root.update()
-        assert state.text in str(app._power_label.cget('text'))
+        if screen in {Screen.WHAT, Screen.OWNER}:
+            # #144: Owner states power in the header badge, not a sentence.
+            header = app._header
+            texts = [header.itemcget(i, 'text') for i in header.find_all() if header.type(i) == 'text']
+            assert state.badge.display in texts
+        else:
+            assert state.text in str(app._power_label.cget('text'))
         assert app.root.focus_get() is focus
         assert app._draw_generation == generation
         assert _clipping_problems(app) == []
@@ -46,8 +70,12 @@ def test_console_pages_power_without_dropping_disk_identity(monkeypatch, screen)
     wizard.power.status = PowerStatus(ac=False, batteries=(12,), complete=True)
     _, _, terminal = _draw(monkeypatch, wizard, keys=[curses.KEY_NPAGE] * 8)
     shown = ' '.join(' '.join(frame.values()) for frame in terminal.frames)
-    assert '12%' in shown
-    assert 'Low battery' in shown
+    if screen in {Screen.WHAT, Screen.OWNER}:
+        # #144: the header badge carries the state; the reminder stays.
+        assert f'[{wizard.power_badge.display}]' in shown
+    else:
+        assert '12%' in shown
+        assert 'Low battery' in shown
     assert 'lid open' in shown
     if screen not in {Screen.WHAT, Screen.OWNER}:
         assert wizard.selected.serial in shown

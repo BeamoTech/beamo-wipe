@@ -31,6 +31,8 @@ def test_console_report_preference_changes_once_per_physical_press(
         can_open_report_help=False,
         can_open_diagnostic=False,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
         report_wanted=True,
         report_share_redacted=False,
         report_recovery_warning="",

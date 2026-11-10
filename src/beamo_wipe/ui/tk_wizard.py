@@ -12,17 +12,20 @@ keep the live USB self-contained and readable without network dependencies.
 from __future__ import annotations
 
 import math
+import os
 import gc
 import re
 import sys
 import threading
+import time
 from functools import partial
 import tkinter as tk
 from pathlib import Path
 from tkinter import font as tkfont
-from typing import Callable, List, Literal, Optional
+from typing import Any, Callable, Iterable, List, Literal, Optional
 
 from beamo_wipe import copy as C
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import diagnostic_report as D
 from beamo_wipe.outcomes import may_have_erased
 from beamo_wipe.diagnostics import emit_serial_marker
@@ -31,8 +34,8 @@ from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
-from beamo_wipe.models import Disk, DiskKind, MethodId, Screen
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
+from beamo_wipe.models import Disk, DiskKind, ExcludedDevice, MethodId, Screen
 from beamo_wipe.safety import same_size_conflict
 from beamo_wipe.ui import StartupDisplayUnavailable
 from beamo_wipe.ui.layout import DEFAULT_SIZE, MIN_SIZE, layout_for, opening_size
@@ -47,10 +50,10 @@ from beamo_wipe.recovery import (
 from beamo_wipe.support_export import next_step_needs_support
 from beamo_wipe.wizard import (
     COUNTDOWN_S,
+    PREPARATION_PATH,
     ReportView,
     Wizard,
     error_needs_support,
-    format_progress_percent,
 )
 
 # --- Design tokens ---------------------------------------------------------
@@ -60,9 +63,10 @@ from beamo_wipe.wizard import (
 # same values — tests/test_ui_system.py pins the sync and the WCAG contrast
 # floor, so tune here and mirror there, never in one place only.
 
-# The field is plain white on every screen, splash included: hierarchy
-# comes from spacing, type, and the navy/amber brand accents, not tint.
-BG = "#FFFFFF"
+# The page is a soft cool gray and every content surface (cards, the
+# header bar, panels, fields) is white, so hierarchy comes from white
+# cards on a quiet field, spacing and type rather than heavy borders.
+BG = "#EEF2F6"
 SURFACE = "#FFFFFF"
 SURFACE_ALT = "#F4F6F8"
 INK = "#12202E"
@@ -71,6 +75,12 @@ BORDER = "#E3E8EE"
 # Strong border: also the unchecked radio/checkbox/key-cap outline, so it
 # must stay >= 3:1 on every surface (WCAG non-text contrast).
 BORDER_STRONG = "#6E7C8A"
+# Secondary button edge. Decorative only: the label identifies the button,
+# and keyboard focus draws the FOCUS ring around it.
+BUTTON_EDGE = "#C3CCD6"
+# Edge of the read-only selected-disk summary. The selected row on Pick
+# keeps PRIMARY: there the edge is the selection state.
+SUMMARY_EDGE = "#B9CBE0"
 NAVY = "#0A1B34"
 NAVY_SOFT = "#16315C"
 NAVY_MUTED = "#C9D6E8"
@@ -79,6 +89,12 @@ PRIMARY = "#1C4A73"
 PRIMARY_DARK = "#163A5C"
 PRIMARY_PRESS = "#102A44"
 PRIMARY_TINT = "#F0F5FA"
+# #176: one "selected" style for every choice (cards, segments, chips):
+# brand edge, tint fill and a drawn check mark — never colour alone.
+SELECTED_FILL = PRIMARY_TINT
+SELECTED_EDGE = PRIMARY
+SELECTED_EDGE_W = 2
+SELECTED_INK = PRIMARY
 DANGER = "#B3261E"
 DANGER_DARK = "#8E1D16"
 DANGER_PRESS = "#6E1510"
@@ -96,12 +112,71 @@ FOCUS = "#2563EB"
 ACCENT = "#E6A817"
 DISABLED_BG = "#E8ECF1"
 DISABLED_FG = "#6E7989"
+# #178: a disabled filled button is a faded brand pill with a dashed edge:
+# label 5.4:1 on its fill, edge 3.9:1 on white, so it reads as a button that
+# is not ready yet (and is never the #176 selected style: no check, dashed).
+DISABLED_FILL = "#F0F5FA"
+DISABLED_EDGE = "#6A84A1"
+DISABLED_INK = "#4A6684"
 TRACK = "#E4E9EF"
+# Confirmation characters in the disk card (#129). The box and underline
+# carry the meaning; the fill only adds contrast.
+CONFIRM_MARK_BG = "#FFF3C4"
 # One soft shadow layer. Tk has no blur, so the single rounded rect is
 # offset down a few pixels in a cool gray that stays quiet on BG.
 SHADOW = "#D5DCE6"
+# The footer bar is white like the header, framing the gray page.
+FOOTER_BG = SURFACE
 PREVIEW_BG = "#E6A817"
 PREVIEW_FG = "#0A1B34"
+
+# #179: high contrast. Black text on white, black edges, deep brand and
+# danger fills under white labels, a yellow warning fill, no shadows, and
+# thick black focus rings (see HIGH_CONTRAST in _Button/_Box). Text is
+# 7:1 or more on every surface it sits on; nothing relies on colour alone
+# (checks, dashes, icons and words carry every state).
+HIGH_CONTRAST = False
+_HIGH_CONTRAST_PALETTE: dict = {
+    "BG": "#FFFFFF", "SURFACE": "#FFFFFF", "SURFACE_ALT": "#EDEDED",
+    "INK": "#000000", "MUTED": "#1F1F1F",
+    "BORDER": "#000000", "BORDER_STRONG": "#000000", "BUTTON_EDGE": "#000000",
+    "SUMMARY_EDGE": "#000000",
+    "PRIMARY": "#002A54", "PRIMARY_DARK": "#001C38", "PRIMARY_PRESS": "#00101F",
+    "PRIMARY_TINT": "#E5EDF7",
+    "SELECTED_FILL": "#E5EDF7", "SELECTED_EDGE": "#000000", "SELECTED_EDGE_W": 3,
+    "SELECTED_INK": "#000000",
+    "DANGER": "#8A0000", "DANGER_DARK": "#660000", "DANGER_PRESS": "#4A0000",
+    "DANGER_TINT": "#FFFFFF", "DANGER_BORDER": "#8A0000",
+    "OK": "#0A4A22", "OK_TINT": "#FFFFFF", "OK_BORDER": "#0A4A22",
+    "WARN": "#000000", "WARN_BG": "#FFF0A0", "WARN_BORDER": "#000000",
+    "USB_BG": "#FFFFFF", "USB_BORDER": "#000000",
+    "FOCUS": "#000000", "ACCENT": "#000000",
+    "DISABLED_BG": "#FFFFFF", "DISABLED_FG": "#3A3A3A",
+    "DISABLED_FILL": "#FFFFFF", "DISABLED_EDGE": "#000000", "DISABLED_INK": "#3A3A3A",
+    "TRACK": "#C8C8C8", "CONFIRM_MARK_BG": "#FFF0A0", "SHADOW": "#FFFFFF",
+    "FOOTER_BG": "#FFFFFF", "PREVIEW_BG": "#FFD000", "PREVIEW_FG": "#000000",
+}
+_STANDARD_PALETTE: dict = {name: globals()[name] for name in _HIGH_CONTRAST_PALETTE}
+
+
+# Default for colour parameters where None already has a meaning (#179).
+_PALETTE_DEFAULT: Any = "__palette_default__"
+
+
+def apply_palette(high: bool) -> bool:
+    """Switch every colour token to the standard or the high-contrast palette.
+
+    Returns True when the palette changed; the caller redraws. Colours are
+    read at draw time, so a redraw recolours every screen.
+    """
+    global HIGH_CONTRAST
+    high = bool(high)
+    if high == HIGH_CONTRAST:
+        return False
+    globals().update(_HIGH_CONTRAST_PALETTE if high else _STANDARD_PALETTE)
+    HIGH_CONTRAST = high
+    _Button._VARIANTS = _button_variants()
+    return True
 
 CONTENT_W = 940
 WRAP = CONTENT_W - 72
@@ -110,6 +185,37 @@ PILL = 999  # _rr_points clamps to half the shape: fully rounded ends
 BAR_H = 8
 SHADOW_H = 8
 HALO_INSET = 5  # canvas margin a haloed _Box reserves for its glow
+# Double-click on a disk row = Review this disk (#150). Two presses on the
+# same disk within this time and distance; afterwards pointer presses are
+# ignored for the same time so the double-click cannot press a control on
+# the next screen.
+DOUBLE_CLICK_MS = 500
+DOUBLE_CLICK_SLOP = 8
+
+
+def _pointer_ms(event) -> int:
+    """The event's server time in ms, or a monotonic clock when it has none."""
+    value = getattr(event, "time", None)
+    if isinstance(value, int) and value > 0:
+        return value
+    return int(time.monotonic() * 1000)
+
+
+def _pointer_quiet(widget: tk.Misc, event) -> bool:
+    """True while the press is the tail of a double-click that changed screen."""
+    # A button without a live wizard (destroyed, or a test double) is never
+    # quiet: the guard only ever ignores the tail of an accepted double-click.
+    try:
+        app = getattr(widget.winfo_toplevel(), "_tk_wizard", None)
+    except (tk.TclError, AttributeError):
+        return False
+    check = getattr(app, "_pointer_quiet", None)
+    if not callable(check):
+        return False
+    try:
+        return check(event) is True
+    except (tk.TclError, AttributeError, TypeError):
+        return False
 
 # Countdown ring on the last-chance screen.
 RING_SIZE = 64
@@ -129,34 +235,56 @@ def header_caption(step_n: int, step_label: str) -> str:
 
 _JOURNEY_N = len(C.JOURNEY_LABELS)
 
-_STEP_ORDER = {
-    Screen.KEYBOARD: (C.journey_stage(Screen.KEYBOARD), C.journey_caption(Screen.KEYBOARD), C.TITLE_KEYBOARD),
-    Screen.WHAT: (C.journey_stage(Screen.WHAT), C.journey_caption(Screen.WHAT), C.TITLE_OWNER),
-    Screen.OWNER: (C.journey_stage(Screen.OWNER), C.journey_caption(Screen.OWNER), C.STEP_OWNERSHIP),
-    Screen.DISK_HELP: (C.journey_stage(Screen.DISK_HELP), C.DISK_HELP_TITLE, C.DISK_HELP_TITLE),
-    Screen.PICK: (C.journey_stage(Screen.PICK), C.journey_caption(Screen.PICK), C.TITLE_PICK),
-    Screen.PICK_EMPTY: (C.journey_stage(Screen.PICK_EMPTY), C.journey_caption(Screen.PICK_EMPTY), C.TITLE_PICK),
-    Screen.PICK_BLOCKED: (C.journey_stage(Screen.PICK_BLOCKED), C.journey_caption(Screen.PICK_BLOCKED), C.TITLE_PICK),
-    Screen.CONFIRM: (C.journey_stage(Screen.CONFIRM), C.journey_caption(Screen.CONFIRM), C.TITLE_CONFIRM),
-    Screen.METHOD: (C.journey_stage(Screen.METHOD), C.journey_caption(Screen.METHOD), C.TITLE_METHOD),
-    Screen.ADVANCED: (C.journey_stage(Screen.ADVANCED), C.TITLE_ADVANCED, C.TITLE_ADVANCED),
-    Screen.LIMITS: (C.journey_stage(Screen.LIMITS), limits.TITLE, limits.TITLE),
-    Screen.REFRESHING: (C.journey_stage(Screen.REFRESHING), C.journey_caption(Screen.REFRESHING), C.BUSY_REFRESHING_TITLE),
-    Screen.REFRESH_CONFIRM: (0, "", C.TITLE_REFRESH),
-    Screen.LAST_CHANCE: (C.journey_stage(Screen.LAST_CHANCE), C.journey_caption(Screen.LAST_CHANCE), C.TITLE_LAST),
-    Screen.CHECKING: (C.journey_stage(Screen.CHECKING), C.journey_caption(Screen.CHECKING), C.BUSY_CHECKING_TITLE),
-    Screen.STOPPING: (C.journey_stage(Screen.STOPPING), C.journey_caption(Screen.STOPPING), C.BUSY_STOPPING_TITLE),
-    Screen.WORKING: (C.journey_stage(Screen.WORKING), C.journey_caption(Screen.WORKING), C.TITLE_WORKING),
-    Screen.DONE: (C.journey_stage(Screen.DONE), C.journey_caption(Screen.DONE), C.TITLE_DONE_OK),
-    Screen.REPORT_HELP: (C.journey_stage(Screen.REPORT_HELP), C.REPORT_HELP_TITLE, C.REPORT_HELP_TITLE),
-}
+
+def _step_order() -> dict:
+    """Stage, header caption and title per screen, in the active language.
+
+    Built on each header draw: a table frozen at import kept English
+    captions ("Preparation") on French and German screens.
+    """
+    return {
+        Screen.KEYBOARD: (C.journey_stage(Screen.KEYBOARD), C.journey_caption(Screen.KEYBOARD), C.TITLE_KEYBOARD),
+        Screen.WHAT: (C.journey_stage(Screen.WHAT), C.journey_caption(Screen.WHAT), C.TITLE_OWNER),
+        Screen.OWNER: (C.journey_stage(Screen.OWNER), C.journey_caption(Screen.OWNER), C.STEP_OWNERSHIP),
+        Screen.DISK_HELP: (C.journey_stage(Screen.DISK_HELP), C.DISK_HELP_TITLE, C.DISK_HELP_TITLE),
+        Screen.PICK: (C.journey_stage(Screen.PICK), C.journey_caption(Screen.PICK), C.TITLE_PICK),
+        Screen.PICK_EMPTY: (C.journey_stage(Screen.PICK_EMPTY), C.journey_caption(Screen.PICK_EMPTY), C.TITLE_PICK),
+        Screen.PICK_BLOCKED: (C.journey_stage(Screen.PICK_BLOCKED), C.journey_caption(Screen.PICK_BLOCKED), C.TITLE_PICK),
+        Screen.CONFIRM: (C.journey_stage(Screen.CONFIRM), C.journey_caption(Screen.CONFIRM), C.TITLE_CONFIRM),
+        Screen.METHOD: (C.journey_stage(Screen.METHOD), C.journey_caption(Screen.METHOD), C.TITLE_METHOD),
+        Screen.ADVANCED: (C.journey_stage(Screen.ADVANCED), C.TITLE_ADVANCED, C.TITLE_ADVANCED),
+        Screen.LIMITS: (C.journey_stage(Screen.LIMITS), limits.TITLE, limits.TITLE),
+        Screen.REFRESHING: (C.journey_stage(Screen.REFRESHING), C.journey_caption(Screen.REFRESHING), C.BUSY_REFRESHING_TITLE),
+        Screen.REFRESH_CONFIRM: (0, "", C.TITLE_REFRESH),
+        Screen.LAST_CHANCE: (C.journey_stage(Screen.LAST_CHANCE), C.journey_caption(Screen.LAST_CHANCE), C.TITLE_LAST),
+        Screen.CHECKING: (C.journey_stage(Screen.CHECKING), C.journey_caption(Screen.CHECKING), C.BUSY_CHECKING_TITLE),
+        Screen.STOPPING: (C.journey_stage(Screen.STOPPING), C.journey_caption(Screen.STOPPING), C.BUSY_STOPPING_TITLE),
+        Screen.WORKING: (C.journey_stage(Screen.WORKING), C.journey_caption(Screen.WORKING), C.TITLE_WORKING),
+        Screen.DONE: (C.journey_stage(Screen.DONE), C.journey_caption(Screen.DONE), C.TITLE_DONE_OK),
+        Screen.REPORT_HELP: (C.journey_stage(Screen.REPORT_HELP), C.REPORT_HELP_TITLE, C.REPORT_HELP_TITLE),
+    }
+
+
+# Stage and page title per screen, for source checks. The header text
+# itself is copy.journey_step_caption (#130).
+_STEP_ORDER = _step_order()
+
+# A footer utility's trailing key name, "(F5)" / "(F8)" in every language;
+# dropped only when the tools line would otherwise wrap (#174).
+_FOOTER_KEY_NAME = re.compile(r"\s*\(F\d+\)$")
 
 # Spans of hint copy that render as key-caps instead of plain text.
-_KEY_TOKEN_RE = re.compile(r"(Up/Down|1, 2, or 3|any key|Enter|Esc|Space)")
+# Whole words only: Spanish "Escriba" must not become an Esc cap plus "riba".
+_KEY_TOKEN_RE = re.compile(r"\b(Left/Right|Up/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)\b")
 _KEY_TOKEN_KEYS = {
+    "Left/Right": ("←", "→"),
     "Up/Down": ("↑", "↓"),
     "1, 2, or 3": ("1", "2", "3"),
 }
+# Arrow caps are drawn in INK (#153); the font glyph was thin and tinted.
+_ARROW_KEYS = {"↑": "up", "↓": "down", "←": "left", "→": "right"}
+# Punctuation that sits against the cap before it (#153).
+_HUG_PUNCTUATION = frozenset(".,;:!?")
 
 
 def _family(root: tk.Tk) -> str:
@@ -169,7 +297,10 @@ def _family(root: tk.Tk) -> str:
 
 def _mono_family(root: tk.Tk) -> str:
     families = set(tkfont.families(root))
-    for candidate in ("DejaVu Sans Mono", "Liberation Mono", "Noto Sans Mono", "Courier"):
+    # The live image ships DejaVu Sans Mono. Previews on Windows and macOS
+    # take the nearest sans-serif monospace rather than serif Courier.
+    for candidate in ("DejaVu Sans Mono", "Liberation Mono", "Noto Sans Mono",
+                      "Cascadia Mono", "Consolas", "Menlo", "Courier"):
         if candidate in families:
             return candidate
     return "TkFixedFont"
@@ -215,20 +346,61 @@ def _round_rect(canvas: tk.Canvas, x0, y0, x1, y1, r, **kwargs) -> int:
 # --- Canvas icons (drawn, so they never depend on font glyph coverage) -----
 
 
-def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
-    cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
+def _text_start(widget: tk.Misc) -> int:
+    """Pixels from a hint widget's left edge to its first glyph or key-cap.
+
+    A Label draws its text after its border and padding; a key-cap bar
+    starts with either a text Label or a key-cap box (drawn at its edge).
+    """
+    try:
+        if widget.winfo_class() != "Label":
+            inner = widget.winfo_children()
+            first = inner[0].winfo_children()[0] if inner and inner[0].winfo_children() else None
+            if first is None or first.winfo_class() != "Label":
+                return 0
+            widget = first
+        return int(str(widget.cget("padx"))) + int(str(widget.cget("bd")))
+    except (tk.TclError, IndexError, ValueError):
+        return 0
+
+
+def _draw_selected_mark(cv: tk.Canvas, x: float, y: float, size: float, *, tags: str = "") -> None:
+    """#176: the selected mark — a filled brand circle with a white check."""
     pad = 1.5
-    ring = PRIMARY if selected else BORDER_STRONG
-    cv.create_oval(pad, pad, size - pad, size - pad, outline=ring, width=2)
+    cv.create_oval(x + pad, y + pad, x + size - pad, y + size - pad,
+                   fill=SELECTED_EDGE, outline=SELECTED_EDGE, width=2, tags=tags)
+    cv.create_line(
+        [x + size * 0.28, y + size * 0.52, x + size * 0.44, y + size * 0.68,
+         x + size * 0.73, y + size * 0.34],
+        fill="#FFFFFF", width=max(2.0, size / 9), capstyle="round", joinstyle="round",
+        tags=(tags, "check") if tags else "check",
+    )
+
+
+def _icon_radio(parent: tk.Widget, selected: bool, size: int = 22) -> tk.Canvas:
+    """A choice's mark: the #176 selected mark, or an empty ring."""
+    cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
+    cv._beamo_selected_mark = selected  # type: ignore[attr-defined]
     if selected:
-        inset = size * 0.30
-        cv.create_oval(inset, inset, size - inset, size - inset, fill=PRIMARY, outline="")
+        _draw_selected_mark(cv, 0, 0, size)
+    else:
+        pad = 1.5
+        cv.create_oval(pad, pad, size - pad, size - pad, outline=BORDER_STRONG, width=2)
     return cv
 
 
-def _icon_check_box(parent: tk.Widget, checked: bool, size: int = 28) -> tk.Canvas:
+def _icon_check_box(
+    parent: tk.Widget, checked: bool, size: int = 28, *, muted: bool = False
+) -> tk.Canvas:
     cv = tk.Canvas(parent, width=size, height=size, highlightthickness=0)
     pad = 2
+    if muted:
+        # Unavailable (#133): a flat grey box, never a live-looking tick.
+        _round_rect(
+            cv, pad, pad, size - pad, size - pad, 10,
+            fill=TRACK, outline=BORDER, width=2,
+        )
+        return cv
     if checked:
         _round_rect(
             cv, pad, pad, size - pad, size - pad, 10,
@@ -285,18 +457,23 @@ def _draw_alert_glyph(cv: tk.Canvas, x: float, y: float, size: float, kind: str)
     for ok, document square for limits."""
     if kind == "info":
         cv.create_oval(x + 2, y + 2, x + size - 2, y + size - 2, fill=PRIMARY, outline="")
-        cv.create_oval(
-            x + size / 2 - 2.5, y + size * 0.24, x + size / 2 + 2.5, y + size * 0.24 + 5,
-            fill="#FFFFFF", outline="",
-        )
+        # Keep a visible gap between dot and stem: at panel sizes the old
+        # 5 px dot touched the round-capped stem and read as a bar, not "i".
+        dot = max(1.6, size * 0.075)
+        stem = max(3.0, size * 0.1)
+        cx, cy = x + size / 2, y + size * 0.28
+        cv.create_oval(cx - dot, cy - dot, cx + dot, cy + dot, fill="#FFFFFF", outline="")
         cv.create_line(
-            x + size / 2, y + size * 0.46, x + size / 2, y + size * 0.74,
-            fill="#FFFFFF", width=3, capstyle="round",
+            cx, max(y + size * 0.48, cy + dot + 1 + stem / 2), cx, y + size * 0.74,
+            fill="#FFFFFF", width=stem, capstyle="round",
         )
-    elif kind == "warn":
+    elif kind in ("warn", "erase"):
+        # "erase" is the same triangle in red: the irreversible-erase
+        # warning on the review screen.
+        color = DANGER if kind == "erase" else WARN
         cv.create_polygon(
             x + size / 2, y + 2, x + size - 2, y + size - 3, x + 2, y + size - 3,
-            fill=WARN, outline=WARN, width=6, joinstyle="round",
+            fill=color, outline=color, width=6, joinstyle="round",
         )
         cv.create_line(
             x + size / 2, y + size * 0.36, x + size / 2, y + size * 0.62,
@@ -432,8 +609,8 @@ class _Box(tk.Canvas):
         parent: tk.Widget,
         *,
         radius: int = RADIUS,
-        fill: str = SURFACE,
-        outline: Optional[str] = BORDER,
+        fill: Optional[str] = None,
+        outline: Optional[str] = _PALETTE_DEFAULT,
         ow: int = 1,
         padx: int = 18,
         pady: int = 14,
@@ -442,6 +619,8 @@ class _Box(tk.Canvas):
         shadow: bool = False,
         halo: bool = False,
     ) -> None:
+        fill = SURFACE if fill is None else fill  # #179: current palette
+        outline = BORDER if outline is _PALETTE_DEFAULT else outline  # #179: current palette
         super().__init__(
             parent,
             highlightthickness=0,
@@ -522,6 +701,9 @@ class _Box(tk.Canvas):
                 self, 1, 1, width - 1, bottom + 2, self._radius + 2,
                 fill=FOCUS, outline="", tags="rr",
             )
+            if HIGH_CONTRAST:
+                _round_rect(self, 1.5, 1.5, width - 1.5, bottom + 1.5, self._radius + 2,
+                            fill="", outline=FOCUS, width=3, tags="rr")
         _round_rect(
             self,
             inset, inset, width - inset, bottom,
@@ -594,6 +776,18 @@ class _Box(tk.Canvas):
             self._repaint(child, bg)
 
 
+def _nesting_line(children: Iterable[ExcludedDevice]) -> str:
+    """Nested components as one wrapped paragraph for a dense picker row.
+
+    Same facts as ``inventory.card_nesting_text`` (the intro and the
+    compact contents summary, #147) on one line. Display only.
+    """
+    summary = inventory.contents_summary(children)
+    if not summary:
+        return ""
+    return f"{inventory.NESTED_INTRO} {summary}"
+
+
 def _soft_break_tokens(
     text: str, measure: Callable[[str], int], max_px: int
 ) -> str:
@@ -643,6 +837,281 @@ def _soft_break_tokens(
     return "\n".join(out)
 
 
+# #177g: letter spacing for serial numbers and hardware IDs, about 0.1 em
+# (the web preview uses .06 em, GTK 0.75 pt): 1 px at 12-14 px text, 2 px
+# from 15 px (Large and Extra large text), 3 px from 25 px.
+SERIAL_TRACKING_EM = 0.1
+
+
+def _serial_tracking(px: int) -> int:
+    return max(1, int(abs(px) * SERIAL_TRACKING_EM + 0.5))
+
+
+def _serial_rows(
+    count: int, cols: int, keep: Iterable[tuple[int, int]] = ()
+) -> list[tuple[int, int]]:
+    """Split ``count`` characters into rows of at most ``cols``, in order.
+
+    Returns (start, end) offsets that cover 0..count exactly once. A row
+    never ends inside a ``keep`` run (the #129 confirmation characters, a
+    #152 differing run) that fits on a row of its own; the row ends before
+    the run instead. Characters are never dropped, repeated or reordered.
+    """
+    cols = max(1, int(cols))
+    runs = [(a, b) for a, b in keep if 0 <= a < b <= count]
+    rows: list[tuple[int, int]] = []
+    start = 0
+    while start < count:
+        end = min(count, start + cols)
+        if end < count:
+            for a, b in runs:
+                if a < end < b and b - a <= cols and a > start:
+                    end = a
+                    break
+        rows.append((start, end))
+        start = end
+    return rows or [(0, 0)]
+
+
+class _SerialFace(tk.Canvas):
+    """#177g: an identifier drawn one character per cell, with letter spacing.
+
+    Tk fonts have no tracking, and spaces or thin spaces would change the
+    text (and take a whole cell in a monospace font). Each character of
+    ``text`` is its own canvas text item, in order, ``tracking`` pixels
+    apart; nothing is ever inserted into the text. The #129 confirmation
+    characters (``token``) are bold, boxed and underlined and the #152
+    differing characters (``diff`` runs) bold and underlined on those same
+    items and cells, so a mark can only sit on its own character.
+
+    ``label`` is a plain Label with the exact text (row breaks only, as
+    before), placed under the canvas at the same size: text readers, the
+    layout checks and tests read it. If drawing fails, or the drawn
+    characters do not read back as exactly ``text``, the canvas is cleared
+    and the label is lifted into view: the plain identifier, never a wrong
+    or partial one.
+    """
+
+    def __init__(
+        self,
+        parent: tk.Misc,
+        text: str,
+        *,
+        font: tkfont.Font,
+        bold: tkfont.Font,
+        fg: str,
+        bg: str,
+        token: Optional[tuple[int, int]] = None,
+        diff: tuple[tuple[int, int], ...] = (),
+        width: int = 0,
+    ) -> None:
+        super().__init__(parent, bg=bg, bd=0, highlightthickness=0, takefocus=0,
+                         width=1, height=1)
+        self.text = text
+        self.font = font
+        self.bold = bold
+        self.fg = fg
+        self.token = token
+        self.diff = tuple(diff)
+        runs = ([token] if token is not None else []) + list(self.diff)
+        # Offsets outside the text can mark nothing safely: show it plain.
+        self.valid = all(0 <= a < b <= len(text) for a, b in runs)
+        self.rows: list[tuple[int, int]] = [(0, len(text))]
+        self.tracking = 1
+        self.plain = False
+        self._width = int(width)
+        self.label = tk.Label(parent, text=text, font=font, fg=fg, bg=bg,
+                              anchor="w", justify=tk.LEFT)
+        setattr(self.label, "_beamo_serial_face", self)
+        # Width follows the canvas; the height is the label's own, so a
+        # font change resizes it and the <Configure> below re-lays the cells.
+        self.label.place(in_=self, x=0, y=0, relwidth=1, bordermode="outside")
+        self.label.lower(self)
+        self.label.bind("<Configure>", self._relayout, add="+")
+
+    def _relayout(self, _event: Any = None) -> None:
+        if self._width > 0:
+            self.layout(self._width)
+
+    def _px(self, option: str) -> int:
+        # Distances can come back as Tcl objects (Debian 12's Tk 8.6.13).
+        return int(round(float(self.label.winfo_fpixels(str(self.label.cget(option))))))
+
+    def _metrics(self) -> tuple[int, int, int, int, int]:
+        edge = self._px("bd") + self._px("highlightthickness")
+        # The token box reaches 1 px left/right and 1 px above / 2 px below
+        # each row: keep at least that much room so it is never clipped.
+        inset_x = max(1, edge + self._px("padx"))
+        inset_y = max(2, edge + self._px("pady"))
+        cell = max(
+            max(self.font.measure(ch), self.bold.measure(ch)) for ch in set(self.text) or {"0"}
+        )
+        line = int(self.font.metrics("linespace"))
+        return inset_x, inset_y, cell, line, _serial_tracking(int(str(self.font.cget("size"))))
+
+    def layout(self, width: int) -> None:
+        """Break into rows for ``width`` px (the parent's), size and draw."""
+        self._width = int(width)
+        if self.plain:
+            self._fit_plain()
+            return
+        try:
+            if not self.valid:
+                raise ValueError("mark offsets outside the identifier")
+            inset_x, inset_y, cell, line, tracking = self._metrics()
+            pitch = cell + tracking
+            avail = max(1, self._width - 2 * inset_x - 4)
+            keep = ([self.token] if self.token is not None else []) + list(self.diff)
+            rows = _serial_rows(len(self.text), (avail + tracking) // pitch, keep)
+            shown = "\n".join(self.text[a:b] for a, b in rows)
+            if str(self.label.cget("text")) != shown:
+                self.label.configure(text=shown)
+            self._wrap_label()
+            longest = max(b - a for a, b in rows)
+            self.rows, self.tracking = rows, tracking
+            want_w = 2 * inset_x + max(0, longest * pitch - tracking)
+            want_h = 2 * inset_y + line * len(rows)
+            have = (int(float(str(self.cget("width")))), int(float(str(self.cget("height")))))
+            if have != (want_w, want_h):
+                self.configure(width=want_w, height=want_h)
+            self.paint(inset_x, inset_y, cell, line, tracking)
+        except (tk.TclError, TypeError, ValueError, IndexError):
+            self.show_plain()
+
+    def paint(self, inset_x: int, inset_y: int, cell: int, line: int, tracking: int) -> None:
+        self.delete("all")
+        pitch = cell + tracking
+        marked: set[int] = set()
+        for a, b in ([self.token] if self.token is not None else []) + list(self.diff):
+            marked.update(range(a, b))
+        for row, (start, end) in enumerate(self.rows):
+            y = inset_y + row * line
+
+            def span(a: int, b: int) -> Optional[tuple[int, int]]:
+                a, b = max(a, start), min(b, end)
+                if a >= b:
+                    return None
+                return inset_x + (a - start) * pitch, inset_x + (b - start) * pitch - tracking
+
+            box = span(*self.token) if self.token is not None else None
+            if box is not None:
+                # 1 px box, tint and a 2 px underline: a shape, not only colour.
+                x0, x1 = box
+                self.create_rectangle(x0 - 1, y - 1, x1 + 1, y + line + 2, fill=CONFIRM_MARK_BG,
+                                      outline=self.fg, width=1, tags=("token", "token_box"))
+                self.create_rectangle(x0 - 1, y + line, x1 + 1, y + line + 2, fill=self.fg,
+                                      outline="", tags=("token", "token_bar"))
+            for a, b in self.diff:
+                bar = span(a, b)
+                if bar is not None:
+                    self.create_rectangle(bar[0], y + line - 2, bar[1], y + line, fill=self.fg,
+                                          outline="", tags=("diff", f"diff{a}"))
+            for i in range(start, end):
+                self.create_text(
+                    inset_x + (i - start) * pitch + cell / 2, y, text=self.text[i], anchor="n",
+                    font=self.bold if i in marked else self.font, fill=self.fg,
+                    tags=("ch", f"ch{i}"),
+                )
+        # Read the drawn characters back: exactly the identifier, in order.
+        drawn = "".join(str(self.itemcget(item, "text")) for item in self.find_withtag("ch"))
+        if drawn != self.text or str(self.label.cget("text")).replace("\n", "") != self.text:
+            raise ValueError("drawn identifier differs from the text")
+        self.label.lower(self)
+
+    def drawn_text(self) -> str:
+        """The characters on the canvas, in drawing order (tests, evidence)."""
+        return "".join(str(self.itemcget(item, "text")) for item in self.find_withtag("ch"))
+
+    def show_plain(self) -> None:
+        """Fall back to the plain Label: whole identifier, no spacing, no marks."""
+        self.plain = True
+        try:
+            self.delete("all")
+            self.label.lift(self)
+        except tk.TclError:
+            pass
+        self._fit_plain()
+
+    def _wrap_label(self) -> None:
+        # As _wrapping_label: Tk's own wrap at the allocated width as a last
+        # guard. Every row above already fits it, so it never re-breaks.
+        wrap = max(1, self._width - 4)
+        if int(float(str(self.label.cget("wraplength")))) != wrap:
+            self.label.configure(wraplength=wrap)
+
+    def _fit_plain(self) -> None:
+        # As _wrapping_label: break only where the identifier cannot fit.
+        try:
+            if self._width > 0:
+                shown = _soft_break_tokens(self.text, self.font.measure, max(1, self._width - 4))
+                if str(self.label.cget("text")) != shown:
+                    self.label.configure(text=shown)
+                self._wrap_label()
+            want = (self.label.winfo_reqwidth(), self.label.winfo_reqheight())
+            have = (int(float(str(self.cget("width")))), int(float(str(self.cget("height")))))
+            if have != want:
+                self.configure(width=want[0], height=want[1])
+        except (tk.TclError, TypeError, ValueError):
+            pass
+
+
+def _label_line_cuts(widget: tk.Misc, top: float, height: float) -> tuple[float, ...]:
+    """Offsets between the wrapped lines of a Label, where a view edge may cut.
+
+    Single-line labels, and any other widget, are whole: no safe cut inside.
+    Tk centres a label's text block vertically unless it is anchored to the
+    top or bottom edge.
+    """
+    if widget.winfo_class() != "Label":
+        return ()
+    try:
+        if not str(widget.cget("text")):
+            return ()
+        line = float(str(widget.tk.call("font", "metrics", widget.cget("font"), "-linespace")))
+        # Screen distances can come back as Tcl objects (Debian 12's Python
+        # 3.11 and Tk 8.6.13 return pady that way), which float() rejects;
+        # Tk converts its own distance text, units included.
+        inset = sum(
+            float(widget.winfo_fpixels(str(widget.cget(option))))
+            for option in ("borderwidth", "highlightthickness", "pady")
+        )
+        anchor = str(widget.cget("anchor"))
+    except (tk.TclError, TypeError, ValueError):
+        return ()
+    if line <= 0:
+        return ()
+    lines = int(round((widget.winfo_reqheight() - 2 * inset) / line))
+    if lines < 2:
+        return ()
+    if anchor in ("n", "ne", "nw"):
+        first = top + inset
+    elif anchor in ("s", "se", "sw"):
+        first = top + height - inset - lines * line
+    else:
+        first = top + (height - lines * line) / 2.0
+    return tuple(first + index * line for index in range(1, lines))
+
+
+def _button_variants() -> dict:
+    """Button colours from the current palette (#179)."""
+    return {
+        "primary": (PRIMARY, "#FFFFFF", PRIMARY_DARK, PRIMARY_PRESS, None, FOCUS),
+        "danger": (DANGER, "#FFFFFF", DANGER_DARK, DANGER_PRESS, None, FOCUS),
+        # A light edge: the label names the button, so a dark outline only
+        # added weight beside the primary action.
+        "secondary": (SURFACE, INK, SURFACE_ALT, "#E2E8EE", BUTTON_EDGE, FOCUS),
+        "ghost": (None, PRIMARY, PRIMARY_TINT, "#D7E4F2", None, FOCUS),
+        # Footer tools: quiet gray text that shades on hover, so the one
+        # primary action is the only strong colour in the footer.
+        "quiet": (None, MUTED, TRACK, "#D9E0E8", None, FOCUS),
+        # Unselected segment of a segmented control (the track supplies
+        # the shape; the selected segment is a primary pill).
+        "segment": (None, INK, "#D9E0E8", "#CDD5DF", None, FOCUS),
+        # #176: a selected choice (segmented control): tint, brand edge, mark.
+        "selected": (SELECTED_FILL, SELECTED_INK, SELECTED_FILL, "#D7E4F2", SELECTED_EDGE, FOCUS),
+    }
+
+
 class _Button(tk.Canvas):
     """Canvas button: identical rendering on Linux Tk and macOS preview.
 
@@ -652,15 +1121,17 @@ class _Button(tk.Canvas):
     the control always answers the user.
     """
 
-    # bg, fg, hover, press, outline, focus-ring.
-    _VARIANTS = {
-        "primary": (PRIMARY, "#FFFFFF", PRIMARY_DARK, PRIMARY_PRESS, None, FOCUS),
-        "danger": (DANGER, "#FFFFFF", DANGER_DARK, DANGER_PRESS, None, FOCUS),
-        "secondary": (SURFACE, INK, SURFACE_ALT, "#E2E8EE", BORDER_STRONG, FOCUS),
-        "ghost": (None, PRIMARY, PRIMARY_TINT, "#D7E4F2", None, FOCUS),
-    }
+    # bg, fg, hover, press, outline, focus-ring (#179: from the palette).
+    _VARIANTS = _button_variants()
 
     _RING_GAP = 4  # canvas room below the pill so the focus ring never clips
+    _PILL_INSET = 3  # the pill is drawn 3 px inside the canvas edge
+
+    @classmethod
+    def text_inset(cls, *, compact: bool = False, large: bool = False) -> int:
+        """Pixels from the canvas's left edge to a left-most label (#173)."""
+        pad_x = 34 if large else (12 if compact else 24)
+        return cls._PILL_INSET + pad_x
 
     def __init__(
         self,
@@ -674,6 +1145,7 @@ class _Button(tk.Canvas):
         compact: bool = False,
         large: bool = False,
         min_width: int = 0,
+        mark: bool = False,
     ) -> None:
         self._command = command
         self._variant = variant
@@ -686,7 +1158,11 @@ class _Button(tk.Canvas):
             pad_x, pad_y = 34, 14
         else:
             pad_x, pad_y = (12, 3) if compact else (24, 10)
-        width = max(min_width, font.measure(text) + 2 * pad_x + 6)
+        # #176: room for the selected mark before the text.
+        self._mark = max(12, font.metrics("linespace") - 2) if mark else 0
+        self._mark_x = 3 + pad_x
+        extra = self._mark + 6 if mark else 0
+        width = max(min_width, font.measure(text) + 2 * pad_x + 6 + extra)
         height = font.metrics("linespace") + 2 * pad_y + 6 + self._RING_GAP
         super().__init__(
             parent,
@@ -701,7 +1177,7 @@ class _Button(tk.Canvas):
         self._bw = width
         self._bh = height
         self._label = self.create_text(
-            width / 2, (height - self._RING_GAP) / 2, text=text, font=font, anchor="center"
+            (width + extra) / 2, (height - self._RING_GAP) / 2, text=text, font=font, anchor="center"
         )
         self.bind("<ButtonPress-1>", self._press)
         self.bind("<ButtonRelease-1>", self._release)
@@ -724,9 +1200,9 @@ class _Button(tk.Canvas):
     def _state_colors(self) -> tuple:
         bg, fg, hover, press, outline, _ring = self._VARIANTS[self._variant]
         if not self._enabled:
-            if self._variant == "ghost":
+            if self._variant == "ghost" or self._variant in ("quiet", "segment"):
                 return self.cget("bg"), DISABLED_FG, None
-            return DISABLED_BG, DISABLED_FG, None
+            return DISABLED_FILL, DISABLED_INK, DISABLED_EDGE
         if self._pressed and press is not None:
             return press, fg, outline
         if self._hovering and hover is not None:
@@ -743,15 +1219,26 @@ class _Button(tk.Canvas):
                 self, 1, 1, self._bw - 1, body_bottom + 2, PILL,
                 fill=ring, outline="", tags="rr",
             )
+            if HIGH_CONTRAST:
+                # #179: a thick ring that never relies on the fill colour.
+                _round_rect(self, 1.5, 1.5, self._bw - 1.5, body_bottom + 1.5, PILL,
+                            fill="", outline=FOCUS, width=3, tags="rr")
+        edge = SELECTED_EDGE_W if self._variant == "selected" else 1
         _round_rect(
             self, 3, 3, self._bw - 3, body_bottom, PILL,
-            fill=fill or "", outline=outline or "", width=1 if outline else 0,
+            fill=fill or "", outline=outline or "", width=edge if outline else 0,
+            dash=(4, 3) if outline and not self._enabled else "",
             tags="rr",
         )
+        if self._mark:
+            top = (body_bottom + 3 - self._mark) / 2
+            _draw_selected_mark(self, self._mark_x, top, self._mark, tags="rr")
         self.tag_lower("rr")
         self.itemconfigure(self._label, fill=fg)
 
     def _press(self, _event=None) -> str:
+        if _pointer_quiet(self, _event):
+            return "break"  # the tail of a disk double-click (#150)
         if self._enabled:
             # A disabled button never takes focus: on gated screens (confirm
             # entry, owner card) the keyboard input must stay where it is.
@@ -962,17 +1449,20 @@ class _CheckRow(tk.Frame):
         command: Callable[[], None],
         font: tkfont.Font,
         wraplength: int = 0,
+        enabled: bool = True,
+        flow: bool = True,
     ) -> None:
         self._native_owner = threading.current_thread()
         bg = parent.cget("bg")
+        self._enabled = enabled
         super().__init__(
             parent,
             bg=bg,
-            takefocus=1,
+            takefocus=1 if enabled else 0,
             highlightthickness=2,
             highlightbackground=bg,
             highlightcolor=FOCUS,
-            cursor="hand2",
+            cursor="hand2" if enabled else "arrow",
         )
         self._text = text
         self._variable = variable
@@ -985,11 +1475,14 @@ class _CheckRow(tk.Frame):
         self._pressed = False
         self._icon: Optional[tk.Canvas] = None
         self._label = tk.Label(
-            self, text=text, font=font, fg=INK, bg=bg, justify=tk.LEFT, anchor="w",
-            wraplength=wraplength or 0,
+            self, text=text, font=font, fg=INK if enabled else MUTED, bg=bg,
+            justify=tk.LEFT, anchor="w", wraplength=wraplength or 0,
         )
         self._label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(10, 4), pady=2)
-        self.bind("<Configure>", self._flow_label, add="+")
+        # flow=False: a footer control sized by its text, not by its row.
+        self._flows = flow
+        if flow:
+            self.bind("<Configure>", self._flow_label, add="+")
         self._sync()
         self._paint()
         self._variable_trace: Optional[str] = _new_owned_trace(self, "_variable_trace", variable, self._on_variable)
@@ -1003,7 +1496,8 @@ class _CheckRow(tk.Frame):
         self.bind("<KP_Enter>", self._activate)
         self._label.bind("<ButtonPress-1>", self._press)
         self._label.bind("<ButtonRelease-1>", self._release)
-        self.after_idle(self._flow_label)
+        if flow:
+            self.after_idle(self._flow_label)
 
     def _flow_label(self, event=None) -> None:
         width = int(event.width) if event is not None else int(self.winfo_width())
@@ -1052,6 +1546,8 @@ class _CheckRow(tk.Frame):
             _drain_retired_native()
 
     def _row_bg(self) -> str:
+        if not getattr(self, "_enabled", True):
+            return self._base_bg
         if self._pressed:
             return "#E2E8EE"
         if bool(self._variable.get()):
@@ -1082,6 +1578,8 @@ class _CheckRow(tk.Frame):
         self._paint()
 
     def _press(self, _event=None) -> str:
+        if _pointer_quiet(self, _event):
+            return "break"  # the tail of a disk double-click (#150)
         self.focus_set()
         self._held = True
         self._pressed = True
@@ -1115,6 +1613,8 @@ class _CheckRow(tk.Frame):
         return "break"
 
     def invoke(self) -> None:
+        if not getattr(self, "_enabled", True):
+            return
         self._variable.set(not bool(self._variable.get()))
         self._command()
 
@@ -1122,7 +1622,10 @@ class _CheckRow(tk.Frame):
         if self._icon is not None:
             self._icon.destroy()
         bg = self._row_bg()
-        icon = _icon_check_box(self, bool(self._variable.get()), 22)
+        icon = _icon_check_box(
+            self, bool(self._variable.get()), 22,
+            muted=not getattr(self, "_enabled", True),
+        )
         icon.configure(bg=bg)
         icon.pack(side=tk.LEFT, anchor="n", pady=6, before=self._label)
         icon.bind("<ButtonPress-1>", self._press)
@@ -1345,8 +1848,8 @@ def _new_owned_native(native_root, factory, *args, **kwargs):
 
 
 class TkWizard:
-    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_label', '_progress_label', '_progress_pct', '_progress_bar', '_match_label', '_match_icon', '_match_pill', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards')
-    _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_confirm_var', '_typing_var', '_owner_var')
+    _NATIVE_FIELDS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var', '_body', '_footer', '_header', '_strip', '_preview_label', '_hint', '_primary', '_countdown_ring', '_countdown_num', '_countdown_ready', '_countdown_label', '_progress_label', '_progress_pct', '_progress_wait', '_progress_bar', '_progress_time', '_progress_step', '_progress_stale', '_progress_stale_slot', '_progress_notes_slot', '_finish_toggle', '_match_label', '_match_icon', '_match_pill', '_layout_hint', '_layout_sentence', '_confirm_card', '_pick_canvas', '_body_inner', '_body_canvas', '_support_lead', '_more_button', '_power_label', '_pick_cards', '_keyboard_layout_cards', '_keyboard_language_cards', '_method_more_buttons', '_help_popup', '_help_button', '_shortcuts_button')
+    _NATIVE_ASSETS = ('font_hero', 'font_h', 'font_lead', 'font_b', 'font_bold', 'font_size_big', 'font_s', 'font_s_bold', 'font_tiny', 'font_meta', 'font_btn', 'font_mono', 'font_mono_bold', 'font_mono_sm', 'font_entry', 'font_stat', 'font_brand', '_logo_header', '_logo_splash', '_support_qr', '_record_qr', '_confirm_var', '_typing_var', '_owner_var')
     def __init__(self, wizard: Wizard, fullscreen: bool = False) -> None:
         _collect_retired_interpreters()
         self._native_owner = threading.current_thread()
@@ -1366,10 +1869,8 @@ class TkWizard:
             # The kiosk window owns the whole display; deterministic type beats
             # DPI fidelity. (macOS Tk already renders at scaling 1.0.)
             self.root.tk.call("tk", "scaling", 1.0)
-            title = C.APP_NAME
-            if wizard.preview:
-                title = f"{C.APP_NAME} — PREVIEW (nothing is erased)"
-            self.root.title(title)
+            self._preview_label: Optional[tk.Label] = None
+            self.root.title(self._window_title())
             # Familiar arrow over ordinary content. The bare startx kiosk has
             # no window manager or cursor theme, so an unset root inherits the
             # X-server X cursor. Children inherit this; explicit hand2/xterm
@@ -1420,6 +1921,10 @@ class TkWizard:
             self._logo_header = self._load_image("logo-header.png")
             self._logo_splash = self._load_image("logo-splash.png")
             self._support_qr: Optional[tk.PhotoImage] = None
+            # Erase record code (#127), reused while its text and scale stay
+            # the same so report-status redraws do not rebuild the image.
+            self._record_qr: Optional[tk.PhotoImage] = None
+            self._record_qr_key: Optional[tuple[str, int]] = None
             self._support_lead: Optional[tk.Label] = None
             self._support_copy_bound = False
             self._confirm_var = _new_owned_native(self.root, tk.StringVar, master=self.root)
@@ -1436,14 +1941,27 @@ class TkWizard:
             self._chrome_shown = True
             self._countdown_ring: Optional[tk.Canvas] = None
             self._countdown_num: Optional[tk.Label] = None
+            self._countdown_num_item = 0
+            self._countdown_ready: Optional[tk.Label] = None  # #163
             self._countdown_label: Optional[tk.Label] = None
             self._progress_label: Optional[tk.Label] = None
             self._progress_pct: Optional[tk.Label] = None
+            self._progress_wait: Optional[tk.Label] = None
             self._progress_bar: Optional[tk.Canvas] = None
+            self._progress_time: Optional[tk.Label] = None
+            self._progress_step: Optional[tk.Label] = None
+            self._progress_stale: Optional[tk.Label] = None
+            self._progress_stale_slot: Optional[tk.Frame] = None
+            self._progress_notes_slot: Optional[tk.Frame] = None
+            self._finish_toggle: Optional[_CheckRow] = None
             self._indet = 0.0
             self._match_label: Optional[tk.Label] = None
+            self._match_wrap_max = 0
             self._match_icon: Optional[tk.Canvas] = None
             self._match_pill: Optional[_Box] = None
+            self._layout_hint: Optional[tk.Frame] = None  # #155
+            self._layout_sentence: Optional[tk.Label] = None  # #156
+            self._confirm_card: Optional[tk.Widget] = None  # #157
             self._shown: Optional[Screen] = None
             self._shown_report_revision = -1
             self._shown_sound_revision = -1
@@ -1460,6 +1978,13 @@ class TkWizard:
             self._pick_applied_geometry: Optional[tuple[float, float]] = None
             self._pick_after_ids: list[str] = []
             self._pick_gen = 0
+            # Opens Compare disks from the selected card's link (#149).
+            self._comparison_opener: Optional[Callable[[], None]] = None
+            # Double-click a disk = Review this disk (#150): the last press on
+            # a disk row (path, time, root x, root y), and the time until
+            # which pointer presses are the tail of an accepted double-click.
+            self._disk_press: Optional[tuple[str, int, int, int]] = None
+            self._pointer_quiet_until: Optional[int] = None
             self._refresh_lock = threading.Lock()
             self._refresh_results: dict = {}
             self._refresh_threads: dict = {}
@@ -1482,10 +2007,35 @@ class TkWizard:
             # Optional extra detail (device path, bus) on existing screens.
             # One flag for the session; not a new wizard step.
             self._show_more = False
+            # #159: method cards whose details are open (view only).
+            self._method_more: set[MethodId] = set()
+            self._method_more_buttons: dict[MethodId, _Button] = {}
+            # #158: the Method screen's storage limits line is open (view only).
+            self._limits_open = False
+            self._limits_more_button: Optional[_Button] = None
+            self._limits_pages_button: Optional[_Button] = None
+            # #175: Help & settings menu. View state only; opening it never
+            # changes the wizard.
+            self._help_open = False
+            self._help_view = "menu"
+            self._help_screen: Optional[Screen] = None
+            self._help_popup: Optional[tk.Frame] = None
+            self._help_button: Optional[_Button] = None
+            self._shortcuts_button: Optional[_Button] = None  # #174
+            self._help_direct = False
+            self._disabled_reason: Optional[tk.Label] = None  # #178
+            self._help_keep_focus = ""
+            self._help_prior_focus = ""
+            self._help_focus_key = ""
+            self._help_pos: Optional[tuple] = None
+            self._footer_hint = ""
             self._body_inner: Optional[tk.Frame] = None
             self._body_canvas: Optional[tk.Canvas] = None
+            self._body_follow_focus = True
+            self._body_slack = 0
             self._ring_px = self.lay.ring
             self._layout_drawing = False
+            apply_palette(bool(getattr(self.w, "high_contrast", False)))  # #179
             self._build_chrome()
             self.root.bind("<Configure>", self._on_root_configure)
             self._confirm_var_trace: Optional[str] = _new_owned_trace(self, "_confirm_var_trace", self._confirm_var, self._confirm_var_written)
@@ -1499,6 +2049,9 @@ class TkWizard:
             self.root.bind("<KeyRelease-space>", self._on_space_release)
             self.root.bind("<KeyRelease-F5>", self._on_f5_release)
             self.root.bind("<Key>", self._on_key)
+            self.root.bind(
+                "<ButtonPress>", lambda _e: getattr(self.w, "acknowledge_finish_sound", lambda: None)(), add="+"
+            )
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
                 self.root.bind(sequence, self._on_body_wheel)
             self.root.bind("<FocusIn>", self._on_body_focus)
@@ -1516,14 +2069,20 @@ class TkWizard:
             # Content-sized stripe: a fixed height clipped the label on
             # Linux Tk, where DejaVu metrics run taller than macOS.
             stripe = tk.Frame(self.root, bg=PREVIEW_BG)
+            self._preview_stripe = stripe
             stripe.pack(fill=tk.X)
-            tk.Label(
+            # Chrome outlives screens: _sync_preview_copy re-reads the text
+            # on every draw so a language change reaches the stripe too.
+            self._preview_label = tk.Label(
                 stripe,
                 text=C.PREVIEW_BANNER,
                 fg=PREVIEW_FG,
                 bg=PREVIEW_BG,
                 font=self.font_s_bold,
-            ).pack(side=tk.LEFT, padx=24, pady=7)
+                anchor="w",
+                justify=tk.LEFT,
+            )
+            self._preview_label.pack(side=tk.LEFT, padx=24, pady=7)
         self._header = tk.Canvas(
             self.root, height=self.lay.header_h, bg=BG, highlightthickness=0, bd=0
         )
@@ -1535,11 +2094,32 @@ class TkWizard:
         # Pack the footer first: when a small screen cannot fit everything,
         # pack clips the last-packed widget, and the action buttons must be
         # the last thing that ever gets clipped.
-        self._footer = tk.Frame(self.root, bg=BG)
+        self._footer = tk.Frame(self.root, bg=FOOTER_BG)
         self._footer.pack(fill=tk.X, side=tk.BOTTOM)
+        self._footer_rule = tk.Frame(self.root, bg=BORDER, height=1)
+        self._footer_rule.pack(fill=tk.X, side=tk.BOTTOM)
         self._body = tk.Frame(self.root, bg=BG)
         self._body.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
         self._apply_grid()
+
+    def _window_title(self) -> str:
+        if getattr(self.w, "preview", False):
+            return f"{C.APP_NAME} — {C.PREVIEW_BANNER}"
+        return C.APP_NAME
+
+    def _sync_preview_copy(self) -> None:
+        """Re-translate the preview stripe and window title after a language change."""
+        label = getattr(self, "_preview_label", None)
+        root = getattr(self, "root", None)
+        try:
+            if label is not None and str(label.cget("text")) != C.PREVIEW_BANNER:
+                label.configure(text=C.PREVIEW_BANNER)
+            if root is not None and hasattr(root, "title"):
+                title = self._window_title()
+                if root.title() != title:
+                    root.title(title)
+        except tk.TclError:
+            return
 
     def _apply_grid(self) -> None:
         for area, expand in ((self._body, True), (self._footer, False)):
@@ -1632,9 +2212,9 @@ class TkWizard:
         if width <= 1 or height <= 1:
             return
         cv.delete("all")
-        # Quiet white chrome: the navy-on-transparent mark sits on the
-        # field, a hairline separates header from body. No navy chip.
-        cv.create_rectangle(-2, -2, width + 2, height + 2, fill=BG, outline="")
+        # Quiet white chrome: the navy-on-transparent mark sits on a white
+        # bar above the gray page, with a hairline below. No navy chip.
+        cv.create_rectangle(-2, -2, width + 2, height + 2, fill=SURFACE, outline="")
         cv.create_rectangle(0, height - 1, width, height, fill=BORDER, outline="")
         mid = height / 2.0 - 1
         logo = self._logo_header
@@ -1649,23 +2229,83 @@ class TkWizard:
             text_x, mid, anchor="w",
             text=C.APP_NAME, font=self.font_brand, fill=INK,
         )
-        # Combined intro still uses the Owner page. The header names the stage
-        # (Preparation, Erase, Result) and never a wipe percent.
-        step = _STEP_ORDER.get(self.w.screen, (0, "", ""))
-        self._draw_journey(cv, width, step[0])
-        label = header_caption(step[0], step[1])
+        # The header names the stage (Preparation, Erase, Result) and, while
+        # preparing, the step: "Step 3 of 6 · Choose a disk" (#130). Never a
+        # wipe percent.
+        stage = C.journey_stage(self.w.screen)
+        brand_end = text_x + self.font_brand.measure(C.APP_NAME)
+        # #144: power at a glance on every screen with a header.
+        brand_end = self._draw_power_badge(cv, brand_end + 16, mid)
+        self._header_left_end = brand_end
+        label = self.header_step_label(width, brand_end)
+        if stage and label == C.JOURNEY_LABELS[stage - 1]:
+            # The stepper names this stage; repeat it only without a stepper.
+            room = 0.0
+        else:
+            room = self.font_meta.measure(label) + 36 if label else 0.0
+        stepper = self._draw_journey(cv, width, stage, right=width - 24 - room)
+        if stepper and label == C.JOURNEY_LABELS[stage - 1]:
+            label = ""
         if label:
             cv.create_text(
                 width - 24, mid, anchor="e",
                 text=label, font=self.font_meta, fill=MUTED,
             )
 
-    def _draw_journey(self, cv: tk.Canvas, width: int, step: int) -> None:
+    def _draw_power_badge(self, cv: tk.Canvas, x: float, mid: float) -> float:
+        """Draw the power badge (#144); return where it ends.
+
+        Text always carries the state (✓ only when plugged in); colour only
+        adds to it: green-tint plugged in, amber on battery, neutral else.
+        """
+        badge = self.w.power_badge
+        fill, outline, fg = {
+            "ok": (OK_TINT, OK_BORDER, OK),
+            "warn": (WARN_BG, WARN_BORDER, WARN),
+        }.get(badge.kind, (SURFACE_ALT, BORDER, MUTED))
+        text = badge.display
+        pad = 10
+        width = self.font_meta.measure(text) + 2 * pad
+        line = self.font_meta.metrics("linespace")
+        top, bottom = mid - line / 2 - 4, mid + line / 2 + 4
+        _round_rect(cv, x, top, x + width, bottom, (bottom - top) / 2,
+                    fill=fill, outline=outline, width=1, tags="power_badge")
+        cv.create_text(x + pad, mid, anchor="w", text=text, font=self.font_meta,
+                       fill=fg, tags="power_badge")
+        self._shown_power_badge = badge
+        return x + width
+
+    def header_step_label(self, width: int, brand_end: float) -> str:
+        """Longest step caption that fits right of the brand, whole.
+
+        Full ("Step 3 of 6 · Choose a disk"), then "Step 3 of 6": a long
+        translation is shortened by dropping the name, never cut mid-word.
+        The page title below still says where you are.
+        """
+        room = width - 24 - brand_end - 24
+        for text in (C.journey_step_caption(self.w), C.journey_step_short(self.w)):
+            if text and self.font_meta.measure(text) <= room:
+                return text
+        return ""
+
+    def _draw_journey(self, cv: tk.Canvas, width: int, step: int, *, right: float = 0.0) -> float:
+        """Draw the stages; return the right edge they use (0 when hidden).
+
+        ``right`` is where the step caption begins; the stages share the
+        space left of it and are hidden when their names would not fit.
+        """
         # Three named stages, never eight equal pages or success badges.
         if not step or width < 1000:
-            return
-        start, end = 260, width - 150
+            return 0.0
+        start = max(260.0, getattr(self, "_header_left_end", 0.0) + 24)
+        end = min(width - 150, right or width)
         gap = (end - start) / len(C.JOURNEY_LABELS)
+        widest = max(self.font_meta.measure(name) for name in C.JOURNEY_LABELS)
+        if gap < widest + 24:
+            return 0.0
+        # The compact 48 px header put descenders on the bottom hairline.
+        line = self.font_meta.metrics("linespace")
+        label_y = min(42.0, cv.winfo_height() - 3 - line / 2.0)
         for index, name in enumerate(C.JOURNEY_LABELS, 1):
             cx = start + gap * (index - 0.5)
             active = index == step
@@ -1676,8 +2316,10 @@ class TkWizard:
                            outline=PRIMARY if active else BORDER_STRONG)
             cv.create_text(cx, 18, text=str(index), font=self.font_tiny,
                            fill=SURFACE if active else MUTED)
-            cv.create_text(cx, 42, text=name, font=self.font_meta,
+            cv.create_text(cx, label_y, text=name, font=self.font_meta,
                            fill=PRIMARY if active else MUTED)
+        last = C.JOURNEY_LABELS[-1]
+        return start + gap * (len(C.JOURNEY_LABELS) - 0.5) + self.font_meta.measure(last) / 2.0
 
     def _draw_strip(self) -> None:
         cv = self._strip
@@ -1691,9 +2333,16 @@ class TkWizard:
         count = len(C.JOURNEY_LABELS)
         gap = 2.0
         segment = (width - gap * (count - 1)) / count
+        # While preparing, the first segment fills step by step (#130).
+        step = self.w.journey_step
+        part = step[0] / step[1] if step is not None and stage == C.JOURNEY_PREPARATION else 1.0
         for index in range(count):
             x0 = index * (segment + gap)
             x1 = x0 + segment
+            if (index + 1) == stage and part < 1.0:
+                _round_rect(cv, x0, 0, x1, 2, 1, fill=TRACK, outline="")
+                _round_rect(cv, x0, 0, x0 + segment * part, 2, 1, fill=ACCENT, outline="")
+                continue
             fill = ACCENT if (index + 1) == stage else TRACK
             _round_rect(cv, x0, 0, x1, 2, 1, fill=fill, outline="")
 
@@ -1712,8 +2361,10 @@ class TkWizard:
             self._strip.pack(fill=tk.X, before=self._body)
             self._chrome_shown = True
 
-    def _column(self, parent: Optional[tk.Widget], *, fill_height: bool, bg: str = BG) -> tk.Frame:
+    def _column(self, parent: Optional[tk.Widget], *, fill_height: bool,
+                bg: Optional[str] = None) -> tk.Frame:
         assert parent is not None
+        bg = BG if bg is None else bg  # #179: the current palette
         host = parent
         if parent is self._body and self._body_inner is not None:
             host = self._body_inner
@@ -1733,11 +2384,21 @@ class TkWizard:
             or self.w.screen in {
                 Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.LAST_CHANCE,
                 Screen.WORKING, Screen.DONE, Screen.DIAGNOSTIC, Screen.KEYBOARD,
+                # A long identity plus the wrong-entry keyboard help (#155)
+                # can outgrow even a large window; scroll rather than squeeze
+                # the help's Change button.
+                Screen.CONFIRM,
             }
         ):
             return
         if self.w.screen in {
+            # The splash is short and centers itself; in the scrolling body it
+            # was pinned to the top edge with the space below left empty.
+            Screen.SPLASH,
             Screen.PICK,
+            # Owns its reasons scroller. Inside the shared body it kept the
+            # canvas default height: reasons clipped above empty space.
+            Screen.PICK_EMPTY,
             Screen.LIMITS,
             Screen.DISK_HELP,
             Screen.REPORT_HELP,
@@ -1746,7 +2407,14 @@ class TkWizard:
         host = tk.Frame(self._body, bg=BG)
         host.grid(row=0, column=1, sticky="nsew")
         canvas = tk.Canvas(host, bg=BG, highlightthickness=0, bd=0)
-        scroll = _Scrollbar(host, canvas.yview)
+
+        def user_yview(*args):
+            # Drag, track click and wheel on the bar: the owner now owns the
+            # position, so settling layout no longer re-places the view.
+            self._body_follow_focus = False
+            return canvas.yview(*args)
+
+        scroll = _Scrollbar(host, user_yview)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
         canvas.configure(yscrollcommand=scroll.set)
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -1757,23 +2425,61 @@ class TkWizard:
 
         def on_inner(_event=None) -> None:
             nonlocal inner_size
-            canvas.configure(scrollregion=canvas.bbox("all") or (0, 0, 0, 0))
+            self._sync_body_scroll(canvas)
             size = (inner.winfo_width(), inner.winfo_height())
             if size != inner_size:
                 inner_size = size
                 # Wrapping can finish after focus arrived. React to content
                 # size changes, not position changes caused by manual scroll.
-                self._schedule_body_focus_reveal(self.root.focus_get())
+                self._schedule_body_focus_reveal(self.root.focus_get(), layout=True)
 
         def on_canvas(event) -> None:
             canvas.itemconfigure(window, width=max(1, event.width))
-            self._schedule_body_focus_reveal(self.root.focus_get())
+            self._sync_body_scroll(canvas)
+            self._schedule_body_focus_reveal(self.root.focus_get(), layout=True)
 
         inner.bind("<Configure>", on_inner)
         canvas.bind("<Configure>", on_canvas)
 
         self._body_canvas = canvas
         self._body_inner = inner
+        # A new screen opens at the top and follows its initial focus until
+        # the owner scrolls (see _schedule_body_focus_reveal).
+        self._body_follow_focus = True
+        self._body_slack = 0
+
+    def _sync_body_scroll(self, canvas: Optional[tk.Canvas] = None) -> None:
+        """Keep the body scroll region and offset inside the current content.
+
+        Tk never configures a canvas window lying wholly outside the view, so
+        content that shrank while scrolled far down kept its old region and
+        offset: a blank view. A negative offset on content shorter than the
+        view bottom-aligned it instead, leaving blank space at the top.
+        The region may extend past the content by the small slack a focus
+        reveal needed to avoid slicing a title.
+        """
+        canvas = canvas if canvas is not None else getattr(self, "_body_canvas", None)
+        if canvas is None:
+            return
+        try:
+            x0, y0, x1, y1 = canvas.bbox("all") or (0, 0, 0, 0)
+            bounds = (x0, y0, x1, y1 + max(0, int(getattr(self, "_body_slack", 0))))
+            region = tuple(
+                int(round(float(value)))
+                for value in str(canvas.cget("scrollregion")).split()
+            )
+            if region != bounds:
+                canvas.configure(scrollregion=bounds)
+            viewport = canvas.winfo_height()
+            if viewport <= 1:
+                return
+            content = bounds[3] - bounds[1]
+            top = float(canvas.canvasy(0))
+            limit = float(max(0, content - viewport))
+            if top < -0.5 or top > limit + 0.5:
+                canvas.yview_moveto(min(max(0.0, top), limit) / max(1, content))
+        except (tk.TclError, ValueError):
+            return
 
     def _on_body_wheel(self, event) -> Optional[str]:
         canvas = self._body_canvas
@@ -1800,15 +2506,29 @@ class TkWizard:
             steps = int(-event.delta / 120) if event.delta else 0
         if not steps:
             return None
+        self._body_follow_focus = False
         canvas.yview_scroll(steps, "units")
         return "break"
 
     def _on_body_focus(self, event) -> None:
         self._schedule_body_focus_reveal(event.widget)
 
-    def _schedule_body_focus_reveal(self, widget: tk.Misc | None) -> None:
+    def _schedule_body_focus_reveal(
+        self, widget: tk.Misc | None, *, layout: bool = False
+    ) -> None:
+        """Scroll the body so the focused control is fully visible.
+
+        A focus change moves the view only when the control is not already
+        fully visible. Layout settling (wrapping, resize) re-places the view
+        from scratch while it still follows focus: at the top when the
+        control fits there, otherwise just far enough. Either way the top
+        edge never slices a title or a line of text in half. Once the owner
+        scrolls, settling layout leaves the position alone.
+        """
         canvas = self._body_canvas
         if canvas is None or widget is None:
+            return
+        if layout and not getattr(self, "_body_follow_focus", True):
             return
         parent: tk.Misc | None = widget
         while parent is not None and parent is not canvas:
@@ -1820,20 +2540,159 @@ class TkWizard:
             try:
                 if self._body_canvas is not canvas or self.root.focus_get() is not widget:
                     return
-                bounds = canvas.bbox("all")
-                if not bounds:
+                if layout and not getattr(self, "_body_follow_focus", True):
                     return
-                top = widget.winfo_rooty() - canvas.winfo_rooty()
-                height = widget.winfo_height()
-                viewport = canvas.winfo_height()
-                offset = top if top < 0 else max(0, top + height - viewport)
-                if offset:
-                    canvas.yview_moveto((canvas.canvasy(0) + offset) / max(1, bounds[3]))
+                self._apply_body_reveal(canvas, widget, layout=layout)
             except tk.TclError:
                 # A redraw can destroy the focused widget before its idle job.
                 return
 
         canvas.after_idle(reveal)
+
+    def _apply_body_reveal(self, canvas: tk.Canvas, widget: tk.Misc, *, layout: bool,
+                           limit: Optional[float] = None) -> None:
+        self._sync_body_scroll(canvas)
+        target = self._body_reveal_top(canvas, widget, settle=layout)
+        if not layout:
+            self._body_follow_focus = True
+        if target is None:
+            return
+        if limit is not None:
+            # Never scroll past ``limit`` (#157: the top of a widget that
+            # must stay in view).
+            target = min(target, max(0.0, limit))
+        bounds = canvas.bbox("all")
+        if not bounds:
+            return
+        content = bounds[3] - bounds[1]
+        self._body_slack = 0 if target <= 0 else max(
+            0, int(round(target + canvas.winfo_height() - content))
+        )
+        self._sync_body_scroll(canvas)
+        if abs(float(canvas.canvasy(0)) - target) > 0.5:
+            canvas.yview_moveto(target / max(1, content + self._body_slack))
+
+    def _reveal_in_body(self, widget: tk.Misc, *, keep: Optional[tk.Misc] = None) -> None:
+        """Scroll the body so ``widget`` is fully visible, focus or not (#155).
+
+        With ``keep`` the view never scrolls past that widget's top (#157:
+        Confirm's disk card and warning stay in view on short windows).
+        """
+        canvas = self._body_canvas
+        if canvas is None:
+            return
+
+        def run() -> None:
+            try:
+                if self._body_canvas is not canvas or not widget.winfo_exists():
+                    return
+                # The newly packed widget must be in the scroll region first.
+                canvas.update_idletasks()
+                self._sync_body_scroll(canvas)
+                limit = None
+                if keep is not None and keep.winfo_exists():
+                    limit = 0.0
+                    node: Optional[tk.Misc] = keep
+                    while node is not None and node is not self._body_inner:
+                        limit += node.winfo_y()
+                        node = node.master
+                    if node is None:
+                        limit = None
+                self._apply_body_reveal(canvas, widget, layout=False, limit=limit)
+                # Like an owner's scroll: layout settling must not pull the
+                # view back to the focused entry and hide the help again.
+                self._body_follow_focus = False
+            except tk.TclError:
+                return
+
+        canvas.after_idle(run)
+
+    def _body_reveal_top(
+        self, canvas: tk.Canvas, widget: tk.Misc, *, settle: bool
+    ) -> Optional[float]:
+        """Content offset to show at the top of the body view, or None to stay.
+
+        Offsets come from geometry (winfo_y), which stays valid while Tk keeps
+        an off-view canvas window unmapped. Candidate offsets are the edges of
+        body rows and the gaps between lines of wrapped labels.
+        """
+        inner = self._body_inner
+        if inner is None:
+            return None
+        top = 0.0
+        node: tk.Misc | None = widget
+        while node is not None and node is not inner:
+            top += node.winfo_y()
+            node = node.master
+        if node is not inner:
+            return None
+        bottom = top + widget.winfo_height()
+        viewport = float(canvas.winfo_height())
+        bounds = canvas.bbox("all")
+        if not bounds or viewport <= 1:
+            return None
+        current = float(canvas.canvasy(0))
+        if not settle and top >= current - 0.5 and bottom <= current + viewport + 0.5:
+            return None
+        low = bottom - viewport
+        # The offset may pass the content end by a little slack (blank below
+        # the last control) when that is the only clean edge, e.g. a final
+        # consent card one title-height too tall for the view.
+        high = min(top, max(0.0, float(bounds[3] - bounds[1]) - viewport) + viewport / 3.0)
+        if low <= 0:
+            return 0.0
+        if low >= high:
+            # Taller than the view: show its top edge.
+            return min(top, high)
+        rows = self._body_rows(inner)
+
+        def clean(y: float) -> bool:
+            for row_top, row_bottom, cuts in rows:
+                if row_top + 1 < y < row_bottom - 1 and not any(
+                    abs(y - cut) <= 1 for cut in cuts
+                ):
+                    return False
+            return True
+
+        points = {low, high}
+        for row_top, row_bottom, cuts in rows:
+            points.update((row_top, row_bottom, *cuts))
+        candidates = sorted(point for point in points if low <= point <= high)
+        if not settle and current > high:
+            # Moving up: the nearest clean edge keeps the control at the top.
+            candidates.reverse()
+        for candidate in candidates:
+            if clean(candidate):
+                return candidate
+        return max(low, min(top, max(0.0, float(bounds[3] - bounds[1]) - viewport)))
+
+    def _body_rows(self, inner: tk.Misc) -> list[tuple[float, float, tuple[float, ...]]]:
+        """Content-y extent of every text, entry, icon and button in the body.
+
+        Frames and boxes are containers; a view edge may cut through them.
+        Multi-line labels may also be cut exactly between two lines.
+        """
+        rows: list[tuple[float, float, tuple[float, ...]]] = []
+
+        def visit(node: tk.Misc, y: float) -> None:
+            for child in node.winfo_children():
+                try:
+                    if not child.winfo_manager():
+                        continue
+                    top = y + child.winfo_y()
+                    height = child.winfo_height()
+                    container = isinstance(child, _Box) or child.winfo_class() == "Frame"
+                except tk.TclError:
+                    continue
+                if height <= 1:
+                    continue
+                if container:
+                    visit(child, top)
+                else:
+                    rows.append((top, top + height, _label_line_cuts(child, top, height)))
+
+        visit(inner, 0.0)
+        return rows
 
     def _cancel_widget_callbacks(self, widget: tk.Misc, *, include_self: bool = True) -> None:
         """Retire pending Python callbacks owned by widgets being destroyed."""
@@ -1869,6 +2728,7 @@ class TkWizard:
         def wrapped() -> None:
             if getattr(self, "_ui_dead", False) or self.w.screen != expected_screen or generation != getattr(self, "_draw_generation", 0):
                 return
+            getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
             fn()
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self._teardown()
@@ -1928,6 +2788,9 @@ class TkWizard:
             except BaseException as error:
                 cleanup_error = error
             self._cancel_pick_restore()
+            # #149's "Compare" link opener closes over the comparison row and
+            # its BooleanVar; a retired interface must not keep them alive.
+            self._comparison_opener = None
             for attr in (
                 "_return_release_after",
                 "_space_release_after",
@@ -1951,7 +2814,7 @@ class TkWizard:
                     del root._tk_wizard
             for name in self._NATIVE_FIELDS:
                 if hasattr(self, name):
-                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards") else None)
+                    setattr(self, name, {} if name in ("_pick_cards", "_keyboard_layout_cards", "_keyboard_language_cards", "_method_more_buttons") else None)
             lock = getattr(self, "_refresh_lock", None)
             if lock is not None:
                 with lock:
@@ -1995,6 +2858,11 @@ class TkWizard:
             power_label = getattr(self, "_power_label", None)
             if power_label is not None:
                 power_label.configure(text=self.w.power_text)
+            if self.w.power_badge != getattr(self, "_shown_power_badge", None):
+                self._draw_header()  # #144: unplugging shows at once
+            # In-place updates above can shrink a scrolled body without any
+            # Configure event reaching it (see _sync_body_scroll).
+            self._sync_body_scroll()
             self._after_id = self.root.after(100, self._tick)
         except BaseException as exc:
             self._runtime_failure(type(exc), exc, exc.__traceback__)
@@ -2030,7 +2898,32 @@ class TkWizard:
         if callable(sync):
             sync()
         self._draw_generation = getattr(self, "_draw_generation", 0) + 1
+        if self.w.screen != Screen.KEYBOARD:
+            # Each visit to the keyboard screen starts on the language (#131).
+            self._kbd_focus: Optional[tuple] = None
+            self._layout_keys_used = False  # #142
         assert self._body is not None and self._footer is not None
+        # BW-175B: guarded like _sync_layout; partial windows (tests, an
+        # interface built before the menu existed) have no Help & settings.
+        focused = getattr(self, "_help_focused_key", None)
+        self._help_prior_focus = focused() if callable(focused) else ""
+        self._footer_hint = C.HINT_SPLASH if self.w.screen == Screen.SPLASH else ""
+        self._done_refocus = ""
+        if self.w.screen == Screen.DONE and getattr(self, "_shown", None) == Screen.DONE:
+            # Live report-USB status (#135) redraws Done on its own; keep the
+            # keyboard where the person left it instead of on Shut down.
+            try:
+                # Last focus in this window, even while another window is
+                # active (focus_get() is None then).
+                focused = self.root.focus_lastfor()
+            except (KeyError, tk.TclError):
+                focused = None
+            if isinstance(focused, _Button):
+                self._done_refocus = self._button_key(focused)
+            else:
+                # A control focused by the previous draw may not be mapped
+                # yet (Tk defers its focus); keep what that draw chose.
+                self._done_refocus = getattr(self, "_done_focus_key", "")
         if self._pick_canvas is not None:
             try:
                 bbox = self._pick_canvas.bbox("all")
@@ -2048,6 +2941,8 @@ class TkWizard:
         self._clear(self._body)
         self._clear(self._footer)
         self._support_lead = None
+        # The old body's comparison row is gone; drop its opener (#149).
+        self._comparison_opener = None
         unbind = getattr(self, "_unbind_support_copy", None)
         if callable(unbind):
             unbind()
@@ -2057,13 +2952,26 @@ class TkWizard:
         self._primary = None
         self._countdown_ring = None
         self._countdown_num = None
+        self._countdown_num_item = 0
+        self._countdown_ready = None
         self._countdown_label = None
         self._progress_label = None
         self._progress_pct = None
+        self._progress_wait = None
         self._progress_bar = None
+        self._progress_time = None
+        self._progress_step = None
+        self._progress_stale = None
+        self._progress_stale_slot = None
+        self._progress_notes_slot = None
+        self._finish_toggle = None
         self._match_label = None
+        self._match_wrap_max = 0
         self._match_icon = None
         self._match_pill = None
+        self._layout_hint = None
+        self._layout_sentence = None
+        self._confirm_card = None
         self._power_label: Optional[tk.Label] = None
         screen = self.w.screen
         first_review_draw = screen == Screen.LAST_CHANCE and getattr(self, "_shown", None) != Screen.LAST_CHANCE
@@ -2071,6 +2979,12 @@ class TkWizard:
         working_revision = self.w.report_view.revision if screen == Screen.WORKING else None
         diagnostic_view = self.w.diagnostic_view if screen == Screen.DIAGNOSTIC else None
         self._sync_chrome(screen == Screen.SPLASH)
+        sync_preview = getattr(self, "_sync_preview_copy", None)
+        if callable(sync_preview):
+            sync_preview()
+        sync_palette = getattr(self, "_sync_palette", None)  # #179; BW-175B guard
+        if callable(sync_palette):
+            sync_palette()
         self._body.configure(bg=BG)
         dispatch = {
             Screen.SPLASH: self._splash,
@@ -2110,8 +3024,17 @@ class TkWizard:
             self._diagnostic(diagnostic_view)
         else:
             dispatch[screen]()
+        footer_children = getattr(self._footer, "winfo_children", None)
+        help_footer = getattr(self, "_help_footer", None)
+        if callable(footer_children) and callable(help_footer) and not footer_children():
+            # #175: splash and the short status screens have no footer;
+            # Help & settings still sits in the same place.
+            help_footer()
         self._draw_header()
         self._draw_strip()
+        sync_help = getattr(self, "_sync_help_menu", None)  # BW-175B guard
+        if callable(sync_help):
+            sync_help()
         _drain_retired_native()
         self._shown = screen
         self._shown_sound_revision = getattr(self.w, "sound_revision", 0)
@@ -2141,6 +3064,11 @@ class TkWizard:
             emit_serial_marker(f"BEAMO_WIPE_DISCOVERY_{code.upper()}")
         if report_view is not None:
             emit_serial_marker(f"BEAMO_WIPE_REPORT_{report_view.status.upper()}")
+            # Live report-USB state (#135): a fixed state name only, never a
+            # model, size, path or serial.
+            usb = self.w.report_usb
+            if usb is not None:
+                emit_serial_marker(f"BEAMO_WIPE_REPORT_USB_{usb.state.upper()}")
         if first_review_draw:
             # Building a large first review can consume the original timer.
             # Start the visible five seconds after the screen is complete.
@@ -2168,7 +3096,10 @@ class TkWizard:
 
         parent.bind("<Configure>", fit, add="+")
 
-    def _h(self, parent: tk.Widget, text: str, *, bg: str = BG, fg: str = INK) -> tk.Label:
+    def _h(self, parent: tk.Widget, text: str, *, bg: Optional[str] = None,
+           fg: Optional[str] = None) -> tk.Label:
+        bg = BG if bg is None else bg  # #179: the current palette
+        fg = INK if fg is None else fg
         label = tk.Label(
             parent, text=text, font=self.font_h, fg=fg, bg=bg,
             wraplength=self.lay.wrap, justify=tk.LEFT, anchor="w",
@@ -2198,15 +3129,18 @@ class TkWizard:
         subtitle: Optional[str] = None,
         *,
         compact: bool = False,
+        bottom: Optional[int] = None,
     ) -> None:
         """The one screen-header pattern: bold title, optional muted subtitle.
 
         Every working screen opens with the same rhythm so the eye lands in
         the same place on each step. ``compact`` squeezes the method screen
         further; short and narrow windows already use compact layout pads.
+        ``bottom`` caps the gap under the header (the Method screen, #158).
         """
         top = min(10, self.lay.title_top) if compact else self.lay.title_top
-        bottom = min(6, self.lay.title_bottom) if compact else self.lay.title_bottom
+        under = min(6, self.lay.title_bottom) if compact else self.lay.title_bottom
+        bottom = under if bottom is None else min(bottom, under)
         self._h(col, title).pack(fill=tk.X, pady=(top, 4 if subtitle else bottom))
         if subtitle:
             self._p(col, subtitle, fg=MUTED, font=self.font_b).pack(
@@ -2227,11 +3161,12 @@ class TkWizard:
         *,
         height: int,
         wrap: Literal["none", "char", "word"] = "word",
-        bg: str = SURFACE_ALT,
+        bg: Optional[str] = None,
         padx: int = 12,
         pady: int = 8,
     ) -> tk.Text:
         """Flat readable text surface. Replaces native sunken Text chrome."""
+        bg = SURFACE if bg is None else bg  # #179: current palette
         return tk.Text(
             parent,
             wrap=wrap,
@@ -2264,22 +3199,60 @@ class TkWizard:
     def _kbd(self, parent: tk.Widget, text: str) -> _Box:
         """A quiet keyboard key-cap. Makes keyboard affordances scannable."""
         pad = max(2, int(round(2 * self._type_scale())))
-        cap = _Box(parent, radius=8, fill=SURFACE_ALT, outline=BORDER_STRONG, ow=1, padx=8, pady=pad)
-        tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE_ALT).pack()
+        cap = _Box(parent, radius=8, fill=SURFACE, outline=BORDER_STRONG, ow=1, padx=8, pady=pad)
+        if text in _ARROW_KEYS:
+            # #153: arrows are drawn, not typed. The UI font often has no
+            # arrow glyph and the fallback came out thin and tinted (orange
+            # with subpixel smoothing) beside the bold ink letter caps.
+            self._arrow_glyph(cap.inner, _ARROW_KEYS[text]).pack()
+        else:
+            tk.Label(cap.inner, text=text, font=self.font_tiny, fg=INK, bg=SURFACE).pack()
         cap.fit_now()
         return cap
 
+    def _arrow_glyph(self, parent: tk.Widget, direction: str) -> tk.Canvas:
+        """An arrow in INK sized to the cap's bold text, like the letter caps."""
+        # Same height as a letter cap's label (font line plus Tk's label
+        # border and padding), so every cap in a hint is the same size.
+        probe = tk.Label(parent, text="Mg", font=self.font_tiny)
+        line = max(self.font_tiny.metrics("linespace"), probe.winfo_reqheight())
+        probe.destroy()
+        size = max(9, self.font_tiny.metrics("linespace") - 2)
+        stroke = max(2, int(round(size / 7)))
+        canvas = tk.Canvas(parent, width=size, height=line, bg=SURFACE, bd=0,
+                           highlightthickness=0)
+        cx, cy = size / 2, line / 2
+        half = size / 2 - stroke / 2
+        ends = {
+            "up": (cx, cy + half, cx, cy - half),
+            "down": (cx, cy - half, cx, cy + half),
+            "left": (cx + half, cy, cx - half, cy),
+            "right": (cx - half, cy, cx + half, cy),
+        }[direction]
+        head = max(4, int(round(size * 0.45)))
+        canvas.create_line(*ends, fill=INK, width=stroke, arrow=tk.LAST,
+                           arrowshape=(head, head, max(3, int(round(head * 0.7)))),
+                           capstyle=tk.BUTT, tags=("glyph",))
+        setattr(canvas, "_beamo_key_glyph", direction)
+        return canvas
+
     def _hint_bar(self, parent: tk.Widget, hint: str) -> tk.Frame:
         """Hint copy with known key names rendered as key-caps."""
-        bar = tk.Frame(parent, bg=BG)
-        inner = tk.Frame(bar, bg=BG)
+        surface = parent.cget("bg")
+        bar = tk.Frame(parent, bg=surface)
+        inner = tk.Frame(bar, bg=surface)
         inner.pack(anchor="w")
         pos = 0
         for match in _KEY_TOKEN_RE.finditer(hint):
             if match.start() > pos:
                 self._hint_text(inner, hint[pos:match.start()])
-            for key in _KEY_TOKEN_KEYS.get(match.group(0), (match.group(0),)):
-                self._kbd(inner, key).pack(side=tk.LEFT, padx=(0, 4))
+            keys = _KEY_TOKEN_KEYS.get(match.group(0), (match.group(0),))
+            # #153: punctuation right after a cap belongs to it ("Enter."),
+            # not 4 px away where it read as a stray mark.
+            hug = hint[match.end():match.end() + 1] in _HUG_PUNCTUATION
+            for index, key in enumerate(keys):
+                last = index == len(keys) - 1
+                self._kbd(inner, key).pack(side=tk.LEFT, padx=(0, 1 if last and hug else 4))
             pos = match.end()
         if pos < len(hint):
             self._hint_text(inner, hint[pos:])
@@ -2289,7 +3262,7 @@ class TkWizard:
         if not text:
             return
         tk.Label(
-            parent, text=text, font=self.font_s, fg=MUTED, bg=BG, anchor="w",
+            parent, text=text, font=self.font_s, fg=MUTED, bg=parent.cget("bg"), anchor="w",
         ).pack(side=tk.LEFT)
 
     def _panel(
@@ -2300,13 +3273,16 @@ class TkWizard:
         text: str,
         extra: Optional[str] = None,
         compact: bool = False,
+        tight: bool = False,
     ) -> _Box:
+        # ``compact`` also uses the small font; ``tight`` (#157) only trims
+        # the padding, so the text keeps its full size.
         colors = {
             "warn": (WARN_BG, WARN_BORDER),
             "danger": (DANGER_TINT, DANGER_BORDER),
-            "info": (SURFACE_ALT, BORDER),
+            "info": (SURFACE, BORDER),
             "ok": (OK_TINT, OK_BORDER),
-            "limits": (SURFACE_ALT, BORDER),
+            "limits": (SURFACE, BORDER),
         }
         # Severity words: the label line keeps every non-neutral panel
         # readable in monochrome. Neutral info stays unlabeled.
@@ -2318,7 +3294,7 @@ class TkWizard:
         }
         bg, border = colors[kind]
         box = _Box(parent, radius=RADIUS, fill=bg, outline=border, ow=1,
-                   padx=16, pady=8 if compact else 13)
+                   padx=16, pady=8 if (compact or tight) else 13)
         row = tk.Frame(box.inner, bg=bg)
         row.pack(fill=tk.X)
         icon = _icon_alert(row, kind, 28)
@@ -2339,6 +3315,8 @@ class TkWizard:
             self._wrapping_label(
                 lines, extra, font=self.font_s, fg=MUTED, bg=bg,
             ).pack(fill=tk.X, pady=(4, 0))
+        box.lines = lines  # type: ignore[attr-defined]
+        box.bg = bg  # type: ignore[attr-defined]
         return box
 
     def _bind_tree(self, widget: tk.Misc, click) -> None:
@@ -2393,7 +3371,7 @@ class TkWizard:
         parent: tk.Widget,
         sections: RecoverySections,
         *,
-        bg: str = BG,
+        bg: Optional[str] = None,
         omit_duplicate_happened: str = "",
     ) -> None:
         """What happened, meaning, next; technical details separately.
@@ -2403,6 +3381,7 @@ class TkWizard:
         Technical detail is a muted line, not a button: Done tab order
         stays Show more then Save report.
         """
+        bg = BG if bg is None else bg  # #179: current palette
         from beamo_wipe import recovery as Rec
 
         frame = tk.Frame(parent, bg=bg)
@@ -2440,8 +3419,30 @@ class TkWizard:
             bg=bg,
         ).pack(fill=tk.X, pady=(4, 0))
 
-    def _more_link(self, parent: tk.Widget, *, bg: str = BG) -> bool:
+    def _what_next(self, parent: tk.Widget, plain) -> None:
+        """A finished outcome's note, then its short numbered What next list (#134)."""
+        from beamo_wipe import outcomes as O
+
+        frame = tk.Frame(parent, bg=BG)
+        frame.pack(fill=tk.X, pady=(8, 0), anchor="w")
+        setattr(frame, "_beamo_what_next", True)
+        if plain.note:
+            self._p(frame, plain.note, font=self.font_s, fg=MUTED).pack(fill=tk.X)
+        tk.Label(
+            frame, text=O.WHAT_NEXT, font=self.font_s_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(6 if self.lay.short else 8, 0))
+        for item in plain.numbered:
+            self._p(frame, item, font=self.font_s).pack(fill=tk.X, pady=(2, 0))
+
+    def _more_link(
+        self,
+        parent: tk.Widget,
+        *,
+        bg: Optional[str] = None,
+        side: Optional[Literal["left", "right", "top", "bottom"]] = None,
+    ) -> bool:
         """Optional details use the shared, keyboard-accessible control."""
+        bg = BG if bg is None else bg  # #179: current palette
         open_ = self._show_more
 
         def toggle() -> None:
@@ -2455,11 +3456,14 @@ class TkWizard:
             parent, text=C.BTN_LESS if open_ else C.BTN_MORE,
             command=toggle, font=self.font_s_bold, variant="ghost", compact=True,
         )
-        self._more_button.pack(anchor="w", pady=(4, 0))
+        if side is not None:
+            self._more_button.pack(side=side, anchor="n")
+        else:
+            self._more_button.pack(anchor="w", pady=(4, 0))
         return open_
 
     def _wrapping_label(self, parent: tk.Widget, text: str, *, font, bg: str,
-                        fg: str = INK) -> tk.Label:
+                        fg: Optional[str] = None) -> tk.Label:
         """Wrap the full identity to its allocated width, never ellipsize it.
 
         Card interiors are canvas windows. Their width settles after layout,
@@ -2467,6 +3471,7 @@ class TkWizard:
         Observe the allocated parent width without feeding the label's
         requested width back into the layout.
         """
+        fg = INK if fg is None else fg  # #179: current palette
         base = max(200, self.lay.wrap - 120)
         def displayed(width):
             # Native word wrapping preserves prose and avoids double wrapping
@@ -2491,9 +3496,10 @@ class TkWizard:
         label.pack(fill=tk.X)
         return label
 
-    def _disk_heading(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+    def _disk_heading(self, parent: tk.Widget, disk: Disk, bg: str) -> tuple[tk.Frame, tk.Frame]:
         # Reserve capacity before the expandable model column; long names
-        # must not push the capacity or type out of the card.
+        # must not push the capacity or type out of the card. Returns the
+        # heading row and its model column (#149 adds a link between them).
         view = self.w.disk_view(disk)
         top = tk.Frame(parent, bg=bg)
         top.pack(fill=tk.X)
@@ -2502,9 +3508,14 @@ class TkWizard:
         name = tk.Frame(top, bg=bg)
         name.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self._wrapping_label(name, view.title, font=self.font_bold, bg=bg)
+        return top, name
 
-    def _meta_line(self, parent: tk.Widget, disk: Disk, bg: str) -> tk.Frame:
-        """Model, capacity, connection, and strongest identifier. Path is not identity."""
+    def _meta_line(self, parent: tk.Widget, disk: Disk, bg: str, *, token: bool = False) -> tk.Frame:
+        """Model, capacity, connection, and strongest identifier. Path is not identity.
+
+        With ``token`` (Confirm only) the confirmation characters at the end
+        of the identifier are boxed and underlined in place (#129).
+        """
         view = self.w.disk_view(disk)
         meta = tk.Frame(parent, bg=bg)
         chip = " · ".join(part for part in (view.kind_chip, view.connection) if part)
@@ -2519,7 +3530,20 @@ class TkWizard:
                  fg=MUTED, bg=bg).pack(side=tk.LEFT, anchor="n", padx=(0, 8), pady=2)
         value = tk.Frame(identity, bg=bg)
         value.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        self._wrapping_label(value, view.marked_id, font=self.font_mono_bold, bg=bg)
+        from beamo_wipe import identity as _identity
+
+        diff = () if token else view.comparison_marks
+        mark = (view.token_start, view.token_end) if token and view.token_end > view.token_start else None
+        if view.id_value == _identity.SERIAL_NOT_REPORTED and not diff and mark is None:
+            # Words, not an identifier: wrapped as prose, no letter spacing.
+            ident = self._wrapping_label(value, view.id_value, font=self.font_mono, bg=bg)
+            setattr(ident, "_beamo_serial", True)
+        else:
+            # #177: regular weight. #177g: slight letter spacing, one cell per
+            # character; the #129 token (boxed, underlined) and the #152
+            # differing characters (underlined) are bold on their own cells.
+            ident = self._serial_value(value, view.id_value, bg=bg, token=mark, diff=diff)
+            setattr(ident, "_beamo_serial_marked" if diff else "_beamo_serial", True)
         for note in view.notes:
             self._wrapping_label(value, note, font=self.font_s, fg=MUTED, bg=bg)
         if self._show_more:
@@ -2537,18 +3561,86 @@ class TkWizard:
             )
         return meta
 
-    def _disk_summary(self, parent: tk.Widget, disk: Disk) -> _Box:
-        """The selected disk, shared across confirmation, method, and result screens."""
+    def _serial_value(
+        self,
+        parent: tk.Widget,
+        text: str,
+        *,
+        bg: str,
+        token: Optional[tuple[int, int]] = None,
+        diff: tuple[tuple[int, int], ...] = (),
+    ) -> tk.Label:
+        """A serial number or hardware ID with letter spacing and marks (#177g).
+
+        Wraps to the allocated width like ``_wrapping_label`` (row breaks
+        only, between characters; a marked run is kept on one row when it
+        fits). Returns the plain Label that carries the exact text; the
+        drawn characters are on ``label._beamo_serial_face``.
+        """
+        base = max(200, self.lay.wrap - 120)
+        face = _SerialFace(parent, text, font=self.font_mono, bold=self.font_mono_bold,
+                           fg=INK, bg=bg, token=token, diff=diff, width=base)
+        face.pack(fill=tk.X)
+        face.layout(base)
+
+        def fit(event) -> None:
+            if int(event.width) != face._width:
+                face.layout(int(event.width))
+
+        parent.bind("<Configure>", fit, add="+")
+        return face.label
+
+    def _disk_summary(self, parent: tk.Widget, disk: Disk, *, more: bool = False,
+                      token: bool = False, caption_text: Optional[str] = None,
+                      rows: tuple = ()) -> _Box:
+        """The selected disk, shared across confirmation, method, and result screens.
+
+        Short windows tighten its padding so the step's own controls start
+        above the fold. With ``more`` the optional-details toggle shares the
+        caption row instead of taking a row of its own below the box.
+        """
+        short = self.lay.short
         box = _Box(
-            parent, radius=RADIUS, fill=PRIMARY_TINT, outline=PRIMARY, ow=1,
-            padx=18, pady=12, shadow=False,
+            parent, radius=RADIUS, fill=PRIMARY_TINT, outline=SUMMARY_EDGE, ow=1,
+            padx=18, pady=8 if short else 12, shadow=False,
         )
         inner = box.inner
-        tk.Label(inner, text=C.SELECTED_DISK, font=self.font_tiny,
-                 fg=PRIMARY, bg=PRIMARY_TINT, anchor="w").pack(fill=tk.X, pady=(0, 6))
+        caption: tk.Widget = inner
+        if more:
+            # The toggle is taller than the caption text and brings its own
+            # padding; no extra gap below it on short windows.
+            caption = tk.Frame(inner, bg=PRIMARY_TINT)
+            caption.pack(fill=tk.X, pady=(0, 0 if short else 2))
+        label = tk.Label(caption, text=caption_text or C.SELECTED_DISK, font=self.font_tiny,
+                         fg=PRIMARY, bg=PRIMARY_TINT, anchor="w")
+        if more:
+            label.pack(side=tk.LEFT)
+            self._more_link(caption, bg=PRIMARY_TINT, side=tk.RIGHT)
+        else:
+            label.pack(fill=tk.X, pady=(0, 2 if short else 6))
         self._disk_heading(inner, disk, PRIMARY_TINT)
-        self._meta_line(inner, disk, PRIMARY_TINT).pack(fill=tk.X, pady=(4, 0))
+        self._meta_line(inner, disk, PRIMARY_TINT, token=token).pack(
+            fill=tk.X, pady=(2 if short else 4, 0)
+        )
+        if rows:
+            self._fact_rows(inner, rows, PRIMARY_TINT).pack(
+                fill=tk.X, pady=(6 if short else 8, 0)
+            )
         return box
+
+    def _fact_rows(self, parent: tk.Widget, rows: tuple, bg: str) -> tk.Frame:
+        """#171: "Label  value" rows of the result card, wrapped to the card."""
+        frame = tk.Frame(parent, bg=bg)
+        frame._beamo_fact_rows = rows  # type: ignore[attr-defined]
+        for label, value in rows:
+            row = tk.Frame(frame, bg=bg)
+            row.pack(fill=tk.X, pady=(1, 0))
+            tk.Label(row, text=f"{label}:", font=self.font_s, fg=MUTED, bg=bg,
+                     anchor="nw", justify=tk.LEFT).pack(side=tk.LEFT, anchor="n")
+            self._p(row, value, font=self.font_s_bold, bg=bg).pack(
+                side=tk.LEFT, fill=tk.X, expand=True, padx=(6, 0)
+            )
+        return frame
 
     # -- footer / buttons -----------------------------------------------------
 
@@ -2556,78 +3648,100 @@ class TkWizard:
         return C.BTN_CLOSE_PREVIEW if self.w.preview else C.BTN_SHUTDOWN
 
     def _footer_shell(self, hint: str) -> tk.Frame:
-        """Assist strip (utilities and keyboard hints) above a hairline;
-        navigation is Back/secondary left and the primary action right.
+        """Assist strip (utilities and keyboard hints) above the navigation
+        row: Back/secondary left and the primary action right.
         Buttons pack into ``row._left`` / ``row._right``."""
         assert self._footer is not None
-        col = self._column(self._footer, fill_height=False)
-        assist = tk.Frame(col, bg=BG)
+        self._footer_hint = hint
+        col = self._column(self._footer, fill_height=False, bg=FOOTER_BG)
+        assist = tk.Frame(col, bg=FOOTER_BG)
         assist.pack(fill=tk.X, pady=(0, 4))
-        tools = tk.Frame(assist, bg=BG)
+        tools = tk.Frame(assist, bg=FOOTER_BG)
         tools.pack(fill=tk.X)
 
-        tool_row = tk.Frame(tools, bg=BG)
+        tool_row = tk.Frame(tools, bg=FOOTER_BG)
         tool_row.pack(anchor="w")
         tool_width = 0
+        # #174: the footer is two rows (tools, then actions). When the whole
+        # tools line would not fit (larger text on a small window), the
+        # utilities drop their "(F5)"/"(F8)" key names, which the Keyboard
+        # shortcuts page beside them lists, before wrapping to a second line.
+        tool_texts = [C.MENU_TITLE, C.MENU_SHORTCUTS]
+        if self.w.refresh_offered:
+            tool_texts.append(C.BTN_REFRESH_UTILITY)
+        if (self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM
+                and sys.platform.startswith("linux")):
+            tool_texts.append(C.SCREEN_READER_VIEW)
+        if self.w.can_open_diagnostic:
+            tool_texts.append(C.DIAGNOSTIC_TITLE)
+        if self.w.screen == Screen.DONE:
+            tool_texts.append(C.SOUND_HEAR_AGAIN)
+        # A compact quiet button is its text plus 2 * 12 padding and 6 px of
+        # edge, packed with 4 px between tools (see utility below).
+        drop_keys = sum(self.font_s.measure(t) + 2 * 12 + 6 + 4 for t in tool_texts) > self.lay.content_w
 
-        def utility(text: str, command: Callable[[], None]) -> None:
+        def utility(text: str, command: Callable[[], None]) -> _Button:
             nonlocal tool_row, tool_width
+            if drop_keys:
+                text = _FOOTER_KEY_NAME.sub("", text)
             button = _Button(tool_row, text=text, font=self.font_s, command=command,
-                             variant="ghost", compact=True)
+                             variant="quiet", compact=True)
             width = button.winfo_reqwidth() + 4
             # Enlarged fonts must not expand the fixed footer beyond the
             # window. Keep every utility available in compact stacked rows.
             if tool_width and tool_width + width > self.lay.content_w:
                 button.destroy()
-                tool_row = tk.Frame(tools, bg=BG)
+                tool_row = tk.Frame(tools, bg=FOOTER_BG)
                 tool_row.pack(anchor="w")
                 tool_width = 0
                 button = _Button(tool_row, text=text, font=self.font_s, command=command,
-                                 variant="ghost", compact=True)
+                                 variant="quiet", compact=True)
             button.pack(side=tk.LEFT, padx=(0, 4))
             tool_width += width
+            return button
 
-        if self.w.screen == Screen.METHOD:
-            utility(C.BTN_ADVANCED, self._nav(self.w.open_advanced))
-        if self.w.can_open_keyboard and self.w.screen != Screen.KEYBOARD:
-            utility(C.KEYBOARD_UTILITY, self._nav(self.w.open_keyboard))
-        if self.w.screen not in {
-            Screen.SPLASH, Screen.KEYBOARD, Screen.WORKING, Screen.STOPPING,
-            Screen.CHECKING, Screen.REFRESHING, Screen.DONE, Screen.SHUTDOWN_CONFIRM,
-            Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED, Screen.LIMITS,
-            Screen.DISK_HELP, Screen.REPORT_HELP,
-        }:
-            utility(
-                f"{C.TEXT_SIZE_UTILITY}: {C.TEXT_SIZE_LABELS.get(self.w.text_size, C.TEXT_SIZE_STANDARD)}",
-                self._cycle_text_size,
-            )
-        if self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM:
+        # #175: Help & settings first, in the same place on every screen.
+        # Text size, language and keyboard, sounds, report help and Advanced
+        # live in it instead of coming and going in this strip.
+        self._help_button = utility(C.MENU_TITLE, self._toggle_help_menu)
+        self._help_button._beamo_help_menu = True  # type: ignore[attr-defined]
+        # #174: the screen's key hints are one "Keyboard shortcuts" item, so
+        # the footer is two rows (tools, then actions) on every screen.
+        self._shortcuts_button = utility(C.MENU_SHORTCUTS, self._open_shortcuts)
+        self._shortcuts_button._beamo_shortcuts = True  # type: ignore[attr-defined]
+        if self.w.refresh_offered:
+            # #136: not on What/Owner (no disk list yet); guarded from
+            # Confirm, Method and Review by the Check disks again dialog.
             utility(C.BTN_REFRESH_UTILITY, self._click_refresh)
-            if self.w.can_open_report_help:
-                utility(C.REPORT_HELP_TITLE, self._nav(self.w.open_report_help))
+        if self.w.can_refresh and self.w.screen != Screen.REFRESH_CONFIRM:
             if sys.platform.startswith("linux"):
                 utility(C.SCREEN_READER_VIEW, self._click_accessible)
         if self.w.can_open_diagnostic:
             utility(C.DIAGNOSTIC_TITLE, self._nav(self.w.open_diagnostic))
+        if self.w.screen == Screen.DONE:
+            # #135: hear the result again beside the footer tools; the
+            # Sounds on/off setting is in Help & settings (#175).
+            utility(C.SOUND_HEAR_AGAIN, self._nav(self.w.request_hear_outcome_sound))
+        footer_note = ""
         if self.w.screen == Screen.DONE and not self.w.preview:
-            note = tk.Label(
-                assist, text=C.ANOTHER_HINT, font=self.font_s, bg=BG,
-                fg=MUTED, wraplength=max(200, self.lay.content_w - 24), justify=tk.LEFT,
-                anchor="w",
-            )
-            # width=1 so the unwrapped sentence cannot stretch the footer
-            # past an 1024-wide window; fill=X uses the content column.
-            note.configure(width=1)
-            note.pack(fill=tk.X, pady=(4, 0))
-        if self.lay.short or self._type_scale() > 1.05:
-            self._hint = self._p(assist, hint, font=self.font_s, fg=MUTED,
-                                 wraplength=self.lay.content_w - 8)
-            self._hint.configure(width=1)
-        else:
-            self._hint = self._hint_bar(assist, hint)
-        self._hint.pack(fill=tk.X, pady=(4, 0))
-        tk.Frame(col, bg=BORDER, height=1).pack(fill=tk.X)
-        row = tk.Frame(col, bg=BG)
+            reason = self.w.done_actions_reason
+            text = reason or C.ANOTHER_HINT
+            if tool_width and tool_width + self.font_s.measure(text) + 24 <= self.lay.content_w:
+                # #135: beside the sound settings when the line has room, so
+                # the footer is no taller than before the settings moved in.
+                note = tk.Label(tool_row, text=text, font=self.font_s, bg=FOOTER_BG,
+                                fg=MUTED, anchor="w")
+                note.pack(side=tk.LEFT, padx=(12, 0))
+            else:
+                # #174: no third footer row. The note explains Erase another
+                # disk, so it sits beside that button in the action row.
+                footer_note = text
+        # #174: no key-hint row; the hint is the first line of the
+        # Keyboard shortcuts page (self._footer_hint).
+        self._hint = None
+        # No rule between the assist strip and the buttons: the white bar
+        # already frames them, and spacing separates the two rows.
+        row = tk.Frame(col, bg=FOOTER_BG)
         pad = self.lay.footer_pad_y
         row.pack(fill=tk.X, pady=(max(8, pad - 4), pad))
         # Left first so Tab from Back reaches the primary. Left actions
@@ -2635,12 +3749,26 @@ class TkWizard:
         # The primary cluster is packed next so it stays on the right edge
         # of the content column. Hints stay in the assist strip so Done's
         # four left actions plus Shut down still fit the 940px column.
-        left_host = tk.Frame(row, bg=BG)
-        left_host.pack(side=tk.LEFT, anchor="n")
-        left = tk.Frame(left_host, bg=BG)
+        left_host = tk.Frame(row, bg=FOOTER_BG)
+        # Centred beside the taller primary: compact Back sat at the top edge
+        # of the row, visibly higher than the button it pairs with. Wrapped
+        # left rows are taller than the primary and fill the row either way.
+        left_host.pack(side=tk.LEFT, anchor="w")
+        left = tk.Frame(left_host, bg=FOOTER_BG)
         left.pack(anchor="w")
-        right = tk.Frame(row, bg=BG)
+        right = tk.Frame(row, bg=FOOTER_BG)
         right.pack(side=tk.RIGHT, anchor="n")
+        if footer_note:
+            note = tk.Label(row, text=footer_note, font=self.font_s, bg=FOOTER_BG, fg=MUTED,
+                            anchor="w", justify=tk.LEFT, width=1)
+            note._beamo_footer_note = True  # type: ignore[attr-defined]
+            note.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 12))
+            # Wrap to the room between the two buttons (width=1: the
+            # sentence never widens the footer).
+            def wrap_note(event, label=note) -> None:
+                label.configure(wraplength=max(120, int(event.width) - 2))
+
+            note.bind("<Configure>", wrap_note, add="+")
         row._left_host = left_host  # type: ignore[attr-defined]
         row._left = left  # type: ignore[attr-defined]
         row._left_width = 0  # type: ignore[attr-defined]
@@ -2649,10 +3777,12 @@ class TkWizard:
 
     def _footer_left_parent(self, row: tk.Frame, width: int) -> tk.Frame:
         """Next left-action row that still leaves room for the primary."""
-        budget = max(280, self.lay.content_w - 168)
+        # A footer without a primary on the right (Working) may use the
+        # whole width before wrapping.
+        budget = getattr(row, "_left_budget", 0) or max(280, self.lay.content_w - 168)
         used = getattr(row, "_left_width", 0)
         if used and used + width > budget:
-            left = tk.Frame(row._left_host, bg=BG)  # type: ignore[attr-defined]
+            left = tk.Frame(row._left_host, bg=FOOTER_BG)  # type: ignore[attr-defined]
             left.pack(anchor="w")
             row._left = left  # type: ignore[attr-defined]
             row._left_width = 0  # type: ignore[attr-defined]
@@ -2697,6 +3827,27 @@ class TkWizard:
         btn.pack(side=tk.LEFT)
         return btn
 
+    def _link_btn(
+        self,
+        row: tk.Frame,
+        text: str,
+        command: Callable[[], None],
+        enabled: bool = True,
+    ) -> _Button:
+        """Low-emphasis footer action (sounds, erase another disk): a link,
+        so the outlined and filled buttons stay the clear next steps."""
+        btn = _Button(
+            self._footer_left_parent(row, self.font_s_bold.measure(text) + 2 * 12 + 6),
+            text=text,
+            command=self._nav(command),
+            font=self.font_s_bold,
+            variant="ghost",
+            compact=True,
+            enabled=enabled,
+        )
+        btn.pack(side=tk.LEFT, padx=(4, 0))
+        return btn
+
     def _primary_btn(
         self,
         row: tk.Frame,
@@ -2704,6 +3855,7 @@ class TkWizard:
         command: Callable[[], None],
         enabled: bool = True,
         danger: bool = False,
+        reason: str = "",
     ) -> _Button:
         btn = _Button(
             row._right,  # type: ignore[attr-defined]
@@ -2716,12 +3868,37 @@ class TkWizard:
         )
         btn.pack(side=tk.RIGHT)
         self._primary = btn
+        self._disabled_reason = None
+        if reason:
+            # #143/#178: a greyed button never stands without its reason, on
+            # the same row, just before it; shown only while it is disabled
+            # (_set_primary_enabled keeps it in step without a redraw).
+            label = tk.Label(
+                row._right, text=reason,  # type: ignore[attr-defined]
+                font=self.font_s, fg=MUTED, bg=FOOTER_BG, justify=tk.RIGHT, anchor="e",
+                wraplength=max(140, self.lay.content_w // 3),
+            )
+            label._beamo_disabled_reason = True  # type: ignore[attr-defined]
+            if not enabled:
+                label.pack(side=tk.RIGHT, padx=(0, 12))
+            self._disabled_reason = label
         return btn
 
     def _set_primary_enabled(self, enabled: bool) -> None:
         if self._primary is None:
             return
         self._primary.set_enabled(enabled)
+        reason = getattr(self, "_disabled_reason", None)
+        if reason is None:
+            return
+        try:
+            shown = bool(reason.winfo_manager())
+            if enabled and shown:
+                reason.pack_forget()
+            elif not enabled and not shown:
+                reason.pack(side=tk.RIGHT, padx=(0, 12), after=self._primary)
+        except tk.TclError:
+            pass
 
     # -- screens ---------------------------------------------------------------
 
@@ -2750,7 +3927,7 @@ class TkWizard:
             wraplength=max(200, self.lay.content_w - 24),
             justify=tk.CENTER, anchor="center",
         ).pack(fill=tk.X, pady=(8, 0))
-        self._p(col, C.SPLASH_ROADMAP, fg=MUTED, font=self.font_s,
+        self._p(col, C.splash_roadmap(PREPARATION_PATH), fg=MUTED, font=self.font_s,
                 justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(14, 0))
         hero = _Button(
             col,
@@ -2769,61 +3946,76 @@ class TkWizard:
 
     def _keyboard(self) -> None:
         self._keyboard_layout_cards = {}
-        self._keyboard_language_cards = {}
+        # #142: number badges (1-7) appear only while a layout card has
+        # keyboard focus, or once a layout key was used on this visit.
+        self._layout_badges: list[tuple[_Box, tk.Widget]] = []
+        self._keyboard_language_cards: dict[str, _Box] = {}
         col = self._column(self._body, fill_height=True)
+        # #131: language comes first, in focus and on screen, so nobody reads
+        # the rest in a language they did not choose. The label names the
+        # control in every offered language; each language in its own name.
+        self._language_picker(col)
+        # #139: one job per section, in the order people need them:
+        # language, then text size, then the keyboard (layout and check).
+        # Visual order is creation order, so Tab follows it.
+        self._text_size_section(col)
+        self._contrast_section(col)  # #179
         self._title_block(col, C.TITLE_KEYBOARD, C.KEYBOARD_LEAD)
         zone = self._center_zone(col)
-        self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X)
-        self._p(zone, C.TEXT_SIZE_LEAD, font=self.font_s, fg=INK).pack(fill=tk.X, pady=(10, 4))
-        size_row = tk.Frame(zone, bg=BG)
-        size_row.pack(fill=tk.X, pady=(0, 8))
-        for size_id, label in C.TEXT_SIZE_LABELS.items():
-            selected = self.w.text_size == size_id
-            _Button(
-                size_row,
-                text=label,
-                font=self.font_s_bold,
-                command=partial(self._apply_text_size, size_id),
-                variant="primary" if selected else "ghost",
-                compact=True,
-            ).pack(side=tk.LEFT, padx=(0, 8))
+        notice = C.keyboard_layout_notice(self.w)
+        if notice:
+            # What choosing the language did to the layout, with the way to
+            # change it: the layout cards right below.
+            self._p(zone, notice, font=self.font_s_bold, fg=INK).pack(fill=tk.X, pady=(4, 0))
+        # Seven layouts: compact title cards in two columns when there is
+        # room (one column for narrow windows or larger text), and only the
+        # selected layout's note below, so Continue stays near at 800x600.
+        layout_grid = tk.Frame(zone, bg=BG)
+        layout_grid.pack(fill=tk.X)
+        layout_cells: list[_Box] = []
         for index, layout_id in enumerate(LAYOUT_ORDER, 1):
             spec = _keyboard.LAYOUTS[layout_id]
             selected = self.w.keyboard_layout == layout_id
-            fill = PRIMARY_TINT if selected else SURFACE
-            outline = PRIMARY if selected else BORDER_STRONG
+            fill = SELECTED_FILL if selected else SURFACE
+            # Light card edge; the radio inside carries the control contrast.
+            outline = SELECTED_EDGE if selected else BORDER
             card = _Box(
-                zone, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
-                padx=16, pady=10, halo=False,
+                layout_grid, radius=RADIUS, fill=fill, outline=outline,
+                ow=SELECTED_EDGE_W if selected else 1,
+                padx=14, pady=8, halo=False,
             )
-            card.pack(fill=tk.X, pady=(6, 0))
+            layout_cells.append(card)
             inner = card.inner
             top = tk.Frame(inner, bg=fill)
             top.pack(fill=tk.X)
             icon = _icon_radio(top, selected, 22)
             icon.configure(bg=fill)
             icon.pack(side=tk.LEFT, anchor="n", pady=1)
-            self._kbd(top, str(index)).pack(side=tk.RIGHT, anchor="n")
+            badge = self._kbd(top, str(index))
             text_col = tk.Frame(top, bg=fill)
-            text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(14, 8))
-            tk.Label(
-                text_col, text=spec.title, font=self.font_bold, fg=INK, bg=fill, anchor="w",
-            ).pack(fill=tk.X)
+            text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 8))
+            self._layout_badges.append((badge, text_col))
             self._p(
-                text_col, spec.note, font=self.font_s, fg=MUTED, bg=fill,
-            ).pack(fill=tk.X, pady=(4, 0))
+                text_col, spec.title, font=self.font_bold, fg=INK, bg=fill,
+            ).pack(fill=tk.X)
+            # Request about one line up front: an unmapped _Box asks for Tk's
+            # default canvas height, and seven of those spike the scrolling
+            # body before _sync_height corrects each card.
+            card.configure(height=max(24, self.font_bold.metrics("linespace") + 4) + 2 * 8)
 
             def _click(_e=None, lid=layout_id, keyboard=False):
                 self.w.set_keyboard_layout(lid)
+                self._kbd_focus = ("layout", lid)
                 self._draw()
-                if keyboard:
-                    self._keyboard_layout_cards[lid].focus_set()
                 return "break"
 
             self._bind_tree(card, _click)
             card.configure(cursor="hand2", takefocus=1)
-            card.bind("<FocusIn>", partial(self._keyboard_option_focus, card=card, focused=True))
-            card.bind("<FocusOut>", partial(self._keyboard_option_focus, card=card, focused=False))
+            card.bind("<FocusIn>", partial(self._remember_keyboard_focus, ("layout", layout_id)), add="+")
+            card.bind("<FocusIn>", partial(self._keyboard_option_focus, card=card, focused=True), add="+")
+            card.bind("<FocusIn>", lambda _e: self._show_layout_badges(True), add="+")
+            card.bind("<FocusOut>", lambda _e: self.root.after_idle(self._sync_layout_badges), add="+")
+            card.bind("<FocusOut>", partial(self._keyboard_option_focus, card=card, focused=False), add="+")
             card.bind("<space>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
             card.bind("<Return>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
             card.bind("<KP_Enter>", partial(self._keyboard_option_key, activate=partial(_click, keyboard=True)))
@@ -2835,42 +4027,29 @@ class TkWizard:
                     partial(card.set_style, fill=SURFACE_ALT),
                     partial(card.set_style, fill=SURFACE),
                 )
-        tk.Label(
-            zone, text=C.TITLE_LANGUAGE, font=self.font_bold, fg=INK, bg=BG, anchor="w",
-        ).pack(fill=tk.X, pady=(14, 2))
-        self._p(zone, C.LANGUAGE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X)
-        lang_row = tk.Frame(zone, bg=BG)
-        lang_row.pack(fill=tk.X, pady=(6, 0))
-        for code in LANGUAGE_ORDER:
-            selected = self.w.language == code
-
-            def _pick_language(_e=None, lang_code=code, keyboard=False):
-                self.w.set_language(lang_code)
-                self._draw()
-                if keyboard:
-                    self._keyboard_language_cards[lang_code].focus_set()
-                return "break"
-
-            chip = _Box(
-                lang_row, radius=PILL, fill=PRIMARY_TINT if selected else SURFACE,
-                outline=PRIMARY if selected else BORDER_STRONG, ow=2 if selected else 1,
-                padx=14, pady=6, halo=False,
+        self._sync_layout_badges()
+        # Fixed per layout class: a window resize that changes self.lay
+        # redraws this screen, so no <Configure> reflow (it flip-flopped
+        # the body height mid-layout and stranded the scroll position).
+        columns = 1 if (self.lay.content_w < 640 or self._type_scale() > 1.05) else 2
+        for column in range(columns):
+            layout_grid.columnconfigure(column, weight=1, uniform="layouts")
+        for i, cell in enumerate(layout_cells):
+            left = columns == 2 and i % 2 == 1
+            right = columns == 2 and i % 2 == 0
+            cell.grid(
+                row=i // columns, column=i % columns, sticky="nsew",
+                padx=(4 if left else 0, 4 if right else 0), pady=(6, 0),
             )
-            chip.pack(side=tk.LEFT, padx=(0, 8))
-            tk.Label(
-                chip.inner, text=LANGUAGE_NAMES[code], font=self.font_s_bold,
-                fg=PRIMARY if selected else INK,
-                bg=PRIMARY_TINT if selected else SURFACE,
-            ).pack()
-            self._bind_tree(chip, _pick_language)
-            chip.configure(cursor="hand2", takefocus=1)
-            chip.bind("<FocusIn>", partial(self._keyboard_option_focus, card=chip, focused=True))
-            chip.bind("<FocusOut>", partial(self._keyboard_option_focus, card=chip, focused=False))
-            chip.bind("<space>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            chip.bind("<Return>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            chip.bind("<KP_Enter>", partial(self._keyboard_option_key, activate=partial(_pick_language, keyboard=True)))
-            self._keyboard_language_cards[code] = chip
-            chip.inner.configure(cursor="hand2")
+        chosen = _keyboard.LAYOUTS.get(self.w.keyboard_layout)
+        if chosen is not None:
+            self._p(
+                zone, f"{chosen.title}: {chosen.note}", font=self.font_s, fg=MUTED,
+            ).pack(fill=tk.X, pady=(8, 0))
+        # About the layouts above: which are offered and how long it lasts.
+        # Fine print behind the shared Show more control (#141).
+        if self._more_link(zone):
+            self._p(zone, C.KEYBOARD_LIMITS, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -2904,14 +4083,59 @@ class TkWizard:
         )
         self._typing_var.set(self.w.typing_check)
         entry.pack(fill=tk.X, ipady=4)
-        entry.bind("<FocusIn>", lambda _e: shell.set_focused(True))
+        def _entry_focus(_e=None) -> None:
+            shell.set_focused(True)
+            self._remember_keyboard_focus(("entry",))
+
+        entry.bind("<FocusIn>", _entry_focus)
         entry.bind("<FocusOut>", lambda _e: shell.set_focused(False))
-        shell.set_focused(True)
-        entry.focus_set()
+        # Guided check (#140): the X keysym the key printed Z produced under
+        # the active layout. Advisory; Continue never waits for it.
+        entry.bind("<KeyPress>", self._keyboard_check_key, add="+")
+        result = self.w.keyboard_check_text
+        if result:
+            check = self.w.keyboard_check
+            kind = check.kind if check is not None else ""
+            color = OK if kind == "match" else WARN if kind == "other" else MUTED
+            self._p(zone, result, font=self.font_s_bold, fg=color).pack(fill=tk.X, pady=(6, 0))
+            switch = self.w.keyboard_check_switch
+            if switch:
+                _Button(
+                    zone, text=switch, command=self._nav(self._accept_keyboard_suggestion),
+                    font=self.font_btn, variant="secondary", compact=True,
+                ).pack(anchor="w", pady=(6, 0))
+        # First arrival: the chosen language (the first control). Redraws
+        # keep the control the person was using: a layout card or the box.
+        memory = getattr(self, "_kbd_focus", None)
+        if memory == ("entry",):
+            shell.set_focused(True)
+            entry.focus_set()
+        elif memory and memory[0] == "layout" and memory[1] in self._keyboard_layout_cards:
+            self._keyboard_layout_cards[memory[1]].focus_set()
+        elif self.w.language in self._keyboard_language_cards:
+            self._keyboard_language_cards[self.w.language].focus_set()
         row = self._footer_shell(C.HINT_KEYBOARD)
         if self.w._keyboard_from:
             self._back_btn(row)
         self._primary_btn(row, C.primary_action(Screen.KEYBOARD), self.w.accept_keyboard)
+
+    def _keyboard_check_key(self, event) -> None:
+        """Judge one key press for the guided check (#140)."""
+        keysym = str(getattr(event, "keysym", "") or "")
+        typed = keysym if len(keysym) == 1 else str(getattr(event, "char", "") or "")
+        if self.w.check_keyboard_key(typed) is None:
+            return
+        self._kbd_focus = ("entry",)
+        # After the key reaches the box: redraw with the result below it.
+        self.root.after_idle(self._redraw_keyboard_check)
+
+    def _redraw_keyboard_check(self) -> None:
+        if not getattr(self, "_ui_dead", False) and self.w.screen == Screen.KEYBOARD:
+            self._draw()
+
+    def _accept_keyboard_suggestion(self) -> None:
+        self._kbd_focus = ("entry",)
+        self.w.accept_keyboard_suggestion()
 
     def _typing_var_written(self, *_a) -> None:
         if self.w.screen != Screen.KEYBOARD:
@@ -2920,6 +4144,170 @@ class TkWizard:
 
     def _keyboard_option_focus(self, _event: object, *, card: _Box, focused: bool) -> None:
         card.set_focused(focused)
+
+    def _layout_badges_wanted(self) -> bool:
+        """Badges show while a layout card has focus, or after layout keys."""
+        if getattr(self, "_layout_keys_used", False):
+            return True
+        memory = getattr(self, "_kbd_focus", None)
+        try:
+            focused = self.root.focus_get()
+        except (KeyError, tk.TclError):
+            focused = None
+        cards = getattr(self, "_keyboard_layout_cards", {}).values()
+        if focused is not None:
+            return any(focused is card for card in cards)
+        return bool(memory and memory[0] == "layout")
+
+    def _sync_layout_badges(self) -> None:
+        if getattr(self, "_ui_dead", False) or self.w.screen != Screen.KEYBOARD:
+            return
+        self._show_layout_badges(self._layout_badges_wanted())
+
+    def _show_layout_badges(self, visible: bool) -> None:
+        for badge, text_col in getattr(self, "_layout_badges", ()):
+            try:
+                shown = bool(badge.winfo_manager())
+                if visible and not shown:
+                    badge.pack(side=tk.RIGHT, anchor="n", before=text_col)
+                elif not visible and shown:
+                    badge.pack_forget()
+            except tk.TclError:
+                continue
+
+    def _remember_keyboard_focus(self, target: tuple, _event: object = None) -> None:
+        self._kbd_focus = target
+
+    def _text_size_section(self, parent: tk.Widget) -> None:
+        """Text size, second on the setup screen (#139): label, choices, hint.
+
+        Segmented control: one gray track, the chosen size a filled pill.
+        """
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(14, 0))
+        tk.Label(
+            block, text=C.TEXT_SIZE_UTILITY, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        size_row = _Box(block, radius=PILL, fill=TRACK, outline=None, ow=0, padx=2, pady=0)
+        size_row.pack(anchor="w")
+        for size_id, label in C.TEXT_SIZE_LABELS.items():
+            selected = self.w.text_size == size_id
+            _Button(
+                size_row.inner,
+                text=label,
+                font=self.font_s_bold,
+                command=partial(self._apply_text_size, size_id),
+                variant="selected" if selected else "segment",
+                compact=True,
+                mark=selected,
+            ).pack(side=tk.LEFT)
+        size_row.fit_now()
+        self._p(block, C.TEXT_SIZE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
+
+    def _contrast_section(self, parent: tk.Widget) -> None:
+        """#179: Standard or High contrast, after Text size on the setup screen."""
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(10, 0))
+        tk.Label(
+            block, text=C.CONTRAST_TITLE, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        row = _Box(block, radius=PILL, fill=TRACK, outline=None, ow=0, padx=2, pady=0)
+        row.pack(anchor="w")
+        for on, label in ((False, C.CONTRAST_STANDARD), (True, C.CONTRAST_HIGH)):
+            selected = bool(self.w.high_contrast) == on
+            button = _Button(
+                row.inner, text=label, font=self.font_s_bold,
+                command=partial(self._apply_contrast, on),
+                variant="selected" if selected else "segment", compact=True, mark=selected,
+            )
+            button._beamo_contrast = on  # type: ignore[attr-defined]
+            button.pack(side=tk.LEFT)
+        row.fit_now()
+        self._p(block, C.CONTRAST_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(4, 0))
+
+    def _apply_contrast(self, on: bool) -> None:
+        if self.w.set_high_contrast(on):
+            self._draw()
+
+    def _sync_palette(self) -> None:
+        """#179: follow the wizard's contrast setting; recolour the chrome."""
+        if not apply_palette(bool(getattr(self.w, "high_contrast", False))):
+            return
+        try:
+            self.root.configure(bg=BG)
+            if self._footer is not None:
+                self._footer.configure(bg=FOOTER_BG)
+            rule = getattr(self, "_footer_rule", None)
+            if rule is not None:
+                rule.configure(bg=BORDER)
+            if self._header is not None:
+                self._header.configure(bg=BG)
+            if self._strip is not None:
+                self._strip.configure(bg=TRACK)
+            stripe = getattr(self, "_preview_stripe", None)
+            label = getattr(self, "_preview_label", None)
+            if stripe is not None:
+                stripe.configure(bg=PREVIEW_BG)
+            if label is not None:
+                label.configure(bg=PREVIEW_BG, fg=PREVIEW_FG)
+        except tk.TclError:
+            pass
+
+    def _language_picker(self, parent: tk.Widget) -> None:
+        """Language chips, first on the keyboard screen (#131).
+
+        Space or a click chooses; Left/Right move to the next language and
+        choose it (radio-group keys); Enter continues, as everywhere on this
+        screen. Choosing a language also sets its usual keyboard layout
+        unless the person picked one (``Wizard.choose_language``).
+        """
+        block = tk.Frame(parent, bg=BG)
+        block.pack(fill=tk.X, pady=(10, 0))
+        tk.Label(
+            block, text=LANGUAGE_PICKER_LABEL, font=self.font_bold, fg=INK, bg=BG, anchor="w",
+        ).pack(fill=tk.X, pady=(0, 6))
+        row = tk.Frame(block, bg=BG)
+        row.pack(fill=tk.X)
+        for code in LANGUAGE_ORDER:
+            selected = self.w.language == code
+
+            def _pick_language(_e=None, lang_code=code):
+                self.choose_language(lang_code)
+                return "break"
+
+            fill = SELECTED_FILL if selected else SURFACE
+            chip = _Box(
+                row, radius=PILL, fill=fill,
+                outline=SELECTED_EDGE if selected else BORDER,
+                ow=SELECTED_EDGE_W if selected else 1,
+                padx=14, pady=6, halo=False,
+            )
+            chip.pack(side=tk.LEFT, padx=(0, 8), pady=(0, 4))
+            if selected:
+                # #176: the check mark says "selected" without colour.
+                mark = _icon_radio(chip.inner, True, max(12, self.font_s_bold.metrics("linespace") - 2))
+                mark.configure(bg=fill)
+                mark.pack(side=tk.LEFT, padx=(0, 6))
+            tk.Label(
+                chip.inner, text=LANGUAGE_NAMES[code], font=self.font_s_bold,
+                fg=SELECTED_INK if selected else INK, bg=fill,
+            ).pack(side=tk.LEFT)
+            setattr(chip, "_beamo_language", code)
+            self._bind_tree(chip, _pick_language)
+            chip.configure(cursor="hand2", takefocus=1)
+            chip.bind("<FocusIn>", partial(self._remember_keyboard_focus, ("language",)), add="+")
+            chip.bind("<FocusIn>", partial(self._keyboard_option_focus, card=chip, focused=True), add="+")
+            chip.bind("<FocusOut>", partial(self._keyboard_option_focus, card=chip, focused=False))
+            chip.bind("<space>", partial(self._keyboard_option_key, activate=_pick_language))
+            self._keyboard_language_cards[code] = chip
+            chip.inner.configure(cursor="hand2")
+        self._p(block, C.LANGUAGE_LEAD, font=self.font_s, fg=MUTED).pack(fill=tk.X, pady=(2, 0))
+
+    def choose_language(self, code: str) -> None:
+        """Apply a language (and maybe its layout); focus stays on the chip."""
+        self.w.choose_language(code)
+        self._kbd_focus = ("language",)
+        self._draw()
 
     def _keyboard_option_key(self, event: object, *, activate: Callable[[], object]) -> str:
         """Activate one focused setup card once per physical key press."""
@@ -2931,7 +4319,8 @@ class TkWizard:
             activate()
         return "break"
 
-    def _power_notice(self, parent, *, reminder=True, bg: str = BG, indent: int = 0) -> None:
+    def _power_notice(self, parent, *, reminder=True, bg: Optional[str] = None, indent: int = 0) -> None:
+        bg = BG if bg is None else bg  # #179: the current palette
         if reminder:
             self._wrapping_label(parent, C.POWER_KEEP, font=self.font_s_bold, bg=bg)
         label = self._p(parent, self.w.power_text, font=self.font_s, bg=bg)
@@ -2958,34 +4347,25 @@ class TkWizard:
             explain.inner, text=C.TITLE_WHAT, font=self.font_s_bold, fg=INK, bg=SURFACE,
             anchor="w",
         ).pack(fill=tk.X, pady=(0, 8))
-        for i, bullet in enumerate(C.WHAT_BULLETS):
+        bullets = C.owner_bullets()  # #146: platforms are under Show more
+        for i, bullet in enumerate(bullets):
             line = tk.Frame(explain.inner, bg=SURFACE)
-            line.pack(fill=tk.X, pady=(2 if i == 0 else 8, 2 if i == len(C.WHAT_BULLETS) - 1 else 0))
+            line.pack(fill=tk.X, pady=(2 if i == 0 else 8, 2 if i == len(bullets) - 1 else 0))
             marker = tk.Canvas(line, width=10, height=26, bg=SURFACE, highlightthickness=0)
             marker.create_oval(1, 9, 8, 16, fill=ACCENT, outline="")
             marker.pack(side=tk.LEFT, anchor="n")
             self._p(
-                line, bullet, font=self.font_lead, fg=INK, bg=SURFACE, flow_pad=24,
+                line, bullet, font=self.font_b, fg=INK, bg=SURFACE, flow_pad=24,
             ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(14, 0))
-        self._panel(
-            zone, kind="info", text=C.REPORT_MEDIA_WHAT, compact=True
-        ).pack(fill=tk.X, pady=(12, 0))
-        power = self._panel(
-            zone, kind="info", text=C.POWER_REMINDER, extra=C.POWER_BLANKING
-        )
-        power.pack(fill=tk.X, pady=(12, 0))
-        self._power_notice(power.inner, reminder=False, bg=SURFACE_ALT, indent=40)
-        if self._more_link(zone):
-            self._panel(
-                zone,
-                kind="info",
-                text=C.this_usb_line(),
-                extra=C.SECURE_BOOT_HINT + " " + C.ENGINE_LINE + " " + C.POWER_EVENTS,
-            ).pack(fill=tk.X, pady=(12, 0))
-        self._support_identity_block(zone)
         checked = bool(self.w.owner_ok)
+        if self.w.owner_carry_note:
+            # #187: the earlier tick did not carry (a new or unmatched disk).
+            note = self._wrapping_label(zone, self.w.owner_carry_note, font=self.font_s_bold,
+                                        fg=INK, bg=BG)
+            note.pack_configure(fill=tk.X, pady=(14, 0))
+            setattr(note, "_beamo_owner_carry_note", True)
         self._wrapping_label(zone, C.OWNER_LEAD, font=self.font_s_bold, bg=BG).pack(
-            fill=tk.X, pady=(16, 8)
+            fill=tk.X, pady=(14, 8)
         )
         card = _Box(
             zone,
@@ -3017,9 +4397,46 @@ class TkWizard:
         card.bind("<FocusIn>", lambda _e: card.set_focused(True))
         card.bind("<FocusOut>", lambda _e: card.set_focused(False))
         card.focus_set()
+        # Supporting notes follow the one action on this screen. #145: the
+        # report heads-up is one line with a Learn more link to the help.
+        teaser = tk.Frame(zone, bg=BG)
+        teaser.pack(fill=tk.X, pady=(16, 0))
+        learn = _Button(
+            teaser, text=C.LEARN_MORE, command=self._nav(self.w.open_report_help),
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        learn.pack(side=tk.RIGHT, anchor="n")
+        self._report_learn_more = learn
+        # The text gets its own frame: its wrap follows that width, not the
+        # row's (which includes the link) — no clipping at larger text.
+        text_box = tk.Frame(teaser, bg=BG)
+        text_box.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8))
+        self._wrapping_label(text_box, C.REPORT_MEDIA_WHAT, font=self.font_s, bg=BG).pack(
+            fill=tk.X
+        )
+        # #168: the screen stays lit while erasing (SleepInhibit turns off
+        # X blanking), so the "screen may go dark" note is not shown here.
+        power = self._panel(zone, kind="info", text=C.POWER_REMINDER)
+        power.pack(fill=tk.X, pady=(12, 0))
+        # #144: the status sentence moved to the header badge.
+        if self._more_link(zone):
+            self._panel(
+                zone,
+                kind="info",
+                text=C.this_usb_line(),
+                extra=" ".join((
+                    C.owner_platforms_line(), C.SECURE_BOOT_HINT, C.ENGINE_LINE, C.POWER_EVENTS,
+                )),
+            ).pack(fill=tk.X, pady=(12, 0))
+        self._support_identity_block(zone)
         row = self._footer_shell(C.HINT_OWNER)
         self._back_btn(row)
-        self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok)
+        # #143: a greyed button never stands without its reason (#178: the
+        # shared reason line). Ticking the box redraws the screen without it.
+        self._primary_btn(row, C.primary_action(Screen.OWNER), self.w.continue_owner,
+                          enabled=self.w.owner_ok, reason=C.OWNER_CONTINUE_REASON)
+        if not self.w.owner_ok:
+            self._owner_reason = self._disabled_reason
 
     def _owner_clicked(self, _event=None) -> str:
         self._owner_var.set(0 if self._owner_var.get() else 1)
@@ -3042,18 +4459,115 @@ class TkWizard:
         if self.w.owner_ok:
             emit_serial_marker("BEAMO_WIPE_OWNER_CHECKED")
 
+    def _compact_disk_row(self, parent: tk.Widget, disk: Disk) -> _Box:
+        """An unselected eligible disk as one line (#149).
+
+        Model, kind and connection, the contents summary (#147) and capacity,
+        so several disks fit at 800x600. Choosing it (click, Up/Down) expands
+        it into the full card with the serial, notes and partitions. Text is
+        wrapped, never cut: a long model or summary takes another line.
+        """
+        view = self.w.disk_view(disk)
+        dense = self.lay.short
+        fill = SURFACE
+        card = _Box(
+            parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1,
+            padx=12 if dense else 16, pady=4 if dense else 6, halo=False,
+        )
+        card.pack(fill=tk.X, pady=(0, 6 if dense else 8), padx=4)
+        setattr(card, "_beamo_compact_row", True)
+        row = tk.Frame(card.inner, bg=fill)
+        row.pack(fill=tk.X)
+        icon = _icon_radio(row, False, 22)
+        icon.configure(bg=fill)
+        icon.grid(row=0, column=0, sticky="nw")
+        nested = self.w.nested_components(disk)
+        summary = inventory.contents_summary(nested)
+        # The contents hint ("Windows found on this disk") stays on the
+        # collapsed row too: it is how an owner recognises the PC's own disk,
+        # and so does an encryption tag (#154).
+        details_text = " · ".join(
+            part for part in (view.kind_chip, view.connection, *self.w.disk_tags(disk),
+                              C.contents_hint(disk), summary)
+            if part
+        )
+        base = max(200, self.lay.wrap - 120)
+        # No label border/padding: requested width is then exactly the wrap
+        # width that fit() computes for the grid cell.
+        flat: dict[str, Any] = {"bd": 0, "padx": 0, "pady": 0, "highlightthickness": 0}
+        title = tk.Label(row, text=view.title, font=self.font_bold, fg=INK, bg=fill,
+                         anchor="w", justify=tk.LEFT, wraplength=int(base * 0.45), **flat)
+        title.grid(row=0, column=1, sticky="nw", padx=(10, 12))
+        details = tk.Label(row, text=details_text, font=self.font_s, fg=MUTED, bg=fill,
+                           anchor="w", justify=tk.LEFT, wraplength=int(base * 0.4), **flat)
+        details.grid(row=0, column=2, sticky="nwe", pady=(1, 0))
+        size = tk.Label(row, text=view.capacity, font=self.font_bold, fg=INK, bg=fill,
+                        anchor="e", **flat)
+        size.grid(row=0, column=3, sticky="ne", padx=(12, 0))
+        row.columnconfigure(2, weight=1)
+        setattr(details, "_beamo_compact_details", True)
+
+        def broken(text: str, font, width: int) -> str:
+            # Space-only Tk wrapping cannot split a long serial-like token.
+            if all(font.measure(token) <= width for token in text.split()):
+                return text
+            return _soft_break_tokens(text, font.measure, width)
+
+        def fit(event) -> None:
+            try:
+                # Grid pads: title 10 + 12, size 12; 4 px slack for rounding.
+                avail = int(event.width) - icon.winfo_reqwidth() - 10 - size.winfo_reqwidth() - 12 - 4
+                avail = max(160, avail)
+                title_w = max(100, min(self.font_bold.measure(view.title) + 2, int(avail * 0.45)))
+                details_w = max(80, avail - title_w - 12)
+                for label, text, font, width in (
+                    (title, view.title, self.font_bold, title_w),
+                    (details, details_text, self.font_s, details_w),
+                ):
+                    shown = broken(text, font, width)
+                    if shown != str(label.cget("text")):
+                        label.configure(text=shown)
+                    if int(float(label.cget("wraplength") or 0)) != width:
+                        label.configure(wraplength=width)
+            except (tk.TclError, TypeError, ValueError):
+                return
+
+        row.bind("<Configure>", fit, add="+")
+
+        def _click(e, p=disk.path):
+            # Click selects; a double-click on the same disk reviews it (#150).
+            return self._press_disk(p, e)
+
+        self._bind_tree(card, _click)
+        card.configure(cursor="hand2")
+        card.inner.configure(cursor="hand2")
+        self._bind_hover(
+            card,
+            partial(card.set_style, fill=SURFACE_ALT),
+            partial(card.set_style, fill=SURFACE),
+        )
+        return card
+
     def _disk_row(self, parent: tk.Widget, disk: Disk, selected: bool) -> _Box:
+        # Unselected eligible disks are one-line rows (#149); the selected
+        # disk and the protected Beamo USB keep the full card.
+        if not disk.is_boot and not selected:
+            return self._compact_disk_row(parent, disk)
+        # Short windows (800x600 safe video, 1024x600, 720p): a whole row
+        # must fit the picker viewport without scrolling. Same facts, compact
+        # panel pads, tighter gaps, and nested components on one wrapped line.
+        dense = self.lay.short
         if disk.is_boot:
             fill, outline, ow = USB_BG, USB_BORDER, 1
         elif selected:
-            fill, outline, ow = PRIMARY_TINT, PRIMARY, 2
+            fill, outline, ow = SELECTED_FILL, SELECTED_EDGE, SELECTED_EDGE_W
         else:
             fill, outline, ow = SURFACE, BORDER, 1
         card = _Box(
             parent, radius=RADIUS, fill=fill, outline=outline, ow=ow,
-            padx=20, pady=12, halo=False,
+            padx=16 if dense else 20, pady=8 if dense else 12, halo=False,
         )
-        card.pack(fill=tk.X, pady=(0, 10), padx=4)
+        card.pack(fill=tk.X, pady=(0, 8 if dense else 10), padx=4)
         inner = card.inner
         top = tk.Frame(inner, bg=fill)
         top.pack(fill=tk.X)
@@ -3068,14 +4582,18 @@ class TkWizard:
         if disk.is_boot:
             banner = C.BOOT_USB_BANNER if disk.bus == "USB" else C.BOOT_DISC_BANNER
             self._p(title_col, banner, font=self.font_s_bold, bg=fill).pack(
-                fill=tk.X, pady=(0, 6)
+                fill=tk.X, pady=(0, 2 if dense else 6)
             )
-        self._disk_heading(title_col, disk, fill)
-        self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(4, 0))
-        nested = inventory.card_nesting_text(self.w.nested_components(disk))
+        heading, model_col = self._disk_heading(title_col, disk, fill)
+        self._meta_line(title_col, disk, fill).pack(fill=tk.X, pady=(2 if dense else 4, 0))
+        if not disk.is_boot:
+            self._encryption_tags(title_col, disk, fill)
+            self._contents_line(title_col, disk, fill)
+        children = self.w.nested_components(disk)
+        nested = _nesting_line(children) if dense else inventory.card_nesting_text(children)
         if nested:
             nest = tk.Frame(title_col, bg=fill)
-            nest.pack(fill=tk.X, pady=(8, 0))
+            nest.pack(fill=tk.X, pady=(4 if dense else 8, 0))
             setattr(nest, "_beamo_nested", True)
             self._wrapping_label(
                 nest, nested, font=self.font_s, bg=fill, fg=MUTED
@@ -3083,9 +4601,9 @@ class TkWizard:
         if disk.is_boot:
             return card
 
-        def _click(_e, p=disk.path):
-            self._click_disk(p)
-            return "break"
+        def _click(e, p=disk.path):
+            # Click selects; a double-click on the same disk reviews it (#150).
+            return self._press_disk(p, e)
 
         self._bind_tree(card, _click)
         card.configure(cursor="hand2")
@@ -3096,27 +4614,113 @@ class TkWizard:
                 partial(card.set_style, fill=SURFACE_ALT),
                 partial(card.set_style, fill=SURFACE),
             )
+        elif any(
+            other.path != disk.path and other.size_gb_label == disk.size_gb_label
+            for other in self.w.selectable
+        ):
+            # Similar-disk link (#149): opens the read-only Compare disks
+            # panel below the list. Added after the row click binding so
+            # pressing it does not re-select (and rebuild) the card. It sits
+            # on the heading line, before the capacity, to keep the card short.
+            link = _Button(
+                heading, text=inventory.COMPARE_TITLE, command=self._open_comparison,
+                font=self.font_s_bold, variant="ghost", compact=True,
+            )
+            link.pack(side=tk.RIGHT, anchor="n", padx=(8, 0), before=model_col)
+            setattr(link, "_beamo_compare_link", True)
         return card
 
+    def _open_comparison(self) -> None:
+        """Open the Compare disks panel and move focus into it (#149)."""
+        opener = self._comparison_opener
+        if opener is not None:
+            opener()
+
+    def _encryption_tags(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+        """'BitLocker (Windows encryption)' / 'Encrypted (LUKS)' tags (#154).
+
+        Outlined, ink text: a shape and a word, not a colour. Display only.
+        """
+        tags = self.w.disk_tags(disk)  # #187: plus "Erased earlier (…)"
+        if not tags:
+            return
+        erased = self.w.erased_tag(disk)
+        row = tk.Frame(parent, bg=bg)
+        row.pack(fill=tk.X, pady=(4 if self.lay.short else 6, 0))
+        setattr(row, "_beamo_encryption_tags", True)
+        for text in tags:
+            tag = tk.Label(row, text=text, font=self.font_s_bold, fg=INK, bg=bg,
+                           padx=6, pady=0, bd=0, highlightthickness=1,
+                           highlightbackground=BORDER_STRONG, highlightcolor=BORDER_STRONG)
+            tag.pack(side=tk.LEFT, padx=(0, 6))
+            setattr(tag, "_beamo_erased_tag" if text == erased else "_beamo_encryption_tag", text)
+
+    def _contents_line(self, parent: tk.Widget, disk: Disk, bg: str) -> None:
+        """What the partitions show (Windows, another system, none): helps an
+        owner recognise the computer's own disk. Factual, never a suggestion;
+        unknown contents add nothing."""
+        hint = C.contents_hint(disk)
+        if not hint:
+            return
+        line = self._wrapping_label(parent, hint, font=self.font_s, fg=MUTED, bg=bg)
+        line.pack_configure(pady=(2 if self.lay.short else 4, 0))
+        setattr(line, "_beamo_contents_hint", True)
+
+    def _owner_carry_row(self, parent: tk.Widget) -> None:
+        """#187: 'You confirmed that you own these disks… Change' on Pick.
+
+        Shown only while the tick carried over from the previous erase in
+        this app run; Change returns to the Owner screen with the box clear.
+        """
+        row = tk.Frame(parent, bg=BG)
+        row.pack(fill=tk.X, pady=(0, 4))
+        setattr(row, "_beamo_owner_carry", True)
+        change = _Button(row, text=C.OWNER_CARRY_CHANGE, command=self._nav(self.w.change_ownership),
+                         font=self.font_s_bold, variant="ghost", compact=True)
+        change.pack(side=tk.RIGHT, anchor="n")
+        setattr(change, "_beamo_owner_carry_change", True)
+        line = self._wrapping_label(row, C.OWNER_CARRY_LINE, font=self.font_s, fg=INK, bg=BG)
+        line.pack_configure(side=tk.LEFT, fill=tk.X, expand=True, anchor="n", pady=(5, 0))
+
     def _pick(self) -> None:
+        self._comparison_opener = None  # set by _comparison (#149 link)
         col = self._column(self._body, fill_height=True)
         self._title_block(col, C.TITLE_PICK, C.pick_subtitle())
-        _Button(col, text=C.DISK_HELP_BUTTON, command=self._nav(self.w.open_disk_help),
-                font=self.font_s_bold, variant="ghost", compact=True).pack(anchor="w", pady=(0, 4))
+        # One row above the list: the inventory count, then "I'm not sure
+        # which disk" and Show more on the right (same tab order as before).
         tools = tk.Frame(col, bg=BG)
         tools.pack(fill=tk.X, pady=(0, 4))
+        links = tk.Frame(tools, bg=BG)
+        links.pack(side=tk.RIGHT, anchor="n")
+        _Button(links, text=C.DISK_HELP_BUTTON, command=self._nav(self.w.open_disk_help),
+                font=self.font_s_bold, variant="ghost", compact=True).pack(side=tk.LEFT, anchor="n")
+        self._more_link(links, side=tk.LEFT)
+        # Children know their sizes now; the frame's own request settles later.
+        links_w = sum(c.winfo_reqwidth() for c in links.winfo_children()) + 16
         count = self._p(
             tools,
             self.w.inventory_count,
             font=self.font_s,
             fg=MUTED,
-            wraplength=max(160, self.lay.wrap - 160),
+            wraplength=max(160, self.lay.wrap - links_w),
+            flow=False,
         )
         setattr(count, "_beamo_inventory_count", True)
-        count.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        more = tk.Frame(tools, bg=BG)
-        more.pack(side=tk.RIGHT, anchor="n")
-        self._more_link(more)
+        count.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor="n", pady=(5, 0))
+
+        def _fit_count(event=None, label=count, side=links) -> None:
+            try:
+                width = int(event.width) if event is not None else tools.winfo_width()
+                used = sum(c.winfo_reqwidth() for c in side.winfo_children())
+                wrap = max(120, width - used - 16)
+                if int(float(label.cget("wraplength") or 0)) != wrap:
+                    label.configure(wraplength=wrap)
+            except (tk.TclError, TypeError, ValueError):
+                return
+
+        tools.bind("<Configure>", _fit_count, add="+")
+        if self.w.owner_carried:
+            self._owner_carry_row(col)
         list_wrap = tk.Frame(col, bg=BG)
         list_wrap.pack(fill=tk.BOTH, expand=True, pady=(2, 4))
         canvas = tk.Canvas(list_wrap, bg=BG, highlightthickness=0)
@@ -3169,8 +4773,13 @@ class TkWizard:
         # footer retain their full height on short screens.
         guidance = tk.Frame(cards, bg=BG)
         guidance.pack(fill=tk.X)
+        # A disk row leads the list at every size: warnings stay first (compact
+        # on short windows); the notes about the current selection, the
+        # protected boot USB and the Compare toggle follow the disks, and
+        # short windows (800x600, 1024x600, 720p) use dense rows.
+        short = self.lay.short
         if same_size_conflict(self.w.listed_disks):
-            self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT).pack(fill=tk.X, pady=(0, 12))
+            self._panel(guidance, kind="warn", text=C.SAME_SIZE_HINT, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -3182,11 +4791,13 @@ class TkWizard:
         elif any(not self.w.disk_view(disk).confirmable for disk in self.w.selectable):
             from beamo_wipe.identity import AMBIGUOUS_IDENTITY
 
-            self._panel(guidance, kind="warn", text=AMBIGUOUS_IDENTITY).pack(fill=tk.X, pady=(0, 12))
-        if self.w.selected and self.w.selected.kind in (DiskKind.SSD, DiskKind.NVME):
-            self._panel(guidance, kind="limits", text=C.SSD_FOOTER, compact=True).pack(fill=tk.X, pady=(0, 8))
-        if self.w.report_wanted:
-            self._panel(guidance, kind="info", text=C.REPORT_MEDIA_WANTED, compact=True).pack(fill=tk.X, pady=(0, 8))
+            self._panel(guidance, kind="warn", text=AMBIGUOUS_IDENTITY, compact=short).pack(fill=tk.X, pady=(0, 8 if short else 12))
+
+        def selection_notes(parent: tk.Widget) -> None:
+            if self.w.selected and self.w.selected.kind in (DiskKind.SSD, DiskKind.NVME):
+                self._panel(parent, kind="limits", text=C.SSD_FOOTER, compact=True).pack(fill=tk.X, pady=(0, 8))
+            if self.w.report_wanted:
+                self._panel(parent, kind="info", text=C.REPORT_MEDIA_WANTED, compact=True).pack(fill=tk.X, pady=(0, 8))
 
         def bind_wheel(widget):
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
@@ -3195,11 +4806,8 @@ class TkWizard:
                 bind_wheel(child)
 
         bind_wheel(guidance)
-        boot_card = self._protected_boot(cards)
-        if boot_card is not None:
-            bind_wheel(boot_card)
-        self._comparison(cards)
-        items: List = sorted(self.w.selectable, key=lambda d: d.path)
+        # Internal disks first, then external; stable for the same disks (#151).
+        items: List = list(pick_order(self.w.selectable))
         for disk in items:
             selected = self.w.selected is not None and disk.path == self.w.selected.path
             card = self._disk_row(cards, disk, selected)
@@ -3230,13 +4838,23 @@ class TkWizard:
             canvas.after(90, lambda: self._pick_restore_tick(gen)),
             canvas.after(180, lambda: self._pick_restore_tick(gen, final=True)),
         ]
+        # The disks lead at every size: the notes about the current
+        # selection, the protected boot USB and Compare follow them.
+        trailing = tk.Frame(cards, bg=BG)
+        trailing.pack(fill=tk.X, pady=(4 if short else 8, 0))
+        selection_notes(trailing)
+        self._protected_boot(trailing)
+        bind_wheel(trailing)
+        # Outside trailing: its readers keep their own wheel scrolling.
+        self._comparison(cards)
         # Keep the informational inventory in the same scrolling region.
         # It must not consume the picker viewport on short laptop screens.
         self._other_devices(cards)
         row = self._footer_shell(C.HINT_PICK)
         back = self._back_btn(row)
         can = self.w.selected is not None and not self.w.selected.is_boot
-        self._primary_btn(row, C.primary_action(Screen.PICK), self.w.continue_pick, enabled=can)
+        self._primary_btn(row, C.primary_action(Screen.PICK), self.w.continue_pick, enabled=can,
+                          reason=C.PICK_CONTINUE_REASON)
         # Always land keyboard focus somewhere sensible: the obvious next
         # action when a disk is chosen, otherwise the safe way out.
         (self._primary if can and self._primary is not None else back).focus_set()
@@ -3246,7 +4864,7 @@ class TkWizard:
         if len(entries) < 2:
             return
         section = tk.Frame(parent, bg=BG)
-        section.pack(fill=tk.X, pady=(0, 10))
+        section.pack(fill=tk.X, pady=(0, 6 if self.lay.short else 10))
         content = tk.Frame(section, bg=BG)
         opened = _new_owned_native(self.root, tk.BooleanVar, master=self.root, value=False)
         def toggle():
@@ -3267,7 +4885,7 @@ class TkWizard:
         cells = []
         for entry in entries:
             cell = tk.Frame(
-                grid, bg=SURFACE_ALT, highlightbackground=BORDER,
+                grid, bg=SURFACE, highlightbackground=BORDER,
                 highlightthickness=1, padx=8, pady=8,
             )
             cells.append(cell)
@@ -3301,7 +4919,9 @@ class TkWizard:
                     if bounds:
                         top = event.widget.winfo_rooty() - canvas.winfo_rooty()
                         if top < 0 or top + event.widget.winfo_height() > canvas.winfo_height():
-                            canvas.yview_moveto((canvas.canvasy(0) + top) / max(1, bounds[3]))
+                            # Never negative: on a list shorter than its view
+                            # Tk would bottom-align it, blank above.
+                            canvas.yview_moveto(max(0.0, (canvas.canvasy(0) + top) / max(1, bounds[3])))
             reader.bind("<FocusIn>", reveal)
         def reflow(event):
             columns = 1 if (event.width < 700 or self._type_scale() > 1.05) else 2
@@ -3310,6 +4930,25 @@ class TkWizard:
             for i, cell in enumerate(cells):
                 cell.grid(row=i // columns, column=i % columns, sticky="nsew", padx=6, pady=6)
         grid.bind("<Configure>", reflow)
+
+        def open_panel() -> None:
+            # The selected card's Compare disks link (#149). Opens the panel
+            # and focuses its first reader, which scrolls it into view.
+            if not opened.get():
+                opened.set(True)
+                toggle()
+            try:
+                content.update_idletasks()
+                first = next(
+                    (w for cell in cells for w in cell.winfo_children()
+                     if getattr(w, "_beamo_comparison", False)),
+                    None,
+                )
+                (first or toggle_button).focus_set()
+            except tk.TclError:
+                return
+
+        self._comparison_opener = open_panel
 
     def _protected_boot(self, parent):
         if self.w.protected_boot is not None:
@@ -3456,6 +5095,69 @@ class TkWizard:
         self._pick_ensure_visible = visible and old_limits != new_limits
         self._draw()
 
+    def _press_disk(self, path: str, event=None) -> str:
+        """A press on an eligible disk row: select it; a double-click reviews it.
+
+        The double-click is recognised by disk identity, not by position: both
+        presses must land on the same disk (by path), close together in time
+        and place, and the first press must have selected it. A second press
+        that lands on another disk (rows move when the chosen one expands)
+        only selects that disk. Review is the same command as the footer's
+        Review this disk, so every later gate (token, method, countdown,
+        Erase now) is still required (#150).
+        """
+        when = _pointer_ms(event)
+        x = getattr(event, "x_root", None)
+        y = getattr(event, "y_root", None)
+        rx = x if isinstance(x, int) else 0
+        ry = y if isinstance(y, int) else 0
+        last = self._disk_press
+        self._disk_press = (path, when, rx, ry)
+        selected = self.w.selected
+        if (
+            last is not None
+            and last[0] == path
+            and 0 <= when - last[1] <= DOUBLE_CLICK_MS
+            and abs(rx - last[2]) <= DOUBLE_CLICK_SLOP
+            and abs(ry - last[3]) <= DOUBLE_CLICK_SLOP
+            and self.w.screen == Screen.PICK
+            and selected is not None
+            and selected.path == path
+        ):
+            self._disk_press = None
+            self._review_disk(path, when)
+            return "break"
+        self._click_disk(path)
+        return "break"
+
+    def _review_disk(self, path: str, when: int) -> None:
+        """Double-click on the selected disk: press Review this disk (#150)."""
+        primary = self._primary
+        selected = self.w.selected
+        if (
+            self.w.screen != Screen.PICK
+            or selected is None
+            or selected.path != path
+            or primary is None
+            or not primary._enabled
+        ):
+            return
+        primary._command()  # the footer action itself: _nav(wizard.continue_pick)
+        if self.w.screen != Screen.PICK:
+            # The rest of this double-click (and a quick third click) must
+            # not press a control on the next screen.
+            self._pointer_quiet_until = when + DOUBLE_CLICK_MS
+
+    def _pointer_quiet(self, event) -> bool:
+        until = self._pointer_quiet_until
+        if until is None:
+            return False
+        when = _pointer_ms(event)
+        if until - DOUBLE_CLICK_MS <= when <= until:
+            return True
+        self._pointer_quiet_until = None
+        return False
+
     def _unbind_support_copy(self) -> None:
         if not getattr(self, "_support_copy_bound", False):
             return
@@ -3566,6 +5268,110 @@ class TkWizard:
         self._support_copy_bound = True
         frame.pack(fill=tk.X, pady=(12, 0))
 
+    def _record_image(self, text: str, scale: int) -> Optional[tk.PhotoImage]:
+        """Black-on-white record code; None when the QR library is unavailable."""
+        from beamo_wipe.erase_record import qr_matrix
+
+        key = (text, scale)
+        if self._record_qr is not None and self._record_qr_key == key:
+            return self._record_qr
+        try:
+            matrix = qr_matrix(text)
+            size = len(matrix) * scale
+            image = _new_owned_native(
+                self.root, tk.PhotoImage, master=self.root, width=size, height=size
+            )
+            rows = []
+            for modules in matrix:
+                line = " ".join(
+                    "#000000" if dark else "#ffffff"
+                    for dark in modules
+                    for _ in range(scale)
+                )
+                rows.extend(["{" + line + "}"] * scale)
+            image.put(" ".join(rows))
+        except Exception:
+            return None
+        self._record_qr = image
+        self._record_qr_key = key
+        return image
+
+    def _record_scale(self, modules: int, room: int) -> int:
+        """4 px modules (phone decoders read these reliably from a screen),
+        stepping down only when the card is narrower than the code."""
+        scale = 4
+        while scale > 2 and modules * scale > room:
+            scale -= 1
+        return scale
+
+    def _record_block(self, parent: Optional[tk.Widget]) -> None:
+        """Photo record of this erase (#127): a scannable code plus the same text.
+
+        Shown only when the wizard offers a final record. Nothing here is a
+        Tab stop, so Shut down -> Show more -> Save report keeps its two-Tab
+        path. The text column is the readable equivalent of the code.
+        """
+        from beamo_wipe.erase_record import qr_matrix
+
+        record = self.w.erase_record
+        if record is None:
+            return
+        assert parent is not None
+        short = self.lay.short
+        box = _Box(
+            parent, radius=RADIUS, fill=SURFACE, outline=BORDER, ow=1,
+            padx=18, pady=10 if short else 14, shadow=False,
+        )
+        box.pack(fill=tk.X, pady=(12, 0))
+        inner = box.inner
+        room = max(200, self.lay.content_w - 40)
+        self._p(inner, C.RECORD_TITLE, font=self.font_s_bold, bg=SURFACE,
+                wraplength=room).pack(fill=tk.X)
+        lead = C.RECORD_PREVIEW_NOTE if record.preview else C.RECORD_LEAD
+        self._p(inner, lead, font=self.font_s, bg=SURFACE, wraplength=room).pack(
+            fill=tk.X, pady=(2, 8)
+        )
+        image: Optional[tk.PhotoImage] = None
+        try:
+            modules = len(qr_matrix(record.text))
+        except Exception:
+            modules = 0
+        if modules:
+            image = self._record_image(record.text, self._record_scale(modules, room))
+        text = "\n".join(record.lines)
+        body = tk.Frame(inner, bg=SURFACE)
+        body.pack(fill=tk.X)
+        text_width = max(self.font_mono_sm.measure(line) for line in record.lines)
+        side = (
+            image is not None
+            and int(image.width()) + 20 + min(text_width, 360) <= room
+        )
+        if image is not None:
+            # White quiet zone is part of the image; the label adds no border
+            # so nothing dark touches the code's edge.
+            tk.Label(body, image=image, bg="#ffffff", bd=0, highlightthickness=0).pack(
+                side=tk.LEFT if side else tk.TOP, anchor="nw"
+            )
+        else:
+            self._p(body, C.RECORD_NO_CODE, font=self.font_s, fg=MUTED, bg=SURFACE,
+                    wraplength=room).pack(fill=tk.X)
+        column = tk.Frame(body, bg=SURFACE)
+        if side:
+            column.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(20, 0))
+            wrap = max(160, room - int(image.width()) - 20) if image is not None else room
+        else:
+            column.pack(fill=tk.X, pady=(10, 0))
+            wrap = room
+        # Both follow the column's allocated width (card padding included),
+        # so long translated lines wrap instead of clipping.
+        self._p(column, C.RECORD_TEXT_LABEL, font=self.font_meta, fg=MUTED,
+                bg=SURFACE, wraplength=wrap).pack(fill=tk.X)
+        self._p(column, text, font=self.font_mono_sm, bg=SURFACE,
+                wraplength=wrap).pack(fill=tk.X, pady=(2, 0))
+        if not record.preview:
+            self._p(column if side else inner, C.RECORD_NOTE, font=self.font_meta,
+                    fg=MUTED, bg=SURFACE, wraplength=wrap).pack(fill=tk.X, pady=(8, 0))
+
     def _status_screen(self, kind: str, title: str, message: str) -> None:
         """Centered status layout shared by the blocked and empty screens."""
         col = self._column(self._body, fill_height=True)
@@ -3587,7 +5393,8 @@ class TkWizard:
         if self.w.screen in {Screen.CHECKING, Screen.STOPPING}:
             self._power_notice(col)
         if self.w.screen == Screen.STOPPING:
-            self._progress_label = self._p(col, self.w.progress_view.timing_text, fg=MUTED)
+            # Last known step and elapsed time; no estimate while stopping.
+            self._progress_label = self._p(col, self.w.progress_view.stopping_text, fg=MUTED)
             self._progress_label.pack(fill=tk.X, pady=(12, 0))
             stopping_disk = self.w.operation_disk
             if stopping_disk is not None:
@@ -3626,7 +5433,10 @@ class TkWizard:
 
     def _empty(self) -> None:
         col = self._column(self._body, fill_height=True)
-        _icon_badge(col, "info", 40).pack(anchor="w")
+        # Same page background and top margin as every other screen title.
+        badge = _icon_badge(col, "info", 40)
+        badge.configure(bg=BG)
+        badge.pack(anchor="w", pady=(self.lay.title_top, 0))
         self._title_block(col, C.TITLE_EMPTY)
         count = self._p(col, self.w.inventory_count, font=self.font_s, fg=MUTED)
         setattr(count, "_beamo_inventory_count", True)
@@ -3638,7 +5448,8 @@ class TkWizard:
         window = canvas.create_window((0, 0), window=cards, anchor="nw")
         cards.bind("<Configure>", lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.bind("<Configure>", lambda _e: canvas.itemconfigure(window, width=canvas.winfo_width()))
-        self._recovery_block(cards, recovery_for_empty())
+        # #185: Intel VMD / RST steps only when detection is certain.
+        self._recovery_block(cards, recovery_for_empty(getattr(self.w, "empty_storage_hint", "")))
         self._support_block(cards)
         self._support_identity_block(cards)
         scroll = _Scrollbar(region, canvas.yview, takefocus=True)
@@ -3698,7 +5509,335 @@ class TkWizard:
         self._secondary_btn(row, C.BTN_BACK, self.w.close_diagnostic, enabled=not view.busy)
         self._primary_btn(row, C.SAVE_DIAGNOSTIC_REPORT if view.ready else C.BTN_PREPARE,
                           self._click_diagnostic_action,
-                          enabled=not view.busy)
+                          enabled=not view.busy, reason=C.DISABLED_BUSY)
+
+    # -- Help & settings (#175) ----------------------------------------------
+
+    def _help_footer(self) -> None:
+        """Footerless screens (splash, short status screens): just the menu."""
+        assert self._footer is not None
+        col = self._column(self._footer, fill_height=False, bg=FOOTER_BG)
+        row = tk.Frame(col, bg=FOOTER_BG)
+        row.pack(fill=tk.X, pady=(4, 4))
+        button = _Button(row, text=C.MENU_TITLE, font=self.font_s,
+                         command=self._toggle_help_menu, variant="quiet", compact=True)
+        button._beamo_help_menu = True  # type: ignore[attr-defined]
+        button.pack(side=tk.LEFT)
+        self._help_button = button
+        shortcuts = _Button(row, text=C.MENU_SHORTCUTS, font=self.font_s,
+                            command=self._open_shortcuts, variant="quiet", compact=True)
+        shortcuts._beamo_shortcuts = True  # type: ignore[attr-defined]
+        shortcuts.pack(side=tk.LEFT, padx=(4, 0))
+        self._shortcuts_button = shortcuts
+
+    def _open_shortcuts(self) -> None:
+        """#174: the Keyboard shortcuts page, straight from its footer item."""
+        if getattr(self, "_ui_dead", False):
+            return
+        if getattr(self, "_help_open", False) and getattr(self, "_help_direct", False):
+            self._close_help_menu()
+            return
+        self._help_open = True
+        self._help_view = "shortcuts"
+        self._help_direct = True
+        self._help_screen = self.w.screen
+        self._build_help_menu("back")
+
+    def _toggle_help_menu(self) -> None:
+        if getattr(self, "_help_open", False):
+            self._close_help_menu()
+        else:
+            self._open_help_menu()
+
+    def _open_help_menu(self, focus_key: str = "") -> None:
+        """Open over the current screen. Reads the menu; changes nothing."""
+        if getattr(self, "_ui_dead", False):
+            return
+        self._help_open = True
+        self._help_view = "menu"
+        self._help_direct = False
+        self._help_screen = self.w.screen
+        self._build_help_menu(focus_key)
+
+    def _close_help_menu(self, *, refocus: bool = True) -> None:
+        popup = getattr(self, "_help_popup", None)
+        self._help_popup = None
+        self._help_open = False
+        self._help_view = "menu"
+        self._help_pos = None
+        self._help_focus_key = ""
+        direct = getattr(self, "_help_direct", False)
+        self._help_direct = False
+        if popup is not None:
+            try:
+                popup.destroy()
+            except tk.TclError:
+                pass
+        if refocus:
+            # Focus returns to the control that opened the menu.
+            button = getattr(self, "_shortcuts_button" if direct else "_help_button", None)
+            try:
+                if button is not None and button.winfo_exists():
+                    button.focus_set()
+            except tk.TclError:
+                pass
+
+    def _help_back(self) -> None:
+        self._help_view = "menu"
+        from beamo_wipe import help_menu as _menu
+
+        self._build_help_menu(_menu.SHORTCUTS)
+
+    def _in_help_menu(self, widget) -> bool:
+        popup = getattr(self, "_help_popup", None)
+        while widget is not None and popup is not None:
+            if widget is popup:
+                return True
+            widget = getattr(widget, "master", None)
+        return False
+
+    def _help_controls(self) -> list:
+        popup = getattr(self, "_help_popup", None)
+        found: list = []
+
+        def visit(widget) -> None:
+            if isinstance(widget, _Button) and widget._enabled:
+                found.append(widget)
+            for child in widget.winfo_children():
+                visit(child)
+
+        if popup is not None:
+            try:
+                visit(popup)
+            except tk.TclError:
+                return []
+        return found
+
+    def _help_focused_key(self) -> str:
+        # Tracked by the items' own FocusIn: Tk reports focus late on some
+        # window managers, and a redraw must not move it to the first item.
+        if not getattr(self, "_help_open", False):
+            return ""
+        return str(getattr(self, "_help_focus_key", ""))
+
+    def _remember_help_focus(self, key: str, _event: object = None) -> None:
+        self._help_focus_key = key
+
+    def _help_key(self, event) -> str:
+        """Keys while the menu is open: move within it; nothing else acts."""
+        controls = self._help_controls()
+        keysym = event.keysym
+        if keysym in ("Up", "Down", "Tab", "ISO_Left_Tab", "Home", "End") and controls:
+            try:
+                focused = self.root.focus_get()
+            except (KeyError, tk.TclError):
+                focused = None
+            index = next((i for i, c in enumerate(controls) if c is focused), -1)
+            if keysym == "Home":
+                index = 0
+            elif keysym == "End":
+                index = len(controls) - 1
+            else:
+                back = keysym in ("Up", "ISO_Left_Tab") or (
+                    keysym == "Tab" and bool(getattr(event, "state", 0) & 0x1)
+                )
+                index = (index + (-1 if back else 1)) % len(controls) if index >= 0 else 0
+            controls[index].focus_set()
+        return "break"
+
+    def _help_shortcut_lines(self) -> list[str]:
+        lines = []
+        hint = getattr(self, "_footer_hint", "")
+        if hint:
+            lines.append(hint)
+        lines.append(C.MENU_SHORTCUTS_COMMON)
+        if self.w.screen == Screen.METHOD:
+            lines.append(C.MENU_SHORTCUTS_LIMITS)  # #158
+        if self.w.refresh_offered:
+            lines.append(C.MENU_SHORTCUTS_REFRESH)
+        if sys.platform.startswith("linux") and self.w.can_refresh:
+            lines.append(C.MENU_SHORTCUTS_READER)
+        lines.append(C.MENU_SHORTCUTS_MENU)
+        return lines
+
+    def _build_help_menu(self, focus_key: str = "") -> None:
+        old = getattr(self, "_help_popup", None)
+        if old is not None:
+            try:
+                old.destroy()
+            except tk.TclError:
+                pass
+        popup = tk.Frame(self.root, bg=SURFACE, bd=0, highlightthickness=1,
+                         highlightbackground=BORDER_STRONG, highlightcolor=BORDER_STRONG)
+        popup._beamo_help_popup = True  # type: ignore[attr-defined]
+        self._help_popup = popup
+        inner = tk.Frame(popup, bg=SURFACE)
+        inner.pack(fill=tk.BOTH, padx=14, pady=(8, 10))
+        wrap = max(220, min(440, self.lay.content_w - 120))
+        targets: dict = {}
+        if getattr(self, "_help_view", "menu") == "shortcuts":
+            tk.Label(inner, text=C.MENU_SHORTCUTS, font=self.font_bold, fg=INK, bg=SURFACE,
+                     anchor="w").pack(fill=tk.X)
+            hint = getattr(self, "_footer_hint", "")
+            for line in self._help_shortcut_lines():
+                if line != hint:
+                    self._p(inner, line, font=self.font_s, bg=SURFACE, wraplength=wrap,
+                            flow=False).pack(fill=tk.X, pady=(4, 0))
+                    continue
+                # #174: the screen's own keys, one sentence per line, keep
+                # their key-caps here (a sentence too wide stays plain text).
+                box = tk.Frame(inner, bg=SURFACE)
+                box._beamo_shortcuts_hint = True  # type: ignore[attr-defined]
+                box.pack(fill=tk.X, pady=(4, 0))
+                for sentence in re.split(r"(?<=\.)\s+", line.strip()):
+                    caps = sum(len(_KEY_TOKEN_KEYS.get(m.group(0), (m,)))
+                               for m in _KEY_TOKEN_RE.finditer(sentence))
+                    if caps and self.font_s.measure(sentence) + 24 * caps <= wrap:
+                        self._hint_bar(box, sentence).pack(fill=tk.X, pady=(2, 0))
+                    else:
+                        self._p(box, sentence, font=self.font_s, bg=SURFACE, wraplength=wrap,
+                                flow=False).pack(fill=tk.X, pady=(2, 0))
+            direct = getattr(self, "_help_direct", False)
+            back = _Button(inner, text=C.MENU_CLOSE if direct else C.MENU_BACK,
+                           command=self._close_help_menu if direct else self._help_back,
+                           font=self.font_s_bold, variant="secondary", compact=True)
+            back._beamo_help_item = "back"  # type: ignore[attr-defined]
+            back.pack(anchor="w", pady=(10, 0))
+            targets["back"] = back
+        else:
+            tk.Label(inner, text=C.MENU_TITLE, font=self.font_bold, fg=INK, bg=SURFACE,
+                     anchor="w").pack(fill=tk.X)
+            for item in self.w.help_menu():
+                button = _Button(inner, text=item.label, command=partial(self._help_activate, item.key),
+                                 font=self.font_s_bold, variant="ghost", compact=True,
+                                 enabled=item.enabled)
+                button._beamo_help_item = item.key  # type: ignore[attr-defined]
+                button.pack(anchor="w", pady=(2, 0))
+                targets[item.key] = button
+                if not item.enabled and item.reason:
+                    reason = self._p(inner, item.reason, font=self.font_meta, fg=MUTED, bg=SURFACE,
+                                     wraplength=wrap, flow=False)
+                    reason._beamo_help_reason = item.key  # type: ignore[attr-defined]
+                    reason.pack(fill=tk.X, padx=(12, 0))
+            close = _Button(inner, text=C.MENU_CLOSE, command=self._close_help_menu,
+                            font=self.font_s_bold, variant="secondary", compact=True)
+            close._beamo_help_item = "close"  # type: ignore[attr-defined]
+            close.pack(anchor="w", pady=(8, 0))
+            targets["close"] = close
+        for key, control in targets.items():
+            control.bind("<FocusIn>", partial(self._remember_help_focus, key), add="+")
+        popup.bind("<Configure>", lambda _e: self._place_help_menu(), add="+")
+        self._help_pos = None
+        self._place_help_menu()
+        try:
+            self.root.after_idle(self._place_help_menu)
+        except tk.TclError:
+            pass
+        target = targets.get(focus_key)
+        if target is None or not target._enabled:
+            target = next((c for c in targets.values() if c._enabled), None)
+        if target is not None:
+            self._help_focus_key = str(getattr(target, "_beamo_help_item", ""))
+            target.focus_set()
+
+            def refocus(control=target) -> None:
+                # A screen redraw may queue its own focus; the open menu keeps it.
+                try:
+                    if (getattr(self, "_help_open", False) and control.winfo_exists()
+                            and self._in_help_menu(control)):
+                        control.focus_set()
+                except tk.TclError:
+                    pass
+
+            try:
+                self.root.after_idle(refocus)
+            except tk.TclError:
+                pass
+
+    def _place_help_menu(self) -> None:
+        """Above the Help & settings button, kept inside the window."""
+        popup = getattr(self, "_help_popup", None)
+        if popup is None:
+            return
+        try:
+            root_w, root_h = self.root.winfo_width(), self.root.winfo_height()
+            req_w, req_h = popup.winfo_reqwidth(), popup.winfo_reqheight()
+            button = getattr(self, "_help_button", None)
+            if button is not None and button.winfo_exists() and button.winfo_ismapped():
+                x = button.winfo_rootx() - self.root.winfo_rootx()
+                top = button.winfo_rooty() - self.root.winfo_rooty()
+            else:
+                x = max(8, (root_w - self.lay.content_w) // 2)
+                top = root_h - 8
+            x = max(8, min(x, root_w - req_w - 8))
+            y = max(8, top - 6 - req_h)
+            if (x, y) != getattr(self, "_help_pos", None):
+                self._help_pos = (x, y)
+                popup.place(x=x, y=y)
+            popup.lift()
+        except tk.TclError:
+            pass
+
+    def _sync_help_menu(self) -> None:
+        """After a redraw: keep the open menu current, or close it when the
+        screen changed under it."""
+        if not getattr(self, "_help_open", False):
+            return
+        if self.w.screen != getattr(self, "_help_screen", None):
+            self._close_help_menu(refocus=False)
+            return
+        key = getattr(self, "_help_keep_focus", "") or getattr(self, "_help_prior_focus", "")
+        self._help_keep_focus = ""
+        self._build_help_menu(key)
+
+    def _help_activate(self, key: str) -> None:
+        from beamo_wipe import help_menu as _menu
+
+        if not getattr(self, "_help_open", False) or getattr(self, "_ui_dead", False):
+            return
+        if key == _menu.SHORTCUTS:
+            self._help_view = "shortcuts"
+            self._build_help_menu("back")
+            return
+        if not self.w.activate_help_item(key):
+            self._build_help_menu(key)
+            return
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        if key in _menu.STAYS_OPEN:
+            # A setting: the menu stays open on the same item.
+            self._help_keep_focus = key
+            if key == _menu.TEXT_SIZE:
+                self._sync_layout()
+            self._draw()
+            return
+        self._close_help_menu(refocus=False)
+        self._draw()
+
+    def _balance_result(self, col: tk.Frame, spacer: tk.Frame) -> None:
+        """#172: center the result in the view when it fits; never when it
+        scrolls (then it starts at the top, as before)."""
+        canvas = getattr(self, "_body_canvas", None)
+
+        def fit(_event=None) -> None:
+            try:
+                if not spacer.winfo_exists():
+                    return
+                host = canvas if canvas is not None else self._body
+                view = host.winfo_height() if host is not None else 0
+                content = col.winfo_reqheight() - spacer.winfo_reqheight()
+                want = max(0, (view - content) // 2) if view > 1 else 0
+                if abs(spacer.winfo_reqheight() - want) > 1:
+                    spacer.configure(height=want)
+            except tk.TclError:
+                return
+
+        col.bind("<Configure>", fit, add="+")
+        if canvas is not None:
+            canvas.bind("<Configure>", fit, add="+")
+        try:
+            col.after_idle(fit)
+        except tk.TclError:
+            pass
 
     def _click_diagnostic_action(self) -> None:
         self.w.diagnostic_action(background=True)
@@ -3715,28 +5854,30 @@ class TkWizard:
             self._pick()
             return
         col = self._column(self._body, fill_height=True)
+        # #157: a scrolling body (short windows, larger text) trims Confirm's
+        # gaps so the disk card, the #128 warning, the entry and its status
+        # fit together; a roomy window balances the space instead (below).
+        tight = self.lay.short or self._body_canvas is not None
+        spacer = tk.Frame(col, bg=BG, height=0)
+        spacer.pack(fill=tk.X)
+        setattr(spacer, "_beamo_confirm_spacer", True)
         self._title_block(col, C.TITLE_CONFIRM)
         zone = self._center_zone(col)
-        self._disk_summary(zone, disk).pack(fill=tk.X)
-        self._more_link(zone)
-        self._panel(zone, kind="warn", text=self.w.warning_text()).pack(fill=tk.X, pady=(12, 0))
-        self._p(
-            zone,
-            C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title,
-                language=LANGUAGE_NAMES[self.w.language],
-            ),
-            font=self.font_s,
-            fg=MUTED,
-        ).pack(fill=tk.X, pady=(8, 0))
-        # The prompt can carry a full serial as the typed token: same
+        # Details share the summary's caption row, not a row of their own.
+        summary = self._disk_summary(zone, disk, more=True, token=True)
+        summary.pack(fill=tk.X)
+        self._confirm_card = summary
+        self._panel(zone, kind="warn", text=self.w.warning_text(), tight=tight).pack(
+            fill=tk.X, pady=(8 if tight else 12, 0))
+        # A card token's prompt names the field, never the characters (#129).
+        # The older fallback prompt can carry a full serial as the token: same
         # character-level wrapping as identity labels, never a clipped tail.
-        self._wrapping_label(zone, spec.prompt, font=self.font_b, bg=BG).pack(
-            fill=tk.X, pady=(14, 8)
+        self._wrapping_label(zone, C.confirm_prompt(spec), font=self.font_b, bg=BG).pack(
+            fill=tk.X, pady=(8, 6) if tight else (14, 8)
         )
         shell = _Box(
             zone, radius=RADIUS, fill=SURFACE, outline=BORDER_STRONG, ow=1,
-            padx=16, pady=10, ring=True, shadow=False,
+            padx=16, pady=6 if tight else 10, ring=True, shadow=False,
         )
         shell.pack(fill=tk.X)
         entry = tk.Entry(
@@ -3754,7 +5895,7 @@ class TkWizard:
             cursor="xterm",
         )
         self._confirm_var.set(self.w.confirm_input)
-        entry.pack(fill=tk.X, ipady=4)
+        entry.pack(fill=tk.X, ipady=2 if tight else 4)
         entry.bind("<FocusIn>", lambda _e: shell.set_focused(True))
         entry.bind("<FocusOut>", lambda _e: shell.set_focused(False))
         shell.set_focused(True)
@@ -3763,28 +5904,180 @@ class TkWizard:
         # Token-match state is a pill: calm while waiting, green when it
         # matches, so the gate's answer scans at a glance.
         pill = _Box(
-            zone, radius=PILL, fill=SURFACE_ALT, outline=BORDER, ow=1,
+            zone, radius=PILL, fill=SURFACE, outline=BORDER, ow=1,
             padx=12, pady=6,
         )
-        pill.pack(anchor="w", pady=(12, 0))
+        pill.pack(anchor="w", pady=(8 if tight else 12, 0))
         self._match_pill = pill
         self._match_icon = tk.Canvas(
-            pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE_ALT
+            pill.inner, width=22, height=22, highlightthickness=0, bg=SURFACE
         )
-        self._match_icon.pack(side=tk.LEFT)
+        self._match_icon.pack(side=tk.LEFT, anchor="n")
+        # #156/#157: after a wrong entry this status line itself shows what
+        # was typed (wrong characters in [brackets]) and which positions are
+        # wrong, right under the entry, instead of further down the screen.
         self._match_label = tk.Label(
             pill.inner,
             text="",
             font=self.font_s_bold,
             fg=MUTED,
-            bg=SURFACE_ALT,
+            bg=SURFACE,
             anchor="w",
+            justify=tk.LEFT,
         )
         self._match_label.pack(side=tk.LEFT, padx=(8, 0))
+
+        def _wrap_status(event) -> None:
+            # Icon, gaps and the pill's own padding sit beside the text.
+            self._match_wrap_max = max(160, int(event.width) - 22 - 8 - 2 * 12 - 12)
+            self._fit_match_wrap()
+
+        zone.bind("<Configure>", _wrap_status, add="+")
         self._paint_match()
+        # #155: keyboard-layout help only after a wrong entry, with Change.
+        hint = tk.Frame(zone, bg=BG)
+        setattr(hint, "_beamo_layout_hint", True)
+        # Its sentence and Change button are built only while it shows
+        # (_sync_layout_hint): a hidden row must hold no unmapped control.
+        self._layout_sentence = None
+        self._layout_hint = hint
+        self._layout_hint_gap = 6 if tight else 10
+        self._sync_layout_hint()
         row = self._footer_shell(C.HINT_CONFIRM)
         self._back_btn(row)
-        self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok)
+        self._primary_btn(row, C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok,
+                          reason=C.CONFIRM_CONTINUE_REASON)
+        # Also in the scrolling body: a short-but-wide window (1280x720) or
+        # larger text at 1280x820 can still have room to spare; with none,
+        # the spacer stays at zero.
+        self._balance_confirm(col, spacer, zone, pill, hint)
+        if self._body_canvas is not None:
+            # Short windows: the status under the entry belongs in view with
+            # it; scroll just enough, never past the disk card (#157).
+            def _reveal_status() -> None:
+                self._reveal_in_body(pill, keep=summary)
+
+            pill.after_idle(_reveal_status)
+
+    def _balance_confirm(self, col: tk.Frame, spacer: tk.Frame, content: tk.Frame,
+                         pill: tk.Widget, hint: tk.Frame) -> None:
+        """#157: on a roomy window, centre Confirm's block vertically.
+
+        The block is measured as if the wrong-entry help were showing (the
+        status line's second line and the keyboard help), so it never moves
+        when that help appears: the space below the status is where it
+        appears. Only the spacer above the title changes.
+        """
+        sentence = C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title)
+        # The help's Change button is built only while the help shows
+        # (BW-155B): reserve its height from the font, as _Button draws it.
+        change_h = self.font_s_bold.metrics("linespace") + 2 * 3 + 6 + _Button._RING_GAP
+        one_line: list[int] = []  # the status pill's height with one line
+
+        def fit(_event=None) -> None:
+            try:
+                if not spacer.winfo_exists() or not col.winfo_exists():
+                    return
+                title = content.master.winfo_y() - spacer.winfo_height()
+                # The status line counted as one line, whatever it shows now,
+                # and the help computed from the fonts and the real width:
+                # the same total before and after a wrong entry, so nothing
+                # moves when the help appears.
+                line = self.font_s_bold.metrics("linespace")
+                label = self._match_label
+                lines = str(label.cget("text")).count("\n") + 1 if label is not None else 1
+                if lines == 1:
+                    one_line[:] = [pill.winfo_reqheight()]
+                # The one-line height as measured, not estimated: a wrapped
+                # line need not add exactly one linespace (Tk rounding).
+                height = one_line[0] if one_line else pill.winfo_reqheight() - (lines - 1) * line
+                block = pill.winfo_y() + height
+                width = max(200, content.winfo_width())
+                sentence_lines = max(1, -(-self.font_s.measure(sentence) // width))
+                reserve = (line + self._layout_hint_gap
+                           + sentence_lines * self.font_s.metrics("linespace")
+                           + change_h + 2)
+                # In the scrolling body the column is only as tall as its
+                # content: measure against the visible view instead.
+                canvas = self._body_canvas
+                avail = canvas.winfo_height() if canvas is not None else col.winfo_height()
+                free = avail - (title + 4 + block + reserve)
+                top = max(0, free // 2)
+                if int(float(spacer.cget("height"))) != top:
+                    spacer.configure(height=top)
+            except (tk.TclError, TypeError, ValueError):
+                return
+
+        col.bind("<Configure>", fit, add="+")
+        content.bind("<Configure>", fit, add="+")
+        if self._body_canvas is not None:
+            # The view gets its real height after the first layout pass.
+            self._body_canvas.bind("<Configure>", fit, add="+")
+        col.after_idle(fit)
+
+    def _sync_layout_hint(self) -> None:
+        """Show the #155 layout hint only while wizard.confirm_layout_hint."""
+        self._paint_match()  # the status line carries the #156 feedback
+        hint = getattr(self, "_layout_hint", None)
+        if hint is None:
+            return
+        try:
+            if not hint.winfo_exists():
+                self._layout_hint = None
+                return
+            shown = bool(hint.winfo_manager())
+            if self.w.confirm_layout_hint and not shown:
+                if not hint.winfo_children():
+                    self._build_layout_hint(hint)
+                hint.pack(fill=tk.X, pady=(getattr(self, "_layout_hint_gap", 10), 0))
+                # Short windows and large text put it below the fold: bring
+                # it into view once its layout settles (the entry keeps
+                # focus), but never so far that the disk card and the #128
+                # warning leave the view (#157).
+                hint.after_idle(lambda h=hint: self._reveal_in_body(
+                    h, keep=getattr(self, "_confirm_card", None)))
+            elif not self.w.confirm_layout_hint and shown:
+                hint.pack_forget()
+            if not self.w.confirm_layout_hint:
+                # BW-155B: no hidden Change button stays behind.
+                for child in hint.winfo_children():
+                    child.destroy()
+                self._layout_sentence = None
+        except tk.TclError:
+            return
+
+    def _build_layout_hint(self, hint: tk.Frame) -> None:
+        """#155 row contents: the sentence wraps to the row's real width and
+        Change sits under it, so neither is clipped at any size or language."""
+        self._layout_sentence = self._wrapping_label(
+            hint,
+            C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
+            font=self.font_s, fg=INK, bg=BG,
+        )
+        change = _Button(hint, text=C.CONFIRM_LAYOUT_CHANGE, command=self._nav(self.w.open_keyboard),
+                         font=self.font_s_bold, variant="ghost", compact=True)
+        change.pack(anchor="w", pady=(2, 0))
+        setattr(change, "_beamo_layout_change", True)
+
+    def _fit_match_wrap(self) -> None:
+        """Wrap the status line only when it is wider than the room for it.
+
+        The pill shrinks to its text, so a short status keeps no wrap length
+        (a wrap wider than the pill would mean nothing); a long #156 entry
+        wraps at the room beside the icon.
+        """
+        label = self._match_label
+        room = self._match_wrap_max
+        if label is None or not room:
+            return
+        try:
+            lines = str(label.cget("text")).split("\n")
+            widest = max(self.font_s_bold.measure(line) for line in lines)
+            want = room if widest > room else 0
+            if int(float(str(label.cget("wraplength") or 0))) != want:
+                label.configure(wraplength=want)
+        except (tk.TclError, AttributeError, ValueError):
+            return
 
     def _paint_match(self) -> None:
         if self._match_icon is None or self._match_label is None:
@@ -3801,12 +6094,25 @@ class TkWizard:
                 fill="#FFFFFF", width=3, capstyle="round", joinstyle="round",
             )
             self._match_label.configure(text=C.CONFIRM_MATCH_OK, fg=OK, bg=OK_TINT)
+        elif self.w.confirm_feedback is not None:
+            # #156/#157: after a wrong entry: what was typed (wrong
+            # characters in [brackets]) and which positions, with a "!" mark
+            # and a warning outline (a shape and words, not only colour).
+            fb = self.w.confirm_feedback
+            if self._match_pill is not None:
+                self._match_pill.set_style(fill=SURFACE, outline=WARN_BORDER)
+            cv.configure(bg=SURFACE)
+            cv.create_oval(2, 2, 20, 20, outline=WARN, width=2)
+            cv.create_line(11, 6, 11, 12.5, fill=WARN, width=3, capstyle="round")
+            cv.create_oval(9.5, 14.5, 12.5, 17.5, fill=WARN, outline="")
+            self._match_label.configure(text=f"{fb.display}\n{fb.message}", fg=INK, bg=SURFACE)
         else:
             if self._match_pill is not None:
-                self._match_pill.set_style(fill=SURFACE_ALT, outline=BORDER)
-            cv.configure(bg=SURFACE_ALT)
+                self._match_pill.set_style(fill=SURFACE, outline=BORDER)
+            cv.configure(bg=SURFACE)
             cv.create_oval(2, 2, 20, 20, outline=BORDER_STRONG, width=2)
-            self._match_label.configure(text=C.CONFIRM_MATCH_WAIT, fg=MUTED, bg=SURFACE_ALT)
+            self._match_label.configure(text=C.CONFIRM_MATCH_WAIT, fg=MUTED, bg=SURFACE)
+        self._fit_match_wrap()
 
     def _ensure_confirm_focus(self, entry: tk.Entry, retries: int = 20) -> None:
         """Recover Entry focus while X11 finishes mapping the no-WM window."""
@@ -3835,6 +6141,7 @@ class TkWizard:
         self.w.set_confirm_input(self._confirm_var.get())
         self._set_primary_enabled(self.w.token_ok)
         self._paint_match()
+        self._sync_layout_hint()
         if self.w.token_ok:
             emit_serial_marker("BEAMO_WIPE_CONFIRM_MATCHED")
 
@@ -3849,7 +6156,7 @@ class TkWizard:
         return max(200, self.lay.wrap - 200)
 
     def _method_prose_label(
-        self, parent: tk.Widget, text: str, *, font, bg: str, fg: str = INK
+        self, parent: tk.Widget, text: str, *, font, bg: str, fg: Optional[str] = None
     ) -> tk.Label:
         """Wrap novice lead/limits to the allocated title column.
 
@@ -3857,6 +6164,7 @@ class TkWizard:
         ordinary prose with spaces; keep the words intact and shrink
         wraplength only after the label has a real width.
         """
+        fg = INK if fg is None else fg  # #179: current palette
         wrap = self._method_card_wrap()
         label = tk.Label(
             parent,
@@ -3892,10 +6200,10 @@ class TkWizard:
         checks = bool(card_copy["checks"])
         key = str(card_copy["key"])
         selected = self.w.method == method
-        fill = PRIMARY_TINT if selected else SURFACE
-        outline = PRIMARY if selected else BORDER
+        fill = SELECTED_FILL if selected else SURFACE
+        outline = SELECTED_EDGE if selected else BORDER
         card = _Box(
-            parent, radius=RADIUS, fill=fill, outline=outline, ow=2 if selected else 1,
+            parent, radius=RADIUS, fill=fill, outline=outline, ow=SELECTED_EDGE_W if selected else 1,
             padx=18, pady=8, halo=False,
         )
         card.pack(fill=tk.X, pady=(0, 6), padx=4)
@@ -3925,26 +6233,52 @@ class TkWizard:
                 side=tk.LEFT, padx=(10, 0)
             )
         self._method_prose_label(text_col, lead, font=self.font_b, bg=fill)
-        self._p(
-            text_col, blurb, font=self.font_s, fg=MUTED, bg=fill,
-        ).pack(fill=tk.X, pady=(2, 0))
-        pace_row = tk.Frame(text_col, bg=fill)
-        pace_row.pack(fill=tk.X, pady=(4, 0))
-        if checks:
-            clock = _icon_clock(pace_row, 16)
-            clock.configure(bg=fill)
-            clock.pack(side=tk.LEFT, anchor="n", pady=1)
-        self._p(
-            pace_row, pace, font=self.font_s, fg=MUTED, bg=fill,
-        ).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7 if checks else 0, 0))
-        if extra:
+        # #159: title, one sentence and a time line on every card, so the
+        # three compare at a glance. The time line is the rough guide for
+        # this disk, or "Time depends on the disk" when no range can be
+        # given. The counts, checks and limits sit under this card's own
+        # Show more; the chips and the sentence keep "No check" visible.
+        time_row = tk.Frame(text_col, bg=fill)
+        time_row.pack(fill=tk.X, pady=(4, 0))
+        clock = _icon_clock(time_row, 16)
+        clock.configure(bg=fill)
+        clock.pack(side=tk.LEFT, anchor="n", pady=1)
+        time_label = tk.Label(
+            time_row, text=C.method_time_line(method, self.w.selected),
+            font=self.font_s, fg=MUTED, bg=fill, anchor="w", justify=tk.LEFT,
+            wraplength=max(160, self._method_card_wrap() - 140),
+        )
+        time_label._beamo_method_time = method  # type: ignore[attr-defined]
+
+        def fit_time(event, label=time_label) -> None:
+            # The packer gives the label what the clock and Show more leave;
+            # wrap to that allocation, never to the label's own request.
+            width = max(1, int(event.width) - 4)
+            if width >= 80 and int(label.cget("wraplength")) != width:
+                label.configure(wraplength=width)
+
+        time_label.bind("<Configure>", fit_time)
+        time_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(7, 0))
+        open_ = method in self._method_more
+        details: Optional[tk.Frame] = None
+        if open_:
+            details = tk.Frame(text_col, bg=fill)
+            details.pack(fill=tk.X)
+            details._beamo_method_details = method  # type: ignore[attr-defined]
             self._p(
-                text_col, extra, font=self.font_s, fg=MUTED, bg=fill,
+                details, blurb, font=self.font_s, fg=MUTED, bg=fill,
             ).pack(fill=tk.X, pady=(4, 0))
-        if limits_note:
-            self._method_prose_label(
-                text_col, limits_note, font=self.font_s, bg=fill, fg=MUTED
-            )
+            self._p(
+                details, pace, font=self.font_s, fg=MUTED, bg=fill,
+            ).pack(fill=tk.X, pady=(4, 0))
+            if extra:
+                self._p(
+                    details, extra, font=self.font_s, fg=MUTED, bg=fill,
+                ).pack(fill=tk.X, pady=(4, 0))
+            if limits_note:
+                self._method_prose_label(
+                    details, limits_note, font=self.font_s, bg=fill, fg=MUTED
+                )
 
         def _click(_e, m=method):
             self._choose_method(m)
@@ -3960,24 +6294,132 @@ class TkWizard:
                 partial(card.set_style, fill=SURFACE),
             )
 
+        def toggle(m=method) -> None:
+            # Details only: never chooses or changes the method.
+            if m in self._method_more:
+                self._method_more.discard(m)
+            else:
+                self._method_more.add(m)
+            self._draw()
+            # Rebuilding destroys the old control; keep keyboard users on it.
+            again = self._method_more_buttons.get(m)
+            if again is not None:
+                again.focus_set()
+                # On a scrolling body, bring the opened details into view
+                # without scrolling the card's own top away.
+                shown = getattr(again, "_beamo_details", None)
+                if shown is not None:
+                    self._reveal_in_body(shown, keep=getattr(again, "_beamo_card", None))
+
+        # Created after the card's click and hover bindings, which replace a
+        # widget's own <Button-1>: this press stays the toggle's own. Packed
+        # first so the time line wraps to what the toggle leaves.
+        more = _Button(
+            time_row, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle,
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        more._beamo_method_more = method  # type: ignore[attr-defined]
+        more._beamo_card = card  # type: ignore[attr-defined]
+        more._beamo_details = details  # type: ignore[attr-defined]
+        more.pack(side=tk.RIGHT, anchor="n", padx=(8, 0), before=clock)
+        self._method_more_buttons[method] = more
+
+    def _limits_line(self, parent: tk.Widget) -> _Box:
+        """#158: one storage limits line between the disk and the cards.
+
+        Closed, it is one plain sentence for this disk's kind
+        (``Wizard.storage_line``) with Show more on the same row, so it
+        stays above the fold at 800x600 and every text size (Ref #18).
+        Show more puts the full, unchanged notice (``Wizard.storage_notice``)
+        in its place and adds Storage limits (L) beside Show less (owner,
+        2026-11-08: the closed row keeps its width for the sentence). The L
+        key opens the full limits page in both states; the Keyboard
+        shortcuts list names it (C.MENU_SHORTCUTS_LIMITS).
+        """
+        # getattr: some checks draw with a partially built window.
+        open_ = bool(getattr(self, "_limits_open", False))
+        fill = SURFACE
+        # The ghost buttons carry their own padding, so the box adds none
+        # vertically: the row is as tall as Show more (#161 chip at 800x600
+        # extra text stays above the fold).
+        box = _Box(parent, radius=RADIUS, fill=fill, outline=BORDER, ow=1, padx=12, pady=0)
+        # 2 px from the disk above; the cards' zone sits 2 px below (#158:
+        # the #161 chip stays above the fold at 800x600 Extra large).
+        box.pack(fill=tk.X, pady=(2, 0), padx=4)
+        row = tk.Frame(box.inner, bg=fill)
+        row.pack(fill=tk.X)
+        icon = _icon_alert(row, "limits", 20)
+        icon.configure(bg=fill)
+        icon.pack(side=tk.LEFT, anchor="n", pady=(6, 0))
+
+        def toggle() -> None:
+            # View only: never chooses or changes the method.
+            self._limits_open = not open_
+            self._draw()
+            again = self._limits_more_button
+            if again is not None:
+                again.focus_set()
+                shown = getattr(again, "_beamo_limits_box", None)
+                if shown is not None:
+                    self._reveal_in_body(shown)
+
+        # Buttons are packed before the text so the text wraps to what they
+        # leave on the row.
+        self._limits_pages_button = None
+        if open_:
+            pages = _Button(
+                row, text=limits.BUTTON, command=self._nav(self.w.open_limits),
+                font=self.font_s_bold, variant="ghost", compact=True,
+            )
+            pages.pack(side=tk.RIGHT, anchor="n")
+            self._limits_pages_button = pages
+        more = _Button(
+            row, text=C.BTN_LESS if open_ else C.BTN_MORE, command=toggle,
+            font=self.font_s_bold, variant="ghost", compact=True,
+        )
+        more.pack(side=tk.RIGHT, anchor="n")
+        more._beamo_limits_box = box  # type: ignore[attr-defined]
+        self._limits_more_button = more
+        # Severity word first, like every limits panel (readable without
+        # colour); then the line, or the full notice when open.
+        text = f"{C.SEVERITY_LIMITS}: " + (
+            self.w.storage_notice if open_ else self.w.storage_line
+        )
+        label = tk.Label(
+            row, text=text, font=self.font_s, fg=INK, bg=fill, anchor="w",
+            justify=tk.LEFT, wraplength=max(160, self._method_card_wrap() - 200),
+        )
+        label._beamo_limits_line = True  # type: ignore[attr-defined]
+
+        def fit(event) -> None:
+            width = max(1, int(event.width) - 4)
+            if width >= 80 and int(label.cget("wraplength")) != width:
+                label.configure(wraplength=width)
+
+        label.bind("<Configure>", fit)
+        # Level with the buttons' text; the bottom pad spaces a wrapped or
+        # opened notice from the border.
+        label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(8, 4), pady=(6, 6))
+        return box
+
     def _method(self) -> None:
         col = self._column(self._body, fill_height=True)
         # Identity is informational only; method changes keep the bound target.
         # The shared scrolling body accommodates long identities and small screens.
-        self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True)
+        # #158: the limits line costs a row, so the Method screen trims its
+        # own gaps (header 6 -> 4 px, around the line 4 -> 2 px each) rather
+        # than the cards.
+        self._title_block(col, C.TITLE_METHOD, C.METHOD_LEAD, compact=True, bottom=4)
+        # Details share the summary's caption row at every size. #158: one
+        # storage limits line sits between the disk and the cards at every
+        # size, so it is never below the fold; each card keeps its own note.
         if self.w.selected:
-            self._disk_summary(col, self.w.selected).pack(fill=tk.X)
-            self._more_link(col)
-        notice = self.w.storage_notice
-        if notice:
-            self._panel(col, kind="limits", text=notice, compact=True).pack(
-                fill=tk.X, pady=(8, 0)
-            )
-        _Button(
-            col, text=limits.BUTTON, command=self._nav(self.w.open_limits),
-            font=self.font_s_bold, variant="ghost", compact=True,
-        ).pack(anchor="w", pady=(4, 4))
+            self._disk_summary(col, self.w.selected, more=True).pack(fill=tk.X)
+        self._limits_more_button = None
+        self._limits_line(col)
         zone = self._center_zone(col)
+        zone.pack_configure(pady=(2, 0))
+        self._method_more_buttons = {}
         for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
             self._method_card(zone, method)
         row = self._footer_shell(C.HINT_METHOD)
@@ -4010,12 +6452,26 @@ class TkWizard:
 
     def _refresh_confirm(self) -> None:
         col = self._column(self._body, fill_height=True)
-        self._title_block(col, C.TITLE_REFRESH, C.REFRESH_LEAD)
-        row = self._footer_shell(C.HINT_REFRESH)
-        self._back_btn(row)
-        self._primary_btn(row, C.BTN_REFRESH, self._click_refresh)
-        if self._primary is not None:
-            self._primary.focus_set()
+        if not self.w.refresh_guarded:
+            # From Pick: a normal action, as before.
+            self._title_block(col, C.TITLE_REFRESH, C.REFRESH_LEAD)
+            row = self._footer_shell(C.HINT_REFRESH)
+            self._back_btn(row)
+            self._primary_btn(row, C.BTN_REFRESH, self._click_refresh)
+            if self._primary is not None:
+                self._primary.focus_set()
+            return
+        # #136: from a screen holding confirmations, Cancel is the default
+        # and the emphasised button. Enter and Esc keep the answers;
+        # clearing them needs Tab to the outlined Check disks again.
+        lead = C.REFRESH_GUARD_LEAD
+        if self.w.refresh_then_reader:
+            lead += " " + C.REFRESH_THEN_READER
+        self._title_block(col, C.TITLE_REFRESH, lead)
+        row = self._footer_shell(C.HINT_REFRESH_GUARD)
+        self._secondary_btn(row, C.BTN_REFRESH, self._click_refresh)
+        cancel = self._primary_btn(row, C.BTN_REFRESH_CANCEL, self.w.back)
+        cancel.focus_set()
 
     def _report_help(self) -> None:
         col = self._column(self._body, fill_height=True)
@@ -4100,28 +6556,51 @@ class TkWizard:
         self._title_block(col, C.TITLE_LAST, C.LAST_LEAD)
         review = tk.Frame(col, bg=BG)
         review.pack(fill=tk.X, pady=(8, 0))
-        zone = tk.Frame(review, bg=BG)
-        details = tk.Frame(review, bg=BG)
-        if self.lay.stack_review:
-            details.pack(fill=tk.X, anchor="n")
-            zone.pack(fill=tk.X, pady=(8, 0), anchor="n")
+        # One reading order at every size: the disk, what will happen, the
+        # irreversible-erase warning in a red callout, then the countdown as
+        # one row (ring beside its caption) directly under it. A separate
+        # countdown column wrapped its caption into a narrow tower.
+        stacked = self.lay.stack_review
+        # Roomy windows group the review facts in one white card. Stacked
+        # (short) windows keep them on the page so the countdown stays above
+        # the fold at 800x600.
+        card: tk.Widget
+        details: tk.Frame
+        if stacked:
+            details = tk.Frame(review, bg=BG)
+            card = details
         else:
-            zone.pack(side=tk.RIGHT, padx=(24, 0), anchor="n")
-            details.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor="n")
+            box = _Box(review, radius=RADIUS, fill=SURFACE, outline=BORDER, ow=1,
+                       padx=20, pady=16)
+            card, details = box, box.inner
+        surface = details.cget("bg")
+        card.pack(fill=tk.X, anchor="n")
         if self.w.selected is not None:
             self._disk_summary(details, self.w.selected).pack(fill=tk.X)
-            self._p(
-                details,
-                self.w.prepare_text(),
-                font=self.font_s,
-                bg=BG,
-            ).pack(fill=tk.X, pady=(8, 0))
+        # The red callout below is this screen's one erase warning (#128);
+        # it already names any Windows or operating system on the disk.
+        # #164: one method line (name, overwrites, verification yes/no).
         self._wrapping_label(
-            details, self.w.operation_summary, font=self.font_bold, bg=BG
-        ).pack_configure(pady=(12, 0))
-        self._wrapping_label(details, f"{C.SEVERITY_WARNING}: {self.w.erase_label()}",
-                             font=self.font_bold, bg=BG, fg=DANGER).pack_configure(pady=(16, 8))
-        self._wrapping_label(details, self.w.method_summary, font=self.font_s, bg=BG)
+            details, self.w.review_method_line, font=self.font_bold, bg=surface
+        ).pack_configure(pady=(10 if stacked else 12, 0))
+        # Stacked windows (800x600 and 1024x600, with or without the preview
+        # stripe): the warning and countdown sit no lower than the plain red
+        # line did, so the ring stays above the fold. The method line and
+        # power notice follow the countdown there.
+        callout = _Box(details, radius=RADIUS, fill=DANGER_TINT, outline=DANGER_BORDER,
+                       ow=1, padx=14, pady=4 if stacked else 12)
+        callout.pack(fill=tk.X, pady=(6 if stacked else 14, 0))
+        alert = tk.Frame(callout.inner, bg=DANGER_TINT)
+        alert.pack(fill=tk.X)
+        glyph = _icon_alert(alert, "erase", 24)
+        glyph.configure(bg=DANGER_TINT)
+        glyph.pack(side=tk.LEFT, anchor="n", pady=1)
+        words = tk.Frame(alert, bg=DANGER_TINT)
+        words.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(12, 0))
+        self._wrapping_label(words, f"{C.SEVERITY_WARNING}: {self.w.erase_label()}",
+                             font=self.font_bold, bg=DANGER_TINT, fg=DANGER)
+        zone = tk.Frame(details, bg=surface)
+        zone.pack(fill=tk.X, pady=(6 if stacked else 14, 4), anchor="n")
         if self.w.error:
             sections = recovery_for_wizard_error(self.w.error)
             if sections:
@@ -4129,24 +6608,35 @@ class TkWizard:
             else:
                 self._panel(col, kind="danger", text=self.w.error).pack(fill=tk.X, pady=(12, 0))
             self._support_identity_block(col)
-        self._power_notice(details)
+        self._power_notice(details, bg=surface)
         ring_px = self.lay.ring
         self._ring_px = ring_px
         ring = tk.Canvas(
-            zone, width=ring_px, height=ring_px, bg=BG, highlightthickness=0
+            zone, width=ring_px, height=ring_px, bg=zone.cget("bg"), highlightthickness=0
         )
-        ring.pack()
+        ring.pack(side=tk.LEFT, anchor="n")
         self._countdown_ring = ring
         self._countdown_num = tk.Label(
-            ring, text="", font=self.font_bold, fg=INK, bg=BG, anchor="center"
+            ring, text="", font=self.font_bold, fg=INK, bg=zone.cget("bg"), anchor="center"
         )
-        ring.create_window(ring_px / 2, ring_px / 2, window=self._countdown_num)
+        self._countdown_num_item = ring.create_window(
+            ring_px / 2, ring_px / 2, window=self._countdown_num
+        )
+        # #163: when ready, the ring shows a check mark and "Ready" heads the
+        # caption (a word, never the icon alone); packed only when ready.
+        text_col = tk.Frame(zone, bg=zone.cget("bg"))
+        text_col.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(16, 0))
+        self._countdown_ready = tk.Label(
+            text_col, text=C.COUNTDOWN_READY_WORD, font=self.font_bold, fg=PRIMARY,
+            bg=zone.cget("bg"), anchor="w", justify=tk.LEFT,
+        )
         self._countdown_label = tk.Label(
-            zone, text="", font=self.font_b, fg=MUTED, bg=BG, anchor="center",
-            justify=tk.CENTER, wraplength=max(120, ring_px + 40),
+            text_col, text="", font=self.font_b, fg=MUTED, bg=zone.cget("bg"),
+            anchor="w", justify=tk.LEFT,
+            wraplength=max(120, self.lay.wrap - ring_px - 80),
         )
-        self._flow_wrap(self._countdown_label, zone)
-        self._countdown_label.pack(fill=tk.X, pady=(12, 0))
+        self._flow_wrap(self._countdown_label, zone, pad=ring_px + 24)
+        self._countdown_label.pack(fill=tk.X)
         row = self._footer_shell(C.HINT_LAST_CHANCE_TK)
         back = self._back_btn(row)
         self._primary_btn(
@@ -4155,6 +6645,7 @@ class TkWizard:
             self._click_erase,
             enabled=self.w.erase_enabled,
             danger=True,
+            reason=C.REVIEW_ERASE_REASON,
         )
         # Safe default: focus Back, never the Erase button.
         back.focus_set()
@@ -4166,6 +6657,8 @@ class TkWizard:
         left = self.w.countdown_display
         ring = self._countdown_ring
         size = getattr(self, "_ring_px", RING_SIZE)
+        num_item = getattr(self, "_countdown_num_item", 0)
+        ready_word = getattr(self, "_countdown_ready", None)
         edge0 = RING_PAD
         edge1 = size - RING_PAD
         center = size / 2.0
@@ -4188,11 +6681,27 @@ class TkWizard:
             ring.create_oval(tx - 2, ty - 2, tx + 2, ty + 2, fill=PRIMARY, outline="", tags="arc")
             if self._countdown_num is not None:
                 self._countdown_num.configure(text=str(left), fg=INK)
+            if num_item:
+                ring.itemconfigure(num_item, state="normal")
+            if ready_word is not None:
+                ready_word.pack_forget()
             self._countdown_label.configure(text=C.COUNTDOWN_CAPTION, fg=MUTED)
         else:
             ring.create_oval(edge0, edge0, edge1, edge1, outline=PRIMARY, width=RING_W, tags="arc")
+            # #163: a check mark, not "0"; the number is hidden, and "Ready"
+            # heads the caption so the state is never shown by the icon alone.
+            px = float(size)
+            ring.create_line(
+                [px * 0.31, px * 0.52, px * 0.45, px * 0.66, px * 0.70, px * 0.37],
+                fill=PRIMARY, width=max(3, round(px / 14)), capstyle="round",
+                joinstyle="round", tags=("arc", "check"),
+            )
             if self._countdown_num is not None:
-                self._countdown_num.configure(text="0", fg=PRIMARY)
+                self._countdown_num.configure(text="", fg=PRIMARY)
+            if num_item:
+                ring.itemconfigure(num_item, state="hidden")
+            if ready_word is not None and not ready_word.winfo_manager():
+                ready_word.pack(fill=tk.X, before=self._countdown_label)
             self._countdown_label.configure(text=C.COUNTDOWN_READY, fg=INK)
         self._set_primary_enabled(self.w.erase_enabled)
 
@@ -4228,63 +6737,152 @@ class TkWizard:
             if error_needs_support(self.w.error):
                 self._support_block(col)
         if disk is not None:
-            self._disk_summary(col, disk).pack(fill=tk.X)
-            self._more_link(col)
+            self._disk_summary(col, disk, more=True).pack(fill=tk.X)
         elif self.w.operation_identity_text:
             self._p(col, self.w.operation_identity_text, font=self.font_b, fg=MUTED).pack(fill=tk.X)
         container = self._center_zone(col)
-        progress_card = _Box(container, radius=RADIUS, fill=SURFACE_ALT,
-                             outline=BORDER, ow=1, padx=20, pady=16)
-        progress_card.pack(fill=tk.X)
+        short = self.lay.short
+        # Short windows keep the three glance lines above the fold at every
+        # text size (#132), so the card spacing tightens there.
+        progress_card = _Box(container, radius=RADIUS, fill=SURFACE,
+                             outline=BORDER, ow=1, padx=20, pady=10 if short else 16)
+        progress_card.pack(fill=tk.X, pady=(8 if short else 12, 0))
         zone = progress_card.inner
         tk.Label(zone, text=C.ERASE_PROGRESS_LABEL, font=self.font_s_bold,
-                 fg=MUTED, bg=SURFACE_ALT, anchor="w").pack(fill=tk.X, pady=(0, 8))
+                 fg=MUTED, bg=SURFACE, anchor="w").pack(fill=tk.X, pady=(0, 4 if short else 8))
+        # Glance (#132): the large percentage, then a cautious time line,
+        # then the current step. One fixed-height slot holds the percentage
+        # once the engine reports one and a calm "Starting…" until then, so
+        # nothing jumps and no "not reported" placeholder is ever shown.
+        view = self.w.progress_view
+        slot = tk.Frame(zone, bg=SURFACE)
         self._progress_pct = tk.Label(
-            zone, text="", font=self.font_stat, fg=INK, bg=SURFACE_ALT, anchor="w"
+            slot, text="", font=self.font_stat, fg=INK, bg=SURFACE, anchor="w"
         )
-        self._progress_pct.pack(fill=tk.X, pady=(0, 12))
-        bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE_ALT, highlightthickness=0)
+        self._progress_wait = tk.Label(
+            slot, text=view.glance_headline, font=self.font_h, fg=INK,
+            bg=SURFACE, anchor="w", justify=tk.LEFT,
+            wraplength=max(200, self.lay.wrap - 80),
+        )
+        slot.configure(height=self._progress_pct.winfo_reqheight())
+        slot.pack_propagate(False)
+        slot.pack(fill=tk.X, pady=(0, 8 if self.lay.short else 12))
+        self._progress_wait.pack(fill=tk.BOTH, expand=True)
+        bar = tk.Canvas(zone, height=BAR_H, bg=SURFACE, highlightthickness=0)
         bar.pack(fill=tk.X)
         bar.bind("<Configure>", lambda _e: self._refresh_working())
         self._progress_bar = bar
-        self._progress_label = self._p(
-            zone, C.WORKING_PULSE, fg=MUTED, font=self.font_b, bg=SURFACE_ALT
+        # Each line sits in its own slot so a line with no real data can be
+        # hidden without moving the others.
+        def line_slot() -> tk.Frame:
+            holder = tk.Frame(zone, bg=SURFACE, height=1)
+            holder.pack(fill=tk.X)
+            return holder
+
+        self._progress_time = self._p(
+            line_slot(), "", font=self.font_size_big, bg=SURFACE
         )
-        self._progress_label.pack(fill=tk.X, pady=(14, 0))
-        self._power_notice(zone, reminder=False, bg=SURFACE_ALT)
+        self._progress_step = self._p(line_slot(), "", bg=SURFACE)
+        # Stale progress (Ref #30) stays prominent: a warning band that
+        # appears only while updates have stopped.
+        self._progress_stale_slot = line_slot()
+        self._progress_stale = self._p(
+            self._progress_stale_slot, "", font=self.font_b, fg=WARN, bg=WARN_BG,
+            wraplength=max(200, self.lay.wrap - 64), flow_pad=24,
+        )
+        self._progress_stale.configure(padx=12, pady=8)
+        self._progress_notes_slot = line_slot()
+        self._progress_label = self._p(
+            self._progress_notes_slot, "", fg=MUTED, font=self.font_s, bg=SURFACE
+        )
+        # Walk away (#133): promise the beep only when it can be heard, then
+        # the laptop power/lid advice it depends on (said once, here).
+        self._p(zone, self.w.walk_away_text, font=self.font_b, bg=SURFACE).pack(
+            fill=tk.X, pady=(10, 2)
+        )
+        if self.w.finish_sound_reason:
+            self._p(zone, self.w.finish_sound_reason, font=self.font_s, fg=MUTED,
+                    bg=SURFACE).pack(fill=tk.X, pady=(0, 2))
+        self._power_notice(zone, reminder=True, bg=SURFACE)
         self._p(zone, self.w.method_summary, font=self.font_s,
-                fg=MUTED, bg=SURFACE_ALT).pack(fill=tk.X, pady=(10, 0))
+                fg=MUTED, bg=SURFACE).pack(fill=tk.X, pady=(10, 0))
         if self.w.evidence_warning:
-            self._p(col, f"{C.SEVERITY_WARNING}: {self.w.evidence_warning}", font=self.font_s_bold).pack(fill=tk.X, pady=(8, 0))
+            self._panel(col, kind="warn", text=self.w.evidence_warning, compact=True).pack(
+                fill=tk.X, pady=(8, 0)
+            )
         if self.w.sound_message:
             self._p(col, self.w.sound_message, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
         # Stopping is always reachable, with consent before signalling.
         row = self._footer_shell(C.HINT_WORKING)
+        # No primary sits on the right of Working's footer: Stop, the finish
+        # sound check and Hear sounds share one row instead of wrapping into
+        # a third footer row at larger text (#174's two-row footer).
+        row._left_budget = self.lay.content_w  # type: ignore[attr-defined]
         self._secondary_btn(row, C.STOP_ASK, self._click_cancel)
-        self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-        self._secondary_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
+        self._finish_sound_toggle(row)
+        self._link_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
         self._refresh_working()
+
+    def _finish_sound_toggle(self, row: tk.Frame) -> "_CheckRow":
+        """"Play a sound when it's finished" (#133): the session sound
+        setting, on by default for each erase, greyed without an output."""
+        enabled = self.w.finish_sound_toggle_enabled
+        var = _new_owned_native(
+            self.root, tk.BooleanVar, master=self.root,
+            value=bool(self.w.sounds_enabled and enabled),
+        )
+        width = self.font_s_bold.measure(C.FINISH_SOUND_TOGGLE) + 22 + 40
+
+        def choose() -> None:
+            self.w.set_finish_sound(bool(var.get()))
+
+        toggle = _CheckRow(
+            self._footer_left_parent(row, width), text=C.FINISH_SOUND_TOGGLE,
+            variable=var, command=self._nav(choose),
+            font=self.font_s_bold, enabled=enabled, flow=False,
+        )
+        toggle.pack(side=tk.LEFT, padx=(8, 0))
+        # Redraws (the toggle itself, a new availability answer) rebuild the
+        # footer; keep keyboard focus on the toggle when it had it.
+        def remember(focused: bool) -> None:
+            self._finish_focused = focused
+
+        toggle.bind("<FocusIn>", lambda _e: remember(True), add="+")
+        toggle.bind("<FocusOut>", lambda _e: remember(False), add="+")
+        if getattr(self, "_finish_focused", False) and enabled:
+            toggle.focus_set()
+        self._finish_toggle = toggle
+        return toggle
 
     def _refresh_working(self) -> None:
         if self._progress_label is None:
             return
         view = self.w.progress_view
-        pulse = view.timing_text
+        if self._progress_bar is None:
+            # Stopping screen: one text line block, no bar or glance.
+            if self._progress_label.cget("text") != view.stopping_text:
+                self._progress_label.configure(text=view.stopping_text)
+            return
         pct = view.percent
-        if view.percent_is_old and pct is not None:
-            shown = f"{format_progress_percent(pct)} (old)"
-        elif pct is None:
-            shown = ""
-        else:
-            shown = format_progress_percent(pct)
+        shown = view.glance_percent
         if self._progress_pct is not None and self._progress_pct.cget("text") != shown:
             self._progress_pct.configure(
                 text=shown, fg=MUTED if view.percent_is_old else INK
             )
-        if self._progress_label.cget("text") != pulse:
-            self._progress_label.configure(text=pulse)
+        wait = self._progress_wait
+        if wait is not None and wait.cget("text") != view.glance_headline and not shown:
+            wait.configure(text=view.glance_headline)
+        self._show_progress_slot(bool(shown))
+        self._show_progress_line(
+            self._progress_time, view.glance_time, (6 if self.lay.short else 12, 0)
+        )
+        self._show_progress_line(self._progress_step, view.glance_step, (4, 0))
+        self._show_progress_line(self._progress_stale, view.glance_stale, (10, 0))
+        self._show_progress_line(
+            self._progress_label, "\n".join(view.glance_notes), (10, 0)
+        )
         if view.animate:
             # First number has not arrived during the known startup quiet
             # window. Slide only then; silence must not look like live data.
@@ -4294,7 +6892,37 @@ class TkWizard:
         elif pct is None:
             self._paint_bar(0.0)
         else:
-            self._paint_bar(max(0.02, pct / 100.0))
+            # Like the number above it, the bar never reads complete here.
+            self._paint_bar(max(0.02, min(pct, 99.9) / 100.0))
+
+    @staticmethod
+    def _show_progress_line(
+        label: Optional[tk.Label], text: str, pady: tuple[int, int]
+    ) -> None:
+        """Show a glance line only when it has real text (#132)."""
+        if label is None:
+            return
+        if label.cget("text") != text:
+            label.configure(text=text)
+        mapped = bool(label.winfo_manager())
+        if text and not mapped:
+            label.pack(fill=tk.X, pady=pady)
+        elif not text and mapped:
+            label.pack_forget()
+            # Pack keeps an emptied master at its old size; shrink it back.
+            if isinstance(label.master, tk.Frame):
+                label.master.configure(height=1)
+
+    def _show_progress_slot(self, has_percent: bool) -> None:
+        """Percentage or the calm headline (#132), in the same fixed slot."""
+        pct = self._progress_pct
+        wait = getattr(self, "_progress_wait", None)
+        if pct is None or wait is None:
+            return
+        shown, hidden = (pct, wait) if has_percent else (wait, pct)
+        if not shown.winfo_manager():
+            hidden.pack_forget()
+            shown.pack(fill=tk.BOTH, expand=True)
 
     def _paint_bar(self, frac: Optional[float], indet_pos: float = 0.0) -> None:
         bar = self._progress_bar
@@ -4325,29 +6953,66 @@ class TkWizard:
         col = self._column(self._body, fill_height=True)
         self.w.request_auto_outcome_sound()
         result = self.w.result_view
-        # Erase status heading stays independent of report chrome.
-        # Cancelled copy remains in result.message ("Stopped by you").
-        # The specific outcome is the main heading; the badge carries color.
-        title = result.message
+        # Erase status heading stays independent of report chrome. The plain
+        # headline names the specific outcome (#134); the badge carries
+        # color. result.message stays the technical status line: What
+        # happened on failures, Show more on finished outcomes.
+        plain = self.w.result_plain
+        title = plain.headline
 
-        badge_size = 64 if self.lay.short else 72
+        # #172: balanced. A smaller badge and tighter gaps keep the summary
+        # and What next in the first view; when everything fits, the top
+        # spacer centers the result instead of leaving the space below.
+        balance = tk.Frame(col, bg=BG, height=0)
+        balance.pack(fill=tk.X)
+        balance._beamo_balance = True  # type: ignore[attr-defined]
+        badge_size = 48 if self.lay.short else 56
         icon = (_icon_status(col, True, badge_size) if result.icon == "check"
                 else _icon_badge(col, result.icon, badge_size))
         icon.configure(bg=BG)
-        icon.pack(pady=(8 if self.lay.short else 12, 0))
+        icon.pack(pady=(6 if self.lay.short else 10, 0))
         heading = self._h(col, title)
         heading.configure(anchor="center", justify=tk.CENTER)
-        heading.pack(fill=tk.X, pady=(8, 4) if self.lay.short else (12, 4))
+        heading.pack(fill=tk.X, pady=(6, 2) if self.lay.short else (8, 2))
         self._p(col, self.w.elapsed_text, fg=MUTED, font=self.font_s,
-                justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(4, 0))
+                justify=tk.CENTER, anchor="center").pack(fill=tk.X, pady=(2, 0))
         # Keep the selected-disk summary in the first viewport so Show more
         # stays reachable on short windows; report status follows, still
         # independent of the erase badge.
+        # #171: one compact card with the facts (disk, method, check result,
+        # start and end), from the photo record's own facts.
+        from beamo_wipe import erase_record as _record
+
+        card = self.w.result_card
         if self.w.selected is not None:
-            self._disk_summary(col, self.w.selected).pack(
-                fill=tk.X, pady=(8 if self.lay.short else 12, 0)
+            self._disk_summary(
+                col, self.w.selected, more=True, caption_text=_record.CARD_TITLE,
+                rows=card.detail_rows if card is not None else (),
+            ).pack(fill=tk.X, pady=(8 if self.lay.short else 12, 0))
+        elif card is not None and card.rows:
+            box = _Box(col, radius=RADIUS, fill=PRIMARY_TINT, outline=SUMMARY_EDGE, ow=1,
+                       padx=18, pady=8 if self.lay.short else 12, shadow=False)
+            box.pack(fill=tk.X, pady=(8 if self.lay.short else 12, 0))
+            tk.Label(box.inner, text=_record.CARD_TITLE, font=self.font_tiny, fg=PRIMARY,
+                     bg=PRIMARY_TINT, anchor="w").pack(fill=tk.X)
+            self._fact_rows(box.inner, card.rows, PRIMARY_TINT).pack(fill=tk.X, pady=(4, 0))
+        panel = self.w.report_panel
+        if panel.kind == "evidence":
+            # Ref #153: an evidence-save failure and its Retry stay in the
+            # first view, above guidance and the support code.
+            self._report_save_panel(col, panel)
+        if plain.checklist and self._show_more:
+            from beamo_wipe import recovery as Rec
+
+            self._p(col, f"{Rec.RECOVERY_TECHNICAL}: {self.w.result_technical}",
+                    font=self.font_s, fg=MUTED).pack(
+                fill=tk.X, pady=(6, 0)
             )
-            self._more_link(col)
+        if plain.checklist:
+            # What to do now comes before the support identity, which is
+            # for support. The list's "Keeping this computer?" item replaces
+            # the separate post-erase start-up note; nothing is said twice.
+            self._what_next(col, plain)
         if (
             self.w.done_support_needed
             or self.w.evidence_support_needed
@@ -4355,64 +7020,42 @@ class TkWizard:
         ):
             self._support_block(col)
         self._support_identity_block(col)
-        if may_have_erased(result.code):
+        if not plain.checklist and may_have_erased(result.code):
             self._p(col, C.POST_ERASE_BOOT, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
-        self._p(col, C.REPORT_STATUS_TITLE, font=self.font_s_bold).pack(
-            fill=tk.X, pady=(12, 4)
-        )
-        detail = (C.REPORT_PREVIEW if self.w.preview else
-                  self.w.evidence_warning if report.evidence_error else
-                  C.report_aftercare(can_save=report.can_save, status=report.status, message=report.message))
-        self._panel(
-            col, kind="info" if self.w.preview else report.tone,
-            text=C.REPORT_PREVIEW if self.w.preview else report.headline,
-            extra=C.REPORT_STATUS_NOTICE + ("" if self.w.preview else " " + detail),
-            compact=True,
-        ).pack(fill=tk.X)
-        self._p(col, self.w.method_summary, font=self.font_s).pack(fill=tk.X, pady=(8, 0))
+        # Save a report (#135): numbered steps, live USB status and its own
+        # Save. No Tab stop sits between Show more and Save, so Shut down ->
+        # Show more -> Save stays the two-Tab path.
+        if panel.kind != "evidence":
+            self._report_save_panel(col, panel)
         sections = recovery_for_view(result)
         if sections:
             self._recovery_block(
-                col, sections, omit_duplicate_happened=result.message
+                col, sections, omit_duplicate_happened=title
             )
-        else:
+        elif not plain.checklist:
             self._p(col, result.next_step, font=self.font_s).pack(fill=tk.X)
         for alert in self.w.check_alerts:
             self._panel(col, kind="warn", text=alert).pack(fill=tk.X, pady=(8, 0))
+        # The photo record follows the next steps and any check warnings, so
+        # it never pushes guidance or a "not a pass" warning further down.
+        self._record_block(col)
         if self.w.sound_message:
             self._p(col, self.w.sound_message, font=self.font_s, fg=MUTED).pack(
                 fill=tk.X, pady=(8, 0)
             )
-        row = self._footer_shell(C.HINT_DEFAULT if self.w.preview else C.HINT_DONE)
+        self._balance_result(col, balance)
+        # Footer (#135): two actions. Sounds and Hear again sit with the
+        # other settings in the assist strip; report actions are in the panel.
+        # #169: say exactly what Enter does here; Esc does nothing on a result.
+        row = self._footer_shell(C.HINT_DONE_PREVIEW if self.w.preview else C.HINT_DONE)
         if self.w.preview:
             self._secondary_btn(row, C.BTN_CLOSE_PREVIEW, self._click_shutdown)
-            self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
             self._primary_btn(row, C.BTN_RUN_AGAIN, self.w.reset_for_preview)
         else:
-            if report.evidence_error:
-                self._secondary_btn(row, C.RETRY_SAVE, self._click_retry_evidence,
-                                    enabled=report.can_retry_evidence)
-            self._secondary_btn(
-                row,
-                C.BTN_SAVE_REPORT,
-                self._click_save_report,
-                enabled=report.can_save,
-            )
-            self._secondary_btn(row, self.w.sound_toggle_text, self.w.toggle_sounds)
-            self._secondary_btn(row, C.SOUND_HEAR_AGAIN, self.w.request_hear_outcome_sound)
-            another = _Button(
-                self._footer_left_parent(
-                    row, self.font_s_bold.measure(C.BTN_ERASE_ANOTHER) + 2 * 12 + 6
-                ),
-                text=C.BTN_ERASE_ANOTHER,
-                command=self._nav(self.w.erase_another_disk),
-                font=self.font_s_bold, variant="ghost", compact=True,
-                enabled=self.w.can_erase_another,
-            )
-            another.pack(side=tk.LEFT)
+            self._secondary_btn(row, C.BTN_ERASE_ANOTHER, self.w.erase_another_disk,
+                                enabled=self.w.can_erase_another)
             self._primary_btn(
                 row,
                 C.BTN_SHUTDOWN,
@@ -4420,7 +7063,75 @@ class TkWizard:
                 enabled=not report.exporting and not report.saving_evidence,
             )
         if self._primary is not None and not getattr(self, "_report_space_release_pending", False):
-            self._primary.focus_set()
+            target = self._find_done_button(getattr(self, "_done_refocus", ""))
+            chosen = target or self._primary
+            chosen.focus_set()
+            self._done_focus_key = self._button_key(chosen)
+
+    @staticmethod
+    def _button_key(button: "_Button") -> str:
+        text = str(button.itemcget(button._label, "text"))
+        # The sounds toggle changes its words when pressed; match it by role.
+        return "\x00sounds" if text in (C.SOUND_TOGGLE_ON, C.SOUND_TOGGLE_OFF) else text
+
+    def _find_done_button(self, key: str) -> Optional["_Button"]:
+        if not key:
+            return None
+        stack: list[tk.Misc] = [self.root]
+        while stack:
+            widget = stack.pop()
+            if isinstance(widget, _Button) and widget._enabled and self._button_key(widget) == key:
+                return widget
+            stack.extend(widget.winfo_children())
+        return None
+
+    def _report_save_panel(self, col: tk.Frame, panel) -> None:
+        """Save a report (#135): steps, the live USB line and its controls.
+
+        Every greyed control has its reason on the line under it.
+        """
+        self._p(col, C.REPORT_STATUS_TITLE, font=self.font_s_bold).pack(
+            fill=tk.X, pady=(12, 4)
+        )
+        kind = panel.tone if panel.tone in ("ok", "warn") else "info"
+        # Ref #153: Retry evidence save comes straight after its warning
+        # headline so it stays in the first view at 800x600; the longer
+        # explanation follows it.
+        retry_first = panel.kind == "evidence"
+        box = self._panel(col, kind=kind, text=panel.headline,
+                          extra=None if retry_first else (panel.detail or None),
+                          compact=True)
+        box.pack(fill=tk.X)
+        lines, bg = box.lines, box.bg  # type: ignore[attr-defined]
+        for line in panel.step_lines:
+            self._wrapping_label(lines, line, font=self.font_s, bg=bg).pack(
+                fill=tk.X, pady=(3, 0)
+            )
+
+        def control(text: str, command: Callable[[], None], enabled: bool, reason: str) -> None:
+            button = _Button(lines, text=text, command=self._nav(command),
+                             font=self.font_btn, variant="secondary",
+                             enabled=enabled, compact=self.lay.compact)
+            button.pack(anchor="w", pady=(8, 0))
+            if not enabled and reason:
+                self._wrapping_label(lines, reason, font=self.font_s, fg=MUTED, bg=bg).pack(
+                    fill=tk.X, pady=(4, 0)
+                )
+
+        if panel.show_retry:
+            control(C.RETRY_SAVE, self._click_retry_evidence,
+                    panel.retry_enabled, panel.retry_reason)
+        if retry_first and panel.detail:
+            self._wrapping_label(lines, panel.detail, font=self.font_s, fg=MUTED, bg=bg).pack(
+                fill=tk.X, pady=(8, 0)
+            )
+        if panel.show_save:
+            control(C.BTN_SAVE_REPORT, self._click_save_report,
+                    panel.save_enabled, panel.save_reason)
+        if panel.notice:
+            self._wrapping_label(lines, panel.notice, font=self.font_s, fg=MUTED, bg=bg).pack(
+                fill=tk.X, pady=(8, 0)
+            )
 
     def _advanced(self) -> None:
         col = self._column(self._body, fill_height=True)
@@ -4478,6 +7189,15 @@ class TkWizard:
             return "break"
         self._escape_held = True
         self._escape_release_time = None
+        if getattr(self, "_help_open", False):
+            # #175: Esc closes the menu (or its shortcuts page) and nothing
+            # else; it never goes back or opens Stop from here.
+            if (getattr(self, "_help_view", "menu") == "shortcuts"
+                    and not getattr(self, "_help_direct", False)):
+                self._help_back()
+            else:
+                self._close_help_menu()
+            return "break"
         if self.w.screen == Screen.SPLASH:
             self.w.skip_splash()
             self._draw()
@@ -4648,6 +7368,14 @@ class TkWizard:
         # The same physical Enter must never advance several safety screens.
         if not self._claim_return_press(_event):
             return "break"
+        if getattr(self, "_help_open", False):
+            # #175: Enter presses only a menu control with focus. It never
+            # reaches the screen's primary action while the menu is open.
+            focused = self.root.focus_get()
+            if (isinstance(focused, _Button) and focused._enabled
+                    and self._in_help_menu(focused)):
+                focused._command()
+            return "break"
         screen = self.w.screen
         before = screen
         focused = self.root.focus_get()
@@ -4686,8 +7414,12 @@ class TkWizard:
                 self.w.continue_owner()
             elif screen == Screen.PICK:
                 self.w.continue_pick()
-            elif screen == Screen.CONFIRM and self.w.token_ok:
+            elif screen == Screen.CONFIRM:
+                # Moves on only when the token matches; a non-matching
+                # entry is recorded as a wrong entry and shows the #155
+                # keyboard-layout help (Confirm is not redrawn here).
                 self.w.continue_confirm()
+                self._sync_layout_hint()
             elif screen == Screen.METHOD:
                 self.w.continue_method()
             elif screen == Screen.LAST_CHANCE:
@@ -4858,9 +7590,13 @@ class TkWizard:
                 return
             self._draw()
             return
-        if self._start_refresh_scan(self._redraw_after_refresh) is None:
+        reader = self.w.refresh_then_reader
+        after = self._open_reader_after_refresh if reader else self._redraw_after_refresh
+        if self._start_refresh_scan(after) is None:
             return
         self._show_more = False
+        self._method_more = set()
+        self._limits_open = False
         self._pick_scroll = 0.0
 
     def _on_f5_release(self, _event=None) -> str:
@@ -4869,6 +7605,12 @@ class TkWizard:
         return "break"
 
     def _on_key(self, event) -> Optional[str]:
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        if event.keysym == "F10":
+            self._toggle_help_menu()  # #175: on every screen, splash included
+            return "break"
+        if getattr(self, "_help_open", False):
+            return self._help_key(event)
         if event.keysym == "F8" and sys.platform.startswith("linux") and self.w.can_refresh:
             self._click_accessible()
             return "break"
@@ -4882,10 +7624,16 @@ class TkWizard:
                 return "break"
             self._f5_held = True
             self._f5_release_time = None
-            if self.w.can_refresh:
+            if self.w.screen == Screen.REFRESH_CONFIRM:
+                # A second F5 accepts only the unguarded (Pick) dialog;
+                # the guarded one needs its own button (#136).
+                if not self.w.refresh_guarded:
+                    self._click_refresh()
+            elif self.w.refresh_offered:
                 self._click_refresh()
             return "break"
         if self._body_canvas is not None and event.keysym in ("Prior", "Next"):
+            self._body_follow_focus = False
             self._body_canvas.yview_scroll(-1 if event.keysym == "Prior" else 1, "pages")
             return "break"
         if event.keysym in ("Return", "KP_Enter", "Escape", "Tab"):
@@ -4911,10 +7659,28 @@ class TkWizard:
             return "break"
         if self.w.screen == Screen.KEYBOARD:
             focused = self.root.focus_get()
+            if event.keysym in ("Left", "Right") and getattr(focused, "_beamo_language", None):
+                languages = list(LANGUAGE_ORDER)
+                index = languages.index(self.w.language) if self.w.language in languages else 0
+                step = -1 if event.keysym == "Left" else 1
+                self.choose_language(languages[(index + step) % len(languages)])
+                return "break"
+            # The one-line check box has no use for Up/Down, so they choose
+            # the layout even while it has focus; digits type there instead.
+            if event.keysym in ("Up", "Down") and not isinstance(focused, _Scrollbar):
+                self._layout_keys_used = True  # #142: show the 1-7 badges
+                layouts = list(LAYOUT_ORDER)
+                current = (layouts.index(self.w.keyboard_layout)
+                           if self.w.keyboard_layout in layouts else 0)
+                step = -1 if event.keysym == "Up" else 1
+                self.w.set_keyboard_layout(layouts[(current + step) % len(layouts)])
+                self._draw()
+                return "break"
             if isinstance(focused, tk.Entry):
                 return None
-            keyboard_mapping = {"1": "us", "2": "fr", "3": "de"}
+            keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
             if event.keysym in keyboard_mapping:
+                self._layout_keys_used = True  # #142: show the 1-7 badges
                 self.w.set_keyboard_layout(keyboard_mapping[event.keysym])
                 self._draw()
                 return "break"
@@ -4980,6 +7746,14 @@ class TkWizard:
 
     def _click_accessible(self) -> None:
         if not sys.platform.startswith("linux") or not self.w.can_refresh:
+            return
+        if self.w.screen != Screen.REFRESH_CONFIRM and self.w.refresh_guarded:
+            # The switch rescans, which clears confirmations: ask first,
+            # with the same guarded dialog as Check disks again (#136).
+            self.w.open_refresh_confirm(then_reader=True)
+            self._draw()
+            return
+        if self.w.screen == Screen.REFRESH_CONFIRM:
             return
         if self._start_refresh_scan(self._open_reader_after_refresh) is None:
             self._draw()
@@ -5058,6 +7832,8 @@ def run_tk_startup(build, *, fullscreen: bool = False,
     from beamo_wipe.startup_stages import STALL_AFTER_S, StartupRun
 
     _collect_retired_interpreters()
+    # #179: the startup window follows the accessible boot path's choice.
+    apply_palette(os.environ.get("BEAMO_WIPE_HIGH_CONTRAST") == "1")
     _ensure_tk_display()
     run = StartupRun(
         build,

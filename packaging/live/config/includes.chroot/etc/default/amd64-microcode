@@ -1,0 +1,5 @@
+# Beamo Wipe live image. The initramfs is built on the build worker, whose CPU
+# says nothing about the PC that later boots this USB. The package default
+# "auto" adds AMD early microcode only when the build CPU is AMD, so always
+# add it. (intel-microcode already does this with MODULES=most.)
+AMD64UCODE_INITRAMFS=early

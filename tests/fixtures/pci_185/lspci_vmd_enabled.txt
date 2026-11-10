@@ -1,0 +1,13 @@
+00:00.0 Host bridge [0600]: Intel Corporation 11th Gen Core Processor Host Bridge/DRAM Registers [8086:9a14] (rev 01)
+	Subsystem: Dell Device [1028:0a1f]
+	Kernel driver in use: igen6_edac
+	Kernel modules: igen6_edac
+00:02.0 VGA compatible controller [0300]: Intel Corporation TigerLake-LP GT2 [Iris Xe Graphics] [8086:9a49] (rev 01)
+	Kernel driver in use: i915
+00:0e.0 RAID bus controller [0104]: Intel Corporation Volume Management Device NVMe RAID Controller [8086:9a0b]
+	Subsystem: Dell Device [1028:0a1f]
+	Kernel driver in use: vmd
+	Kernel modules: vmd
+00:14.0 USB controller [0c03]: Intel Corporation Tiger Lake-LP USB 3.2 Gen 2x1 xHCI Host Controller [8086:a0ed] (rev 20) (prog-if 30 [XHCI])
+	Kernel driver in use: xhci_hcd
+00:1f.0 ISA bridge [0601]: Intel Corporation Tiger Lake-LP LPC Controller [8086:a082] (rev 20)

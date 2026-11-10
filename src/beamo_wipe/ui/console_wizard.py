@@ -22,18 +22,49 @@ from beamo_wipe.recovery import (
 )
 from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import keyboard as _keyboard
 from beamo_wipe.keyboard import LAYOUT_ORDER
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL
 from beamo_wipe import identity as _identity
 from beamo_wipe.methods import METHODS, MethodId
 from beamo_wipe.models import Screen
+from beamo_wipe.progress import ProgressAnnouncer, ProgressView
 from beamo_wipe.safety import same_size_conflict
-from beamo_wipe.wizard import Wizard, error_needs_support
+from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support
 
 
 def _print_recovery(sections) -> None:
     print(format_recovery_text(sections, include_technical=True))
+
+
+def _result_plain(wizard):
+    """The plain headline, note and What next list (#134).
+
+    Simplified test wizards without the property get the same wording from
+    their result view.
+    """
+    plain = getattr(wizard, "result_plain", None)
+    if plain is None:
+        from beamo_wipe.outcomes import plain_result
+
+        plain = plain_result(wizard.result_view)
+    return plain
+
+
+def _what_next_lines(plain) -> list[str]:
+    from beamo_wipe import outcomes as O
+
+    return [plain.note, O.WHAT_NEXT, *plain.numbered]
+
+
+def _technical_line(wizard) -> str:
+    from beamo_wipe import recovery as Rec
+
+    technical = getattr(wizard, "result_technical", None)
+    if technical is None:
+        technical = Rec.technical_status(wizard.result_view)
+    return f"{Rec.RECOVERY_TECHNICAL}: {technical}"
 
 
 def _print_error_recovery(error, *, recovered: bool = False) -> None:
@@ -199,7 +230,7 @@ def _screen_title(wizard: Wizard) -> str:
     if screen == Screen.DIAGNOSTIC:
         return D.report_title(wizard.startup_error_code)
     if screen == Screen.DONE:
-        return wizard.result_view.message or C.TITLE_DONE_OK
+        return _result_plain(wizard).headline or C.TITLE_DONE_OK
     return C.APP_NAME
 
 
@@ -211,34 +242,52 @@ def _chrome_lines(wizard: Wizard, width: int) -> list[str]:
     that pushes those off the screen.
     """
     title = _screen_title(wizard)
-    stage = C.journey_caption(wizard.screen)
+    # The same step text as the Tk header (#130), shortened to "Step 3 of 6"
+    # before it is dropped; never a second header row.
+    stage = C.journey_step_caption(wizard)
+    short = C.journey_step_short(wizard)
     room = max(8, width - 2)
+    # #144: the power badge in words (no ✓: console fonts may lack it).
+    badge = getattr(wizard, "power_badge", None)
+    power = f"[{badge.text}]" if badge is not None else ""
+
+    def with_power(text: str) -> str:
+        return f"{text}  {power}" if power else text
+
     if title and title != C.APP_NAME:
         with_stage = f"{C.APP_NAME} — {stage} — {title}" if stage else f"{C.APP_NAME} — {title}"
+        with_short = f"{C.APP_NAME} — {short} — {title}" if short else with_stage
         without_stage = f"{C.APP_NAME} — {title}"
-        if _display_cols(with_stage) <= room:
-            lines = _lines(with_stage, width)
-        elif _display_cols(without_stage) <= room:
-            lines = _lines(without_stage, width)
+        for candidate in (with_power(with_stage), with_power(with_short),
+                          with_power(without_stage), with_stage, with_short, without_stage):
+            if _display_cols(candidate) <= room:
+                lines = _lines(candidate, width)
+                break
         else:
             lines = _lines(C.APP_NAME, width) + _lines(title, width)
     else:
         brand = f"{C.APP_NAME} — {stage}" if stage else C.APP_NAME
-        lines = _lines(brand, width)
+        lines = _lines(with_power(brand) if _display_cols(with_power(brand)) <= room else brand, width)
     if wizard.preview:
         lines.extend(_lines(C.PREVIEW_BANNER, width))
     return lines
 
 
-def _identity_field_lines(view, width: int, *, include_path: bool = False, indent: str = "") -> list[str]:
-    """Wrapped identity fields. Capacity, type, and connection share a line."""
+def _identity_field_lines(
+    view, width: int, *, include_path: bool = False, indent: str = "", token: bool = False
+) -> list[str]:
+    """Wrapped identity fields. Capacity, type, and connection share a line.
+
+    With ``token`` (Confirm only) the confirmation characters at the end of
+    the identifier are in [brackets] (#129): a text mark, never colour alone.
+    """
     lines: list[str] = []
     if view.title:
         lines.extend(_lines(f"{indent}{view.title}", width))
     meta = "  ".join(part for part in (view.capacity, view.kind_chip, view.connection) if part)
     if meta:
         lines.extend(_lines(f"{indent}{meta}", width))
-    ident = view.id_value
+    ident = view.token_marked_id if token else view.id_value
     lines.extend(_lines(f"{indent}{view.id_label}: {ident}", width))
     for note in view.notes:
         lines.extend(_lines(f"{indent}{note}", width))
@@ -257,6 +306,15 @@ def _nested_lines(wizard: Wizard, disk, width: int, indent: str = "  ") -> list[
     return lines
 
 
+def _record_lines(wizard: Wizard) -> list[str]:
+    """Erase record (#127) as text. A terminal QR does not fit 80x25 reliably."""
+    record = wizard.erase_record
+    if record is None:
+        return []
+    lead = C.RECORD_PREVIEW_NOTE if record.preview else C.CON_RECORD_LEAD
+    return [C.RECORD_TITLE, lead, *record.lines]
+
+
 def _support_identity_text(wizard: Wizard) -> str:
     ident = wizard.support_identity
     if ident is None:
@@ -272,7 +330,9 @@ def _pick_disk_header(wizard: Wizard, disk, width: int):
     meta = "  ".join(part for part in (view.capacity, view.kind_chip, view.connection) if part)
     if meta:
         block.extend(_lines(f"  {meta}", width))
-    block.extend(_lines(f"  {view.id_label}: {view.id_value}", width))
+    # The one serial on the card, with the part to compare in [brackets]
+    # like the Tk card and web preview (#148); the note gives positions only.
+    block.extend(_lines(f"  {view.id_label}: {view.marked_id}", width))
     return view, block
 
 
@@ -285,13 +345,26 @@ def _pick_blocks(wizard: Wizard, width: int) -> list[tuple[object, list[str]]]:
         block.extend(_identity_field_lines(view, width, indent="  "))
         block.extend(_nested_lines(wizard, wizard.protected_boot, width))
         blocks.append((None, block))
-    for disk in sorted(wizard.selectable, key=lambda d: d.path):
+    # Internal disks first, then external; stable (#151).
+    for disk in pick_order(wizard.selectable):
         view, block = _pick_disk_header(wizard, disk, width)
         for note in view.notes:
             block.extend(_lines("  " + note, width))
+        # #154: an encryption tag helps recognise the main disk; #187: and
+        # "Erased earlier (…)" for a disk erased earlier in this run.
+        tags = " · ".join(wizard.disk_tags(disk))
+        if tags:
+            block.extend(_lines("  " + tags, width))
+        hint = C.contents_hint(disk)
+        if hint:
+            block.extend(_lines("  " + hint, width))
         block.extend(_nested_lines(wizard, disk, width))
         blocks.append((disk, block))
     return blocks
+
+
+# Rows the keyboard screen keeps for its paged layout list under a fixed lead.
+KEYBOARD_MIN_LIST_ROWS = 6
 
 
 def _paint_paged(
@@ -364,16 +437,143 @@ def _keep_selected_visible(
 
 
 def _chrome_extra(wizard: Wizard) -> list[str]:
+    # #175: report help and the keyboard are in Help & settings (F10); their
+    # R and K keys still work and are listed under Keyboard shortcuts there.
     bits = []
     if wizard.can_open_diagnostic:
         bits.append(C.CON_DIAGNOSTIC)
-    if wizard.can_open_report_help:
-        bits.append(C.CON_REPORT_HELP)
-    if wizard.can_refresh and wizard.screen not in {Screen.REPORT_HELP, Screen.REFRESH_CONFIRM}:
+    if wizard.refresh_offered:
         bits.append(C.CON_REFRESH.format(note=C.REFRESH_UTILITY_NOTE))
-    if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
-        bits.append(C.CON_KEYBOARD)
     return bits
+
+
+def _help_menu_lines(wizard: Wizard, menu, index: int, view: str, width: int) -> list[str]:
+    """#175: the Help & settings page (or its shortcuts page) as text."""
+    if view == "shortcuts":
+        keys = list(_primary_footer(wizard, False)) + _chrome_extra(wizard)
+        if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
+            keys.append(C.CON_KEYBOARD)
+        if wizard.can_open_report_help:
+            keys.append(C.CON_REPORT_HELP)
+        keys.append(C.MENU_SHORTCUTS_MENU)
+        lines = _lines(C.MENU_SHORTCUTS, width) + [""]
+        for line in keys:
+            lines.extend(_lines(line, width) or [""])
+        lines.append("")
+        lines.extend(_lines(f"Enter/Esc: {C.MENU_BACK}", width))
+        return lines
+    lines = _lines(C.MENU_TITLE, width) + [""]
+    for number, item in enumerate(menu, 1):
+        mark = ">" if number - 1 == index else " "
+        wrapped = _lines(f"{number}. {item.spoken}", max(10, width - 5)) or [""]
+        # Continuation lines stay indented under the item, not like a new item.
+        lines.extend([f"{mark} {wrapped[0]}"] + [f"     {line}" for line in wrapped[1:]])
+    lines.append("")
+    lines.extend(_lines(C.CON_MENU_KEYS, width))
+    return lines
+
+
+def _help_menu(stdscr, wizard: Wizard) -> int:
+    """#175: Help & settings over the current screen until it is closed.
+
+    Returns the key that closed it (Esc, F10, Enter or a digit), or -1 when
+    the screen changed underneath. Items call the wizard's guarded actions
+    only; a disabled item shows its reason and does nothing. The wizard
+    keeps ticking, so an erase in progress is never paused by the menu.
+    """
+    from beamo_wipe import help_menu as _menu
+
+    _curses_opt("noecho")
+    _curses_opt("curs_set", 0)
+    stdscr.timeout(100)
+    screen = wizard.screen
+    index = 0
+    view = "menu"
+    try:
+        while not wizard.wants_shutdown and not wizard.wants_new_session:
+            wizard.tick()
+            if wizard.screen != screen:
+                return -1
+            menu = wizard.help_menu(text_size_supported=False)
+            index = min(index, len(menu) - 1)
+            stdscr.erase()
+            h, w = stdscr.getmaxyx()
+            h, w = max(2, h), max(20, w)
+            for y, line in enumerate(_help_menu_lines(wizard, menu, index, view, w)[:h]):
+                _add(stdscr, y, 0, line, curses.A_BOLD if y == 0 else curses.A_NORMAL)
+            stdscr.refresh()
+            ch = stdscr.getch()
+            if ch in (-1, KEY_RESIZE):
+                continue
+            if view == "shortcuts":
+                if ch == curses.KEY_F10:
+                    return ch
+                if ch in (27, curses.KEY_ENTER, 10, 13):
+                    view = "menu"
+                continue
+            if ch in (27, curses.KEY_F10):
+                return ch
+            if ch in (curses.KEY_UP, curses.KEY_BTAB):
+                index = (index - 1) % len(menu)
+                continue
+            if ch in (curses.KEY_DOWN, 9):
+                index = (index + 1) % len(menu)
+                continue
+            if ord("1") <= ch < ord("1") + len(menu):
+                index = ch - ord("1")
+            elif ch not in (curses.KEY_ENTER, 10, 13):
+                continue
+            item = menu[index]
+            if not item.enabled:
+                continue
+            if item.key == _menu.SHORTCUTS:
+                view = "shortcuts"
+                continue
+            if wizard.activate_help_item(item.key, text_size_supported=False) and not item.stays_open:
+                return ch
+        return -1
+    finally:
+        stdscr.nodelay(True)
+
+
+def _help_menu_holds(closed_by: int, enter_held: bool, escape_held: bool) -> tuple[bool, bool]:
+    """The key that closed the menu is still down: hold it like any other."""
+    if closed_by in (curses.KEY_ENTER, 10, 13):
+        enter_held = True
+    if closed_by == 27:
+        escape_held = True
+    return enter_held, escape_held
+
+
+def _plain_help_menu(wizard: Wizard) -> None:
+    """#175: Help & settings for the line console (type MENU)."""
+    from beamo_wipe import help_menu as _menu
+
+    menu = wizard.help_menu(text_size_supported=False)
+    print(C.MENU_TITLE)
+    for number, item in enumerate(menu, 1):
+        print(f"{number}. {item.spoken}")
+    answer = input(C.CON_MENU_PROMPT).strip()
+    _acknowledge_finish_sound(wizard)
+    if not answer.isdigit() or not 1 <= int(answer) <= len(menu):
+        return
+    item = menu[int(answer) - 1]
+    if not item.enabled:
+        print(item.reason)
+        return
+    if item.key == _menu.SHORTCUTS:
+        print(C.MENU_SHORTCUTS)
+        if wizard.can_open_keyboard and wizard.screen != Screen.KEYBOARD:
+            print(C.CON_KEYBOARD)
+        if wizard.can_open_report_help:
+            print(C.CON_REPORT_HINT)
+        if wizard.can_open_diagnostic:
+            print(C.CON_DIAGNOSTIC_HINT)
+        if wizard.refresh_offered:
+            print(C.CON_REFRESH_HINT)
+        print(C.CON_MENU_HINT)
+        return
+    wizard.activate_help_item(item.key, text_size_supported=False)
 
 
 def _sounds_footer(wizard: Wizard, hear: str) -> str:
@@ -381,8 +581,80 @@ def _sounds_footer(wizard: Wizard, hear: str) -> str:
     return f"{state}  {hear}"
 
 
+def _finish_sound_state(wizard: Wizard) -> str:
+    """Working (#133): the finish-sound toggle state in words."""
+    if not getattr(wizard, "finish_sound_toggle_enabled", True):
+        return C.FINISH_SOUND_STATE_UNAVAILABLE
+    return C.FINISH_SOUND_STATE_ON if getattr(wizard, "sounds_enabled", False) else C.FINISH_SOUND_STATE_OFF
+
+
+def _finish_sound_footer(wizard: Wizard) -> str:
+    """Curses key line: O toggles it (not offered while unavailable)."""
+    state = _finish_sound_state(wizard)
+    if getattr(wizard, "finish_sound_toggle_enabled", True):
+        state = f"O: {state}"
+    return f"{state}  {C.CON_SOUND_HEAR}"
+
+
+def _walk_away_lines(wizard: Wizard) -> list[str]:
+    """Walk-away line (#133) and, when sound is unavailable, the reason."""
+    lines = [getattr(wizard, "walk_away_text", "")]
+    reason = getattr(wizard, "finish_sound_reason", "")
+    if reason:
+        lines.append(reason)
+    return [line for line in lines if line]
+
+
+def _acknowledge_finish_sound(wizard) -> None:
+    """Someone is back (#133); test doubles may not track this."""
+    acknowledge = getattr(wizard, "acknowledge_finish_sound", None)
+    if acknowledge is not None:
+        acknowledge()
+
+
+def _plain_bell() -> None:
+    sys.stdout.write("\a")
+    sys.stdout.flush()
+
+
+def _ring_finish_bell(wizard: Wizard, rung: int, ring) -> int:
+    """Terminal bell fallback (#133) for finish alerts that cannot play.
+
+    Rings once per due alert (first and capped repeats) only when no sound
+    output was found; returns the alert serial now accounted for.
+    """
+    serial = getattr(wizard, "finish_alert_serial", 0)
+    if serial != rung and getattr(wizard, "audio_available", None) is not True:
+        try:
+            ring()
+        except Exception:
+            pass
+    return serial
+
+
+def _review_buttons(wizard: Wizard, focus: str) -> str:
+    """#165: Review's two buttons; the focused one is marked > <, not only by colour.
+
+    Erase now can hold focus only while it is enabled.
+    """
+    erase_focused = focus == "erase" and wizard.erase_enabled
+    back = f"[> {C.BTN_BACK} <]" if not erase_focused else f"[ {C.BTN_BACK} ]"
+    erase = f"[> {C.BTN_ERASE} <]" if erase_focused else f"[ {C.BTN_ERASE} ]"
+    return f"{back}    {erase}"
+
+
+def _result_card_lines(wizard: Wizard, width: int) -> list[str]:
+    """#171: the result card's method, check result and times as text."""
+    card = wizard.result_card
+    out: list[str] = []
+    for label, value in (card.detail_rows if card is not None else ()):
+        out.extend(_lines(f"{label}: {value}", width))
+    return out
+
+
 def _primary_footer(
-    wizard: Wizard, inventory_open: bool, review_pending: bool = False
+    wizard: Wizard, inventory_open: bool, review_pending: bool = False,
+    review_focus: str = "back",
 ) -> list[str]:
     if inventory_open:
         return [C.CON_READ_ONLY]
@@ -390,12 +662,26 @@ def _primary_footer(
     if screen == Screen.SPLASH:
         return [C.CON_PRESS_ANY_KEY]
     if screen == Screen.KEYBOARD:
-        return [
-            C.CON_KEYBOARD_FOOTER,
-            C.CON_INPUT_PREFIX + wizard.typing_check,
-        ]
+        lines = [C.CON_KEYBOARD_FOOTER,
+                 # #179: high contrast on the first screen.
+                 C.CON_CONTRAST_KEY.format(
+                     state=C.MENU_HIGH_CONTRAST_ON if getattr(wizard, "high_contrast", False)
+                     else C.MENU_HIGH_CONTRAST_OFF)]
+        # Guided check (#140): the result sits beside the typed text.
+        result = getattr(wizard, "keyboard_check_text", "")
+        if result:
+            lines.append(result)
+            check = getattr(wizard, "keyboard_check", None)
+            if check is not None and check.kind == "other":
+                title = _keyboard.LAYOUTS[check.layout_id].title
+                lines.append(C.CON_KEYBOARD_CHECK_SWITCH.format(layout=title))
+        lines.append(C.CON_INPUT_PREFIX + wizard.typing_check)
+        return lines
     if screen in (Screen.WHAT, Screen.OWNER):
-        return [C.CON_OWNER_FOOTER, C.CON_READ_MORE]
+        lines = [C.CON_OWNER_FOOTER, C.CON_READ_MORE]
+        if not wizard.owner_ok:
+            lines.insert(0, C.OWNER_CONTINUE_REASON)  # #143: why Enter waits
+        return lines
     if screen == Screen.PICK:
         return [C.CON_PICK_NAV, C.CON_DISK_HELP.format(label=C.DISK_HELP_BUTTON)]
     if screen == Screen.PICK_EMPTY:
@@ -418,17 +704,22 @@ def _primary_footer(
     if screen == Screen.ADVANCED:
         return [C.CON_ADVANCED_FOOTER]
     if screen == Screen.LAST_CHANCE:
+        # #165: as in Tk and GTK, Enter presses only the highlighted button;
+        # focus starts on Back and Erase now takes it only once enabled.
         return [
             C.CON_LAST_REVIEW_FIRST if review_pending else (
                 C.CON_LAST_WAIT.format(seconds=wizard.countdown_display)
-                if not wizard.erase_enabled else C.CON_LAST_ERASE
+                if not wizard.erase_enabled
+                else f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}"
             ),
-            C.CON_BACK_READ_MORE,
+            _review_buttons(wizard, review_focus),
+            C.HINT_LAST_CHANCE_TK,
+            C.CON_READ_MORE,
         ]
     if screen == Screen.WORKING:
         lines = ([C.CON_WORKING_STOP]
                  if wizard.stop_confirmation is not None else [C.CON_WORKING_IDLE])
-        lines.append(_sounds_footer(wizard, C.CON_SOUND_HEAR))
+        lines.append(_finish_sound_footer(wizard))
         if wizard.sound_message:
             lines.append(wizard.sound_message)
         return lines
@@ -439,6 +730,9 @@ def _primary_footer(
     if screen == Screen.REFRESHING:
         return [C.CON_REFRESHING]
     if screen == Screen.REFRESH_CONFIRM:
+        if wizard.refresh_guarded:
+            # #136: Enter keeps the answers; clearing needs its own key.
+            return [C.CON_REFRESH_GUARD_KEEP, C.CON_REFRESH_GUARD_GO]
         return [
             C.CON_REFRESH_ENTER,
             C.CON_REFRESH_ESC,
@@ -452,20 +746,15 @@ def _primary_footer(
         action = C.CON_DIAG_SAVE if wizard._diagnostic_baseline else C.CON_DIAG_PREPARE
         return [C.CON_DIAG_LINE.format(action=action)]
     if screen == Screen.DONE:
-        report = wizard.report_view
-        if wizard.preview:
-            action = C.CON_DONE_PREVIEW
-        elif report.can_save:
-            action = C.CON_DONE_SAVE
-        elif report.can_retry_evidence:
-            action = C.CON_DONE_RETRY
-        else:
-            action = C.CON_DONE_SHUTDOWN
+        # Two actions (#135): erase another disk and shut down. Report keys
+        # are in the Save a report panel; sounds stay the settings line.
+        action = C.CON_DONE_PREVIEW if wizard.preview else C.CON_DONE_SHUTDOWN
+        reason = getattr(wizard, "done_actions_reason", "")
         if wizard.can_erase_another:
-            lines = [C.CON_DONE_READ, C.ANOTHER_HINT,
+            lines = [C.CON_DONE_READ, reason or C.ANOTHER_HINT,
                      C.CON_DONE_ANOTHER.format(action=action)]
         else:
-            lines = [C.CON_DONE_READ, action]
+            lines = [C.CON_DONE_READ, action] + ([reason] if reason else [])
         lines.append(_sounds_footer(wizard, C.CON_SOUND_HEAR_AGAIN))
         if wizard.sound_message:
             lines.append(wizard.sound_message)
@@ -486,22 +775,27 @@ def _assist_footer(wizard: Wizard, inventory_open: bool) -> list[str]:
             lines.append(C.CON_BOOT_IDENTITY.format(line=C.CON_PROTECTED_BOOT_MEDIA))
         if screen == Screen.PICK and len(wizard.selectable) > 1:
             lines.append(C.CON_COMPARE)
+        if wizard.owner_carried:
+            lines.append(C.CON_OWNER_CARRY_KEY)  # #187
         return lines
     return []
 
 
 def _footer_lines(
     wizard: Wizard, inventory_open: bool, width: int, height: int,
-    review_pending: bool = False,
+    review_pending: bool = False, review_focus: str = "back",
 ) -> list[str]:
     """Pin next-step actions. Assist and extra chrome drop before identity."""
     actions: list[str] = []
-    for line in _primary_footer(wizard, inventory_open, review_pending):
+    for line in _primary_footer(wizard, inventory_open, review_pending, review_focus):
         actions.extend(_lines(line, width) or [""])
     assist: list[str] = []
     for line in _assist_footer(wizard, inventory_open):
         assist.extend(_lines(line, width) or [""])
     extra: list[str] = []
+    # #175: F10 opens Help & settings on every screen; its hint comes first
+    # so it is the last optional line to drop on a short terminal.
+    bits = [C.MENU_KEY]
     if not inventory_open and wizard.screen not in {
         Screen.WORKING,
         Screen.CHECKING,
@@ -512,9 +806,8 @@ def _footer_lines(
         Screen.CONFIRM,
         Screen.KEYBOARD,
     }:
-        joined = "    ".join(_chrome_extra(wizard))
-        if joined:
-            extra.extend(_lines(joined, width))
+        bits.extend(_chrome_extra(wizard))
+    extra.extend(_lines("    ".join(bits), width))
     min_body = 8 if height >= 14 else 2
     if len(actions) > height - 1:
         actions = actions[-(height - 1):]
@@ -568,8 +861,8 @@ def _emit(text: str, width: int = 76) -> None:
         print(line)
 
 
-def _print_view(view, width: int = 76, *, include_path: bool = False) -> None:
-    for line in _identity_field_lines(view, width, include_path=include_path):
+def _print_view(view, width: int = 76, *, include_path: bool = False, token: bool = False) -> None:
+    for line in _identity_field_lines(view, width, include_path=include_path, token=token):
         print(line)
 
 
@@ -621,16 +914,18 @@ def _answer(wizard: Wizard, prompt: str) -> str:
             print(C.CON_KEYBOARD_LONG)
         else:
             print(C.CON_KEYBOARD)
-    if wizard.can_refresh:
-        if wizard.screen == Screen.REFRESH_CONFIRM:
-            print(C.CON_REFRESH_HINT_CONFIRM)
-        else:
-            print(C.CON_REFRESH_HINT)
+    if wizard.screen == Screen.REFRESH_CONFIRM:
+        print(C.CON_REFRESH_HINT_CONFIRM)
+    elif wizard.refresh_offered:
+        print(C.CON_REFRESH_HINT)
     if wizard.can_open_diagnostic and confirm_word != "diagnostic":
         print(C.CON_DIAGNOSTIC_HINT)
     if wizard.can_open_report_help and confirm_word != "report":
         print(C.CON_REPORT_HINT)
+    if confirm_word != "menu":
+        print(C.CON_MENU_HINT)  # #175
     answer = input(prompt)
+    _acknowledge_finish_sound(wizard)
     keyboard_command = answer.strip().upper()
     names_confirm_token = (
         confirm_token is not None
@@ -647,10 +942,16 @@ def _answer(wizard: Wizard, prompt: str) -> str:
     if wizard.can_open_report_help and keyboard_command == "REPORT" and not names_confirm_token:
         wizard.open_report_help()
         raise _InventoryRefreshed
+    if keyboard_command == "MENU" and not names_confirm_token:
+        _plain_help_menu(wizard)  # #175: never erases; guarded actions only
+        raise _InventoryRefreshed
     if wizard.can_open_diagnostic and keyboard_command == "DIAGNOSTIC" and not names_confirm_token:
         wizard.open_diagnostic()
         raise _InventoryRefreshed
-    if wizard.can_refresh and answer.strip().upper() == "CHECK DISKS AGAIN":
+    if (
+        (wizard.refresh_offered or wizard.screen == Screen.REFRESH_CONFIRM)
+        and answer.strip().upper() == "CHECK DISKS AGAIN"
+    ):
         _request_or_confirm_refresh(wizard)
         raise _InventoryRefreshed
     if wizard.screen == Screen.REFRESH_CONFIRM and answer.strip().upper() == "BACK":
@@ -659,17 +960,41 @@ def _answer(wizard: Wizard, prompt: str) -> str:
     return answer
 
 
-def _report_headline(wizard: Wizard, report) -> str:
-    """Report copy state in words. Saved copies say Saved; report and
-    evidence problems stay warnings, never errors: report transport must
-    not reuse the red erase-failure severity."""
-    if wizard.preview:
-        return C.REPORT_PREVIEW
-    if report.tone == "ok":
-        return f"{C.SEVERITY_SAVED}: {report.headline}"
-    if report.tone == "warn":
-        return f"{C.SEVERITY_WARNING}: {report.headline}"
-    return report.headline
+def _panel_lines(wizard: Wizard, panel, *, keys: bool = True) -> list[str]:
+    """Save a report panel (#135) as text: state, steps, controls, notice.
+
+    Saved copies say Saved; report and evidence problems stay warnings,
+    never errors: report transport must not reuse the red erase-failure
+    severity. ``keys`` adds the curses key for each usable control; a
+    greyed control is replaced by its reason.
+    """
+    if panel.kind == "preview":
+        return [panel.headline]
+    if panel.tone == "ok":
+        out = [f"{C.SEVERITY_SAVED}: {panel.headline}"]
+    elif panel.tone == "warn":
+        out = [f"{C.SEVERITY_WARNING}: {panel.headline}"]
+    else:
+        out = [panel.headline]
+    if panel.detail:
+        prefix = f"{C.SEVERITY_WARNING}: " if panel.kind == "evidence" else ""
+        out.extend((prefix + panel.detail).split("\n"))
+    out.extend(panel.step_lines)
+    if panel.show_retry:
+        if panel.retry_enabled:
+            if keys:
+                out.append(C.CON_PANEL_RETRY)
+        else:
+            out.append(panel.retry_reason)
+    if panel.show_save:
+        if panel.save_enabled:
+            if keys:
+                out.append(C.CON_PANEL_SAVE)
+        else:
+            out.append(panel.save_reason)
+    if panel.notice:
+        out.append(panel.notice)
+    return [line for line in out if line]
 
 
 def _plain_loop(wizard: Wizard) -> int:
@@ -713,24 +1038,47 @@ def _plain_loop(wizard: Wizard) -> int:
             raise
 
 
+def _working_glance_lines(view: ProgressView) -> list[str]:
+    """Working screen (#132): percentage, time line, step; then real
+    warnings and notes. Never a "not reported" placeholder."""
+    lines = list(view.glance_lines)
+    if view.glance_stale:
+        lines.append(view.glance_stale)
+    lines.extend(view.glance_notes)
+    return lines
+
+
 def _plain_loop_body(wizard: Wizard) -> int:
     last_working = None
+    # Plain console output is often read aloud: print progress at the same
+    # pace as the screen-reader view, not on every percentage change.
+    announcer = ProgressAnnouncer()
+    spoken = ""
+    bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
         screen = wizard.screen
         if screen != Screen.WORKING:
             print("\n" + "=" * 60)
             print(C.APP_NAME)
-            stage = C.journey_caption(screen)
+            stage = C.journey_step_caption(wizard)
             if stage:
                 print(stage)
             print(_screen_title(wizard))
             last_working = None
+            announcer = ProgressAnnouncer()
             if wizard.preview:
                 print(C.PREVIEW_BANNER)
             print("=" * 60)
         if screen == Screen.REFRESH_CONFIRM:
             print(_screen_title(wizard))
+            if wizard.refresh_guarded:
+                # #136: only the typed words clear the answers; a bare
+                # Enter keeps them (Cancel is the default).
+                _emit(C.REFRESH_GUARD_LEAD)
+                if not _answer(wizard, C.CON_REFRESH_GUARD_PROMPT).strip():
+                    wizard.back()
+                continue
             _emit(C.REFRESH_LEAD)
             _answer(wizard, C.CON_REFRESH_PROMPT)
             continue
@@ -772,26 +1120,32 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.SPLASH:
             print(C.SPLASH_TAGLINE)
+            print(C.splash_roadmap(PREPARATION_PATH))  # the header's stages (#138)
             _answer(wizard, C.CON_PRESS_ENTER)
             wizard.skip_splash()
             continue
         if screen == Screen.KEYBOARD:
-            print(C.TITLE_KEYBOARD)
-            print(C.KEYBOARD_LEAD)
-            print(C.KEYBOARD_LIMITS)
-            print(C.TEXT_SIZE_LEAD)
+            # #131: language first, each in its own name.
+            print(LANGUAGE_PICKER_LABEL)
+            for index, code in enumerate(LANGUAGE_ORDER, 1):
+                mark = ">" if wizard.language == code else " "
+                print(f"{mark} L{index} {LANGUAGE_NAMES[code]}")
+            print(C.LANGUAGE_LEAD)
+            # #139: language, then text size, then the keyboard.
+            print(C.TEXT_SIZE_UTILITY)
             print(C.TEXT_SIZE_CONSOLE)
+            print(C.TITLE_KEYBOARD)
+            notice = C.keyboard_layout_notice(wizard)
+            if notice:
+                print(notice)
+            print(C.KEYBOARD_LEAD)
             print(_keyboard.CONSOLE_DEAD_KEYS)
             for i, layout_id in enumerate(LAYOUT_ORDER, 1):
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 mark = ">" if wizard.keyboard_layout == layout_id else " "
                 print(f"{mark} {i} {layout_spec.title}")
                 print(layout_spec.note)
-            print(C.TITLE_LANGUAGE)
-            print(C.LANGUAGE_LEAD)
-            for code in LANGUAGE_ORDER:
-                mark = ">" if wizard.language == code else " "
-                print(f"{mark} {LANGUAGE_NAMES[code]}")
+            print(C.KEYBOARD_LIMITS)  # #141: fine print after the layouts
             if wizard.error:
                 _print_error_recovery(wizard.error)
                 if error_needs_support(wizard.error):
@@ -799,15 +1153,31 @@ def _plain_loop_body(wizard: Wizard) -> int:
             elif wizard.keyboard_message:
                 print(f"{C.SEVERITY_WARNING}: {wizard.keyboard_message}")
             print(C.KEYBOARD_CHECK_LABEL)
+            result = wizard.keyboard_check_text
+            if result:
+                print(result)
+                check = wizard.keyboard_check
+                if check is not None and check.kind == "other":
+                    title = _keyboard.LAYOUTS[check.layout_id].title
+                    print(C.CON_KEYBOARD_CHECK_SWITCH_WORD.format(layout=title))
             typed = input(C.CON_INPUT_PREFIX)
             key = typed.strip()
-            keyboard_mapping = {"1": "us", "2": "fr", "3": "de"}
+            if key.upper() == "SWITCH":
+                wizard.accept_keyboard_suggestion()
+                continue
+            if len(key) == 1 and key.isalpha():
+                # #140: one letter is an answer to the guided check.
+                wizard.check_keyboard_key(key)
+            keyboard_mapping = {str(i): lid for i, lid in enumerate(LAYOUT_ORDER, 1)}
+            language_mapping = {f"L{i}": code for i, code in enumerate(LANGUAGE_ORDER, 1)}
             if key in keyboard_mapping:
                 wizard.set_keyboard_layout(keyboard_mapping[key])
             elif key.upper() == "K":
                 pass
             elif key.upper() == "LANG":
-                wizard.set_language(_next_language(wizard))
+                wizard.choose_language(_next_language(wizard))
+            elif key.upper() in language_mapping:
+                wizard.choose_language(language_mapping[key.upper()])
             elif key == "":
                 wizard.accept_keyboard()
             else:
@@ -817,17 +1187,20 @@ def _plain_loop_body(wizard: Wizard) -> int:
             print(C.TITLE_OWNER)
             print(C.SPLASH_TAGLINE)
             print(C.WHAT_LEAD)
-            for b in C.WHAT_BULLETS:
+            for b in C.owner_bullets():
                 print(" -", b)
             print(C.this_usb_line())
             print(C.REPORT_MEDIA_WHAT)
             print(C.POWER_REMINDER)
             print(C.POWER_BLANKING)
             print(C.POWER_EVENTS)
-            print(wizard.power_text)
+            print(wizard.power_badge.spoken)  # #144: the short state
             ident = _support_identity_text(wizard)
             if ident:
                 print(ident)
+            print(C.owner_platforms_line())  # #146: fine print, not a bullet
+            if wizard.owner_carry_note:
+                print(wizard.owner_carry_note)  # #187
             print(C.OWNER_LEAD)
             print(C.OWNER_CHECKBOX)
             ans = _answer(wizard, C.CON_OWNER_PROMPT).strip()
@@ -852,7 +1225,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.PICK_EMPTY:
             print(C.TITLE_EMPTY)
-            _print_recovery(recovery_for_empty())
+            # #185: Intel VMD / RST steps only when detection is certain.
+            _print_recovery(recovery_for_empty(getattr(wizard, "empty_storage_hint", "")))
             print(wizard.inventory_count)
             print(C.support_text())
             ident = _support_identity_text(wizard)
@@ -868,11 +1242,11 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.PICK:
             print(wizard.inventory_count)
+            if wizard.owner_carried:  # #187
+                print(C.OWNER_CARRY_LINE)
+                print(C.CON_OWNER_CARRY_HINT)
             if wizard.protected_boot_text:
                 print(wizard.protected_boot_text)
-            if len(wizard.selectable) > 1:
-                print(inventory.COMPARE_TITLE)
-                print(inventory.comparison_text(wizard.selectable, peers=wizard.listed_disks))
             if wizard.other_devices:
                 print(inventory.TITLE)
                 print(inventory.full_text(wizard.other_devices))
@@ -881,24 +1255,47 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(f"{C.SEVERITY_WARNING}: {C.SAME_SIZE_HINT}")
             if wizard.report_wanted:
                 print(C.REPORT_MEDIA_WANTED)
-            numbered = sorted(wizard.selectable, key=lambda d: d.path)
-            for i, disk in enumerate(numbered, 1):
-                view = wizard.disk_view(disk)
+            # Internal disks first, then external; stable (#151). The
+            # number chooses the disk shown next to it, by path.
+            numbered = list(pick_order(wizard.selectable))
+            for i, listed in enumerate(numbered, 1):
+                view = wizard.disk_view(listed)
                 _emit(f"[{i}] {view.title}")
                 for part in (view.capacity, view.kind_chip, view.connection):
                     if part:
                         _emit(f"    {part}")
-                _emit(f"    {view.id_label}: {view.id_value}")
+                # One serial per disk, part to compare in [brackets] (#148).
+                _emit(f"    {view.id_label}: {view.marked_id}")
                 for note in view.notes:
                     _emit("    " + note)
-                nested = inventory.card_nesting_text(wizard.nested_components(disk))
+                tags = " · ".join(wizard.disk_tags(listed))  # #187: erased earlier too
+                if tags:
+                    _emit("    " + tags)  # #154
+                hint = C.contents_hint(listed)
+                if hint:
+                    _emit("    " + hint)
+                nested = inventory.card_nesting_text(wizard.nested_components(listed))
                 if nested:
                     for line in nested.split("\n"):
                         _emit("    " + line)
+            # The read-only comparison repeats every serial, so it is on
+            # request (C), as in curses, Tk and GTK; the cards show each
+            # serial once (#148).
+            compare = len(wizard.selectable) > 1
+            if compare:
+                print(C.CON_COMPARE)
             print(C.CON_DISK_HELP.format(label=C.DISK_HELP_BUTTON))
             choice = _answer(wizard, C.CON_PICK_PROMPT).strip()
+            if wizard.owner_carried and choice.upper() == "OWNER":
+                wizard.change_ownership()  # #187
+                continue
             if choice.upper() == "U":
                 wizard.open_disk_help()
+                continue
+            if compare and choice.upper() == "C":
+                print(inventory.COMPARE_TITLE)
+                print(inventory.comparison_text(wizard.selectable, peers=wizard.listed_disks))
+                _answer(wizard, C.CON_PRESS_ENTER)
                 continue
             try:
                 idx = int(choice) - 1
@@ -922,17 +1319,23 @@ def _plain_loop_body(wizard: Wizard) -> int:
             disk = wizard.selected
             confirm_spec = wizard.confirm
             if disk:
-                _print_view(wizard.disk_view(disk))
+                _print_view(wizard.disk_view(disk), token=True)
             _emit(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}")
-            print(confirm_spec.prompt if confirm_spec else "")
-            print(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
-                language=LANGUAGE_NAMES[wizard.language],
-            ))
+            print(C.confirm_prompt(confirm_spec, console=True) if confirm_spec else "")
+            feedback = wizard.confirm_feedback
+            if feedback is not None:
+                # #156: what was typed, wrong characters in [brackets].
+                print(feedback.display)
+                print(feedback.message)
+            if wizard.confirm_layout_hint:
+                # #155: after a wrong entry; K (printed by _answer) changes it.
+                print(C.CONFIRM_LAYOUT_HINT.format(
+                    layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
+                ))
             typed = _answer(wizard, C.CON_INPUT_PREFIX)
             wizard.set_confirm_input(typed)
-            if wizard.token_ok:
-                wizard.continue_confirm()
+            # Moves on only when it matches; otherwise records a wrong entry.
+            wizard.continue_confirm()
             continue
         if screen == Screen.METHOD:
             print(C.TITLE_METHOD)
@@ -940,21 +1343,30 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 print(C.SELECTED_DISK)
                 _print_view(wizard.disk_view(wizard.selected))
                 print(f"{_identity.SYSTEM_PATH_NOTE}: {wizard.selected.path}")
-            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}")
-            print(limits.BUTTON)
+            # #158: one limits line before the choices; the full notice
+            # (unchanged) and the L route follow them.
+            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_line}")
             for method, spec in METHODS.items():
                 card = C.METHOD_CARDS[method]
                 mark = f" [{card['mark']}]" if card["mark"] else ""
-                extra = f" {card['extra']}" if card["extra"] else ""
                 lead = f" {card['lead']}" if card["lead"] else ""
-                limits_note = f" {card['limits']}" if card["limits"] else ""
+                guide = f" {C.method_time_line(method, wizard.selected)}"  # #159
                 # One logical line so overwrite + verification stay a contiguous description.
                 # The TTY wraps at its own width; pre-fill would split spec.description.
                 print(
                     f"{card['key']} {spec.title}{mark}: "
                     f"{spec.overwrite_description} {spec.verification_description}"
-                    f"{extra}{lead}{limits_note}"
+                    f"{guide}{lead}"
                 )
+            # #160/#161: the Everyday caveat and why Three overwrites is
+            # rarely needed follow the choices, named for their method,
+            # instead of lengthening that choice's line.
+            for method, spec in METHODS.items():
+                for note in (C.METHOD_CARDS[method]["extra"], C.METHOD_CARDS[method]["limits"]):
+                    if note:
+                        print(f"{spec.title}: {note}")
+            print(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}")
+            print(limits.BUTTON)
             choice = _answer(wizard, C.CON_METHOD_PROMPT).strip()
             if choice.lower() == "a":
                 wizard.open_advanced()
@@ -1004,10 +1416,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
                     _print_view(wizard.disk_view(wizard.selected))
                 print(C.POWER_KEEP)
                 print(wizard.power_text)
-                print(wizard.prepare_text())
-                print(wizard.operation_summary)
+                print(wizard.review_method_line)  # #164: the one method line
                 print(f"{C.SEVERITY_WARNING}: {wizard.erase_label()}")
-                print(wizard.method_summary)
                 if wizard.error:
                     _print_error_recovery(wizard.error)
                     if error_needs_support(wizard.error):
@@ -1026,6 +1436,8 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 wizard.tick()
                 print(C.CON_COUNTDOWN.format(seconds=wizard.countdown_display))
                 time.sleep(0.4)
+            # #163: say the review period is over; typing ERASE still starts it.
+            print(f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}")
             _retire_erase_typeahead(wizard)
             ans = _answer(wizard, C.CON_ERASE_PROMPT).strip()
             if ans.upper() == "ERASE":
@@ -1034,7 +1446,10 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 wizard.back()
             continue
         if screen == Screen.WORKING:
-            status = (wizard.progress_view.status_text, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message)
+            update = announcer.update(wizard.progress_view, time.monotonic())
+            if update is not None:
+                spoken = update
+            status = (spoken, wizard.error, wizard.evidence_warning, C.POWER_KEEP, wizard.power_text, wizard.stop_confirmation, wizard.sound_toggle_text, wizard.sound_message, *_walk_away_lines(wizard), getattr(wizard, "sounds_enabled", False))
             if status != last_working:
                 print(status[0])
                 _print_operation_identity(wizard)
@@ -1044,7 +1459,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 else:
                     print(f"{C.SEVERITY_WARNING}: {C.STOP_WARNING}")
                     print(C.CON_STOP_REVIEW)
-                print(wizard.sound_toggle_text)
+                print(_finish_sound_state(wizard))
                 print(C.CON_SOUND_WORDS_WORKING)
                 if wizard.sound_message:
                     print(wizard.sound_message)
@@ -1055,7 +1470,7 @@ def _plain_loop_body(wizard: Wizard) -> int:
                         print(C.support_text())
                 if wizard.evidence_warning:
                     print(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}")
-                for notice in (C.POWER_KEEP, wizard.power_text):
+                for notice in (*_walk_away_lines(wizard), C.POWER_KEEP, wizard.power_text):
                     if notice:
                         print(notice)
                 last_working = status
@@ -1090,15 +1505,25 @@ def _plain_loop_body(wizard: Wizard) -> int:
             continue
         if screen == Screen.DONE:
             wizard.request_auto_outcome_sound()
-            print(wizard.method_result)
+            # Plain mode waits on typed input here, so it rings once (#133).
+            bell_rung = _ring_finish_bell(wizard, bell_rung, _plain_bell)
+            plain = _result_plain(wizard)
+            # Plain headline first; failures follow with What happened (the
+            # exact status message), finished outcomes keep it as the
+            # Technical details line below.
+            print(plain.headline)
             print(wizard.elapsed_text)
-            report = wizard.report_view
-            print(wizard.method_summary)
+            card = wizard.result_card  # #171: method, check result, times
+            for label, value in (card.detail_rows if card is not None else ()):
+                print(f"{label}: {value}")
             if wizard.selected:
                 _print_view(wizard.disk_view(wizard.selected))
             sections = recovery_for_view(wizard.result_view)
             if sections:
                 _print_recovery(sections)
+            elif plain.checklist:
+                for line in _what_next_lines(plain):
+                    print(line)
             else:
                 print(wizard.result_view.next_step)
             if wizard.done_support_needed:
@@ -1106,19 +1531,30 @@ def _plain_loop_body(wizard: Wizard) -> int:
             ident = _support_identity_text(wizard)
             if ident:
                 print(ident)
-            if may_have_erased(wizard.result_view.code):
+            if plain.checklist:
+                print(_technical_line(wizard))
+            elif may_have_erased(wizard.result_view.code):
                 print(C.POST_ERASE_BOOT)
+            for alert in wizard.check_alerts:
+                print(f"{C.SEVERITY_WARNING}: {alert}")
+            # Save a report (#135): a fresh read-only USB check per print.
+            getattr(wizard, "refresh_report_usb", lambda: None)()
+            panel = wizard.report_panel
+            print(C.REPORT_STATUS_TITLE)
+            for line in _panel_lines(wizard, panel, keys=False):
+                print(line)
+            record_lines = _record_lines(wizard)
+            if record_lines:
+                # Title and lead wrap; the summary prints verbatim, line by line.
+                _emit(record_lines[0])
+                _emit(record_lines[1])
+                for line in record_lines[2:]:
+                    print(line)
+            # Settings (#135): sounds after the result and report.
             print(wizard.sound_toggle_text)
             print(C.CON_SOUND_WORDS_DONE)
             if wizard.sound_message:
                 print(wizard.sound_message)
-            for alert in wizard.check_alerts:
-                print(f"{C.SEVERITY_WARNING}: {alert}")
-            print(C.REPORT_STATUS_TITLE)
-            print(_report_headline(wizard, report))
-            print(C.REPORT_STATUS_NOTICE)
-            if report.evidence_error:
-                print(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}")
             if wizard.preview:
                 ans = _answer(wizard, C.CON_RUN_AGAIN).strip().lower()
                 if ans in ("q", "quit", "close"):
@@ -1130,14 +1566,18 @@ def _plain_loop_body(wizard: Wizard) -> int:
                 else:
                     wizard.reset_for_preview()
             else:
-                if not report.evidence_error:
-                    print(C.report_aftercare(can_save=report.can_save, status=report.status, message=report.message))
-                if report.can_retry_evidence:
+                retry = panel.show_retry and panel.retry_enabled
+                if retry:
                     prompt = C.CON_DONE_RETRY_PROMPT
-                elif report.can_save:
+                elif panel.save_enabled:
                     prompt = C.CON_DONE_SAVE_PROMPT
                 else:
                     prompt = C.CON_DONE_SHUTDOWN_PROMPT
+                    if panel.show_save:
+                        print(C.CON_PLAIN_RECHECK)
+                reason = getattr(wizard, "done_actions_reason", "")
+                if reason:
+                    print(reason)
                 if wizard.can_erase_another:
                     print(C.ANOTHER_HINT)
                     prompt += C.CON_DONE_ANOTHER_PROMPT
@@ -1146,9 +1586,9 @@ def _plain_loop_body(wizard: Wizard) -> int:
                     wizard.toggle_sounds()
                 elif action == "HEAR":
                     wizard.request_hear_outcome_sound()
-                elif action == "RETRY" and report.can_retry_evidence:
+                elif action == "RETRY" and retry:
                     wizard.retry_evidence_save()
-                elif action == "SAVE" and report.can_save:
+                elif action == "SAVE" and panel.save_enabled:
                     wizard.save_report_to_usb()
                 elif action == "ANOTHER":
                     wizard.erase_another_disk()
@@ -1229,8 +1669,12 @@ def _loop(stdscr, wizard: Wizard) -> int:
     review_overlay_held = False
     review_lines: tuple[str, ...] = ()
     review_seen: set[int] = set()
+    # #165: the Review button with focus; Back is the safe default.
+    review_focus = "back"
+    bell_rung = getattr(wizard, "finish_alert_serial", 0)
     while not wizard.wants_shutdown and not wizard.wants_new_session:
         wizard.tick()
+        _sync_contrast(stdscr, wizard)  # #179
         screen_changed = wizard.screen != shown_screen
         first_review_frame = wizard.screen == Screen.LAST_CHANCE and screen_changed
         if screen_changed:
@@ -1246,12 +1690,15 @@ def _loop(stdscr, wizard: Wizard) -> int:
             review_seen.clear()
             review_lines = ()
             review_overlay_held = wizard.begin_review_overlay()
+        if first_review_frame or wizard.screen != Screen.LAST_CHANCE or not wizard.erase_enabled:
+            # Arrival, leaving, or a restarted countdown: focus back on Back.
+            review_focus = "back"
         shown_screen = wizard.screen
         stdscr.erase()
         h, w = stdscr.getmaxyx()
         h, w = max(2, h), max(20, w)
         review_ready_painted = wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled
-        footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held)
+        footer = _footer_lines(wizard, inventory_open, w, h, review_overlay_held, review_focus)
         y_max = max(1, h - len(footer))
         chrome = _chrome_lines(wizard, w)
         y = 0
@@ -1287,23 +1734,46 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 y += 1
         elif wizard.screen == Screen.SPLASH:
             y = _wrap(stdscr, y, C.SPLASH_TAGLINE, w, y_max)
+            y = _wrap(stdscr, y, C.splash_roadmap(PREPARATION_PATH), w, y_max)
         elif wizard.screen == Screen.KEYBOARD:
-            y = _wrap(stdscr, y, C.KEYBOARD_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.KEYBOARD_LIMITS, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_LEAD, w, y_max)
-            y = _wrap(stdscr, y, C.TEXT_SIZE_CONSOLE, w, y_max)
-            y = _wrap(stdscr, y, _keyboard.CONSOLE_DEAD_KEYS, w, y_max) + 1
+            # #131: the language list comes first and always stays on screen;
+            # F2 changes it before anything else has to be read.
+            languages = _lines(LANGUAGE_PICKER_LABEL, w) + _lines(
+                "  ".join(
+                    f"{'>' if wizard.language == code else ' '}{LANGUAGE_NAMES[code]}"
+                    for code in LANGUAGE_ORDER
+                ),
+                w,
+            )
+            notice = C.keyboard_layout_notice(wizard)
+            if notice:
+                languages.extend(_lines(notice, w))
+            for line in languages:
+                if y < y_max:
+                    _add(stdscr, y, 0, line)
+                    y += 1
+            lead: list[str] = []
+            # #139: text size (graphical only) before the keyboard part.
+            for text in (C.TEXT_SIZE_CONSOLE, C.KEYBOARD_LEAD, _keyboard.CONSOLE_DEAD_KEYS):
+                lead.extend(_lines(text, w))
             lines = []
-            for i, layout_id in enumerate(LAYOUT_ORDER, 1):
+            if y + len(lead) + 1 + KEYBOARD_MIN_LIST_ROWS <= y_max:
+                for line in lead:
+                    _add(stdscr, y, 0, line)
+                    y += 1
+                y += 1
+            else:
+                # A short console: a fixed lead would fill every row and the
+                # layouts could never be reached, so it pages with them.
+                lines.extend(lead)
+                lines.append("")
+            for layout_id in LAYOUT_ORDER:
                 layout_spec = _keyboard.LAYOUTS[layout_id]
                 star = ">" if wizard.keyboard_layout == layout_id else " "
-                lines.extend(_lines(f"{star} {i} {layout_spec.title}: {layout_spec.note}", w))
+                lines.extend(_lines(f"{star} {layout_spec.title}: {layout_spec.note}", w))
                 lines.append("")
-            lines.extend(_lines(C.TITLE_LANGUAGE, w))
-            lines.extend(_lines(C.LANGUAGE_LEAD, w))
-            for code in LANGUAGE_ORDER:
-                star = ">" if wizard.language == code else " "
-                lines.extend(_lines(f"{star} {LANGUAGE_NAMES[code]}", w))
+            # #141: the layout fine print follows the layouts (paged, Up/Down).
+            lines.extend(_lines(C.KEYBOARD_LIMITS, w))
             lines.append("")
             if wizard.error:
                 lines.extend(_lines(_error_recovery_text(wizard.error), w))
@@ -1318,19 +1788,22 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines.extend(_lines(C.TITLE_OWNER, w))
             lines.extend(_lines(C.WHAT_LEAD, w))
             lines.append("")
-            for bullet in C.WHAT_BULLETS:
+            for bullet in C.owner_bullets():
                 lines.extend(_lines(" * " + bullet, w))
                 lines.append("")
             lines.extend(_lines(C.this_usb_line(), w))
-            lines.extend(_lines(C.REPORT_MEDIA_WHAT, w))
+            lines.extend(_lines(f"{C.REPORT_MEDIA_WHAT} {C.CON_REPORT_LEARN}", w))
             lines.extend(_lines(C.POWER_REMINDER, w))
             lines.extend(_lines(C.POWER_BLANKING, w))
-            lines.extend(_lines(wizard.power_text, w))
+            # #144: the status sentence is the header badge now.
             lines.extend(_lines(C.POWER_EVENTS, w))
             ident = _support_identity_text(wizard)
             if ident:
                 lines.extend(_lines(ident, w))
+            lines.extend(_lines(C.owner_platforms_line(), w))  # #146: fine print
             lines.append("")
+            if wizard.owner_carry_note:
+                lines.extend(_lines(wizard.owner_carry_note, w))  # #187
             lines.extend(_lines(C.OWNER_LEAD, w))
             lines.extend(_lines(C.OWNER_CHECKBOX, w))
             mark = "[X]" if wizard.owner_ok else "[ ]"
@@ -1359,6 +1832,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             for group in (
                 warning_lines,
                 _lines(wizard.inventory_count, w),
+                _lines(C.OWNER_CARRY_LINE, w) if wizard.owner_carried else [],  # #187
                 _lines(C.pick_subtitle(), w),
             ):
                 if group and len(intro) + len(group) <= intro_budget:
@@ -1396,7 +1870,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if need_below:
                 _add(stdscr, y_max - 1, 0, C.CON_MORE_DISKS_BELOW)
         elif wizard.screen == Screen.REFRESH_CONFIRM:
-            _wrap(stdscr, y, C.REFRESH_LEAD, w, y_max)
+            _wrap(stdscr, y, C.REFRESH_GUARD_LEAD if wizard.refresh_guarded else C.REFRESH_LEAD,
+                  w, y_max)
         elif wizard.screen == Screen.SHUTDOWN_CONFIRM:
             y = _wrap(stdscr, y, wizard.exit_confirmation_loss, w, y_max)
             rest = (
@@ -1446,7 +1921,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
         elif wizard.screen == Screen.PICK_EMPTY:
             lines = _lines(
                 format_recovery_text(
-                    recovery_for_empty(), include_technical=True, compact=True
+                    recovery_for_empty(getattr(wizard, "empty_storage_hint", "")),
+                    include_technical=True, compact=True,
                 ),
                 w,
             )
@@ -1469,15 +1945,21 @@ def _loop(stdscr, wizard: Wizard) -> int:
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         elif wizard.screen == Screen.CONFIRM and wizard.selected:
             view = wizard.disk_view(wizard.selected)
-            rest = _identity_field_lines(view, w)
+            rest = _identity_field_lines(view, w, token=True)
             rest.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.warning_text()}", w))
             confirm_spec = wizard.confirm
             if confirm_spec:
-                rest.extend(_lines(confirm_spec.prompt, w))
-            rest.extend(_lines(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title,
-                language=LANGUAGE_NAMES[wizard.language],
-            ), w))
+                rest.extend(_lines(C.confirm_prompt(confirm_spec, console=True), w))
+            feedback = wizard.confirm_feedback
+            if feedback is not None:
+                # #156: what was typed, wrong characters in [brackets].
+                rest.extend(_lines(feedback.display, w))
+                rest.extend(_lines(feedback.message, w))
+            if wizard.confirm_layout_hint:
+                # #155: after a wrong entry, with F2 to change the layout.
+                rest.extend(_lines(
+                    C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[wizard.keyboard_layout].title)
+                    + " " + C.CON_CONFIRM_LAYOUT_KEY, w))
             limits_offset = _paint_paged(stdscr, y, rest, limits_offset, y_max, w)
             _paint_footer(stdscr, footer)
             _curses_opt("echo")
@@ -1515,7 +1997,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if _is_enter_repeat(enter_held, ch):
                 continue
             enter_held = enter_held or ch in (curses.KEY_ENTER, 10, 13)
-            if ch == curses.KEY_F5 and wizard.can_refresh:
+            if ch == curses.KEY_F5 and wizard.refresh_offered:
                 wizard.open_refresh_confirm()
                 continue
             if ch in (curses.KEY_UP, curses.KEY_DOWN, curses.KEY_PPAGE, curses.KEY_NPAGE):
@@ -1527,11 +2009,23 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 }[ch]
                 limits_offset = max(0, limits_offset + delta)
                 continue
+            if ch == curses.KEY_F10:
+                # #175: Help & settings; typed token characters are untouched.
+                closed_by = _help_menu(stdscr, wizard)
+                enter_held, escape_held = _help_menu_holds(closed_by, enter_held, escape_held)
+                enter_quiet_since = escape_quiet_since = None
+                continue
+            if ch == curses.KEY_F2 and wizard.can_open_keyboard:
+                # #155: Change on the layout hint. Typed keys stay the token.
+                wizard.open_keyboard()
+                continue
             if ch in (curses.KEY_ENTER, 10, 13) and wizard.token_ok:
                 wizard.continue_confirm()
                 # Same physical Enter must not also fire Method → Last chance.
                 enter_held = True
                 enter_quiet_since = None
+            elif ch in (curses.KEY_ENTER, 10, 13):
+                wizard.continue_confirm()  # #155: records a wrong entry; stays
             elif ch in (27,):
                 if escape_held:
                     continue
@@ -1551,7 +2045,9 @@ def _loop(stdscr, wizard: Wizard) -> int:
             if wizard.selected:
                 lines.extend(_lines(C.SELECTED_DISK, w))
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}", w))
+            # #158: one limits line before the choices; the full notice
+            # (unchanged) is paged right after them (Up/Down, or L).
+            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_line}", w))
             lines.append("")
             for i, method in enumerate((MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1):
                 star = ">" if wizard.method == method else " "
@@ -1568,10 +2064,26 @@ def _loop(stdscr, wizard: Wizard) -> int:
                     )
                 )
                 lines.append("")
+            lines.extend(_lines(f"{C.SEVERITY_LIMITS}: {wizard.storage_notice}", w))
+            lines.append("")
+            # Rough durations follow the choices so the first page keeps
+            # every method; taller consoles show them without scrolling.
+            guides = [
+                (i, METHODS[method].title, C.method_time_line(method, wizard.selected))
+                for i, method in enumerate(
+                    (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO), 1
+                )
+            ]
+            for i, title, guide in guides:
+                if guide:
+                    lines.extend(_lines(f"{i} {title}: {guide}", w))
+            if any(guide for _, _, guide in guides):
+                lines.append("")
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 extra = C.METHOD_CARDS[method]["extra"]
                 if extra:
-                    lines.extend(_lines(extra, w))
+                    # #161: named for its method, like the plain console.
+                    lines.extend(_lines(f"{METHODS[method].title}: {extra}", w))
                     lines.append("")
             for method in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO):
                 card = C.METHOD_CARDS[method]
@@ -1615,10 +2127,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 rest.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
             rest.extend(_lines(C.POWER_KEEP, w))
             rest.extend(_lines(wizard.power_text, w))
-            rest.extend(_lines(wizard.prepare_text(), w))
-            rest.extend(_lines(wizard.operation_summary, w))
+            rest.extend(_lines(wizard.review_method_line, w))  # #164
             rest.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.erase_label()}", w))
-            rest.extend(_lines(wizard.method_summary, w))
             if wizard.error:
                 rest.extend(_lines(_error_recovery_text(wizard.error), w))
                 if error_needs_support(wizard.error):
@@ -1645,7 +2155,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(_error_recovery_text(wizard.error), w))
                 if error_needs_support(wizard.error):
                     lines.extend(_lines(C.support_text(), w))
-            lines.extend(_lines(wizard.progress_view.status_text, w))
+            for text in _working_glance_lines(wizard.progress_view):
+                lines.extend(_lines(text, w))
             disk = wizard.operation_disk
             if disk is not None:
                 lines.extend(_identity_field_lines(wizard.disk_view(disk), w))
@@ -1654,6 +2165,8 @@ def _loop(stdscr, wizard: Wizard) -> int:
             lines.extend(_lines(wizard.operation_method_text, w))
             if wizard.evidence_warning:
                 lines.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}", w))
+            for text in _walk_away_lines(wizard):
+                lines.extend(_lines(text, w))
             for text in (C.POWER_KEEP, wizard.power_text):
                 if text:
                     lines.extend(_lines(text, w))
@@ -1684,36 +2197,49 @@ def _loop(stdscr, wizard: Wizard) -> int:
             report = wizard.report_view
             sections = recovery_for_view(wizard.result_view)
             # First 80x24 page keeps the pre-#107 landmarks: outcome, next
-            # step, post-erase note, Report status, then paged aftercare.
-            # Disk identity stays reachable; support/meaning follow in the tail.
+            # step, where to get help when it is needed, post-erase note,
+            # the report panel heading and (once saved) that the report USB
+            # can be removed; then paged aftercare. Disk identity stays
+            # reachable; the support code and meaning follow in the tail.
             error_report = bool(report.evidence_error) or report.status == "error"
+            # The help destination follows the step that says to contact
+            # support, as on Tk (#134); the result card (#171), F10 line
+            # (#175) and longer steps (#135) pushed it below the first page.
+            support = _lines(C.support_text(), w) if wizard.done_support_needed else []
             lines = []
             if wizard.selected and not error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            lines.extend(_lines(wizard.method_result, w))
-            lines.extend(_lines(wizard.method_summary, w))
-            lines.extend(_lines(wizard.result_view.next_step, w))
-            if may_have_erased(wizard.result_view.code):
-                lines.extend(_lines(C.POST_ERASE_BOOT, w))
+            plain = _result_plain(wizard)
+            if plain.checklist:
+                # The plain headline is the page title (#134); the note and
+                # What next list replace the next-step paragraph and the
+                # post-erase note. The status message goes to the tail.
+                lines.extend(_result_card_lines(wizard, w))  # #171
+                for line in _what_next_lines(plain):
+                    lines.extend(_lines(line, w))
+                lines.extend(support)
+            else:
+                # Failures: the exact status message (What happened) under
+                # the plain title, unless they are the same (preview).
+                if wizard.method_result != _screen_title(wizard):
+                    lines.extend(_lines(wizard.method_result, w))
+                lines.extend(_result_card_lines(wizard, w))  # #171
+                lines.extend(_lines(wizard.result_view.next_step, w))
+                lines.extend(support)
+                if may_have_erased(wizard.result_view.code):
+                    lines.extend(_lines(C.POST_ERASE_BOOT, w))
             lines.extend(_lines(C.REPORT_STATUS_TITLE, w))
-            lines.extend(_lines(_report_headline(wizard, report), w))
-            if not wizard.preview and not report.evidence_error:
-                lines.extend(
-                    _lines(
-                        C.report_aftercare(
-                            can_save=report.can_save, status=report.status, message=report.message
-                        ),
-                        w,
-                    )
-                )
-            if report.evidence_error:
-                lines.extend(_lines(f"{C.SEVERITY_WARNING}: {wizard.evidence_warning}", w))
-                if report.status == "error":
-                    lines.extend(_lines(C.EXPORT_GUIDE_RETRY, w))
+            panel = wizard.report_panel
+            panel_lines = _panel_lines(wizard, panel)
+            if panel.kind == "saved" and panel_lines:
+                # The saved panel's removal step comes after the receipt,
+                # several rows down. Say it under the headline too so the
+                # first 80x24 page still says the report USB can come out.
+                panel_lines.insert(1, C.REPORT_STEP_REMOVE_NOW)
+            for panel_line in panel_lines:
+                lines.extend(_lines(panel_line, w))
             if wizard.selected and error_report:
                 lines.extend(_identity_field_lines(wizard.disk_view(wizard.selected), w))
-            if wizard.done_support_needed:
-                lines.extend(_lines(C.support_text(), w))
             ident = _support_identity_text(wizard)
             if ident:
                 lines.extend(_lines(ident, w))
@@ -1723,11 +2249,26 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 lines.extend(_lines(f"{Rec.RECOVERY_MEANING}: {sections.meaning}", w))
                 if sections.technical:
                     lines.extend(_lines(f"{Rec.RECOVERY_TECHNICAL}: {sections.technical}", w))
+            elif plain.checklist:
+                lines.extend(_lines(_technical_line(wizard), w))
             lines.extend(_lines(wizard.elapsed_text, w))
-            lines.extend(_lines(C.REPORT_STATUS_NOTICE, w))
             if wizard.check_alerts:
                 for alert in wizard.check_alerts:
                     lines.extend(_lines(f"{C.SEVERITY_WARNING}: {alert}", w))
+            for record_line in _record_lines(wizard):
+                lines.extend(_lines(record_line, w))
+            # When the result pages, the pager's own "More below. Use Up and
+            # Down." already says how to read on, so the footer's read hint
+            # would say it twice. Give that row to the first page instead:
+            # with the help destination (#134) on page 1, longer languages
+            # otherwise lose the Save a report heading below the fold.
+            read_hint = _lines(C.CON_DONE_READ, w)
+            if len(lines) > y_max - y and read_hint:
+                for start in range(len(footer) - len(read_hint) + 1):
+                    if footer[start:start + len(read_hint)] == read_hint:
+                        footer = footer[:start] + footer[start + len(read_hint):]
+                        y_max = max(1, h - len(footer))
+                        break
             limits_offset = _paint_paged(stdscr, y, lines, limits_offset, y_max, w)
         _paint_footer(stdscr, footer)
         stdscr.refresh()
@@ -1736,9 +2277,12 @@ def _loop(stdscr, wizard: Wizard) -> int:
             # final details has actually been painted at least once.
             wizard.end_review_overlay()
             review_overlay_held = False
+        bell_rung = _ring_finish_bell(wizard, bell_rung, curses.beep)
         ch = stdscr.getch()
         if ch == KEY_RESIZE:
             continue
+        if ch != -1:
+            _acknowledge_finish_sound(wizard)
         enter_repeat = space_repeat = action_s_repeat = False
         if ch != -1:
             # Every queued key interrupts release evidence before a shortcut,
@@ -1787,6 +2331,14 @@ def _loop(stdscr, wizard: Wizard) -> int:
                 wizard.arm_done_keyboard()
             time.sleep(0.08)
             continue
+        if ch == curses.KEY_F10:
+            # #175: Help & settings on every screen. Its Enter or Esc stays
+            # held, so the same press cannot act on the screen behind it.
+            closed_by = _help_menu(stdscr, wizard)
+            enter_held, escape_held = _help_menu_holds(closed_by, enter_held, escape_held)
+            enter_quiet_since = escape_quiet_since = None
+            inventory_open = False
+            continue
         if wizard.screen == Screen.SHUTDOWN_CONFIRM and ch in (ord("d"), ord("D")):
             _confirm_report_discard(stdscr, wizard)
             continue
@@ -1797,7 +2349,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
         if wizard.screen == Screen.DIAGNOSTIC and ch in (ord("r"), ord("R")):
             _confirm_diagnostic_action(stdscr, wizard)
             continue
-        if ch == curses.KEY_F5 and wizard.can_refresh:
+        if ch == curses.KEY_F5 and wizard.refresh_offered:
             wizard.open_refresh_confirm()
             inventory_open = False
             continue
@@ -1821,6 +2373,10 @@ def _loop(stdscr, wizard: Wizard) -> int:
             comparison_open = False
             inventory_offset = 0
             continue
+        if wizard.screen in (Screen.PICK, Screen.PICK_EMPTY) and ch in (ord("w"), ord("W")) and wizard.owner_carried:
+            wizard.change_ownership()  # #187: back to the Owner screen, unticked
+            inventory_open = False
+            continue
         if wizard.screen in (Screen.PICK, Screen.PICK_EMPTY) and ch in (ord("o"), ord("O")) and wizard.other_devices:
             comparison_open = False
             inventory_boot = False
@@ -1838,7 +2394,7 @@ def _loop(stdscr, wizard: Wizard) -> int:
         if (
             wizard.screen == Screen.DONE
             and not wizard.preview
-            and wizard.report_view.can_save
+            and wizard.report_panel.save_enabled
             and ch in (ord("r"), ord("R"))
         ):
             _confirm_report_save(stdscr, wizard)
@@ -1889,6 +2445,22 @@ def _loop(stdscr, wizard: Wizard) -> int:
         # Keep this after hold bookkeeping so repeating the rejected key
         # cannot become a fresh action when the next frame is ready.
         if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13) and not review_ready_painted:
+            if review_focus == "back":
+                wizard.back()
+            continue
+        if wizard.screen == Screen.LAST_CHANCE and ch in (
+            9, curses.KEY_BTAB, curses.KEY_LEFT, curses.KEY_RIGHT,
+        ):
+            # #165: move focus between Back and Erase now. Erase now takes
+            # focus only on a painted, enabled frame.
+            review_focus = "erase" if review_focus == "back" and review_ready_painted else "back"
+            continue
+        if wizard.screen == Screen.LAST_CHANCE and ch in (curses.KEY_ENTER, 10, 13):
+            # #165: Enter presses only the highlighted button.
+            if review_focus == "erase" and review_ready_painted and wizard.erase_enabled:
+                wizard.confirm_erase()
+            elif review_focus == "back":
+                wizard.back()
             continue
         _handle(wizard, ch)
     if review_overlay_held:
@@ -1977,12 +2549,24 @@ def _handle(wizard: Wizard, ch: int) -> None:
         wizard.open_keyboard()
         return
     if wizard.screen == Screen.KEYBOARD:
-        keyboard_mapping = {ord("1"): "us", ord("2"): "fr", ord("3"): "de"}
-        if ch in keyboard_mapping:
-            wizard.set_keyboard_layout(keyboard_mapping[ch])
+        # Left/Right choose the layout so every digit stays available for the
+        # typing check: digit placement is what differs between layouts.
+        if ch in (curses.KEY_LEFT, curses.KEY_RIGHT):
+            step = -1 if ch == curses.KEY_LEFT else 1
+            try:
+                index = LAYOUT_ORDER.index(wizard.keyboard_layout)
+            except ValueError:
+                index = 0
+            wizard.set_keyboard_layout(LAYOUT_ORDER[(index + step) % len(LAYOUT_ORDER)])
             return
         if ch == curses.KEY_F2:
-            wizard.set_language(_next_language(wizard))
+            wizard.choose_language(_next_language(wizard))
+            return
+        if ch == curses.KEY_F3:
+            wizard.accept_keyboard_suggestion()  # #140 one-key switch
+            return
+        if ch == curses.KEY_F4:
+            wizard.toggle_high_contrast()  # #179: colours only
             return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.accept_keyboard()
@@ -1992,6 +2576,8 @@ def _handle(wizard: Wizard, ch: int) -> None:
             return
         if 32 <= ch < 127:
             wizard.set_typing_check(wizard.typing_check + chr(ch))
+            # #140: the console compares the character the keymap produced.
+            wizard.check_keyboard_key(chr(ch))
             return
         if ch == 27:
             wizard.back()
@@ -2013,6 +2599,14 @@ def _handle(wizard: Wizard, ch: int) -> None:
             wizard.request_hear_both_sounds()
         return
     if wizard.screen == Screen.REFRESH_CONFIRM:
+        if wizard.refresh_guarded:
+            # #136: Cancel is the default. Enter and Esc keep the answers;
+            # only C clears them.
+            if ch in (ord("c"), ord("C")):
+                wizard.confirm_refresh()
+            elif ch in (27, curses.KEY_ENTER, 10, 13):
+                wizard.back()
+            return
         if ch in (curses.KEY_ENTER, 10, 13):
             wizard.confirm_refresh()
         elif ch == 27:
@@ -2076,8 +2670,8 @@ def _handle(wizard: Wizard, ch: int) -> None:
             wizard.continue_pick()
         elif wizard.screen == Screen.METHOD:
             wizard.continue_method()
-        elif wizard.screen == Screen.LAST_CHANCE and wizard.erase_enabled:
-            wizard.confirm_erase()
+        # #165: Review is handled in _loop (Enter presses only the focused
+        # button). A bare Enter here never erases.
         elif wizard.screen in (Screen.DONE, Screen.PICK_BLOCKED, Screen.PICK_EMPTY):
             wizard.accept_done_keyboard()
         return
@@ -2113,10 +2707,35 @@ def _add(stdscr, y, x, text, attr=curses.A_NORMAL) -> bool:
     if not fitted:
         return not bool(text)
     try:
-        stdscr.addstr(y, x, fitted, attr)
+        stdscr.addstr(y, x, fitted, attr | _CONTRAST_ATTR)
     except curses.error:
         return False
     return fitted == text
+
+
+# #179: high contrast in the text screen — bold white on black where the
+# terminal has colours, bold everywhere. Set each frame from the wizard.
+_CONTRAST_ATTR = 0
+_contrast_shown = False
+
+
+def _sync_contrast(stdscr, wizard) -> None:
+    global _CONTRAST_ATTR, _contrast_shown
+    on = bool(getattr(wizard, "high_contrast", False))
+    _CONTRAST_ATTR = curses.A_BOLD if on else 0
+    if on == _contrast_shown:
+        return
+    _contrast_shown = on
+    try:
+        if on and curses.has_colors():
+            curses.start_color()
+            curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
+            stdscr.bkgd(" ", curses.color_pair(1))
+        elif not on:
+            stdscr.bkgd(" ", 0)
+    except Exception:
+        # No colour support (or a test terminal): bold text still applies.
+        pass
 
 
 def _wrap(stdscr, y, text, width, y_max=None) -> int:

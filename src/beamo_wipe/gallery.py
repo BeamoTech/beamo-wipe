@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 import re
@@ -13,6 +14,7 @@ from urllib.parse import quote
 
 from beamo_wipe import copy as C
 from beamo_wipe import storage_limits as limits
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe.support_contact import qr_svg as _support_qr_svg
 from beamo_wipe.support_code import (
     code_for_export_detail,
@@ -21,7 +23,7 @@ from beamo_wipe.support_code import (
 )
 from beamo_wipe import support_export as _export
 from beamo_wipe import inventory
-from beamo_wipe.outcomes import preview_view
+from beamo_wipe.outcomes import plain_result, preview_view
 from beamo_wipe.recovery import (
     recovery_for_blocked,
     recovery_for_empty,
@@ -34,13 +36,17 @@ from beamo_wipe.keyboard import LAYOUT_ORDER
 from beamo_wipe.lang import (
     LANGUAGE_NAMES,
     LANGUAGE_ORDER,
+    LANGUAGE_PICKER_LABEL,
     current as current_language,
     is_supported,
     set_language,
 )
 from beamo_wipe.methods import METHODS
-from beamo_wipe.models import MethodId
+from beamo_wipe.models import MethodId, Screen
+from beamo_wipe.wizard import PREPARATION_PATH, journey_step_for
 from beamo_wipe import progress as _progress
+from beamo_wipe import erase_record as _erase_record
+from beamo_wipe import result_summary as _rs
 from beamo_wipe.power import PowerStatus
 from beamo_wipe import identity as _identity
 from beamo_wipe.safety import (
@@ -91,6 +97,13 @@ def _favicon_uri() -> str:
     return "data:image/svg+xml," + quote(svg, safe="")
 
 
+def _outcome_payload(code: str) -> dict:
+    """A real outcome's view plus its plain headline (#134), as on the live
+    screens. The view's message stays the What happened line."""
+    view = C.VIEWS[code]
+    return {**view.payload(), "headline": plain_result(view).headline}
+
+
 def _recovery_payload(sections) -> dict | None:
     if sections is None:
         return None
@@ -102,10 +115,38 @@ def _recovery_payload(sections) -> dict | None:
     }
 
 
+def _hidden_preview_hint() -> str:
+    """#185: the detector's verdict for the fake "hidden" preview."""
+    from beamo_wipe import hidden_storage
+    from beamo_wipe.demo import demo_pci_functions
+
+    return hidden_storage.classify(
+        demo_pci_functions(), discovery_for_scenario("hidden")
+    ).kind
+
+
+def _record_payload(ok: bool) -> dict:
+    """Preview erase record (#127): same builder and code as the live screen."""
+    from beamo_wipe import NWIPE_PINNED_VERSION, __version__
+    from beamo_wipe import erase_record as R
+
+    record = R.build_preview_record(
+        preview_view(ok).message,
+        R.software_text(__version__, None, NWIPE_PINNED_VERSION),
+    )
+    try:
+        svg = R.qr_svg(record.text, label=C.RECORD_CODE_NAME)
+    except Exception:
+        svg = ""
+    return {"svg": svg, "lines": list(record.lines)}
+
+
 def _disks_payload(scenario: str = "happy") -> list[dict]:
     result = discovery_for_scenario(scenario)  # type: ignore[arg-type]
     peers = listed_disks(result)
     eligible_paths = {disk.path for disk in result.selectable}
+    # Pick-list place, as in the Tk/GTK/console views (#151).
+    place = {disk.path: index for index, disk in enumerate(pick_order(result.disks))}
     out = []
     for disk in result.disks:
         spec = None
@@ -115,24 +156,28 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
             except SafetyError:
                 spec = None
         view = _identity.present_disk(disk, peers, compare_serials=True)
-        components = [
-            {
-                "heading": inventory.nested_heading(child),
-                "reason": inventory.nested_reason_text(child),
-            }
-            for child in inventory.nested_under(disk.path, result.excluded)
-        ]
+        nested = inventory.nested_under(disk.path, result.excluded)
+        contents_summary = inventory.contents_summary(nested)
         out.append(
             {
                 "path": disk.path,
+                "order": place[disk.path],
                 "name": view.title,
                 "size": view.capacity,
                 "kind": disk.kind.value,
                 "kindLabel": view.kind_chip,
                 "storageNotice": limits.notice(disk.kind),
+                # #158: the Method screen's one line for this disk's kind.
+                "storageLine": limits.line(disk.kind),
+                # #159: each method card's time line for this disk.
+                "methodTimes": {
+                    mid.value: C.method_time_line(mid, disk)
+                    for mid in (MethodId.EVERYDAY, MethodId.EXTRA, MethodId.QUICK_ZERO)
+                },
                 "bus": view.connection,
                 "serial": view.id_value,
                 "markedSerial": view.marked_id,
+                "serialMarks": [list(run) for run in view.comparison_marks],
                 "comparisonNote": view.comparison_note,
                 "idLabel": view.id_label,
                 "connection": view.connection,
@@ -144,11 +189,14 @@ def _disks_payload(scenario: str = "happy") -> list[dict]:
                 "isBoot": disk.is_boot,
                 "eligible": spec is not None,
                 "token": spec.token if spec else "",
-                "prompt": spec.prompt if spec else "",
+                "prompt": C.confirm_prompt(spec) if spec else "",
+                "tokenStart": view.token_start,
+                "tokenEnd": view.token_end,
                 "warning": "" if disk.is_boot else C.confirm_warning(disk),
-                "prepare": "" if disk.is_boot else C.prepare_selected(disk),
-                "components": components,
+                "contentsSummary": contents_summary,
+                "encryptionTags": [] if disk.is_boot else list(inventory.encryption_tags(nested)),
                 "contents": disk.contents,
+                "contentsHint": "" if disk.is_boot else C.contents_hint(disk),
                 "eraseLabel": "" if disk.is_boot else C.erase_now_label(disk, peers),
             }
         )
@@ -166,7 +214,7 @@ def _serialize_progress(view: _progress.ProgressView) -> dict:
     elif percent is None:
         percent_text = ""
     elif view.percent_is_old:
-        percent_text = f"{format_progress_percent(percent)} (old)"
+        percent_text = _progress.OLD_PERCENT.format(percent=format_progress_percent(percent))
     else:
         percent_text = format_progress_percent(percent)
     marked = None if view.mismatch else view.position
@@ -191,6 +239,13 @@ def _serialize_progress(view: _progress.ProgressView) -> dict:
         ),
         "phaseNote": _progress.phase_note(view.phase, view.mismatch),
         "staleBlock": _progress.stale_block(view.stale_for),
+        # Working-screen glance (#132), shared with Tk, GTK and console.
+        "headline": percent_text or dataclasses.replace(view, percent=None).glance_headline,
+        "timeLine": view.glance_time,
+        "stepLine": view.glance_step,
+        "notes": list(view.glance_notes),
+        "stoppingText": view.stopping_text,
+        "spoken": view.spoken_summary,
     }
 
 
@@ -395,6 +450,58 @@ def _progress_preview_payload() -> dict:
     return {"states": states, "demo": demo}
 
 
+# Preview screen names and the wizard screen whose menu rules they follow.
+_HELP_MENU_SCREENS = {
+    "splash": Screen.SPLASH, "keyboard": Screen.KEYBOARD, "what": Screen.WHAT,
+    "owner": Screen.OWNER, "pick": Screen.PICK, "empty": Screen.PICK_EMPTY,
+    "blocked": Screen.PICK_BLOCKED, "disk_help": Screen.DISK_HELP,
+    "confirm": Screen.CONFIRM, "method": Screen.METHOD, "advanced": Screen.ADVANCED,
+    "limits": Screen.LIMITS, "last": Screen.LAST_CHANCE, "working": Screen.WORKING,
+    "stop_confirm": Screen.WORKING, "stopping": Screen.STOPPING,
+    "stop_unconfirmed": Screen.DONE, "stopped": Screen.DONE, "done": Screen.DONE,
+    "shutdown_confirm": Screen.SHUTDOWN_CONFIRM, "refresh_confirm": Screen.REFRESH_CONFIRM,
+    "report_help": Screen.REPORT_HELP,
+}
+
+
+def _help_menu_payload() -> dict:
+    """#175: the same Help & settings items and rules as the live wizard."""
+    from beamo_wipe import help_menu as _menu
+    from beamo_wipe.wizard import KEYBOARD_OPEN_SCREENS, REPORT_HELP_SCREENS
+
+    states = {}
+    for name, screen in _HELP_MENU_SCREENS.items():
+        states[name] = [
+            {"key": item.key, "label": item.label, "enabled": item.enabled, "reason": item.reason}
+            for item in _menu.items(
+                screen=screen,
+                text_size="standard",
+                sounds_label=C.SOUND_TOGGLE_OFF,
+                can_open_keyboard=screen in KEYBOARD_OPEN_SCREENS,
+                can_open_report_help=screen in REPORT_HELP_SCREENS,
+                can_open_advanced=screen == Screen.METHOD,
+                after_erase_started=screen in {Screen.WORKING, Screen.STOPPING, Screen.DONE},
+            )
+        ]
+    return {
+        "title": C.MENU_TITLE,
+        "close": C.MENU_CLOSE,
+        "back": C.MENU_BACK,
+        "shortcutsTitle": C.MENU_SHORTCUTS,
+        "common": C.MENU_SHORTCUTS_COMMON,
+        "refresh": C.MENU_SHORTCUTS_REFRESH,
+        "limits": C.MENU_SHORTCUTS_LIMITS,
+        "menuKeys": C.MENU_SHORTCUTS_MENU,
+        "contrastOn": C.MENU_HIGH_CONTRAST_ON,
+        "contrastOff": C.MENU_HIGH_CONTRAST_OFF,
+        "contrastTitle": C.CONTRAST_TITLE,
+        "contrastStandard": C.CONTRAST_STANDARD,
+        "contrastHigh": C.CONTRAST_HIGH,
+        "contrastLead": C.CONTRAST_LEAD,
+        "states": states,
+    }
+
+
 def gallery_html(lang: str = "en") -> str:
     """Render the click-through in one language (preview only)."""
     if not is_supported(lang):
@@ -411,6 +518,47 @@ def gallery_html(lang: str = "en") -> str:
         set_language(previous)
 
 
+def _auto_layout_notice(lang: str) -> str:
+    """The keyboard-screen line for this page's language and its layout."""
+    from types import SimpleNamespace
+
+    return C.keyboard_layout_notice(SimpleNamespace(
+        layout_notice="auto",
+        keyboard_layout=_keyboard.LANGUAGE_LAYOUTS.get(lang, _keyboard.DEFAULT_LAYOUT),
+        language=lang,
+    ))
+
+
+# Click-through screen names for wizard screens (#130). The step numbers and
+# names come from the wizard's own tables, never a JavaScript copy.
+_GALLERY_SCREENS = {
+    "keyboard": Screen.KEYBOARD, "what": Screen.WHAT, "owner": Screen.OWNER,
+    "pick": Screen.PICK, "blocked": Screen.PICK_BLOCKED, "empty": Screen.PICK_EMPTY,
+    "disk_help": Screen.DISK_HELP, "confirm": Screen.CONFIRM, "method": Screen.METHOD,
+    "advanced": Screen.ADVANCED, "limits": Screen.LIMITS, "last": Screen.LAST_CHANCE,
+}
+
+
+def _gallery_steps():
+    for name, screen in _GALLERY_SCREENS.items():
+        step = journey_step_for(screen)
+        if step is not None:
+            yield name, step
+
+
+def _step_captions() -> dict[str, str]:
+    """Header step text per click-through screen, as the Tk header shows it."""
+    return {
+        name: C.STEP_CAPTION.format(n=n, total=total, name=C.step_name(screen))
+        for name, (n, total, screen) in _gallery_steps()
+    }
+
+
+def _step_parts() -> dict[str, float]:
+    """How much of the Preparation segment of the strip is filled."""
+    return {name: n / total for name, (n, total, _screen) in _gallery_steps()}
+
+
 def _gallery_html_for_current_language(lang: str) -> str:
     from beamo_wipe import recovery as Rec
 
@@ -418,25 +566,39 @@ def _gallery_html_for_current_language(lang: str) -> str:
     payload: dict[str, Any] = {
         "app": C.APP_NAME,
         "reportStatusTitle": C.REPORT_STATUS_TITLE,
+        "resultCard": {
+            "title": _erase_record.CARD_TITLE,
+            "methodLabel": _rs.H_METHOD,
+            "checkLabel": _erase_record.CHECK_LABEL,
+            "check": _erase_record.CHECK_PREVIEW,
+        },
         "reportPreview": C.REPORT_PREVIEW,
-        "reportStatusNotice": C.REPORT_STATUS_NOTICE,
         "journey": C.JOURNEY_LABELS,
         "selectedDisk": C.SELECTED_DISK,
         "serialLabel": C.SERIAL_LABEL,
         "connectionLabel": _identity.CONNECTION_LABEL,
         "capacityUnitNote": C.CAPACITY_UNIT_NOTE,
         "reviewCheck": C.REVIEW_CHECK,
-        "splashRoadmap": C.SPLASH_ROADMAP,
+        "splashRoadmap": C.splash_roadmap(PREPARATION_PATH),
+        "stepCaptions": _step_captions(),
+        "stepParts": _step_parts(),
         "sevWarning": C.SEVERITY_WARNING,
         "sevError": C.SEVERITY_ERROR,
         "sevSaved": C.SEVERITY_SAVED,
         "sevLimits": C.SEVERITY_LIMITS,
         "previewResults": {
-            "ok": preview_view(True).payload(),
+            "ok": {**preview_view(True).payload(), "record": _record_payload(True)},
             "failed": {
                 **preview_view(False).payload(),
                 "recovery": _recovery_payload(recovery_for_view(preview_view(False))),
+                "record": _record_payload(False),
             },
+        },
+        "record": {
+            "title": C.RECORD_TITLE,
+            "lead": C.RECORD_PREVIEW_NOTE,
+            "textLabel": C.RECORD_TEXT_LABEL,
+            "noCode": C.RECORD_NO_CODE,
         },
         "recoveryLabels": {
             "happened": Rec.RECOVERY_HAPPENED,
@@ -446,6 +608,10 @@ def _gallery_html_for_current_language(lang: str) -> str:
         },
         "blockedRecovery": _recovery_payload(recovery_for_blocked(C.IDENTIFY_ERROR)),
         "emptyRecovery": _recovery_payload(recovery_for_empty()),
+        # #185: the same empty list when the fake lspci capture shows an
+        # Intel VMD controller. Classified by the real detector, so a
+        # detector that gives up shows the generic text here too.
+        "hiddenRecovery": _recovery_payload(recovery_for_empty(_hidden_preview_hint())),
         "compareTitle": inventory.COMPARE_TITLE,
         "compareIntro": inventory.COMPARE_INTRO,
         "comparison": inventory.comparison_entries(
@@ -478,11 +644,12 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "reportWanted": C.REPORT_WANTED,
         "reportShareRedacted": C.REPORT_SHARE_REDACTED,
         "reportMediaWhat": C.REPORT_MEDIA_WHAT,
+        "learnMore": C.LEARN_MORE,
+        "learnMoreReport": C.LEARN_MORE_REPORT_NAME,
         "reportMediaWanted": C.REPORT_MEDIA_WANTED,
         "anotherTitle": C.ANOTHER_TITLE,
         "anotherLoss": C.ANOTHER_LOSS,
         "anotherDiscard": C.ANOTHER_DISCARD,
-        "eraseAnother": C.BTN_ERASE_ANOTHER,
         "shutdownTitle": C.SHUTDOWN_TITLE,
         "shutdownLoss": C.SHUTDOWN_LOSS,
         "shutdownKeep": C.SHUTDOWN_KEEP,
@@ -492,6 +659,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "mediaSteps": C.media_steps(),
         "mediaStepsAnother": C.media_steps(stay_in_session=True),
         "limitsButton": limits.BUTTON,
+        "limitsLineSsd": limits.LINE_SSD,
         "limitsText": limits.full_text(),
         "previewBanner": C.PREVIEW_BANNER,
         "splash": C.SPLASH_TAGLINE,
@@ -514,6 +682,26 @@ def _gallery_html_for_current_language(lang: str) -> str:
             }
             for layout_id in LAYOUT_ORDER
         ],
+        # Guided keyboard check (#140): the same rule table as keyboard.py.
+        # A browser cannot switch layouts, so the preview judges the key it
+        # receives against the layout picked on the page.
+        "keyCheck": {
+            "families": {name: dict(letters) for name, letters in _keyboard._FAMILY_LETTERS.items()},
+            "layoutFamily": {lid: _keyboard.LAYOUTS[lid].family for lid in LAYOUT_ORDER},
+            "familyLayout": {
+                **_keyboard._FAMILY_LAYOUT,
+                "qwerty": next(
+                    (lid for lid in (_keyboard.LANGUAGE_LAYOUTS.get(lang, "us"),)
+                     if _keyboard.LAYOUTS[lid].family == "qwerty"),
+                    "us",
+                ),
+            },
+            "key": _keyboard.CHECK_KEY,
+            "match": C.KEYBOARD_CHECK_MATCH,
+            "other": C.KEYBOARD_CHECK_OTHER,
+            "switch": C.KEYBOARD_CHECK_SWITCH,
+            "unclear": C.KEYBOARD_CHECK_UNCLEAR,
+        },
         "titles": {
             "keyboard": C.TITLE_KEYBOARD,
             "what": C.TITLE_WHAT,
@@ -531,14 +719,30 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "refresh": C.TITLE_REFRESH,
         },
         "refreshLead": C.REFRESH_LEAD,
+        "ownerReason": C.OWNER_CONTINUE_REASON,
+        "refreshGuardLead": C.REFRESH_GUARD_LEAD,
+        "refreshGuardHint": C.HINT_REFRESH_GUARD,
+        "refreshCancel": C.BTN_REFRESH_CANCEL,
         "refreshButton": C.BTN_REFRESH,
         "refreshUtility": C.BTN_REFRESH_UTILITY,
+        "helpMenu": _help_menu_payload(),
         "whatLead": C.WHAT_LEAD,
-        "what": list(C.WHAT_BULLETS),
+        "what": list(C.owner_bullets()),
+        "platforms": C.owner_platforms_line(),
         "powerReminder": C.POWER_REMINDER,
-        "powerBlanking": C.POWER_BLANKING,
         "powerKeep": C.POWER_KEEP,
         "powerEvents": C.POWER_EVENTS,
+        "powerBadges": {
+            key: {"kind": status.badge.kind, "display": status.badge.display,
+                  "spoken": status.badge.spoken}
+            for key, status in {
+                "unknown": PowerStatus(),
+                "ac": PowerStatus(ac=True, batteries=(80,), complete=True),
+                "battery": PowerStatus(ac=False, batteries=(55,), complete=True),
+                "low": PowerStatus(ac=False, batteries=(12,), complete=True),
+                "desktop": PowerStatus(complete=True),
+            }.items()
+        },
         "powerScenarios": {
             "unknown": PowerStatus().text,
             "ac": PowerStatus(ac=True, batteries=(80,), complete=True).text,
@@ -583,15 +787,24 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "keep": C.STOP_KEEP,
             "confirm": C.STOP_CONFIRM,
             "stopping": C.STOPPING_TEXT,
-            "stopped": C.VIEWS["cancelled"].payload(),
+            "stopped": _outcome_payload("cancelled"),
             "stoppedRecovery": _recovery_payload(recovery_for_outcome("cancelled")),
-            "unconfirmed": C.VIEWS["stop_unconfirmed"].payload(),
+            "unconfirmed": _outcome_payload("stop_unconfirmed"),
             "unconfirmedRecovery": _recovery_payload(
                 recovery_for_outcome("stop_unconfirmed")
             ),
         },
         "doneOk": C.DONE_OK_PREVIEW,
         "doneFail": C.DONE_FAIL_PREVIEW,
+        # Finish sound (#133). The preview never plays, so by default it shows
+        # the honest no-sound state; #s=working&audio=1 shows the live design.
+        "finishSound": {
+            "toggle": C.FINISH_SOUND_TOGGLE,
+            "beep": C.WALK_AWAY_BEEP,
+            "quiet": C.WALK_AWAY_QUIET,
+            "none": C.WALK_AWAY_NO_SOUND,
+            "reasonPreview": C.FINISH_SOUND_REASON_PREVIEW,
+        },
         "sounds": {
             "toggleOff": C.SOUND_TOGGLE_OFF,
             "toggleOn": C.SOUND_TOGGLE_ON,
@@ -604,10 +817,13 @@ def _gallery_html_for_current_language(lang: str) -> str:
         "methodLead": C.METHOD_LEAD,
         "lastLead": C.LAST_LEAD,
         "recommended": C.RECOMMENDED_TAG,
+        "timeUnknown": C.TIME_GUIDE_UNKNOWN,
         "matchWait": C.CONFIRM_MATCH_WAIT,
         "matchOk": C.CONFIRM_MATCH_OK,
         "countdownCaption": C.COUNTDOWN_CAPTION,
         "countdownReady": C.COUNTDOWN_READY,
+        "countdownReadyWord": C.COUNTDOWN_READY_WORD,
+        "countdownAvailable": C.COUNTDOWN_AVAILABLE,
         "advancedLead": C.ADVANCED_LEAD,
         "advancedNote": C.ADVANCED_LOG_NOTE,
         "advancedLogLabel": C.ADVANCED_LOG_LABEL,
@@ -639,6 +855,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "working": C.HINT_WORKING,
             "splash": C.HINT_SPLASH,
             "keyboard": C.HINT_KEYBOARD,
+            "donePreview": C.HINT_DONE_PREVIEW,
         },
         "helperHref": helper_href_for(lang),
         "methods": {
@@ -656,6 +873,10 @@ def _gallery_html_for_current_language(lang: str) -> str:
                 "nwipe": METHODS[mid].nwipe_method,
                 "summary": METHODS[mid].summary,
                 "operation": METHODS[mid].operation_summary,
+                # #164: Review's one method line.
+                "reviewLine": C.REVIEW_METHOD_LINE.format(
+                    method=METHODS[mid].title, operation=METHODS[mid].operation_summary
+                ),
                 "stages": [
                     _progress.stage_label(stage)
                     for stage in _progress.plan_stages(
@@ -674,6 +895,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "note": C.GALLERY_NOTE.format(helper=helper_href_for(lang)),
             "happy": C.GALLERY_HAPPY,
             "empty": C.GALLERY_EMPTY,
+            "hidden": C.GALLERY_HIDDEN,
             "blocked": C.GALLERY_BLOCKED,
             "fail": C.GALLERY_FAIL,
             "fakePower": C.GALLERY_FAKE_POWER,
@@ -687,14 +909,24 @@ def _gallery_html_for_current_language(lang: str) -> str:
             "closeTab": C.GALLERY_CLOSE_TAB,
         },
         "languageTitle": C.TITLE_LANGUAGE,
+        "languagePicker": LANGUAGE_PICKER_LABEL,
         "languageLead": C.LANGUAGE_LEAD,
+        # #131: this page's language starts on its usual layout, and says so.
+        "languageLayout": _keyboard.LANGUAGE_LAYOUTS.get(lang, _keyboard.DEFAULT_LAYOUT),
+        "layoutNotice": _auto_layout_notice(lang),
         "languages": [
             {"id": code, "name": LANGUAGE_NAMES[code], "active": code == lang}
             for code in LANGUAGE_ORDER
         ],
-        "confirmKeyboard": C.CONFIRM_KEYBOARD_LINE.format(
-            layout=_keyboard.LAYOUTS["us"].title, language=LANGUAGE_NAMES[lang]
-        ),
+        # The layout in use (#131: it follows the page's language until picked).
+        "confirmLayoutHint": C.CONFIRM_LAYOUT_HINT,
+        "confirmLayoutChange": C.CONFIRM_LAYOUT_CHANGE,
+        "tokenFeedback": {
+            "typed": C.TOKEN_TYPED, "wrongOne": C.TOKEN_WRONG_ONE, "wrongMany": C.TOKEN_WRONG_MANY,
+            "missingOne": C.TOKEN_MISSING_ONE, "missingMany": C.TOKEN_MISSING_MANY,
+            "extraOne": C.TOKEN_EXTRA_ONE, "extraMany": C.TOKEN_EXTRA_MANY,
+            "spaceNote": C.TOKEN_SPACE_NOTE, "and": inventory.POSITION_AND,
+        },
         "steps": {str(n): C.JOURNEY_LABELS[n - 1] for n in range(1, len(C.JOURNEY_LABELS) + 1)},
         "stepPrefix": C.STEP_PREFIX,
         "stepIdentify": C.STEP_IDENTIFY,
@@ -725,6 +957,7 @@ def _gallery_html_for_current_language(lang: str) -> str:
         .replace("__GALLERY_NOTE__", chrome["note"])
         .replace("__GALLERY_HAPPY__", chrome["happy"])
         .replace("__GALLERY_EMPTY__", chrome["empty"])
+        .replace("__GALLERY_HIDDEN__", chrome["hidden"])
         .replace("__GALLERY_BLOCKED__", chrome["blocked"])
         .replace("__GALLERY_FAIL__", chrome["fail"])
         .replace("__GALLERY_FAKE_POWER__", chrome["fakePower"])
@@ -807,11 +1040,25 @@ _TEMPLATE = r"""<!DOCTYPE html>
 <link rel="icon" href="__FAVICON__">
 <title>__GALLERY_TITLE__</title>
 <style>
+  /* #179: high contrast — the same tokens as tk_wizard._HIGH_CONTRAST_PALETTE. */
+  .shell.hc {
+    --bg: #FFFFFF; --surface: #FFFFFF; --surface-alt: #EDEDED; --ink: #000000; --muted: #1F1F1F;
+    --border: #000000; --border-strong: #000000; --button-edge: #000000; --summary-edge: #000000;
+    --primary: #002A54; --primary-dark: #001C38; --primary-press: #00101F; --primary-tint: #E5EDF7;
+    --danger: #8A0000; --danger-dark: #660000; --danger-press: #4A0000; --danger-tint: #FFFFFF; --danger-border: #8A0000;
+    --ok: #0A4A22; --ok-tint: #FFFFFF; --ok-border: #0A4A22;
+    --warn: #000000; --warn-bg: #FFF0A0; --warn-border: #000000; --usb-bg: #FFFFFF; --usb-border: #000000;
+    --focus: #000000; --accent: #000000; --track: #C8C8C8; --disabled-bg: #FFFFFF; --disabled-fg: #3A3A3A;
+    --shadow: none; --halo: none;
+  }
+  .shell.hc .preview-stripe { background: #FFD000; color: #000000; }
+  .shell.hc :focus-visible { outline: 4px solid #000000 !important; outline-offset: 2px; }
+  .shell.hc .card, .shell.hc button.btn.secondary { border-width: 2px; }
   :root {
     /* Shared palette, pinned against ui/tk_wizard.py by tests/test_ui_system.py. */
-    --bg: #FFFFFF; --surface: #FFFFFF; --surface-alt: #F4F6F8;
+    --bg: #EEF2F6; --surface: #FFFFFF; --surface-alt: #F4F6F8;
     --ink: #12202E; --muted: #4A5A6A;
-    --border: #E3E8EE; --border-strong: #6E7C8A;
+    --border: #E3E8EE; --border-strong: #6E7C8A; --button-edge: #C3CCD6; --summary-edge: #B9CBE0;
     --navy: #0A1B34; --navy-soft: #16315C; --navy-muted: #C9D6E8;
     --primary: #1C4A73; --primary-dark: #163A5C; --primary-press: #102A44; --primary-tint: #F0F5FA;
     --danger: #B3261E; --danger-dark: #8E1D16; --danger-press: #6E1510; --danger-tint: #FBEBE9; --danger-border: #E6A79E;
@@ -844,23 +1091,27 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .shell .card .title { font-size: calc(16px * var(--type)); }
   .shell .small, .shell .card .meta { font-size: calc(14px * var(--type)); }
   .shell button.btn { font-size: calc(15px * var(--type)); }
-  .textsizes { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .textsizes { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px; margin: 0 0 12px; background: var(--track); border-radius: var(--pill); }
+  .textsizes button.btn { min-width: 0; padding: 6px 16px; font-size: 14px; }
+  .textsizes button.btn.segment { background: transparent; color: var(--ink); }
+  .textsizes button.btn.segment:hover { background: #D9E0E8; }
   .preview-stripe { background: var(--accent); color: var(--navy); padding: 8px 28px; font-size: 13px; font-weight: 700; letter-spacing: .01em; overflow-wrap: break-word; }
-  /* Quiet white chrome: the navy-on-transparent mark sits on the field,
-     a hairline separates header from body — mirroring _draw_header. */
-  .hdr { background: var(--bg); border-bottom: 1px solid var(--border); color: var(--ink); height: 56px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+  /* Quiet white chrome: the navy-on-transparent mark sits on a white bar
+     above the gray page, a hairline below it — mirroring _draw_header. */
+  .hdr { background: var(--surface); border-bottom: 1px solid var(--border); color: var(--ink); height: 56px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
   .brandrow { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 700; }
   .brandchip { display: flex; align-items: center; justify-content: center; flex: none; }
   .brandchip svg { display: block; }
   /* Current-stage text lives in .steptext. The list is a screen-reader
      name only — never eight equal pages. */
   .journey { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(140px, 200px); gap: 24px; margin-top: 8px; align-items: start; }
-  .shell[data-text="large"] .review-grid,
-  .shell[data-text="extra"] .review-grid { grid-template-columns: minmax(0, 1fr); }
-  .review-grid .countcap { max-width: 260px; text-align: center; }
+  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .erase-callout { display: flex; gap: 12px; align-items: flex-start; background: var(--danger-tint); border: 1px solid var(--danger-border); border-radius: var(--radius); padding: 12px 14px; margin-top: 14px; }
+  .erase-callout .review-warning { margin: 0; }
+  .review-grid .ringwrap { flex-direction: row; justify-content: flex-start; gap: 16px; margin: 14px 0 4px; }
+  .review-grid .countcap { margin-top: 0; text-align: left; }
   .review-warning { color: var(--danger); font-weight: 700; overflow-wrap: anywhere; }
-  .card.identity { background: var(--primary-tint); border-color: var(--primary); padding: 16px 22px; }
+  .card.identity { background: var(--primary-tint); border-color: var(--summary-edge); padding: 16px 22px; }
   .identity-label { color: var(--primary); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
   .serialpair { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
   .serialpair .ser { min-width: 0; }
@@ -873,6 +1124,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .strip { display: flex; height: 2px; gap: 2px; background: transparent; }
   .strip span { flex: 1; background: var(--track); }
   .strip span.now { background: var(--accent); }
+  .strip span.now.part { background: linear-gradient(to right, var(--accent) var(--part), var(--track) var(--part)); }
   .body { flex: 1; min-height: 0; overflow: auto; padding: 4px 32px 16px; background: var(--bg); display: flex; }
   .col { max-width: 940px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; }
   /* The one screen-header pattern, mirroring _title_block: bold title,
@@ -900,17 +1152,40 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .row { display: flex; align-items: flex-start; gap: 14px; }
   .card .grow { flex: 1; min-width: 0; }
   .card .row > .kbd { flex: none; margin-top: 1px; }
+  .powerbadge { margin-left: 12px; padding: 2px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); background: var(--surface-alt); color: var(--muted); white-space: nowrap; }
+  .powerbadge.power-ok { background: #E7F2EB; border-color: #9CC3AB; color: #17703F; font-weight: 600; }
+  .powerbadge.power-warn { background: #FBF1D5; border-color: #E3CE96; color: #7A5200; font-weight: 600; }
+  .btnreason { align-self: center; margin-right: 12px; max-width: 16em; text-align: right; }
+  /* #142: layout number badges only while the list has keyboard focus. */
+  .layout-cards .card .row > .kbd { visibility: hidden; }
+  .layout-cards:focus-within .card .row > .kbd { visibility: visible; }
   .card .title { font-size: 16px; font-weight: 700; }
   .card .title .chip { margin-left: 10px; }
   .card .size { font-size: 20px; font-weight: 700; white-space: nowrap; }
+  /* #149: unselected eligible disks are one line; the selected one expands. */
+  .card.compact { padding-top: 8px; padding-bottom: 8px; }
+  .card.compact .row { align-items: baseline; gap: 12px; }
+  .card.compact .title { flex: 0 1 auto; overflow-wrap: anywhere; }
+  .card.compact .compact-details { flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; }
+  .card.compact .size { font-size: 16px; }
   .card .meta { margin-top: 4px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 0; align-items: center; }
   .card .meta .mono { color: var(--ink); font-size: 14px; }
-  .card .meta .mono.ser { font-weight: 700; }
+  /* #177: regular weight, slightly spaced; #129/#152 marks stay bold. */
+  .card .meta .mono.ser { font-weight: 400; letter-spacing: .06em; }
+  /* #152: regular serial, differing characters bold and underlined. */
+  .card .meta .mono.ser.compared { font-weight: 400; }
+  .card .meta .mono.ser b.diff { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
   .card .meta .mono.dev { color: var(--muted); font-size: 13px; }
   .card .meta .dot { color: var(--border-strong); margin: 0 6px; }
   .radio { flex: none; width: 22px; height: 22px; margin-top: 1px; border: 2px solid var(--border-strong); border-radius: 50%; position: relative; background: var(--surface); }
-  .sel .radio { border-color: var(--primary); }
-  .sel .radio::after { content: ""; position: absolute; inset: 30%; border-radius: 50%; background: var(--primary); }
+  /* #176: one "selected" style — brand edge, tint fill and a check mark
+     (never colour alone) on cards, the size switch and language choices. */
+  .sel .radio { border-color: var(--primary); background: var(--primary); }
+  .sel .radio::after { content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #FFFFFF; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .choice { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; margin: 0 6px 4px 0; border: 1px solid var(--border); border-radius: var(--pill); background: var(--surface); font-size: 14px; font-weight: 600; }
+  .choice.sel, .textsizes button.btn.choice.sel { border: 2px solid var(--primary); background: var(--primary-tint); color: var(--primary); }
+  .tick { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); position: relative; }
+  .tick::after { content: ""; position: absolute; left: 4px; top: 1px; width: 3px; height: 7px; border: solid #FFFFFF; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .chip { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; background: var(--surface-alt); color: var(--muted); border-radius: 999px; vertical-align: 2px; }
   .chip.ok { color: var(--ok); background: var(--ok-tint); }
   .chip.warn { color: var(--warn); background: var(--warn-bg); }
@@ -929,16 +1204,23 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .panel.ok .sev { color: var(--ok); }
   .panel.limits .sev { color: var(--primary); }
   .panel .extra { font-size: 14px; color: var(--muted); margin-top: 4px; }
-  /* Assist (utilities + keyboard hints) above a hairline; navigation is
-     Back/secondary left and the primary action right. */
-  .foot { flex: none; padding: 0 32px; }
+  /* Assist (utilities + keyboard hints) above the navigation row: Back/
+     secondary left and the primary action right. No rule between them. */
+  .foot { flex: none; padding: 0 32px; background: var(--surface); border-top: 1px solid var(--border); }
   .assist { max-width: 940px; margin: 0 auto; padding-top: 4px; }
-  .footrow { max-width: 940px; margin: 0 auto; padding: 16px 0 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .footrow { max-width: 940px; margin: 0 auto; padding: 12px 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .card, .panel, .foot, .compare-pre, .help-reader { overflow-wrap: anywhere; }
   .fleft, .fright { display: flex; gap: 12px; flex: none; }
   .fright { margin-left: auto; }
-  .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px; }
+  /* #173: starts where the footer link text starts (ghost buttons: 16 px padding + 1 px border). */
+  .fhint { color: var(--muted); font-size: 13px; line-height: 1.9; padding: 4px 0 8px 17px; }
   .fhint .kbd { margin: 0 1px; }
+  /* #174: no key-hint row; its text is the first line of Keyboard shortcuts. */
+  .assist .fhint { display: none; }
+  /* #153: drawn arrows share the letter caps' ink and height. */
+  .kbd.kbd-arrow { padding: 2px 7px; }
+  .kbd.kbd-arrow svg { display: inline-block; vertical-align: -1px; color: var(--ink); }
+  .fhint .kbd.kbd-hug { margin-right: 0; }
   button.btn { font-size: 15px; font-weight: 600; padding: 11px 22px; border: 1px solid transparent; border-radius: var(--pill); cursor: pointer; min-width: 112px; letter-spacing: -.01em; }
   button.btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .primary { background: var(--primary); color: #fff; min-width: 160px; }
@@ -947,10 +1229,11 @@ _TEMPLATE = r"""<!DOCTYPE html>
   button.btn.danger { background: var(--danger); color: #fff; min-width: 160px; }
   button.btn.danger:hover:not(:disabled) { background: var(--danger-dark); }
   button.btn.danger:active:not(:disabled) { background: var(--danger-press); }
-  button.btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border-strong); }
+  button.btn.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--button-edge); }
   .secondary:hover:not(:disabled) { background: var(--surface-alt); }
   .secondary:active:not(:disabled) { background: #E2E8EE; }
-  button.btn:disabled { background: var(--disabled-bg); color: var(--disabled-fg); border-color: transparent; box-shadow: none; cursor: not-allowed; }
+  /* #178: faded brand pill, dashed edge (3.9:1), label 5.4:1 — readable, clearly not ready. */
+  button.btn:disabled { background: #F0F5FA; color: #4A6684; border: 1px dashed #6A84A1; box-shadow: none; cursor: not-allowed; }
   .linkbtn { background: none; border: 0; color: var(--primary); font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 10px; text-align: left; border-radius: var(--pill); margin-left: -10px; }
   .linkbtn:hover:not(:disabled) { background: var(--primary-tint); }
   .linkbtn:active:not(:disabled) { background: #D7E4F2; }
@@ -959,12 +1242,18 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .morelink { display: inline-block; margin: 8px 0 0; }
   .entryshell { background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 12px 18px; box-shadow: var(--shadow); }
   .entryshell:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; border-color: var(--focus); }
+  .token-mark { background: #FFF3C4; color: inherit; outline: 1px solid var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
   input.token { font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; font-size: 26px; font-weight: 700; width: 100%; padding: 4px 0; border: 0; outline: none; background: transparent; color: var(--ink); letter-spacing: .02em; }
   .match { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin: 12px 0 0; color: var(--muted); background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--pill); padding: 6px 12px; }
   .match.ok { color: var(--ok); background: var(--ok-tint); border-color: var(--ok); }
   .progress-card { padding: 20px 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); }
   .progress-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; letter-spacing: .02em; }
   .progress-timing { white-space: pre-wrap; font-size: 16px; margin-top: 14px; color: var(--muted); }
+  .walk-away { font-size: 16px; font-weight: 600; margin: 12px 0 2px; }
+  .glance-time { font-size: 20px; font-weight: 700; margin: 12px 0 0; }
+  .glance-step { font-size: 18px; margin: 4px 0 0; }
+  .glance-stale { white-space: pre-wrap; font-size: 16px; margin: 10px 0 0; padding: 8px 12px; color: var(--warn); background: var(--warn-bg); border-radius: 12px; }
+  .glance-notes { white-space: pre-wrap; font-size: 14px; margin: 10px 0 0; color: var(--muted); }
   .bigstat { font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -.03em; min-height: 62px; }
   .bar { height: 8px; background: var(--track); border-radius: var(--pill); overflow: hidden; }
   .fill { height: 100%; background: var(--primary); width: 2%; border-radius: var(--pill); transition: width .2s ease; }
@@ -1004,6 +1293,12 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .ringnum { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
   .countcap { font-size: 16px; color: var(--muted); margin-top: 12px; }
   .countcap.ready { color: var(--ink); font-weight: 600; }
+  /* #171: the result card facts. */
+  .factrows { list-style: none; padding: 0; margin: 4px 0 0; }
+  .factrows li { margin: 2px 0; }
+  /* #163: ready is a check mark plus the word Ready, never the icon alone. */
+  .countcap .readyword { color: var(--primary); font-weight: 700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .advrow { font-size: 13px; margin: 0; padding: 7px 0; }
   .advrow + .advrow { border-top: 1px solid var(--border); }
   .methodlead { font-size: 16px; color: var(--ink); margin: 4px 0 0; line-height: 1.4; }
@@ -1011,6 +1306,14 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .methodlimits { font-size: 14px; color: var(--muted); margin: 4px 0 0; line-height: 1.4; }
   .methodpace { font-size: 14px; color: var(--muted); margin: 4px 0 0; display: flex; gap: 7px; align-items: flex-start; }
   .methodpace svg { flex: none; margin-top: 1px; }
+  /* #159: the card is the visual box; the choice and Show more are siblings. */
+  .card.methodcard { cursor: pointer; transition: border-color .12s ease, background .12s ease, box-shadow .12s ease; }
+  .card.methodcard:not(.sel):hover { background: var(--surface-alt); }
+  .card.pickable.methodpick, .card.pickable.methodpick.sel, .card.pickable.methodpick:hover { border: 0; background: transparent; padding: 0; margin: 0; box-shadow: none; }
+  .methodtime, .methoddetails { margin-left: 36px; }
+  .methodtime { align-items: center; }
+  .methodtime .grow { flex: 1; min-width: 0; }
+  .methodtime .linkbtn { flex: none; margin: 0 0 0 8px; padding: 2px 10px; }
   .centerstage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   .centerstage h1 { margin: 22px 0 8px; }
   .result { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 12px; }
@@ -1026,6 +1329,13 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .support svg { width: 132px; height: auto; flex: none; border: 1px solid var(--muted); background: #fff; }
   .support p { margin: 0; min-width: 0; }
   .support p:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  .record { max-width: 700px; margin: 16px auto 0; text-align: left; background: #fff; border: 1px solid var(--line, #E3E8EE); border-radius: 12px; padding: 14px 18px; }
+  .record h2 { font-size: 1rem; margin: 0 0 4px; }
+  .record .lead { margin: 0 0 10px; }
+  .record .body { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .record .code svg { width: 280px; height: auto; display: block; background: #fff; }
+  .record .label { margin: 0 0 2px; color: var(--muted); font-size: 0.85rem; }
+  .record pre { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; white-space: pre-wrap; overflow-wrap: anywhere; }
   .support-code { max-width: 700px; margin: 16px auto 0; text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   .support-code .row { display: flex; gap: 12px; margin: 0; }
   .support-code .k { color: var(--muted); min-width: 7em; }
@@ -1051,12 +1361,30 @@ _TEMPLATE = r"""<!DOCTYPE html>
   button.btn.ghost:disabled { background: transparent; color: var(--disabled-fg); cursor: not-allowed; }
   button.btn.ghost:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .utilities:empty { display: none; }
+  /* #175: Help & settings, above its button in the footer tools. */
+  .assist { position: relative; }
+  .helpmenu { position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 30; min-width: 260px; max-width: min(460px, calc(100vw - 32px)); max-height: calc(100vh - 120px); overflow-y: auto; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(15, 23, 42, .18); padding: 10px 14px; }
+  .helpmenu h2 { font-size: 15px; margin: 0 0 6px; }
+  .helpmenu button.btn.ghost { display: block; width: 100%; text-align: left; padding: 6px 10px; }
+  .helpmenu button[aria-disabled="true"] { color: var(--disabled-fg); cursor: not-allowed; }
+  .helpmenu button[aria-disabled="true"]:hover { background: transparent; }
+  .helpmenu .reason { display: block; font-size: 12px; color: var(--muted); margin: 0 0 4px 10px; }
+  .helpmenu p { font-size: 14px; margin: 4px 0; }
+  .helpmenu button.btn.secondary { margin-top: 8px; }
   section[aria-label] h2 { font-size: 14px; margin: 8px 0 4px; }
   .inventory-reader, .help-reader { white-space: pre-wrap; overflow: auto; padding: 12px 14px; font-size: 14px; line-height: 1.45; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); color: var(--ink); }
   .inventory-reader { max-height: 78px; margin-bottom: 10px; padding: 8px 12px; }
   .help-reader { max-height: 55vh; }
   .help-reader.compact { max-height: 43vh; }
   .nested { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .contents-hint { margin-top: 4px; }
+  /* #156: what was typed, wrong characters in [brackets]. */
+  .layout-hint .token-typed { margin: 8px 0 2px; font-weight: 700; }
+  .layout-hint .token-problem { margin: 0 0 6px; font-weight: 600; }
+  .layout-hint .token-typed:empty, .layout-hint .token-problem:empty { display: none; }
+  /* #154: outlined recognition tag, ink text (a word and a shape). */
+  .enc-tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .enc-tag { border: 1px solid var(--border-strong); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
   .nested-intro { font-weight: 600; margin-bottom: 4px; }
   .nested-item { margin-top: 6px; }
   .inventory-reader:focus-visible, .help-reader:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
@@ -1080,12 +1408,17 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .card .meta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; }
   .connection { grid-column: 1 / -1; }
   .compact-notice { padding: 8px 16px; font-size: 14px; }
+  /* #158: one limits line between the disk and the method cards. */
+  .limitsline { display: flex; gap: 8px; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 5px 12px; margin: 6px 0; font-size: 14px; line-height: 1.4; }
+  .limitsline svg { flex: none; margin-top: 1px; }
+  .limitsline .grow { flex: 1; min-width: 0; }
+  .limitsline .sevword { color: var(--primary); font-weight: 700; }
+  .limitsline .linkbtn { flex: none; font-size: 14px; }
   .card .meta .ser { display: block; }
   .page, .shell, .body, .col { min-width: 0; }
   @media (max-width: 1000px) { .hdr { padding: 0 16px; } }
   @media (max-width: 700px) {
-    .review-grid { grid-template-columns: minmax(0, 1fr); }
-    .review-grid .ringwrap { padding: 12px 0; }
+    .review-grid { padding: 12px; }
     .pick-tools { flex-wrap: wrap; }
     .page { padding: 12px 8px 24px; }
     .body { padding: 0 16px 16px; }
@@ -1126,6 +1459,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   <div class="scenarios">
     <button type="button" onclick="boot('happy')">__GALLERY_HAPPY__</button>
     <button type="button" onclick="boot('empty')">__GALLERY_EMPTY__</button>
+    <button type="button" onclick="boot('hidden')">__GALLERY_HIDDEN__</button>
     <button type="button" onclick="boot('blocked')">__GALLERY_BLOCKED__</button>
     <button type="button" onclick="boot('fail')">__GALLERY_FAIL__</button>
     <label>__GALLERY_FAKE_POWER__ <select id="power-choice" onchange="updatePower(this.value)">
@@ -1136,7 +1470,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   </div>
   <div class="shell">
     <div class="preview-stripe" id="stripe"></div>
-    <div class="hdr"><div class="brandrow"><span class="brandchip">__LOGO_HEADER__</span><div id="brand"></div></div><ol class="journey" id="journey" aria-label="__GALLERY_ERASE_STEPS__"></ol><span class="steptext" id="step"></span></div>
+    <div class="hdr"><div class="brandrow"><span class="brandchip">__LOGO_HEADER__</span><div id="brand"></div></div><ol class="journey" id="journey" aria-label="__GALLERY_ERASE_STEPS__"></ol><span class="steptext" id="step"></span><span class="powerbadge" id="power-badge" role="status" aria-live="polite"></span></div>
     <div class="strip" id="sfill"></div>
     <div class="body" id="body"><div class="col" id="main"></div></div>
     <div class="foot" id="foot"><div class="assist" id="assist" role="region" aria-label="__ASSIST_LABEL__"><div class="utilities" id="utilities"></div><div class="fhint" id="hint"></div></div><div class="footrow" role="navigation" aria-label="__NAV_LABEL__"><div class="fleft" id="btnsL"></div><div class="fright" id="btnsR"></div></div></div>
@@ -1149,13 +1483,25 @@ function powerText() { return P.chrome.previewPower + P.powerScenarios[powerChoi
 function powerPanel(reminder=true) {
   return `<div class="panel info"><div>${reminder ? `<div>${P.powerKeep}</div>` : ""}<div id="power-status" role="status" aria-live="polite">${powerText()}</div></div></div>`;
 }
+// #144: the header power badge, from the same fake scenarios.
+function renderPowerBadge() {
+  const el = document.getElementById("power-badge");
+  if (!el) return;
+  const b = P.powerBadges[powerChoice] || P.powerBadges.unknown;
+  el.textContent = b.display;
+  el.setAttribute("aria-label", b.spoken);
+  el.className = "powerbadge power-" + b.kind;
+}
 function updatePower(value) {
   powerChoice = Object.hasOwn(P.powerScenarios, value) ? value : "unknown";
   const status = document.getElementById("power-status");
   if (status) status.textContent = powerText();
+  renderPowerBadge();
 }
 let screen = "splash";
 let soundsOn = false;
+let soundsChosen = false;
+let audioDemo = false;
 let renderedScreen = null;
 let reportWanted = false;
 let reportShareRedacted = false;
@@ -1165,8 +1511,17 @@ let shutdownFrom = "owner";
 let anotherPending = false;
 let owner = false;
 let selected = null;
+// #150: the last press on a disk card, and the end of the window in which
+// pointer events are the rest of a double-click that opened Review.
+let diskPress = null;
+// #155: a wrong confirmation entry on this Confirm visit, and the screen
+// the keyboard screen returns to.
+let confirmMismatch = false;
+let keyboardFrom = null;
+let pointerQuietUntil = 0;
 let token = "";
-let keyboardLayout = "us";
+let keyboardLayout = P.languageLayout;
+let layoutChosen = false;
 let textSize = "standard";
 let method = "everyday";
 let tLeft = 5;
@@ -1177,6 +1532,8 @@ let demoPct = null;
 let demoFrac = null;
 let progressKey = "";
 let showMore = false;
+let methodMore = new Set();
+let limitsMore = false;
 
 document.getElementById("stripe").textContent = P.previewBanner;
 document.getElementById("brand").textContent = P.app;
@@ -1214,7 +1571,8 @@ function badge(kind, size) {
       `<line x1="${s*0.28}" y1="${s*0.52}" x2="${s*0.72}" y2="${s*0.52}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/>` +
       `<line x1="${s*0.28}" y1="${s*0.68}" x2="${s*0.72}" y2="${s*0.68}" stroke="#fff" stroke-width="${s*0.07}" stroke-linecap="round"/></svg>`;
   }
-  const c = "#7A5200";
+  // "erase" is the warn triangle in red (the final check's erase warning).
+  const c = kind === "erase" ? "#B3261E" : "#7A5200";
   return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">` +
     `<path d="M ${s/2} ${2} L ${s-2} ${s-3} L 2 ${s-3} Z" fill="${c}" stroke="${c}" stroke-width="${s*0.18}" stroke-linejoin="round"/>` +
     `<line x1="${s/2}" y1="${s*0.36}" x2="${s/2}" y2="${s*0.62}" stroke="#fff" stroke-width="${s*0.09}" stroke-linecap="round"/>` +
@@ -1226,8 +1584,10 @@ const MATCH_OK = '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11
 const EMBLEM = '__LOGO_SPLASH__';
 
 // Key names inside hint copy render as key-caps, mirroring _hint_bar.
-const KEY_RE = /(Up\/Down|1, 2, or 3|any key|Enter|Esc|Space)/g;
-const KEY_MAP = {"Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
+const KEY_RE = /(?<![\p{L}\p{N}])(Left\/Right|Up\/Down|1, 2, or 3|1–7|any key|Enter|Esc|Space)(?![\p{L}\p{N}])/gu;
+const KEY_MAP = {"Left/Right": ["←", "→"], "Up/Down": ["↑", "↓"], "1, 2, or 3": ["1", "2", "3"]};
+const ARROW_PATHS = {"↑": "M6 10.5V1.8M2.2 5.6L6 1.8l3.8 3.8", "↓": "M6 1.5v8.7M2.2 6.4L6 10.2l3.8-3.8",
+  "←": "M10.5 6H1.8M5.6 2.2L1.8 6l3.8 3.8", "→": "M1.5 6h8.7M6.4 2.2L10.2 6l-3.8 3.8"};
 function renderHint(text) {
   const el = document.getElementById("hint");
   el.innerHTML = "";
@@ -1239,10 +1599,21 @@ function renderHint(text) {
       if (i > 0) el.append(document.createTextNode(" "));
       const cap = document.createElement("span");
       cap.className = "kbd";
-      cap.textContent = k;
+      if (ARROW_PATHS[k]) {
+        // #153: arrows are drawn in the cap's ink, not a thin, tinted
+        // fallback glyph; the screen reader still hears the arrow.
+        cap.classList.add("kbd-arrow");
+        cap.setAttribute("role", "img");
+        cap.setAttribute("aria-label", k);
+        cap.innerHTML = `<svg viewBox="0 0 12 12" width="10" height="12" aria-hidden="true" focusable="false"><path d="${ARROW_PATHS[k]}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      } else {
+        cap.textContent = k;
+      }
       el.append(cap);
     });
     pos = m.index + m[0].length;
+    // #153: punctuation right after a cap sits against it.
+    if (/^[.,;:!?]/.test(text.slice(pos))) el.lastChild.classList.add("kbd-hug");
   }
   if (pos < text.length) el.append(document.createTextNode(text.slice(pos)));
 }
@@ -1259,22 +1630,26 @@ function boot(m) {
   owner = false;
   selected = null;
   token = "";
-  keyboardLayout = "us";
+  keyboardLayout = P.languageLayout;
+  layoutChosen = false;
   method = "everyday";
   tLeft = 5;
   demoPct = null;
   demoFrac = null;
   progressKey = "";
   showMore = false;
+  methodMore = new Set();
+  limitsMore = false;
   if (timer) clearInterval(timer);
   draw();
 }
 function disks() {
   let list;
   if (mode === "blocked") list = [];
-  else if (mode === "empty") list = P.disks.filter(d => d.isBoot);
+  else if (mode === "empty" || mode === "hidden") list = P.disks.filter(d => d.isBoot);
   else list = P.disks.slice();
-  list.sort((a, b) => (a.isBoot - b.isBoot) || a.path.localeCompare(b.path));
+  // #151: internal disks first, then external, in the order Python computed.
+  list.sort((a, b) => (a.isBoot - b.isBoot) || (a.order - b.order));
   return list;
 }
 function selectable() { return disks().filter(d => d.eligible); }
@@ -1285,11 +1660,19 @@ function stepInfo() {
     confirm:[1,prep,P.titles.confirm], method:[1,prep,P.titles.method],
     disk_help:[1,P.diskHelpTitle,P.diskHelpTitle], limits:[1,P.limitsTitle,P.limitsTitle], advanced:[1,P.titles.advanced,P.titles.advanced], last:[1,prep,P.titles.last],
     stop_confirm:[2,erase,P.stop.title], stopping:[2,erase,P.stoppingErase],
-    stop_unconfirmed:[2,erase,P.stop.unconfirmed.message], stopped:[3,result,P.stop.stopped.message],
+    stop_unconfirmed:[2,erase,P.stop.unconfirmed.headline], stopped:[3,result,P.stop.stopped.headline],
     working:[2,erase,P.titles.working], done:[3,result,P.titles.doneOk],
     report_help:[1,P.reportHelpTitle,P.reportHelpTitle],
     refresh_confirm:[0,"",P.titles.refresh]};
   return map[screen] || [0,"",""];
+}
+function recordBlock(result) {
+  const record = result.record;
+  if (!record) return "";
+  const code = record.svg ? `<div class="code">${record.svg}</div>` : `<p class="small muted">${esc(P.record.noCode)}</p>`;
+  return `<section class="record" aria-labelledby="record-heading"><h2 id="record-heading">${esc(P.record.title)}</h2>
+    <p class="lead small">${esc(P.record.lead)}</p><div class="body">${code}
+    <div><p class="label">${esc(P.record.textLabel)}</p><pre tabindex="0">${esc(record.lines.join("\n"))}</pre></div></div></section>`;
 }
 function supportBlock() {
   return `<div class="support"><div aria-hidden="true">${P.supportQr}</div><p tabindex="0">${P.supportLead}</p></div>`;
@@ -1297,6 +1680,30 @@ function supportBlock() {
 function supportCodeBlock(code, extra) {
   const save = extra ? `<p class="row"><span class="k">${esc(P.supportSaveLabel)}</span><span class="v">${esc(extra)}</span></p>` : "";
   return `<div class="support-code" tabindex="0"><p class="row"><span class="k">${esc(P.supportCodeLabel)}</span><span class="v">${esc(code)}</span></p>${save}<p class="row"><span class="k">${esc(P.supportBuildLabel)}</span><span class="v">${esc(P.sampleBuild)}</span></p><p class="hint">${esc(P.supportCodeHint)}</p></div>`;
+}
+// #150: Review this disk, as the footer button. A double-click also ignores
+// the rest of its pointer events, so it cannot press a Confirm control.
+function reviewDisk(pointer) {
+  if (screen !== "pick" || !selected || selected.isBoot) return;
+  screen = "confirm"; token = ""; confirmMismatch = false; draw();
+  if (pointer) pointerQuietUntil = performance.now() + 500;
+}
+for (const type of ["mousedown", "mouseup", "click", "dblclick"]) {
+  document.addEventListener(type, (e) => {
+    if (!pointerQuietUntil) return;
+    if (e.timeStamp <= pointerQuietUntil) { e.preventDefault(); e.stopPropagation(); }
+    else pointerQuietUntil = 0;
+  }, true);
+}
+// #155: a layout change from Confirm keeps the owner tick and the chosen
+// disk (no authorization exists before Method) and clears only an entry
+// that does not match; from anywhere else it starts over, as before.
+function layoutChanged() {
+  if (keyboardFrom === "confirm" && selected) {
+    if (!tokenOk()) { token = ""; confirmMismatch = false; }
+    return;
+  }
+  owner = false; token = ""; selected = null; keyboardFrom = null;
 }
 function btn(label, fn, cls, disabled) {
   const b = document.createElement("button");
@@ -1319,6 +1726,31 @@ function closePreview() {
     shutdownFrom = screen; screen = "shutdown_confirm"; draw(); return;
   }
   alert(P.chrome.closeTab);
+}
+// #156: which typed characters are wrong (display only; tokenOk() decides).
+// Same rules as token_feedback.py: spaces marked on their own, the other
+// characters compared in order, never the expected characters.
+function tokenFeedback(typed, wantRaw) {
+  const got = (typed || "").trim(), want = (wantRaw || "").trim();
+  if (!got || !want || got.toLowerCase() === want.toLowerCase()) return null;
+  const T = P.tokenFeedback, chars = Array.from(got), w = Array.from(want);
+  const blank = c => c.trim() === "";
+  const spaces = chars.map((c, i) => blank(c) ? i : -1).filter(i => i >= 0);
+  const kept = chars.map((c, i) => blank(c) ? -1 : i).filter(i => i >= 0);
+  const wrong = [];
+  for (let j = 0; j < Math.min(kept.length, w.length); j++)
+    if (chars[kept[j]].toLowerCase() !== w[j].toLowerCase()) wrong.push(j);
+  const extra = kept.slice(w.length), missing = Math.max(0, w.length - kept.length);
+  const marked = new Set([...wrong.map(j => kept[j]), ...extra, ...spaces]);
+  const cells = chars.map((c, i) => { const v = blank(c) ? "␣" : c; return marked.has(i) ? `[${v}]` : v; });
+  const nums = wrong.map(j => String(j + 1));
+  const list = nums.length > 1 ? nums.slice(0, -1).join(", ") + " " + T.and + " " + nums[nums.length - 1] : (nums[0] || "");
+  const out = [];
+  if (wrong.length) out.push((wrong.length === 1 ? T.wrongOne : T.wrongMany).replace("{n}", nums[0]).replace("{list}", list));
+  if (missing) out.push(missing === 1 ? T.missingOne : T.missingMany.replace("{count}", String(missing)));
+  if (extra.length) out.push(extra.length === 1 ? T.extraOne : T.extraMany.replace("{count}", String(extra.length)));
+  if (spaces.length) out.push(T.spaceNote);
+  return {display: T.typed.replace("{typed}", cells.join(" ")), message: out.join(" ")};
 }
 function tokenOk() {
   return selected && token.trim().toLowerCase() === selected.token.toLowerCase();
@@ -1350,7 +1782,7 @@ function recoveryHtml(sections) {
   let html = `<section class="recovery">
     <h2>${esc(L.happened)}</h2><p>${esc(sections.happened)}</p>
     <h2>${esc(L.meaning)}</h2><p>${esc(sections.meaning)}</p>
-    <h2>${esc(L.next)}</h2><p>${esc(sections.next)}</p>`;
+    <h2>${esc(L.next)}</h2><p>${esc(sections.next).replace(/\n/g, "<br>")}</p>`;
   if (sections.technical) {
     html += `<details class="recovery-tech"><summary>${esc(L.technical)}</summary>
       <p class="small muted">${esc(sections.technical)}</p></details>`;
@@ -1364,9 +1796,29 @@ function metaLine(d, opts) {
   const extra = showMore
     ? `<div class="small muted more-path"${detailId ? ` id="${detailId}"` : ""}>${esc(P.pathNote)}: ${esc(d.path)}</div><div class="small muted">${esc(P.capacityUnitNote)}</div>`
     : (detailId ? `<div id="${detailId}" hidden></div>` : "");
-  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser">${esc(screen === "pick" && !d.isBoot ? d.markedSerial || d.serial : d.serial)}</span></span>
+  return `<div class="meta"><span class="serialpair"><span class="serial-label">${esc(d.idLabel || P.serialLabel)}</span><span class="mono ser${screen === "pick" && !d.isBoot && (d.serialMarks || []).length ? " compared" : ""}">${serialText(d)}</span></span>
     <span class="disktype">${esc(d.kindLabel)}</span>
     <div class="connection"><span class="serial-label">${esc(P.connectionLabel)}</span><span>${esc(d.connection || d.bus)}</span></div>${notes}${extra}</div>`;
+}
+function serialText(d) {
+  // Pick compares serials; Confirm marks the characters to type (#129).
+  if (screen === "pick" && !d.isBoot) {
+    // #152: the characters that differ from the similar disks, bold and
+    // underlined (a shape, not only a colour).
+    const marks = d.serialMarks || [];
+    if (!marks.length) return esc(d.serial);
+    let out = "", at = 0;
+    for (const [a, b] of marks) {
+      out += esc(d.serial.slice(at, a)) + '<b class="diff">' + esc(d.serial.slice(a, b)) + "</b>";
+      at = b;
+    }
+    return out + esc(d.serial.slice(at));
+  }
+  if (screen === "confirm" && d.tokenEnd > d.tokenStart) {
+    return esc(d.serial.slice(0, d.tokenStart)) + '<mark class="token-mark">'
+      + esc(d.serial.slice(d.tokenStart, d.tokenEnd)) + "</mark>" + esc(d.serial.slice(d.tokenEnd));
+  }
+  return esc(d.serial);
 }
 function summaryCard(d) {
   return `<div class="card hero identity"><div class="identity-label">${P.selectedDisk}</div><div class="row" style="align-items:flex-start">
@@ -1376,15 +1828,26 @@ function summaryCard(d) {
   </div>`;
 }
 function nestedComponents(d) {
-  const items = d.components || [];
-  if (!items.length) return "";
+  if (!d.contentsSummary) return "";
   return `<div class="nested">
     <div class="nested-intro">${esc(P.nestedIntro)}</div>
-    ${items.map(c => `<div class="nested-item"><div>${esc(c.heading)}</div>${c.reason ? `<div>${esc(c.reason)}</div>` : ""}</div>`).join("")}
+    <div class="nested-item">${esc(d.contentsSummary)}</div>
+  </div>`;
+}
+function compactDiskRow(d) {
+  // #149: model, kind and connection, contents hint and summary, capacity.
+  const details = [d.kindLabel, d.connection || d.bus, ...(d.encryptionTags || []), d.contentsHint, d.contentsSummary].filter(Boolean).join(" · ");
+  return `<div class="card pickable compact" data-path="${esc(d.path)}" tabindex="0" role="button" aria-pressed="false">
+    <div class="row"><span class="radio"></span>
+      <div class="title">${esc(d.name)}</div>
+      <div class="small muted compact-details">${esc(details)}</div>
+      <div class="size">${esc(d.size)}</div>
+    </div>
   </div>`;
 }
 function diskCard(d) {
   const sel = selected && selected.path === d.path;
+  if (screen === "pick" && !d.isBoot && !sel) return compactDiskRow(d);
   const cls = d.isBoot ? "card boot" : ("card pickable" + (sel ? " sel" : ""));
   const icon = d.isBoot ? `<span class="radio" style="border:0;background:none">${ICON_NO}</span>` : `<span class="radio"></span>`;
   // Use esc for attribute to prevent `"` breakout
@@ -1397,19 +1860,36 @@ function diskCard(d) {
           <div class="size">${esc(d.size)}</div>
         </div>
         ${metaLine(d)}
+        ${(d.encryptionTags || []).length ? `<div class="enc-tags">${d.encryptionTags.map(t => `<span class="enc-tag">${esc(t)}</span>`).join("")}</div>` : ""}
+        ${d.contentsHint ? `<div class="small muted contents-hint">${esc(d.contentsHint)}</div>` : ""}
         ${nestedComponents(d)}
       </div>
     </div>
   </div>`;
 }
+// #140: the guided keyboard check, same rules as keyboard.check_key.
+function keyCheck(active, typed) {
+  if (typeof typed !== "string" || !/^\p{L}$/u.test(typed)) return null;
+  const k = P.keyCheck, produced = typed.toLowerCase();
+  const fam = k.layoutFamily[active] || "qwerty";
+  const pos = Object.keys(k.families[fam]).find(p => k.families[fam][p] === produced);
+  const target = pos === undefined ? undefined
+    : Object.keys(k.families).find(f => k.families[f][pos] === k.key);
+  if (!target) return {kind: "unclear", typed: produced};
+  if (target === fam) return {kind: "match", layout: active};
+  return {kind: "other", layout: k.familyLayout[target] || "us"};
+}
 function requestRefresh() {
-  if (["working", "done", "splash", "keyboard", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "shutdown_confirm"].includes(screen)) return;
-  if (screen === "refresh_confirm") return;
+  // #136: not on What/Owner (no disk list yet); guarded after Pick.
+  if (!REFRESH_OFFERED.includes(screen)) return;
   if (screen === "last" && timer) { clearInterval(timer); timer = null; }
   refreshFrom = screen;
   screen = "refresh_confirm";
   draw();
 }
+const REFRESH_OFFERED = ["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"];
+const REFRESH_DIRECT = ["pick", "empty", "blocked", "disk_help"];
+function refreshGuarded() { return !REFRESH_DIRECT.includes(refreshFrom); }
 function cancelRefresh() {
   screen = refreshFrom;
   if (screen === "last") { tLeft = 5; startCount(); }
@@ -1420,7 +1900,7 @@ function refreshPreview() {
   if (["working", "done", "splash"].includes(screen)) return;
   if (timer) clearInterval(timer);
   timer = null; selected = null; token = ""; owner = false;
-  method = "everyday"; tLeft = 5; showMore = false; demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
+  method = "everyday"; tLeft = 5; showMore = false; methodMore = new Set(); limitsMore = false; demoPct = null; demoFrac = null; progressKey = ""; screen = "owner";
   draw();
 }
 function headerCaption(info) {
@@ -1432,8 +1912,12 @@ function headerCaption(info) {
 }
 function applyTextSize() {
   const shell = document.querySelector(".shell");
-  if (shell) shell.setAttribute("data-text", textSize);
+  if (shell) {
+    shell.setAttribute("data-text", textSize);
+    shell.classList.toggle("hc", highContrast);  // #179
+  }
 }
+let highContrast = false;
 function draw() {
   applyTextSize();
   // Countdown redraws must preserve deliberate keyboard focus. Entering
@@ -1450,14 +1934,20 @@ function draw() {
     && document.activeElement.id === "more";
   if (screen === "what") screen = "owner";
   const info = stepInfo();
+  renderPowerBadge();
   const stepEl = document.getElementById("step");
   document.getElementById("journey").innerHTML = info[0]
     ? P.journey.map((label, index) =>
         `<li${index + 1 === info[0] ? ' aria-current="step"' : ''}>${esc(label)}</li>`).join("") : "";
-  stepEl.textContent = headerCaption(info);
+  // Report help returns to the screen that opened it and shows its step (#130).
+  const stepKey = screen === "report_help" ? reportHelpFrom : screen;
+  stepEl.textContent = (info[0] === 1 && P.stepCaptions[stepKey]) || headerCaption(info);
   stepEl.style.visibility = stepEl.textContent ? "visible" : "hidden";
+  const part = info[0] === 1 ? P.stepParts[stepKey] : undefined;
   document.getElementById("sfill").innerHTML = P.journey.map((_, index) =>
-    `<span class="${index + 1 === info[0] ? "now" : ""}"></span>`).join("");
+    index + 1 === info[0] && part !== undefined && part < 1
+      ? `<span class="now part" style="--part:${(part * 100).toFixed(1)}%"></span>`
+      : `<span class="${index + 1 === info[0] ? "now" : ""}"></span>`).join("");
   const main = document.getElementById("main");
   const btnsL = document.getElementById("btnsL");
   const btnsR = document.getElementById("btnsR");
@@ -1472,7 +1962,10 @@ function draw() {
   const splash = screen === "splash";
   document.querySelector(".hdr").style.display = splash ? "none" : "";
   document.querySelector(".strip").style.display = splash ? "none" : "";
-  foot.style.display = splash ? "none" : "";
+  // #175: the splash footer keeps only Help & settings.
+  foot.style.display = "";
+  foot.querySelector(".footrow").style.display = splash ? "none" : "";
+  document.getElementById("hint").style.display = splash ? "none" : "";
   renderHint(P.hints.default);
   if (screen === "splash") {
     main.innerHTML = `<div class="splashwrap">
@@ -1487,22 +1980,33 @@ function draw() {
       const selected = (keyboardLayout || "us") === item.id;
       return `<div class="card pickable${selected ? " sel" : ""}" data-layout="${item.id}" tabindex="0" role="button" aria-pressed="${selected}"><div class="row"><span class="radio"></span><div class="grow"><div class="title">${item.title}</div><p class="small muted">${item.note}</p></div><span class="kbd">${i+1}</span></div></div>`;
     }).join("");
-    const sizes = P.textSizes.map(item => `<button type="button" class="btn${textSize === item.id ? " primary" : ""}" data-text="${item.id}">${item.label}</button>`).join("");
-    const langs = P.languages.map(l => `<div class="small">${l.active ? ">" : "&nbsp;"} ${l.name}</div>`).join("");
-    main.innerHTML = `<h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>
-      <p class="small muted">${P.keyboardLimits}</p>
-      <p class="small">${P.textSizeLead}</p>
-      <div class="textsizes">${sizes}</div>
-      <div class="cz"><div class="czc">${layouts}
-      <p class="small" style="margin-top:12px"><strong>${P.languageTitle}</strong></p>
-      <p class="small muted">${P.languageLead}</p>${langs}
+    const sizes = P.textSizes.map(item => textSize === item.id
+      ? `<button type="button" class="btn choice sel" aria-pressed="true" data-text="${item.id}"><span class="tick" aria-hidden="true"></span>${item.label}</button>`
+      : `<button type="button" class="btn segment" aria-pressed="false" data-text="${item.id}">${item.label}</button>`).join("");
+    const langs = P.languages.map(l => `<span class="choice${l.active ? " sel" : ""}"${l.active ? ' aria-current="true"' : ""}>${l.active ? '<span class="tick" aria-hidden="true"></span>' : ""}${l.name}</span>`).join("");
+    // #131: language first, each in its own name; the page's layout follows
+    // it until a layout is picked by hand.
+    const layoutNotice = layoutChosen ? "" : `<p class="small"><strong>${P.layoutNotice}</strong></p>`;
+    main.innerHTML = `<section class="language-first" aria-label="${P.languagePicker}"><p class="small"><strong>${P.languagePicker}</strong></p>
+      <p>${langs}</p><p class="small muted">${P.languageLead}</p></section>
+      <section class="text-size" aria-label="${P.textSizeUtility}"><p class="small"><strong>${P.textSizeUtility}</strong></p>
+      <div class="textsizes">${sizes}</div><p class="small muted">${P.textSizeLead}</p></section>
+      <section class="contrast" aria-label="${P.helpMenu.contrastTitle}"><p class="small"><strong>${P.helpMenu.contrastTitle}</strong></p>
+      <div class="textsizes">${[[false, P.helpMenu.contrastStandard], [true, P.helpMenu.contrastHigh]].map(([on, label]) => highContrast === on
+        ? `<button type="button" class="btn choice sel" aria-pressed="true" data-contrast="${on}"><span class="tick" aria-hidden="true"></span>${label}</button>`
+        : `<button type="button" class="btn segment" aria-pressed="false" data-contrast="${on}">${label}</button>`).join("")}</div><p class="small muted">${P.helpMenu.contrastLead}</p></section>
+      <h1 class="sub">${P.titles.keyboard}</h1><p class="subtitle">${P.keyboardLead}</p>${layoutNotice}
+      <div class="cz"><div class="czc"><div class="layout-cards">${layouts}</div>
+      ${moreLink("keyboard-limits")}<div id="keyboard-limits">${showMore ? `<p class="small muted">${P.keyboardLimits}</p>` : ""}</div>
       <p class="small">${P.keyboardCheck}</p>
-      <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value=""></div>
+      <div class="entryshell"><input class="token" id="kbcheck" type="text" autocomplete="off" spellcheck="false" value="" aria-label="${P.keyboardCheck}"></div>
+      <p class="small" id="kbresult" role="status" aria-live="polite"></p><div id="kbswitch"></div>
       </div></div>`;
     main.querySelectorAll("[data-layout]").forEach(el => {
       const pick = (keyboard = false) => {
         keyboardLayout = el.dataset.layout;
-        owner = false; token = ""; selected = null;
+        layoutChosen = true;
+        layoutChanged();
         draw();
         if (keyboard) main.querySelector(`[data-layout="${keyboardLayout}"]`)?.focus();
       };
@@ -1521,33 +2025,76 @@ function draw() {
         main.querySelector(`[data-text="${textSize}"]`)?.focus();
       };
     });
+    // #179: Standard or High contrast; focus stays on the chosen one.
+    main.querySelectorAll("[data-contrast]").forEach(el => {
+      el.onclick = () => {
+        highContrast = el.dataset.contrast === "true";
+        draw();
+        main.querySelector(`[data-contrast="${highContrast}"]`)?.focus();
+      };
+    });
     const box = main.querySelector("#kbcheck");
-    if (box) box.value = "";
+    if (box) {
+      box.value = "";
+      box.addEventListener("keydown", (e) => {
+        const result = keyCheck(keyboardLayout || "us", e.key);
+        if (!result) return;
+        const title = id => (P.keyboardLayouts.find(l => l.id === id) || {title: id}).title;
+        const out = main.querySelector("#kbresult"), sw = main.querySelector("#kbswitch");
+        sw.innerHTML = "";
+        if (result.kind === "match") out.textContent = P.keyCheck.match.replace("{layout}", title(result.layout));
+        else if (result.kind === "other") {
+          out.textContent = P.keyCheck.other.replace("{layout}", title(result.layout));
+          sw.append(btn(P.keyCheck.switch.replace("{layout}", title(result.layout)), () => {
+            keyboardLayout = result.layout; layoutChosen = true; layoutChanged(); draw();
+            main.querySelector("#kbcheck")?.focus();
+          }, "secondary"));
+        } else out.textContent = P.keyCheck.unclear.replace("{typed}", result.typed);
+      });
+    }
     btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
+    bindMore();
     renderHint(P.hints.keyboard);
-    btnsR.append(btn(P.buttons.continue, () => { screen = "owner"; draw(); }, "primary"));
+    btnsR.append(btn(P.buttons.continue, () => {
+      const from = keyboardFrom;
+      keyboardFrom = null;
+      // #175: back to the screen that opened it (Help & settings or Change).
+      screen = from === "confirm" ? (selected ? "confirm" : "owner")
+        : (from && !["keyboard", "splash", "what"].includes(from) ? from : "owner");
+      draw();
+    }, "primary"));
   } else if (screen === "owner") {
     main.innerHTML = `<h1 class="sub">${P.titles.owner}</h1><p class="subtitle">${P.whatLead}</p><div class="cz"><div class="czc">
       <div class="card"><div class="title">${P.titles.what}</div>
       <ul class="bullets">${P.what.map(x=>"<li>"+x+"</li>").join("")}</ul></div>
-      <div style="margin-top:12px">${panel("info", P.reportMediaWhat, true)}</div>
+      <p class="subtitle" style="margin-top:14px">${P.ownerLead}</p>
+      <div class="ownercard${owner ? " checked" : ""}" id="own" tabindex="0" role="checkbox" aria-checked="${owner}">
+        <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div>
+      <p class="small" style="margin-top:16px">${P.reportMediaWhat} <button type="button" class="linkbtn" id="report-learn-more" aria-label="${P.learnMoreReport}">${P.learnMore}</button></p>
       <div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
-      <div>${P.powerReminder}</div><div class="extra">${P.powerBlanking}</div>
-      <div id="power-status" role="status" aria-live="polite">${powerText()}</div></div></div>
+      <div>${P.powerReminder}</div></div></div>
       ${moreLink("more-detail")}
       ${moreDetail(showMore ? `<div class="panel info" style="margin-top:12px">${badge("info", 28)}<div>
-      <div>${P.thisUsb}</div><div class="extra">${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
-      <p class="subtitle" style="margin-top:16px">${P.ownerLead}</p>
-      <div class="ownercard${owner ? " checked" : ""}" id="own" tabindex="0" role="checkbox" aria-checked="${owner}">
-        <span class="cbox">${owner ? "✓" : ""}</span><span>${P.owner}</span></div></div></div>`;
+      <div>${P.thisUsb}</div><div class="extra">${P.platforms} ${P.secureBoot} ${P.engine} ${P.powerEvents}</div></div></div>` : "")}
+      </div></div>`;
     bindMore();
+    main.querySelector("#report-learn-more").onclick = () => { reportHelpFrom = screen; screen = "report_help"; draw(); };
     const card = main.querySelector("#own");
     const toggle = () => { owner = !owner; draw(); document.getElementById("own").focus(); };
     card.onclick = toggle;
     card.onkeydown = (e) => { if (e.key === " ") { e.preventDefault(); if (!e.repeat) toggle(); } };
     btnsL.append(btn(P.buttons.back, () => { screen = "keyboard"; draw(); }));
     renderHint(P.hints.owner);
-    btnsR.append(btn(P.buttons.chooseDisk, () => { if (owner) { if (mode==="blocked") screen="blocked"; else if (!selectable().length) screen="empty"; else screen="pick"; draw(); } }, "primary", !owner));
+    if (!owner) {
+      // #143: the reason beside the greyed button, also its description.
+      const reason = document.createElement("span");
+      reason.className = "small muted btnreason"; reason.id = "owner-reason";
+      reason.textContent = P.ownerReason;
+      btnsR.append(reason);
+    }
+    const choose = btn(P.buttons.chooseDisk, () => { if (owner) { if (mode==="blocked") screen="blocked"; else if (!selectable().length) screen="empty"; else screen="pick"; draw(); } }, "primary", !owner);
+    if (!owner) choose.setAttribute("aria-describedby", "owner-reason");
+    btnsR.append(choose);
   } else if (screen === "blocked") {
     main.innerHTML = `<div class="centerstage"><div class="badgehalo danger">${badge("danger", 51)}</div>
       <h1>${P.titles.blocked}</h1>${recoveryHtml(P.blockedRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.blocked)}</p>${supportCodeBlock(P.sampleBlockedCode)}</div>`;
@@ -1555,7 +2102,7 @@ function draw() {
     btnsR.append(btn(P.buttons.closePreview, closePreview, "primary"));
   } else if (screen === "empty") {
     let html = `<div class="centerstage"><div class="badgehalo info">${badge("info", 51)}</div>
-      <h1>${P.titles.empty}</h1>${recoveryHtml(P.emptyRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.empty)}</p>${supportBlock()}${supportCodeBlock(P.sampleEmptyCode)}</div>`;
+      <h1>${P.titles.empty}</h1>${mode === "hidden" ? recoveryHtml(P.hiddenRecovery) : recoveryHtml(P.emptyRecovery)}<p class="small muted inventory-count" role="status">${esc(P.inventoryCount.empty)}</p>${supportBlock()}${supportCodeBlock(P.sampleEmptyCode)}</div>`;
     html += `<div class="disklist">` + disks().map(diskCard).join("") + `</div>`;
     main.innerHTML = html;
     renderOtherDevices();
@@ -1564,13 +2111,14 @@ function draw() {
   } else if (screen === "pick") {
     let html = `<h1 class="sub">${P.titles.pick}</h1><p class="subtitle">${P.pickSubtitle}</p>`;
     if (P.sameSizeConflict && mode === "happy") html += `<div style="margin-bottom:12px">${panel("warn", P.sameSize)}</div>`;
-    if (selected && (selected.kind === "SSD" || selected.kind === "NVMe")) html += `<div style="margin-bottom:12px">${panel("limits", P.ssd, true)}</div>`;
-    if (reportWanted) html += `<div style="margin-bottom:12px">${panel("info", P.reportMediaWanted, true)}</div>`;
     html += `<div class="pick-tools"><span class="small muted inventory-count" role="status" aria-live="polite">${esc(P.inventoryCount[mode] || P.inventoryCount.happy)}</span>${moreLink()}</div>`;
     html += `<div class="disklist">`;
+    selectable().forEach(d => { html += diskCard(d); });
+    // Selection notes, the protected Beamo USB and Compare follow the disks.
+    if (selected && (selected.kind === "SSD" || selected.kind === "NVMe")) html += `<div style="margin:4px 0 8px">${panel("limits", P.ssd, true)}</div>`;
+    if (reportWanted) html += `<div style="margin:4px 0 8px">${panel("info", P.reportMediaWanted, true)}</div>`;
     disks().filter(d => d.isBoot).forEach(d => { html += diskCard(d); });
     if (selectable().length > 1) html += `<details class="compare"><summary>${esc(P.compareTitle)}</summary><div class="compare-body"><p>${esc(P.compareIntro)}</p><div class="compare-grid">${P.comparison.map(text => `<pre class="compare-pre" tabindex="0">${esc(text)}</pre>`).join("")}</div></div></details>`;
-    selectable().forEach(d => { html += diskCard(d); });
     html += `</div>`;
     main.innerHTML = html;
     const unsure = btn(P.diskHelpButton, () => {
@@ -1591,22 +2139,37 @@ function draw() {
         Array.from(main.querySelectorAll(".card.pickable"))
           .find(card => card.dataset.path === selected.path).focus();
       };
-      el.onclick = pick;
-      el.onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); pick(); } };
+      // Click selects. A double-click on the same disk (by path, not by
+      // position: rows move when the chosen one expands) and Enter open
+      // Review this disk; Space only selects (#150).
+      el.onclick = (e) => {
+        const path = el.dataset.path, last = diskPress;
+        diskPress = {path, t: e.timeStamp, x: e.clientX, y: e.clientY};
+        if (last && last.path === path && e.timeStamp - last.t <= 500
+            && Math.abs(e.clientX - last.x) <= 8 && Math.abs(e.clientY - last.y) <= 8
+            && selected && selected.path === path) {
+          diskPress = null; reviewDisk(true); return;
+        }
+        pick();
+      };
+      el.onkeydown = (e) => {
+        if (e.key === " ") { e.preventDefault(); pick(); }
+        else if (e.key === "Enter") { e.preventDefault(); if (!e.repeat) { pick(); reviewDisk(false); } }
+      };
     });
     renderHint(P.hints.pick);
     btnsL.append(btn(P.buttons.back, () => { screen = "owner"; draw(); }));
-    btnsR.append(btn(P.buttons.reviewDisk, () => { if (selected && !selected.isBoot) { screen = "confirm"; token=""; draw(); } }, "primary", !(selected && !selected.isBoot)));
+    btnsR.append(btn(P.buttons.reviewDisk, () => reviewDisk(false), "primary", !(selected && !selected.isBoot)));
   } else if (screen === "confirm") {
     const d = selected;
     main.innerHTML = `<h1>${P.titles.confirm}</h1><div class="cz"><div class="czc">
       ${summaryCard(d)}
       ${moreLink("more-detail")}
       <div style="margin-top:12px">${panel("warn", d.warning)}</div>
-      <p class="small muted" style="margin-top:8px">${P.confirmKeyboard}</p>
       <p style="font-size:16px;margin:14px 0 8px;overflow-wrap:anywhere"><label for="tok">${esc(d.prompt)}</label></p>
       <div class="entryshell"><input class="token" id="tok" aria-describedby="match" autocomplete="off" spellcheck="false"></div>
-      <p class="match" id="match" role="status" aria-live="polite"></p></div></div>`;
+      <p class="match" id="match" role="status" aria-live="polite"></p>
+      <div class="layout-hint" id="layout-hint" hidden><p class="mono token-typed" id="token-typed"></p><p class="token-problem" id="token-problem"></p><span>${esc(P.confirmLayoutHint.replace("{layout}", (P.keyboardLayouts.find(item => item.id === keyboardLayout) || P.keyboardLayouts[0]).title))}</span> <button class="linkbtn" id="layout-change" type="button">${esc(P.confirmLayoutChange)}</button></div></div></div>`;
     bindMore();
     const inp = main.querySelector("#tok");
     const matchEl = main.querySelector("#match");
@@ -1617,9 +2180,21 @@ function draw() {
       if (cont) cont.disabled = !tokenOk();
       if (tokenOk()) { matchEl.innerHTML = MATCH_OK + "<span>" + P.matchOk + "</span>"; matchEl.className = "match ok"; }
       else { matchEl.innerHTML = MATCH_WAIT + "<span>" + P.matchWait + "</span>"; matchEl.className = "match"; }
+      // #155: a complete entry that does not match is a wrong entry.
+      if (!tokenOk() && token.trim() && token.trim().length >= (d.token || "").trim().length) confirmMismatch = true;
+      main.querySelector("#layout-hint").hidden = !(confirmMismatch && !tokenOk());
+      const fb = confirmMismatch && !tokenOk() ? tokenFeedback(token, d.token) : null;
+      main.querySelector("#token-typed").textContent = fb ? fb.display : "";
+      main.querySelector("#token-problem").textContent = fb ? fb.message : "";
     };
     inp.oninput = sync;
-    inp.onkeydown = (e) => { if (e.key === "Enter" && tokenOk()) { e.preventDefault(); screen = "method"; draw(); } };
+    inp.onkeydown = (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      if (tokenOk()) { screen = "method"; draw(); return; }
+      if (token.trim()) { confirmMismatch = true; sync(); }
+    };
+    main.querySelector("#layout-change").onclick = () => { keyboardFrom = "confirm"; screen = "keyboard"; draw(); };
     sync();
     // The input is already attached. A deferred focus would steal focus back
     // after Show more redraws and deliberately focuses its disclosure button.
@@ -1631,22 +2206,35 @@ function draw() {
     cont.id = "cont";
     btnsR.append(cont);
   } else if (screen === "method") {
-    let html = `<h1 class="compact sub">${P.titles.method}</h1><p class="subtitle" style="margin-bottom:6px">${P.methodLead}</p>${selected ? summaryCard(selected) + moreLink("more-detail") : ""}<div id="storage-notice" role="note">${panel("limits", selected ? selected.storageNotice : P.ssd, true)}</div><button id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button><div class="cz"><div class="czc">`;
+    // #158: one plain limits line between the disk and the cards; Show
+    // more puts the full, unchanged notice in its place and adds Storage
+    // limits (L) (owner, 2026-11-08). The L key opens the full page in both
+    // states. View only: never chooses a method.
+    const limitsLine = () => {
+      const text = limitsMore ? (selected ? selected.storageNotice : P.ssd) : (selected ? selected.storageLine : P.limitsLineSsd);
+      return `<div class="limitsline" role="note">${badge("limits", 20)}<div class="grow" id="storage-notice"><span class="sevword">${esc(P.sevLimits)}:</span> ${esc(text)}</div><button type="button" class="linkbtn" id="limits-more" aria-expanded="${limitsMore}" aria-controls="storage-notice" aria-label="${esc((limitsMore ? P.buttons.less : P.buttons.more) + ": " + P.sevLimits)}">${limitsMore ? P.buttons.less : P.buttons.more}</button>${limitsMore ? `<button type="button" id="limits" class="linkbtn" aria-describedby="storage-notice">${P.limitsButton}</button>` : ""}</div>`;
+    };
+    let html = `<h1 class="compact sub">${P.titles.method}</h1><p class="subtitle" style="margin-bottom:6px">${P.methodLead}</p>${selected ? summaryCard(selected) + moreLink("more-detail") : ""}${limitsLine()}<div class="cz"><div class="czc">`;
     ["everyday","extra","quick_zero"].forEach(id => {
       const m = P.methods[id];
       const sel = method === id;
-      html += `<div class="card pickable${sel ? " sel" : ""}" data-id="${id}" tabindex="0" role="button" aria-pressed="${sel}" style="padding-top:9px;padding-bottom:9px;margin-bottom:8px">
+      // #159: title, one sentence and a time line on every card; the
+      // counts, checks and limits sit under the card's own Show more. The
+      // choice (role=button) and the toggle are siblings, never nested.
+      const open = methodMore.has(id);
+      const time = selected && selected.methodTimes ? selected.methodTimes[id] : P.timeUnknown;
+      html += `<div class="card methodcard${sel ? " sel" : ""}" data-card="${id}" style="padding-top:9px;padding-bottom:9px;margin-bottom:8px">
+        <div class="card pickable methodpick${sel ? " sel" : ""}" data-id="${id}" tabindex="0" role="button" aria-pressed="${sel}">
         <div class="row"><span class="radio"></span>
           <div class="grow">
             <div class="title">${m.title}${id === "everyday" ? `<span class="chip ok">${P.recommended}</span>` : (m.mark ? `<span class="chip${m.checks ? "" : " warn"}">${m.mark}</span>` : "")}</div>
             <div class="methodlead">${m.lead}</div>
-            <div class="methodblurb">${m.blurb}</div>
-            <div class="methodpace">${m.checks ? `<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#4A5A6A" stroke-width="1.6"/><path d="M8 4.2V8l2.6 1.7" fill="none" stroke="#4A5A6A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ""}<span>${m.pace}</span></div>
-            ${m.extra ? `<div class="methodextra">${m.extra}</div>` : ""}
-            ${m.limits ? `<div class="methodlimits">${m.limits}</div>` : ""}
           </div>
           <span class="kbd">${m.key}</span>
         </div>
+        </div>
+        <div class="methodpace methodtime"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#4A5A6A" stroke-width="1.6"/><path d="M8 4.2V8l2.6 1.7" fill="none" stroke="#4A5A6A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="grow" data-time="${id}">${time}</span><button type="button" class="linkbtn methodmore" data-more="${id}" aria-expanded="${open}" aria-controls="method-more-${id}" aria-label="${open ? P.buttons.less : P.buttons.more}: ${m.title}">${open ? P.buttons.less : P.buttons.more}</button></div>
+        <div id="method-more-${id}" class="methoddetails">${open ? `<div class="methodblurb">${m.blurb}</div><div class="methodpace"><span>${m.pace}</span></div>${m.extra ? `<div class="methodextra">${m.extra}</div>` : ""}${m.limits ? `<div class="methodlimits">${m.limits}</div>` : ""}` : ""}</div>
       </div>`;
     });
     html += `</div></div>`;
@@ -1666,10 +2254,40 @@ function draw() {
         }
       };
     });
-    main.querySelector("#limits").onclick = () => { screen = "limits"; draw(); };
+    // Present only with the limits line opened (#158).
+    main.querySelector("#limits")?.addEventListener("click", () => { screen = "limits"; draw(); });
+    main.querySelector("#limits-more").onclick = () => {
+      limitsMore = !limitsMore;
+      draw();
+      main.querySelector("#limits-more")?.focus();
+    };
+    // #159: Show more is view-only; it never chooses a method.
+    main.querySelectorAll(".methodmore").forEach(b => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        const id = b.dataset.more;
+        if (methodMore.has(id)) methodMore.delete(id); else methodMore.add(id);
+        draw();
+        main.querySelector(`.methodmore[data-more="${id}"]`)?.focus();
+      };
+    });
+    // Clicking elsewhere on a card chooses it, as in the Tk wizard.
+    main.querySelectorAll(".methodcard").forEach(box => {
+      box.onclick = (e) => {
+        if (e.target.closest(".methodpick, button")) return;
+        box.querySelector(".methodpick")?.click();
+      };
+    });
     renderHint(P.hints.method);
     btnsL.append(btn(P.buttons.back, () => { screen = "confirm"; draw(); }));
     btnsR.append(btn(P.buttons.reviewErase, () => { screen = "last"; tLeft = 5; startCount(); draw(); }, "primary"));
+  } else if (screen === "refresh_confirm" && refreshGuarded()) {
+    main.innerHTML = `<h1 class="sub">${P.titles.refresh}</h1><p class="subtitle">${P.refreshGuardLead}</p>`;
+    btnsL.append(btn(P.refreshButton, refreshPreview, "secondary"));
+    const cancel = btn(P.refreshCancel, cancelRefresh, "primary");
+    btnsR.append(cancel);
+    renderHint(P.refreshGuardHint);
+    cancel.focus();
   } else if (screen === "refresh_confirm") {
     main.innerHTML = `<h1 class="sub">${P.titles.refresh}</h1><p class="subtitle">${P.refreshLead}</p>`;
     btnsL.append(btn(P.buttons.back, cancelRefresh));
@@ -1722,7 +2340,7 @@ function draw() {
     main.innerHTML = `<h1>${P.limitsTitle}</h1><div id="limits-text" class="help-reader" role="region" aria-label="${esc(P.limitsTitle)}" tabindex="0"></div>`;
     main.querySelector("#limits-text").textContent = P.limitsText;
     main.querySelector("#limits-text").focus();
-    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); main.querySelector("#limits").focus(); }));
+    btnsL.append(btn(P.buttons.back, () => { screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus(); }));
   } else if (screen === "advanced") {
     let html = `<h1 class="compact sub">${P.titles.advanced}</h1><p class="subtitle" style="margin-bottom:6px">${P.advancedLead}</p><div class="cz"><div class="czc"><div class="card hero" style="padding:12px 20px">`;
     ["everyday","extra","quick_zero"].forEach(id => {
@@ -1741,15 +2359,16 @@ function draw() {
     const frac = ready ? 1 : Math.max(0, Math.min(1, tLeft / 5));
     const ringColor = "var(--primary)";
     main.innerHTML = `<h1 class="sub">${P.titles.last}</h1><p class="subtitle">${P.lastLead}</p>
-      <div class="review-grid"><div>${summaryCard(selected)}<p style="font-weight:700">${esc(P.methods[method].operation)}</p><p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p><p class="small">${P.methods[method].summary}</p>${powerPanel()}</div><div class="ringwrap"><div style="position:relative;width:64px;height:64px">
+      <div class="review-grid"><div>${summaryCard(selected)}<p class="review-method" style="font-weight:700;margin-bottom:2px">${esc(P.methods[method].reviewLine)}</p><div class="erase-callout" role="alert">${badge("erase", 24)}<p class="review-warning">${P.sevWarning}: ${esc(selected.eraseLabel)}</p></div></div><div class="ringwrap"><div style="position:relative;width:64px;height:64px;flex:none">
         <svg width="64" height="64" viewBox="0 0 190 190">
           <circle cx="95" cy="95" r="81" fill="none" stroke="var(--track)" stroke-width="11"/>
           ${ready ? `<circle cx="95" cy="95" r="81" fill="none" stroke="var(--primary)" stroke-width="11"/>` :
             `<circle cx="95" cy="95" r="81" fill="none" stroke="${ringColor}" stroke-width="11" stroke-linecap="round"
               stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC * (1 - frac)}" transform="rotate(-90 95 95)"/>`}
         </svg>
-        <div class="ringnum" style="${ready ? "color:var(--primary)" : ""}">${ready ? "0" : tLeft}</div></div>
-      <div class="countcap${ready ? " ready" : ""}">${ready ? P.countdownReady : P.countdownCaption}</div></div></div>`;
+        <div class="ringnum" aria-hidden="true">${ready ? `<svg class="ringcheck" width="28" height="28" viewBox="0 0 28 28"><path d="M7 14.5l4.5 4.5L21 9.5" fill="none" stroke="var(--primary)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : tLeft}</div></div>
+      <div class="countcap${ready ? " ready" : ""}">${ready ? `<div class="readyword">${P.countdownReadyWord}</div>` : ""}${ready ? P.countdownReady : P.countdownCaption}</div></div>
+      <p id="ready-status" class="sr-only" role="status" aria-live="polite">${ready ? `${P.countdownReadyWord}. ${P.countdownAvailable}` : ""}</p>${powerPanel()}</div>`;
     btnsL.append(btn(P.buttons.back, () => { if (timer) clearInterval(timer); screen = "method"; draw(); }));
     btnsR.append(btn(P.buttons.erase, () => { if (tLeft<=0) startWork(); }, "danger", tLeft>0));
     renderHint(P.hints.lastChance);
@@ -1764,9 +2383,15 @@ function draw() {
       ${moreLink("more-detail")}
       <div class="cz"><div class="czc">
       <div class="progress-card"><div class="progress-label">${P.eraseProgress}</div>
-      <div class="bigstat" id="pct" style="margin:0 0 12px">${esc(state.percentText)}</div>
+      <div class="bigstat" id="pct" style="margin:0 0 12px">${esc(state.headline)}</div>
       <div class="bar"><div class="fill${state.animate ? " indet" : ""}" id="fill" style="width:${fillPct}%"></div></div>
-      <p class="progress-timing" id="pulse">${esc(state.timingText)}</p>
+      ${state.timeLine ? `<p class="glance-time" id="time-line">${esc(state.timeLine)}</p>` : ""}
+      ${state.stepLine ? `<p class="glance-step" id="step-line">${esc(state.stepLine)}</p>` : ""}
+      ${state.staleBlock ? `<p class="glance-stale" id="stale" role="status">${esc(state.staleBlock)}</p>` : ""}
+      ${state.notes.length ? `<p class="glance-notes" id="notes">${esc(state.notes.join("\n"))}</p>` : ""}
+      <p class="walk-away" id="walk-away">${esc(!audioDemo ? P.finishSound.none : soundsOn ? P.finishSound.beep : P.finishSound.quiet)}</p>
+      ${audioDemo ? "" : `<p class="small muted" id="finish-reason">${esc(P.finishSound.reasonPreview)}</p>`}
+      <p class="small"><strong>${P.powerKeep}</strong></p>
       <div id="power-status" role="status" aria-live="polite" class="small muted">${powerText()}</div>
       <p class="small muted">${m.summary}</p>
       <p class="small muted" id="soundsNote" role="status"></p></div></div></div>`;
@@ -1774,18 +2399,24 @@ function draw() {
     btnsL.append(btn(P.stop.ask, () => {
       if (screen === "working") { screen = "stop_confirm"; draw(); }
     }));
-    btnsL.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
-      soundsOn = !soundsOn;
-      this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
-      document.getElementById("soundsNote").textContent = this.textContent;
-    }));
+    // "Play a sound when it's finished" (#133): a switch button, so redraws
+    // keep its keyboard focus like the other footer controls; greyed while
+    // no sound can play, with the reason as its description.
+    const finishOn = audioDemo && soundsOn;
+    const finish = btn((finishOn ? "☑ " : "☐ ") + P.finishSound.toggle, () => {
+      soundsOn = !soundsOn; soundsChosen = true; draw();
+    }, "ghost finish-toggle", !audioDemo);
+    finish.setAttribute("role", "switch");
+    finish.setAttribute("aria-checked", finishOn ? "true" : "false");
+    if (!audioDemo) finish.setAttribute("aria-describedby", "finish-reason");
+    btnsL.append(finish);
     btnsL.append(btn(P.sounds.hear, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
-    }));
+    }, "ghost"));
     renderHint(P.hints.working);
   } else if (["stop_confirm", "stopping", "stopped", "stop_unconfirmed"].includes(screen)) {
     const result = screen === "stopped" ? P.stop.stopped : P.stop.unconfirmed;
-    const title = screen === "stop_confirm" ? P.stop.title : screen === "stopping" ? P.stoppingErase : result.message;
+    const title = screen === "stop_confirm" ? P.stop.title : screen === "stopping" ? P.stoppingErase : result.headline;
     const recovery = screen === "stopped" ? P.stop.stoppedRecovery
       : screen === "stop_unconfirmed" ? P.stop.unconfirmedRecovery : null;
     const detail = screen === "stop_confirm" ? P.stop.lead : screen === "stopping" ? P.stop.stopping : "";
@@ -1795,7 +2426,7 @@ function draw() {
       ${recovery ? recoveryHtml(recovery) : `<p role="status" aria-live="polite">${detail}</p>`}
       <p>${esc(P.previewBanner)}</p>
       ${selected ? summaryCard(selected) : ""}
-      ${stopProgress ? `<p class="progress-timing" id="stop-timing">${esc(stopProgress.timingText)}</p>` : ""}
+      ${stopProgress ? `<p class="progress-timing" id="stop-timing">${esc(stopProgress.stoppingText)}</p>` : ""}
       ${stopSupport}
       <p class="small muted" id="stop-method">${P.methods[method].operation}</p>`;
     renderHint(P.stopKeepConnected);
@@ -1828,48 +2459,33 @@ function draw() {
     main.innerHTML = `<div class="result"><div class="status" aria-hidden="true"><div class="core">i</div></div>
       <section aria-labelledby="erase-status-heading"><h1 id="erase-status-heading">${result.message}</h1>
       ${ok ? `<p class="statustext" style="color:var(--ink)">${result.next_step}</p>` : recovery}
-      <p>${P.methods[method].summary}</p>
+      <ul class="factrows" aria-label="${P.resultCard.title}"><li>${P.resultCard.methodLabel}: ${P.methods[method].title}</li><li>${P.resultCard.checkLabel}: ${P.resultCard.check}</li></ul>
       </section>
       <div style="width:100%;margin-top:12px">${summaryCard(selected)}</div>
       <section aria-labelledby="report-status-heading">
       <h2 id="report-status-heading">${P.reportStatusTitle}</h2>
-      <p>${P.reportPreview}</p><p class="small">${P.reportStatusNotice}</p></section>
+      <p>${P.reportPreview}</p></section>
+      ${recordBlock(result)}
       <p class="small muted" id="soundsNote" role="status"></p>
       ${moreLink("more-detail")}</div>`;
     bindMore();
-    utilities.append(btn(P.eraseAnother, requestAnotherPreview, "secondary"));
-    btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
-    btnsL.append(btn(soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff, function() {
-      soundsOn = !soundsOn;
-      this.textContent = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
-      document.getElementById("soundsNote").textContent = this.textContent;
-    }));
-    btnsL.append(btn(P.sounds.hearAgain, () => {
+    // #135: hear the result again in the footer tools; Sounds on/off is in
+    // Help & settings (#175).
+    utilities.append(btn(P.sounds.hearAgain, () => {
       document.getElementById("soundsNote").textContent = P.sounds.offLive;
-    }));
+    }, "ghost"));
+    btnsL.append(btn(P.buttons.closePreview, closePreview, "secondary"));
     btnsR.append(btn(P.buttons.runAgain, requestAnotherPreview, "primary"));
+    // #169: as in the Tk preview, Enter runs the preview again; no Esc here.
+    renderHint(P.hints.donePreview);
   }
-  if (["what", "owner", "method", "advanced"].includes(screen)) {
-    utilities.append(btn(P.reportHelpTitle, () => { reportHelpFrom = screen; screen = "report_help"; draw(); }, "ghost"));
-  }
-  if (!["working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "splash", "keyboard", "shutdown_confirm", "refresh_confirm"].includes(screen)) {
+  // #136: same list as REFRESH_OFFERED (inline: draw() stays self-contained).
+  if (["pick", "empty", "blocked", "disk_help", "confirm", "method", "advanced", "limits", "last"].includes(screen)) {
     utilities.prepend(btn(P.refreshUtility, requestRefresh, "ghost"));
   }
-  if (screen === "method") {
-    utilities.prepend(btn(P.buttons.advanced, () => { screen = "advanced"; draw(); }, "ghost"));
-  }
-  if (!["splash", "keyboard", "working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "shutdown_confirm", "refresh_confirm"].includes(screen)) {
-    const current = (P.textSizes.find(s => s.id === textSize) || P.textSizes[0]).label;
-    const sizeButton = btn(`${P.textSizeUtility}: ${current}`, () => {
-      const ids = P.textSizes.map(s => s.id);
-      const i = Math.max(0, ids.indexOf(textSize));
-      textSize = ids[(i + 1) % ids.length];
-      draw();
-      document.getElementById("text-size-utility")?.focus();
-    }, "ghost");
-    sizeButton.id = "text-size-utility";
-    utilities.append(sizeButton);
-  }
+  // #175: Help & settings first, in the same place on every screen. Text
+  // size, language and keyboard, sounds, report help and Advanced are in it.
+  renderHelpTrigger(utilities);
   if (screen === "last") {
     const focused = Array.from(foot.querySelectorAll("button"))
       .find(button => button.textContent === reviewFocus && !button.disabled);
@@ -1879,16 +2495,195 @@ function draw() {
     else if (workingFocus >= 0)
       foot.querySelectorAll("button")[workingFocus]?.focus();
   }
+  renderHelpMenu();
   renderedScreen = screen;
+}
+// #175: Help & settings. Opening it changes nothing; items use the same
+// rules as the live wizard (P.helpMenu.states) and never erase.
+let helpOpen = false, helpView = "menu", helpFocus = "", helpScreen = null, helpDirect = false;
+function helpItems() {
+  const items = (P.helpMenu.states[screen] || []).map(item => Object.assign({}, item));
+  for (const item of items) {
+    if (item.key === "text_size")
+      item.label = `${P.textSizeUtility}: ${(P.textSizes.find(s => s.id === textSize) || P.textSizes[0]).label}`;
+    if (item.key === "sounds") item.label = soundsOn ? P.sounds.toggleOn : P.sounds.toggleOff;
+    if (item.key === "high_contrast") item.label = highContrast ? P.helpMenu.contrastOn : P.helpMenu.contrastOff;
+  }
+  return items;
+}
+function openHelp(focusKey) {
+  helpOpen = true; helpView = "menu"; helpDirect = false; helpScreen = screen; helpFocus = focusKey || ""; draw();
+}
+// #174: the Keyboard shortcuts page straight from its footer item.
+function openShortcuts() {
+  helpOpen = true; helpView = "shortcuts"; helpDirect = true; helpScreen = screen; helpFocus = "back"; draw();
+}
+function closeHelp() {
+  const direct = helpDirect;
+  helpOpen = false; helpView = "menu"; helpFocus = ""; helpDirect = false; draw();
+  document.getElementById(direct ? "shortcuts-button" : "help-menu-button")?.focus();
+}
+function helpShortcutLines() {
+  const lines = [];
+  const hint = document.getElementById("hint").textContent.trim();
+  if (hint && screen !== "splash") lines.push(hint);
+  lines.push(P.helpMenu.common);
+  if (screen === "method") lines.push(P.helpMenu.limits);  // #158
+  if (typeof REFRESH_OFFERED !== "undefined" && REFRESH_OFFERED.includes(screen)) lines.push(P.helpMenu.refresh);
+  lines.push(P.helpMenu.menuKeys);
+  return lines;
+}
+function activateHelp(key) {
+  if (key === "shortcuts") { helpView = "shortcuts"; helpFocus = "back"; draw(); return; }
+  const item = helpItems().find(i => i.key === key);
+  if (!item || !item.enabled) return;
+  if (key === "text_size") {
+    const ids = P.textSizes.map(s => s.id);
+    textSize = ids[(Math.max(0, ids.indexOf(textSize)) + 1) % ids.length];
+    helpFocus = key; draw(); return;
+  }
+  if (key === "sounds") { soundsOn = !soundsOn; helpFocus = key; draw(); return; }
+  if (key === "high_contrast") { highContrast = !highContrast; helpFocus = key; draw(); return; }
+  helpOpen = false; helpView = "menu";
+  if (key === "language") { keyboardFrom = screen; screen = "keyboard"; }
+  else if (key === "report_help") { reportHelpFrom = screen; screen = "report_help"; }
+  else if (key === "advanced") { screen = "advanced"; }
+  draw();
+}
+function renderHelpTrigger(utilities) {
+  if (helpOpen && helpScreen !== screen) { helpOpen = false; helpView = "menu"; }
+  const trigger = btn(P.helpMenu.title, () => helpOpen ? closeHelp() : openHelp(), "ghost");
+  trigger.id = "help-menu-button";
+  trigger.setAttribute("aria-haspopup", "dialog");
+  trigger.setAttribute("aria-expanded", helpOpen ? "true" : "false");
+  utilities.prepend(trigger);
+  const shortcuts = btn(P.helpMenu.shortcutsTitle,
+    () => (helpOpen && helpDirect) ? closeHelp() : openShortcuts(), "ghost");
+  shortcuts.id = "shortcuts-button";
+  shortcuts.setAttribute("aria-haspopup", "dialog");
+  shortcuts.setAttribute("aria-expanded", helpOpen && helpDirect ? "true" : "false");
+  trigger.insertAdjacentElement("afterend", shortcuts);
+}
+function renderHelpMenu() {
+  document.getElementById("help-menu")?.remove();
+  if (!helpOpen) return;
+  const menu = document.createElement("div");
+  menu.id = "help-menu";
+  menu.className = "helpmenu";
+  menu.setAttribute("role", "dialog");
+  menu.setAttribute("aria-labelledby", "help-menu-title");
+  document.getElementById("help-menu-button")?.setAttribute("aria-controls", "help-menu");
+  const heading = document.createElement("h2");
+  heading.id = "help-menu-title";
+  menu.append(heading);
+  if (helpView === "shortcuts") {
+    heading.textContent = P.helpMenu.shortcutsTitle;
+    for (const line of helpShortcutLines()) {
+      const p = document.createElement("p");
+      p.textContent = line;
+      menu.append(p);
+    }
+    const back = helpDirect ? btn(P.helpMenu.close, closeHelp, "secondary")
+      : btn(P.helpMenu.back, () => { helpView = "menu"; helpFocus = "shortcuts"; draw(); }, "secondary");
+    back.dataset.help = "back";
+    menu.append(back);
+  } else {
+    heading.textContent = P.helpMenu.title;
+    for (const item of helpItems()) {
+      const b = btn(item.label, () => activateHelp(item.key), "ghost");
+      b.dataset.help = item.key;
+      menu.append(b);
+      if (!item.enabled) {
+        // Disabled items stay listed and focusable; the reason is read with them.
+        b.setAttribute("aria-disabled", "true");
+        const why = document.createElement("span");
+        why.className = "reason";
+        why.id = `help-why-${item.key}`;
+        why.textContent = item.reason;
+        b.setAttribute("aria-describedby", why.id);
+        menu.append(why);
+      }
+    }
+    const close = btn(P.helpMenu.close, closeHelp, "secondary");
+    close.dataset.help = "close";
+    menu.append(close);
+  }
+  const assist = document.getElementById("assist");
+  assist.append(menu);
+  // Never taller than the window area above the footer tools: it scrolls.
+  const shell = document.querySelector(".shell");
+  if (shell && menu.getBoundingClientRect) {
+    const room = assist.getBoundingClientRect().top - shell.getBoundingClientRect().top - 12;
+    menu.style.maxHeight = `${Math.max(160, Math.floor(room))}px`;
+  }
+  (menu.querySelector(`[data-help="${helpFocus}"]`) || menu.querySelector("button"))?.focus();
 }
 document.addEventListener("keydown", e => {
   // A held key cannot trigger the newly focused action after navigation.
-  // Last chance deliberately focuses Back when reached from Method; a repeat
+  // Final check deliberately focuses Back when reached from Method; a repeat
   // Enter from Continue would otherwise activate that Back button.
   if (e.repeat && ["Escape", "Enter"].includes(e.key)) { e.preventDefault(); return; }
+  // #175: F10 opens or closes Help & settings on every screen. While it is
+  // open, Esc closes it and no key reaches the screen behind it.
+  if (e.key === "F10") {
+    e.preventDefault();
+    if (!e.repeat) { if (helpOpen) closeHelp(); else openHelp(); }
+    return;
+  }
+  if (helpOpen) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      if (helpView === "shortcuts" && !helpDirect) { helpView = "menu"; helpFocus = "shortcuts"; draw(); }
+      else closeHelp();
+      return;
+    }
+    const controls = Array.from(document.querySelectorAll("#help-menu button"));
+    if (["ArrowUp", "ArrowDown", "Tab", "Home", "End"].includes(e.key) && controls.length) {
+      e.preventDefault();
+      const back = e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey);
+      let at = controls.indexOf(document.activeElement);
+      if (e.key === "Home") at = 0;
+      else if (e.key === "End") at = controls.length - 1;
+      else if (at < 0) at = back ? controls.length - 1 : 0;
+      else at = (at + (back ? controls.length - 1 : 1)) % controls.length;
+      controls[at].focus();
+      return;
+    }
+    if (!e.target?.closest?.("#help-menu")) e.preventDefault();
+    return;
+  }
   if (screen === "splash" && !e.repeat && !e.altKey && !e.ctrlKey && !e.metaKey
+      && e.key !== "Tab" && !e.target?.closest?.("#foot")
       && !e.target?.closest?.(".scenarios")) {
     e.preventDefault(); screen = "keyboard"; draw(); return;
+  }
+  if (screen === "pick" && ["ArrowUp", "ArrowDown"].includes(e.key)
+      && !e.target?.closest?.("details, textarea, .other-devices")) {
+    // #149, as in the Tk view: Up/Down move the selection by disk (path),
+    // never by a stored position; the first press picks an end of the list.
+    e.preventDefault();
+    const list = selectable().map(d => d.path);  // disks() is the pick-list order (#151)
+    if (!list.length) return;
+    const at = selected ? list.indexOf(selected.path) : -1;
+    const next = at < 0 ? (e.key === "ArrowUp" ? list.length - 1 : 0)
+      : Math.max(0, Math.min(list.length - 1, at + (e.key === "ArrowUp" ? -1 : 1)));
+    selected = selectable().find(d => d.path === list[next]);
+    draw();
+    const card = Array.from(main.querySelectorAll(".card.pickable"))
+      .find(el => el.dataset.path === selected.path);
+    if (card) { card.focus(); card.scrollIntoView({block: "nearest"}); }
+    return;
+  }
+  if (screen === "keyboard" && ["ArrowUp", "ArrowDown"].includes(e.key)) {
+    // As in the Tk view: Up/Down choose a layout even from the check box.
+    e.preventDefault();
+    const ids = P.keyboardLayouts.map(item => item.id);
+    const at = Math.max(0, ids.indexOf(keyboardLayout || "us"));
+    keyboardLayout = ids[(at + (e.key === "ArrowUp" ? ids.length - 1 : 1)) % ids.length];
+    layoutChosen = true;
+    layoutChanged();
+    draw();
+    return;
   }
   if (["working", "stop_confirm"].includes(screen) && e.key === "Escape") {
     e.preventDefault();
@@ -1904,6 +2699,10 @@ document.addEventListener("keydown", e => {
     else { screen = refreshFrom; draw(); }
     return;
   }
+  if ((screen === "done" || screen === "stopped") && e.key === "Enter"
+      && !e.target?.closest?.("button, a, input, textarea, select, summary")) {
+    e.preventDefault(); requestAnotherPreview(); return;
+  }
   if (screen === "shutdown_confirm" && ["Escape", "Enter"].includes(e.key)) {
     e.preventDefault(); screen = shutdownFrom; draw(); return;
   }
@@ -1916,14 +2715,14 @@ document.addEventListener("keydown", e => {
   if (e.key === "F5") {
     e.preventDefault();
     if (e.repeat || ["working", "stop_confirm", "stopping", "stopped", "stop_unconfirmed", "done", "splash", "shutdown_confirm"].includes(screen)) return;
-    if (screen === "refresh_confirm") refreshPreview();
+    if (screen === "refresh_confirm") { if (!refreshGuarded()) refreshPreview(); }
     else requestRefresh();
     return;
   }
   if (screen === "method" && e.key.toLowerCase() === "l") {
     e.preventDefault(); screen = "limits"; draw();
   } else if (screen === "limits" && e.key === "Escape") {
-    e.preventDefault(); screen = "method"; draw(); main.querySelector("#limits").focus();
+    e.preventDefault(); screen = "method"; draw(); (main.querySelector("#limits") || main.querySelector("#limits-more"))?.focus();
   }
 });
 function renderOtherDevices() {
@@ -1934,7 +2733,7 @@ function renderOtherDevices() {
   const text = document.createElement("div");
   text.tabIndex = 0;
   text.className = "inventory-reader";
-  text.textContent = P.otherDevices[mode === "empty" ? "empty" : "happy"];
+  text.textContent = P.otherDevices[(mode === "empty" || mode === "hidden") ? "empty" : "happy"];
   section.append(heading, text);
   const list = main.querySelector(".disklist");
   (list || main).append(section);
@@ -1958,6 +2757,8 @@ function currentProgress() {
 }
 function startWork() {
   screen = "working";
+  // #133: each erase plays a finish sound unless the person chose otherwise.
+  if (!soundsChosen) soundsOn = true;
   progressKey = "";
   demoPct = null;
   demoFrac = null;
@@ -2014,6 +2815,7 @@ function applyHash() {
     }
   }
   if (q.get("more") === "1") showMore = true;
+  if (q.get("audio") === "1") audioDemo = true;
   reportWanted = q.get("report") === "1";
   reportShareRedacted = q.get("share") === "1";
   if (s === "disk_help") { selected = null; token = ""; tLeft = 5; }

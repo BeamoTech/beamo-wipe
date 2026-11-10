@@ -39,7 +39,7 @@ def test_review_keeps_full_long_disk_identity_and_safe_default(ui):  # noqa: F81
         app.root.update()
     labels = [w for w in descendants(app.root) if w.winfo_class() == "Label"]
     for expected in (C.SELECTED_DISK, wiz.selected.display_name, wiz.selected.serial,
-                     wiz.method_summary, C.POWER_KEEP):
+                     wiz.review_method_line, C.POWER_KEEP):  # #164
         matches = [w for w in labels if str(w.cget("text")).replace("\n", "") == expected]
         assert len(matches) == 1
         label = matches[0]

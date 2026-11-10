@@ -50,7 +50,7 @@ def test_all_hints_render_as_key_caps():
         C.HINT_SPLASH,
         C.HINT_KEYBOARD,
     ):
-        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "any key"):
+        for word in ("Enter", "Esc", "Space", "Up/Down", "1, 2, or 3", "1–7", "any key"):
             if word in hint:
                 assert tkui._KEY_TOKEN_RE.search(hint), hint
 
@@ -173,7 +173,11 @@ def test_progress_never_shows_100_before_done_and_has_bar():
     assert format_progress_percent(99.99) == "99%"
     assert format_progress_percent(100) == "100%"
     work_src = inspect.getsource(tkui.TkWizard._refresh_working)
-    assert 'format_progress_percent' in work_src
+    # The Working glance (#132) formats through format_progress_percent.
+    from beamo_wipe.progress import ProgressView
+    assert 'glance_percent' in work_src
+    assert 'format_progress_percent' in inspect.getsource(ProgressView.glance_percent.fget)
+    assert ProgressView("Writing", 100.0, 1).glance_percent == "99%"
     assert ':.0f' not in work_src
     assert '_paint_bar' in work_src
 
@@ -317,10 +321,10 @@ def test_copy_never_forbids_recovery_language():
     )
     surfaces = (
         *C.WHAT_BULLETS,
-        C.PREPARE_WINDOWS,
-        C.PREPARE_SYSTEM,
-        C.PREPARE_DATA,
-        C.PREPARE_UNKNOWN,
+        C.ERASE_EVERYTHING,
+        C.ERASE_EVERYTHING_WINDOWS,
+        C.ERASE_EVERYTHING_SYSTEM,
+        C.ERASE_CANNOT_UNDO,
         C.POWER_REMINDER,
         C.POWER_BLANKING,
         C.WORKING_PULSE,

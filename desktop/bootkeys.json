@@ -1,0 +1,112 @@
+{
+  "schema": "beamo-wipe-boot-keys/1",
+  "reviewed": "2026-11-07",
+  "about": "The one boot-menu key table. Edit here, then run: python scripts/gen_boot_keys.py. docs/boot-keys.md explains each field and cites the sources. Keys are usual for a brand, never certain for one model.",
+  "placeholders": [
+    "To Be Filled By O.E.M.",
+    "To be filled by OEM",
+    "System manufacturer",
+    "System Product Name",
+    "Default string",
+    "OEM",
+    "O.E.M.",
+    "Not Applicable",
+    "Not Specified",
+    "Unknown",
+    "None",
+    "Manufacturer",
+    "Default"
+  ],
+  "words": {
+    "en": {"or": " or ", "then": ", then ", "lead": "Typical keys (examples only):", "launcher_hint": "Most {brand} computers: press {keys} at power-on."},
+    "fr": {"or": " ou ", "then": ", puis ", "lead": "Touches habituelles (exemples seulement) :"},
+    "de": {"or": " oder ", "then": ", dann ", "lead": "Typische Tasten (nur Beispiele):"},
+    "es": {"or": " o ", "then": " y luego ", "lead": "Teclas habituales (solo ejemplos):"},
+    "it": {"or": " o ", "then": ", poi ", "lead": "Tasti più comuni (solo esempi):"}
+  },
+  "brands": [
+    {
+      "id": "dell",
+      "name": "Dell",
+      "match": ["dell"],
+      "keys": ["F12"],
+      "join": "or",
+      "launcher": true,
+      "sources": ["https://www.dell.com/support/kbdoc/en-us/000126121"]
+    },
+    {
+      "id": "hp",
+      "name": "HP",
+      "match": ["hp", "hewlett packard"],
+      "keys": ["Esc", "F9"],
+      "join": "then",
+      "launcher": true,
+      "sources": ["https://www.hp.com/my-en/tech-takes/software/how-to/how-to-boot-from-usb-drive-on-windows-10-pcs.html"]
+    },
+    {
+      "id": "lenovo",
+      "name": "Lenovo",
+      "match": ["lenovo"],
+      "keys": ["F12"],
+      "join": "or",
+      "note": "Many Lenovo laptops need Fn+F12, or the small Novo button or pinhole (press it while the laptop is off, then choose the boot menu).",
+      "launcher": true,
+      "sources": ["https://support.lenovo.com/us/en/solutions/ht500207"]
+    },
+    {
+      "id": "asus",
+      "name": "ASUS",
+      "match": ["asustek", "asus"],
+      "keys": ["Esc", "F8"],
+      "join": "or",
+      "note": "ASUS laptops usually use Esc; ASUS desktop motherboards usually use F8.",
+      "launcher": true,
+      "sources": ["https://www.asus.com/support/faq/1013017/"]
+    },
+    {
+      "id": "acer",
+      "name": "Acer",
+      "match": ["acer"],
+      "keys": ["F12"],
+      "join": "or",
+      "note": "On many Acer models the F12 boot menu must first be turned on in firmware setup. That is a firmware change: confirm you can reach the BitLocker recovery key first, or use the Windows steps instead.",
+      "launcher": true,
+      "sources": ["https://community.acer.com/en/kb/articles/563-why-cant-i-get-the-f12-boot-menu-to-work-on-my-notebook-or-netbook"]
+    },
+    {
+      "id": "msi",
+      "name": "MSI",
+      "match": ["micro star", "msi"],
+      "keys": ["F11"],
+      "join": "or",
+      "launcher": true,
+      "sources": ["https://www.msi.com/faq/mb-901"]
+    },
+    {
+      "id": "gigabyte",
+      "name": "Gigabyte",
+      "match": ["gigabyte"],
+      "keys": ["F12"],
+      "join": "or",
+      "launcher": true,
+      "sources": ["https://download.gigabyte.com/FileList/Manual/mb_manual_intel800-bios_e.pdf"]
+    },
+    {
+      "id": "intel-mac",
+      "name": "Intel Mac",
+      "localized_name": {"fr": "Mac Intel", "de": "Intel-Mac", "es": "Mac con Intel", "it": "Mac con processore Intel"},
+      "match": ["apple"],
+      "keys": ["Option (⌥)"],
+      "join": "or",
+      "suffix": {
+        "en": " at startup. Not Apple Silicon.",
+        "fr": " au démarrage. Pas les Mac Apple Silicon.",
+        "de": " beim Start. Nicht für Apple Silicon.",
+        "es": " al arrancar. No para Apple Silicon.",
+        "it": " all’avvio. Non per Apple Silicon."
+      },
+      "launcher": false,
+      "sources": ["https://support.apple.com/102603"]
+    }
+  ]
+}

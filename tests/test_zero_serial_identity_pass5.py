@@ -95,9 +95,14 @@ def test_read_only_comparison_does_not_present_zero_padding_as_a_serial() -> Non
     padded = _disk("sda", serial="00000000", wwn="0x5002538e00000001")
     missing = _disk("sdb", serial="")
     entries = comparison_entries((padded, missing))
-    assert "00000000" not in entries[0]
-    assert f"Serial number: {SERIAL_NOT_REPORTED}" in entries[0]
-    assert "Hardware ID: 0x5002538e00000001" in entries[0]
+    # "Disk N" is the pick-list number (#151 order), not the path order.
+    from beamo_wipe.disk_order import pick_order
+
+    number = [d.path for d in pick_order((padded, missing))].index(padded.path) + 1
+    entry = next(e for e in entries if e.startswith(f"Disk {number}\n"))
+    assert "00000000" not in entry
+    assert f"Serial number: {SERIAL_NOT_REPORTED}" in entry
+    assert "Hardware ID: 0x5002538e00000001" in entry
 
 
 def test_console_keeps_same_size_warning_with_missing_serial(monkeypatch) -> None:

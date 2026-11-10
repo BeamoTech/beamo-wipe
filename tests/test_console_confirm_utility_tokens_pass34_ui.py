@@ -18,11 +18,12 @@ def test_plain_confirm_accepts_token_matching_utility_word(monkeypatch, token):
     target = demo.selectable[0]
     peer = next(d for d in demo.selectable if d.path != target.path and d.size_gb_label == target.size_gb_label)
     target = replace(target, serial=token, wwn="")
-    peer = replace(peer, serial=token[-4:], wwn="")
-    # A same-size peer can force a legitimate full-serial token. The prompt
-    # must accept it even when it names a utility command.
+    peer = replace(peer, serial="X" + token[1:], wwn="")
+    # A peer sharing every character but the first forces the whole serial
+    # as the card token (#129). The prompt must accept it even when it names
+    # a utility command.
     spec = confirm_spec(target, [target, peer])
-    assert spec.token == token
+    assert spec.token == token and spec.in_card
     wizard = SimpleNamespace(
         screen=Screen.CONFIRM,
         confirm=spec,
@@ -30,6 +31,8 @@ def test_plain_confirm_accepts_token_matching_utility_word(monkeypatch, token):
         can_open_report_help=True,
         can_open_diagnostic=True,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
     )
     opened = []
     wizard.open_report_help = lambda: opened.append("report")

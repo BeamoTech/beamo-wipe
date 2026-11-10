@@ -183,9 +183,10 @@ def test_advanced_button_redraws_via_nav():
 
     from beamo_wipe.ui.tk_wizard import TkWizard
 
-    source = inspect.getsource(TkWizard._footer_shell)
-    assert "self.w.screen == Screen.METHOD" in source
-    assert "_nav(self.w.open_advanced)" in source
+    # #175: Advanced opens from Help & settings, which redraws after it.
+    source = inspect.getsource(TkWizard._help_activate)
+    assert "self.w.activate_help_item(key)" in source
+    assert "self._draw()" in source
 
 
 def test_last_chance_hint_does_not_say_enter_continues():
@@ -194,10 +195,13 @@ def test_last_chance_hint_does_not_say_enter_continues():
     from beamo_wipe import copy as C
     from beamo_wipe.ui.tk_wizard import TkWizard
 
-    assert "continues" not in C.HINT_LAST_CHANCE.lower()
-    assert "erases" in C.HINT_LAST_CHANCE.lower()
+    # #165: the one Review hint says Tab to Erase now, then Enter; every
+    # surface shows it (Tk, curses, web preview). No "Enter erases" hint.
+    assert "continues" not in C.HINT_LAST_CHANCE_TK.lower()
+    assert "Tab to Erase now" in C.HINT_LAST_CHANCE_TK
+    assert not hasattr(C, "HINT_LAST_CHANCE")
     source = inspect.getsource(TkWizard._last)
-    assert "HINT_LAST_CHANCE" in source
+    assert "HINT_LAST_CHANCE_TK" in source
 
 
 def test_splash_escape_skips_splash():

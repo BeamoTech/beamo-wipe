@@ -175,7 +175,7 @@ def test_iso_builder_copies_then_injects_helper(tmp_path):
     assert "stage_live_assets.py" in script
     assert "inject_helper_html" in assets
     assert 'put_bytes(share / "helper/index.html", packaged_html)' in assets
-    assert 'put_bytes(binary / "START-HERE.html", packaged_html)' in assets
+    assert 'put_bytes(binary / "START-HERE.html", link_root_helpers(packaged_html))' in assets
     assert 'put_bytes(binary / "build-identity.json", identity)' in assets
     gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
     assert "packaging/live/config/includes.binary/build-identity.json" in gitignore
@@ -287,7 +287,7 @@ def test_this_usb_card_precedes_the_startup_chooser():
     assert html.index('id="guide"') < html.index('id="trouble-usb"')
     assert 'class="support-qr"' in html
     assert "BitLocker" in html
-    assert "not the same on every PC" in html
+    assert "not the same on every computer" in html
 
 
 def test_usb_story_strings_stay_on_the_swept_copy_surface():

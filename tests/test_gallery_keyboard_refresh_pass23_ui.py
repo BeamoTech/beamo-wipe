@@ -34,10 +34,14 @@ if (screen !== "keyboard" || draws !== 0 || refreshFrom !== "owner")
 
 def test_keyboard_setup_has_no_refresh_utility():
     source = gallery_html()
-    match = re.search(
-        r'if \(!\[(.*?)\]\.includes\(screen\)\) \{\s*utilities\.prepend\(btn\(P\.refreshUtility',
+    # #136: the utility shows only on the screens in REFRESH_OFFERED.
+    utility = re.search(
+        r'if \(\[(.*?)\]\.includes\(screen\)\) \{\s*utilities\.prepend\(btn\(P\.refreshUtility',
         source,
-        re.DOTALL,
     )
-    assert match is not None
-    assert '"keyboard"' in match.group(1)
+    offered = re.search(r'const REFRESH_OFFERED = \[(.*?)\];', source)
+    assert utility is not None and offered is not None
+    # The inline list in draw() is the same as REFRESH_OFFERED.
+    assert utility.group(1) == offered.group(1)
+    assert '"keyboard"' not in offered.group(1)
+    assert '"owner"' not in offered.group(1) and '"what"' not in offered.group(1)

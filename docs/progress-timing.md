@@ -63,6 +63,68 @@ rounded-up minutes, five-minute buckets, or whole hours, never seconds. This is
 an estimate of remaining engine work; final cleanup or report-saving time is
 unknown. Fast operations and slow quantized streams may never show an estimate.
 
+## Working-screen glance (#132)
+
+Every interface draws the Working screen from the same `ProgressView` glance:
+a large percentage, one time line, and the current step. Nothing here changes
+parsing, estimate gates or completion checks.
+
+- The percentage is clamped to 99% on this screen even after the runner
+  publishes a validated 100; completion is the result screen's job. Before
+  the first number the large line is *Starting…* (*Stopping…* or
+  *Finishing…* in those phases).
+- The time line (#167, large text) says when the erase started and when to
+  come back. The live USB's wall clock is not trusted (evidence records it as
+  `unverified`; `Wizard.wall_clock_trusted` stays False), so it reads *Started
+  12 minutes ago · about 50 minutes left*: elapsed time, then the validated
+  estimate above with the same upward rounding. Without an estimate it is
+  just *Started 12 minutes ago*. Only with a trusted clock does it use times
+  of day: *Started 2:02 PM · expected around 3:05 PM* (the finish rounded up
+  to 5 minutes; 24-hour style in FR/DE/ES/IT). An invalid monotonic clock
+  hides the started part. During earlier steps a note says time left appears
+  during the last step; the other estimate-gate reasons stay in the full
+  status text used by tests and the preview payload, not on the glance.
+- The step line is *Step k of n:* plus *Overwriting*, *Overwriting (pass i of
+  n)* or *Checking (verification)*. Unknown steps are hidden; a disagreement
+  with the plan shows the mismatch warning. Quick zero plans one step.
+- Stale telemetry marks the percentage old and adds the stale explainer as a
+  separate warning band. Phase notes follow as small notes (the elapsed note
+  is gone: the time line already says when it started).
+
+`ProgressAnnouncer` paces spoken output: the GTK summary label and progress
+bar, and plain console lines, change at once for a new step, progress going
+quiet or resuming, or stopping/finishing (at least 5 seconds apart), and
+otherwise at most once every 60 seconds. Tk and curses redraw live; they are
+not spoken. Whether Orca speaks each change is not yet verified on the image.
+
+## Method-screen time guide
+
+Before anything starts, each method shows a rough range for the selected disk,
+for example "Rough guide for this 1 TB hard disk (not promised): 2–10 hours."
+It is a planning hint, not a measurement: it never gates, starts or describes
+an erase, is not written to evidence or reports, and does not feed the live
+estimate above. When the disk size is unknown no range is given and every
+method says "Time depends on the disk." instead (#159).
+
+Work is the disk size times the method's full-disk passes from `methods.py`
+(every overwrite plus every verification read: Everyday 2, Three overwrites 4,
+Quick zero 1), divided by conservative sustained rates:
+
+| Disk kind (from lsblk) | Slow bound | Fast bound |
+| --- | --- | --- |
+| Hard disk (rotational) | 60 MB/s | 200 MB/s |
+| SATA SSD | 100 MB/s | 500 MB/s |
+| NVMe | 150 MB/s | 1500 MB/s |
+| Rotation unknown | 60 MB/s | 500 MB/s |
+
+A USB transport halves the slow bound only. The fast end rounds down and the
+slow end rounds up, each in minutes under 1.5 hours (5-minute steps from 10
+minutes), hours under 48 hours, otherwise days. A slow end over 10 hours adds
+"Plan to leave it running overnight or longer." Tk cards, the GTK radio names
+read by Orca, both console views and the web preview use the same text
+(`copy.method_time_line`, which wraps `copy.method_time_guide`; tests in
+`tests/test_method_time_guide.py` and `tests/test_method_cards_159.py`).
+
 ## Shared presentation and evidence
 
 Every interface uses the same progress view. Displayed integer percentages

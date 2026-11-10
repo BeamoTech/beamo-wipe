@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+import re
 from pathlib import Path
+
+import pytest
 
 from beamo_wipe import copy
 from beamo_wipe.compat_story import PLATFORMS, SECURE_BOOT_HINT as STORY_SECURE_BOOT
@@ -85,10 +88,10 @@ def _happy_blob() -> str:
             copy.confirm_type_size("256"),
             copy.confirm_type_four("A111"),
             copy.confirm_type_chars("ABC"),
-            copy.PREPARE_WINDOWS,
-            copy.PREPARE_SYSTEM,
-            copy.PREPARE_DATA,
-            copy.PREPARE_UNKNOWN,
+            copy.ERASE_EVERYTHING,
+            copy.ERASE_EVERYTHING_WINDOWS,
+            copy.ERASE_EVERYTHING_SYSTEM,
+            copy.ERASE_CANNOT_UNDO,
             copy.POWER_REMINDER,
             copy.POWER_BLANKING,
             copy.WORKING_PULSE,
@@ -138,11 +141,13 @@ def test_customer_copy_does_not_say_beamo_did_not_write():
 def test_what_screen_is_plain_prepare_bullets():
     assert len(copy.WHAT_BULLETS) == 3
     blob = " ".join(copy.WHAT_BULLETS).lower()
-    assert "copies you need" in blob
-    assert "pick a disk" in blob
-    assert "cannot get the files back" in blob
-    assert "operating system" in blob
-    assert "recovery partitions" in blob
+    # #128: Owner says once what the tool does. The disk-specific
+    # "cannot get it back" warning belongs to Confirm and Review.
+    assert copy.WHAT_BULLETS[0].startswith("Beamo Wipe erases everything on the disk you choose")
+    assert "windows or linux" in copy.WHAT_BULLETS[0].lower()
+    assert "copies of anything you want to keep" in blob
+    assert "erase" not in copy.WHAT_BULLETS[1].lower()
+    assert "cannot get" not in blob
     assert "not apple silicon" in blob
     assert copy.WHAT_BULLETS[-1] == PLATFORMS
     assert copy.SECURE_BOOT_HINT == STORY_SECURE_BOOT
@@ -201,11 +206,36 @@ def test_failed_wipe_copy_does_not_promise_in_session_retry():
     assert "files may still be on the disk" in text
 
 
-def test_splash_says_they_already_booted():
-    text = copy.SPLASH_TAGLINE.lower()
-    assert "already" in text
-    assert "usb" in text
-    assert "pick" in text
+def test_splash_says_what_it_does_and_that_nothing_happens_yet():
+    """#137: one plain, reassuring opening line; the only erase action is
+    the separate Erase now button, so the line names it exactly."""
+    assert copy.SPLASH_TAGLINE == (
+        "Erase a disk in a few steps. Nothing is erased until you choose Erase now."
+    )
+    assert copy.BTN_ERASE in copy.SPLASH_TAGLINE
+    assert "already started" not in copy.SPLASH_TAGLINE.lower()
+
+
+@pytest.mark.parametrize("code", ["fr", "de", "es", "it"])
+def test_splash_names_the_translated_erase_button(code):
+    from beamo_wipe import lang
+
+    english = copy.SPLASH_TAGLINE
+    try:
+        lang.set_language(code)
+        assert copy.SPLASH_TAGLINE != english
+        assert copy.BTN_ERASE in copy.SPLASH_TAGLINE
+    finally:
+        lang.set_language("en")
+
+
+def test_splash_line_is_short_and_plain():
+    """Ref #181 reading level: two short sentences, everyday words."""
+    sentences = [s for s in copy.SPLASH_TAGLINE.split(".") if s.strip()]
+    assert len(sentences) == 2
+    assert all(len(s.split()) <= 10 for s in sentences)
+    words = re.findall(r"[A-Za-z]+", copy.SPLASH_TAGLINE)
+    assert max(len(w) for w in words) <= 7
 
 
 def test_claims_doc_forbids_bad_bullets():

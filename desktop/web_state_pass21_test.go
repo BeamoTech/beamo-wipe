@@ -22,7 +22,7 @@ func TestBrowserPollDisarmsStaleReadinessPass21(t *testing.T) {
 		t.Fatal("browser readiness poll unavailable")
 	}
 	program := `
-let busy = false, ready = true, reviewedRevision = 7;
+let busy = false, ready = true, reviewedRevision = 7, bootOptions = false;
 const token = 'session-token';
 const elements = {status:{textContent:''}, inspect:{hidden:true}, help:{open:false}};
 const $ = id => elements[id];
@@ -63,6 +63,14 @@ async function api(action) {
   await inFlight;
   if (calls !== 3 || !ready || reviewedRevision !== 10)
     throw Error('old poll response erased a newer local check');
+  // #183: an offered Restart to boot options is disarmed the same way.
+  deferResponse = false; ready = false; bootOptions = true; reviewedRevision = 11;
+  response = {ready:false, advanced_startup:true, revision:11};
+  await tick();
+  if (calls !== 3 || !bootOptions) throw Error('unchanged boot-options offer was cleared');
+  response = {ready:false, advanced_startup:false, revision:12};
+  await tick();
+  if (calls !== 4) throw Error('stale Restart to boot options remained offered');
 })().catch(error => { console.error(error); process.exitCode = 1; });
 `
 	output, err := exec.Command(node, "-e", program).CombinedOutput()

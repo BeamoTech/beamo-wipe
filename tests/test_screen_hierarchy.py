@@ -31,10 +31,14 @@ def test_result_is_top_aligned_not_vertically_centered():
     """Would fail when _done packed expanding spacers above and below."""
     source = inspect.getsource(TkWizard._done)
     assert "tk.Frame(col, bg=BG).pack(fill=tk.BOTH, expand=True)" not in source
-    # #95: the Done heading is the outcome message, not a generic title.
-    assert "title = result.message" in source
+    # #95: the Done heading names the outcome, not a generic title.
+    # #134: it is the outcome's plain headline.
+    assert "title = plain.headline" in source
+    assert "heading = self._h(col, title)" in source
     assert "ERASE_STATUS_TITLE" not in source
-    assert "REPORT_STATUS_TITLE" in source
+    # #135: the report status heading belongs to the Save a report panel.
+    assert "self._report_save_panel(col, panel)" in source
+    assert "REPORT_STATUS_TITLE" in inspect.getsource(TkWizard._report_save_panel)
     assert "_disk_summary" in source
     splash = inspect.getsource(TkWizard._splash)
     assert "tk.Frame(col, bg=BG).pack(fill=tk.BOTH, expand=True)" in splash
@@ -56,15 +60,16 @@ def test_method_cards_are_a_tighter_choice_group():
 
 
 def test_report_help_sections_have_scan_headings():
-    """Would fail when report help was six unlabeled paragraphs."""
+    """Would fail when report help was six unlabeled paragraphs.
+
+    #127: the photo option (no report USB) comes first; the USB steps,
+    already-plugged-in recovery and safe removal are one USB section.
+    """
     headings = (
-        "What you need",
-        "When to insert the report USB",
-        "If the report USB is already plugged in",
+        "No report USB? Photograph the code",
+        "Saving the full report to a USB",
         "What the report contains",
-        "Removing the report USB",
-        "If the wipe cannot start",
-        "Saving in stages",
+        "If the erase cannot start",
     )
     assert len(C.REPORT_HELP_SECTIONS) == len(headings)
     for heading, section in zip(headings, C.REPORT_HELP_SECTIONS):
@@ -73,7 +78,8 @@ def test_report_help_sections_have_scan_headings():
         body = section.split("\n", 1)[1]
         assert len(body) > 40
     html = gallery_html()
-    assert "What you need" in html
+    assert "Saving the full report to a USB" in html
+    assert "No report USB? Photograph the code" in html
     assert "FAT32" in html
     assert "Diagnostic report" in C.REPORT_HELP_TEXT
 

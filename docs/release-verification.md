@@ -6,22 +6,30 @@ Each release publishes a machine-readable manifest that links the ISO to its sou
 
 | File | Purpose | Retention | Location |
 | --- | --- | --- | --- |
-| `beamo-wipe-0.2.12-amd64.iso` | Bootable live image (hybrid BIOS+UEFI) | Operator-defined after authorization | local `dist/` until separately published |
-| `beamo-wipe-0.2.12-amd64.iso.sha256` | SHA256 sidecar (`<sha>  <name>`) | same | `dist/` alongside ISO |
-| `beamo-wipe-0.2.12-amd64.manifest.json` | Release provenance (this doc) | same | `dist/` |
-| `beamo-wipe-0.2.12-amd64.manifest.json.sig` | Detached signature over the exact manifest bytes | same | published beside manifest |
-| `beamo-wipe-0.2.12-amd64.manifest.json.sha256` | Manifest checksum | same | `dist/` |
+| `beamo-wipe-<version>-amd64.iso` | Bootable live image (hybrid BIOS+UEFI) | Operator-defined after authorization | local `dist/` until separately published |
+| `beamo-wipe-<version>-amd64.iso.sha256` | SHA256 sidecar (`<sha>  <name>`) | same | `dist/` alongside ISO |
+| `beamo-wipe-<version>-amd64.manifest.json` | Release provenance (this doc) | same | `dist/` |
+| `beamo-wipe-<version>-amd64.manifest.json.sig` | Detached signature over the exact manifest bytes | same | published beside manifest |
+| `beamo-wipe-<version>-amd64.manifest.json.sha256` | Manifest checksum | same | `dist/` |
 | `SHA256SUMS` | `sha256sum` of ISO + manifest | same | `dist/` |
-| `beamo-wipe-0.2.12-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
-| `beamo-wipe-0.2.12-amd64.img.sha256` | USB image checksum | same | alongside image |
-| `beamo-wipe-0.2.12-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
-| `beamo-wipe-0.2.12-amd64.img.gz` | Actual compressed USB download; reconstructs the raw `.img` | same | published release assets |
-| `beamo-wipe-0.2.12-amd64.img.gz.sha256` | Compressed-download corruption checksum; alone does not authenticate the publisher | same | alongside compressed download |
+| `beamo-wipe-<version>-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
+| `beamo-wipe-<version>-amd64.img.sha256` | USB image checksum | same | alongside image |
+| `beamo-wipe-<version>-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
+| `beamo-wipe-<version>-amd64.img.gz` | Actual compressed USB download; reconstructs the raw `.img` | same | published release assets |
+| `beamo-wipe-<version>-amd64.img.gz.sha256` | Compressed-download corruption checksum; alone does not authenticate the publisher | same | alongside compressed download |
 | `release-downloads.json` + `release-downloads.json.sig` | Inventory of exact filenames, sizes and hashes, with a detached publisher signature; includes both compressed and raw USB identities | same | published release assets |
 
-These are versioned example names, not interchangeable checksum targets. The
-public USB asset is `.img.gz`; the `.img` record describes the reconstructed
-regular file, which need not also be offered as a download.
+`<version>` is the release version without the leading `v` (for example
+`0.2.14`). Names are not interchangeable checksum targets: each file has its
+own hash. The [USB walkthrough](#usb-image-download-verification) below is a
+versioned v0.2.12 example; its release files are
+`beamo-wipe-0.2.12-amd64.img.gz`, `beamo-wipe-0.2.12-amd64.img.gz.sha256`,
+`beamo-wipe-0.2.12-amd64.img`, `beamo-wipe-0.2.12-amd64.img.json`,
+`beamo-wipe-0.2.12-amd64.manifest.json` and
+`beamo-wipe-0.2.12-amd64.manifest.json.sig`. The public USB asset is
+`.img.gz`; the `.img` record describes the reconstructed regular file, which
+need not also be offered as a download.
+Sold sticks are duplicated only from that verified `.img`: see [manufacturing and quality](manufacturing.md).
 
 The ISO artifacts are under `dist/` after `./scripts/build-iso.sh`. The hosted
 QEMU phase also runs `./scripts/build-usb-image.sh` on its isolated amd64 Linux

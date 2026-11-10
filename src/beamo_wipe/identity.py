@@ -33,11 +33,11 @@ MISSING_SERIAL_HARDWARE_ID = (
 CONFIRM_HARDWARE_ID = "Use the hardware ID shown here to identify this disk."
 DUPLICATE_ID = (
     "Two disks report the same serial or hardware ID. "
-    "If you cannot tell them apart, shut down and disconnect the extra drives."
+    "If you cannot tell them apart, shut down and disconnect the extra disks."
 )
 AMBIGUOUS_IDENTITY = (
     "These disks look too similar to tell apart safely. "
-    "Shut down. Disconnect the drives you do not want to erase. "
+    "Shut down. Disconnect the disks you do not want to erase. "
     "Start from this USB again. Do not guess."
 )
 SYSTEM_PATH_NOTE = "System name (not a stable identity)"
@@ -65,16 +65,49 @@ class DiskIdentityView:
     ambiguous_note: str
     system_path: str
     confirmable: bool
-    comparison_start: int = 0
-    comparison_end: int = 0
+    # Characters that tell this serial apart from the similar disks of the
+    # same size (#152): runs of (start, end) offsets into id_value.
+    comparison_marks: tuple[tuple[int, int], ...] = ()
     comparison_note: str = ""
+    # Confirmation characters (#129): the ending of id_value the owner types.
+    # Offsets into id_value; equal when the token is not taken from the card.
+    token_start: int = 0
+    token_end: int = 0
+
+    @property
+    def token_marked_id(self) -> str:
+        """id_value with the confirmation characters in [brackets] (text surfaces)."""
+        if self.token_end <= self.token_start:
+            return self.id_value
+        a, b = self.token_start, self.token_end
+        return f"{self.id_value[:a]}[{self.id_value[a:b]}]{self.id_value[b:]}"
+
+    @property
+    def comparison_start(self) -> int:
+        return self.comparison_marks[0][0] if self.comparison_marks else 0
+
+    @property
+    def comparison_end(self) -> int:
+        return self.comparison_marks[-1][1] if self.comparison_marks else 0
+
+    @property
+    def comparison_segments(self) -> tuple[tuple[str, bool], ...]:
+        """id_value as (text, marked) pieces, for bold/underline renderers."""
+        out: list[tuple[str, bool]] = []
+        at = 0
+        for a, b in self.comparison_marks:
+            if a > at:
+                out.append((self.id_value[at:a], False))
+            out.append((self.id_value[a:b], True))
+            at = b
+        if at < len(self.id_value) or not out:
+            out.append((self.id_value[at:], False))
+        return tuple(out)
 
     @property
     def marked_id(self) -> str:
-        if self.comparison_end <= self.comparison_start:
-            return self.id_value
-        a, b = self.comparison_start, self.comparison_end
-        return f"{self.id_value[:a]}[{self.id_value[a:b]}]{self.id_value[b:]}"
+        """id_value with each differing run in [brackets] (text consoles)."""
+        return "".join(f"[{text}]" if marked else text for text, marked in self.comparison_segments)
 
     @property
     def announcement(self) -> str:
@@ -180,7 +213,7 @@ def present_disk(
 ) -> DiskIdentityView:
     """Present raw identity; pickers may opt into comparison guidance."""
     from beamo_wipe.safety import SafetyError, confirm_spec, meaningful_serial
-    from beamo_wipe.inventory import serial_comparison
+    from beamo_wipe.inventory import serial_differences
 
     listed = tuple(peers)
     kind, value = strongest_identifier(disk)
@@ -202,10 +235,18 @@ def present_disk(
         for peer in listed
         if peer.path != disk.path and peer.size_gb_label == disk.size_gb_label
     )
-    start, end, comparison = (
-        serial_comparison(disk, listed) if compare_serials and comparable else (0, 0, "")
+    marks, comparison = (
+        serial_differences(disk, listed) if compare_serials and comparable else ((), "")
     )
     confirmable = spec is not None
+    token_start = token_end = 0
+    if (
+        spec is not None
+        and spec.in_card
+        and kind in {"serial", "wwn"}
+        and id_value.casefold().endswith(spec.token.casefold())
+    ):
+        token_start, token_end = len(id_value) - len(spec.token), len(id_value)
 
     return DiskIdentityView(
         title=display_title(disk),
@@ -220,9 +261,10 @@ def present_disk(
         ambiguous_note="" if confirmable else AMBIGUOUS_IDENTITY,
         system_path=disk.path,
         confirmable=confirmable,
-        comparison_start=start,
-        comparison_end=end,
+        comparison_marks=marks,
         comparison_note=comparison,
+        token_start=token_start,
+        token_end=token_end,
     )
 
 

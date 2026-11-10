@@ -14,6 +14,9 @@ def test_completed_refresh_releases_worker_reference():
             app._click_refresh()
             assert _settle(app) == Screen.OWNER
             assert len(calls) == expected_count
+            # #136: the next rescan starts from the disk list.
+            app.w.set_owner(True)
+            app.w.continue_owner()
             assert not app._refresh_results
             assert not app._refresh_threads
     finally:

@@ -34,7 +34,7 @@ def fake_machine(tmp_path, monkeypatch):
         for name in ("assert_not_boot", "assert_existing_is_block_device", "assert_size_unchanged", "assert_local_device_transport"):
             monkeypatch.setattr(module + "." + name, lambda *_args, **_kwargs: None)
         monkeypatch.setattr(module + ".block_rdev", lambda path: 16 if path == "/dev/sdz" else 8)
-    for name in ("require_real_live_for_nwipe", "_verify_pinned_nwipe"):
+    for name in ("require_real_live_for_nwipe", "_verify_pinned_nwipe", "_reserve_target_under_lock"):
         monkeypatch.setattr(runner_module, name, lambda *_args, **_kwargs: None)
     monkeypatch.setattr(runner_module, "pinned_nwipe_already_running", lambda **_kwargs: False)
     monkeypatch.setattr(runner_module, "_try_log_diag", lambda *_args: None)

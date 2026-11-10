@@ -22,7 +22,7 @@ def assert_current_stage_copy(stages):
     ]
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 def test_new_startup_uses_current_stage_translations(monkeypatch, language):
     monkeypatch.setattr("beamo_wipe.startup_stages._emit", lambda *_args: None)
     lang.set_language(language)
@@ -35,7 +35,7 @@ def test_stage_states_survive_language_switch_and_english_restore(monkeypatch):
     stages = StartupStages()
     stages.begin("checking-boot-usb")
     before = stages.states.copy()
-    for language in ("fr", "de", "en"):
+    for language in ("fr", "de", "es", "it", "en"):
         lang.set_language(language)
         assert_current_stage_copy(stages)
         assert stages.states == before
@@ -49,7 +49,7 @@ def labels(widget, ui):
     return result
 
 
-@pytest.mark.parametrize("language", ["fr", "de"])
+@pytest.mark.parametrize("language", ["fr", "de", "es", "it"])
 def test_spoken_startup_status_uses_selected_language(monkeypatch, language):
     pytest.importorskip("gi")
     from beamo_wipe.ui import accessible_wizard as ui

@@ -74,6 +74,8 @@ def test_failed_native_review_paint_cannot_enable_erase(monkeypatch, failure, tm
             if len(self.frames) == 1:
                 return -1
             if len(self.frames) == 2:
+                return 9  # #165: Tab to Erase now; Enter presses only it.
+            if len(self.frames) == 3:
                 return 10
             wizard.wants_shutdown = True
             return -1

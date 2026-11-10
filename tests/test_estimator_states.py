@@ -56,7 +56,7 @@ def test_retrying_explains_missing_estimate():
         clock.advance(5)
     assert view.remaining is None
     assert view.estimate_state == (
-        "Estimate unavailable while the drive is retrying."
+        "Estimate unavailable while the disk is retrying."
     )
 
 
@@ -82,7 +82,7 @@ def test_missing_engine_eta_state():
         clock.advance(5)
     assert view.remaining is None
     assert view.estimate_state == (
-        "Estimate unavailable: no time information from the drive."
+        "Estimate unavailable: no time information from the disk."
     )
 
 
@@ -142,7 +142,7 @@ def test_syncing_explains_missing_estimate():
         clock.advance(5)
     assert view.remaining is None
     assert view.estimate_state == (
-        "Estimate unavailable while the drive is syncing."
+        "Estimate unavailable while the disk is syncing."
     )
 
 
@@ -209,7 +209,7 @@ def test_working_retry_shows_retry_state():
         40, phase="retrying", counters="round 1 of 1, pass 2 of 3"
     )
     assert (
-        "Estimate unavailable while the drive is retrying."
+        "Estimate unavailable while the disk is retrying."
         in wiz.progress_view.status_text
     )
 
@@ -263,7 +263,7 @@ def test_french_and_german_states():
             40, phase="retrying", counters="round 1 of 1, pass 2 of 3"
         )
         assert (
-            "während das Laufwerk gerade wiederholt"
+            "während das Laufwerk einen Schritt wiederholt"
             in wiz.progress_view.status_text
         )
     finally:

@@ -134,6 +134,10 @@ def _overlap_problems(app) -> list:
 
     def visit(w):
         try:
+            if getattr(w.master, "_beamo_serial_mark", False):
+                # #152: bold copies drawn over the serial's own characters
+                # on purpose (test_serial_diff_152 checks they stay on it).
+                return
             if w.winfo_class() == "Label" and w.winfo_ismapped():
                 text = str(w.cget("text")).strip()
                 host = _nearest_canvas(w)
@@ -295,6 +299,7 @@ def test_unwrapped_pick_card_fails_1485px_check(monkeypatch):
         assert measured >= SERIAL_PX
         _drive_to(wiz, app, Screen.PICK, size=SUPPORTED_SIZE)
         clipped = []
+        serial_labels = []
         for widget in descendants(app.root):
             try:
                 if widget.winfo_class() != "Label" or not widget.winfo_ismapped():
@@ -307,17 +312,22 @@ def test_unwrapped_pick_card_fails_1485px_check(monkeypatch):
                 )
             except tk.TclError:
                 continue
-            if EVIDENCE_SERIAL not in text:
-                continue
             req, actual = widget.winfo_reqwidth(), widget.winfo_width()
+            if EVIDENCE_SERIAL in text:
+                serial_labels.append((req, actual))
             if req > actual + 2:
                 clipped.append((req, actual, text[:48]))
+        # The card's other unwrapped text still reproduces the dated clip,
+        # and the checker reports it with its measurements.
         assert clipped, _clipping_problems(app)
-        req, actual, _snippet = clipped[0]
-        assert req >= SERIAL_PX
-        assert actual < SERIAL_PX
         blob = " ".join(_clipping_problems(app))
         assert "h-clip" in blob and "req=" in blob and "actual=" in blob
+        # #177 follow-up: the serial no longer goes through _wrapping_label.
+        # _SerialFace breaks its rows between characters, so even with every
+        # wrapping label forced flat the 1485 px serial stays whole and
+        # inside the card instead of clipping.
+        assert serial_labels, "serial not shown on the pick card"
+        assert all(req <= actual + 2 and actual < SERIAL_PX for req, actual in serial_labels), serial_labels
     finally:
         app._teardown()
 

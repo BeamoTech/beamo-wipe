@@ -141,13 +141,14 @@ def test_cards_gallery_and_plain_console(
     wiz._erase_until = 0
     console_wizard._plain_loop(wiz)
     last = capsys.readouterr().out
-    assert spec.summary in last
-    assert spec.operation_summary in last
+    # #164: one method line on Review: name plus the operation summary.
+    assert f"{spec.title}: {spec.operation_summary}" in last
+    assert spec.summary not in last
     wiz.wants_shutdown = False
     wiz.screen = Screen.DONE
     console_wizard._plain_loop(wiz)
     text = capsys.readouterr().out
-    assert spec.summary in text
+    assert f"Method: {spec.title}" in text  # #171: the result card's Method row
     assert "No overwrite or verification was performed" in text
 
 
@@ -182,6 +183,15 @@ def test_curses_visible_facts_without_truncation(method, screen, monkeypatch):
     console_wizard._loop(term, wiz)
     text = " ".join(term.rows[y] for y in sorted(term.rows))
     for spec in METHODS.values() if screen == Screen.METHOD else [METHODS[method]]:
-        assert spec.description in text
+        if screen == Screen.LAST_CHANCE:
+            # #164: Review states the method once (name + operation summary).
+            assert f"{spec.title}: {spec.operation_summary}" in text
+            assert spec.description not in text
+        elif screen == Screen.DONE:
+            # #171: the result card states the method once.
+            assert f"Method: {spec.title}" in text
+            assert spec.description not in text
+        else:
+            assert spec.description in text
     if screen == Screen.DONE:
         assert wiz.method_result in text

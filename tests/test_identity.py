@@ -119,7 +119,11 @@ def test_long_unicode_identity_is_preserved():
     assert "삼성" in view.title
     assert view.id_value
     assert "/dev/" not in view.announcement
-    assert confirm_spec(disk, listed_disks(result)).token == disk.size_gb_label
+    spec = confirm_spec(disk, listed_disks(result))
+    # The plain ASCII ending of a long Unicode identifier is the card token
+    # (#129); the identifier itself is shown and marked unchanged.
+    assert spec.in_card and spec.token == "UE01"
+    assert view.token_marked_id == view.id_value[:-4] + "[UE01]"
 
 
 def test_usb_bridge_and_nvme_keep_connection_labels():

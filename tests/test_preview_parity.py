@@ -119,12 +119,13 @@ def test_gallery_html_embeds_progress_and_cancel_copy():
 def test_tk_and_console_already_use_progress_view():
     tk_src = Path(tkui.__file__).read_text(encoding="utf-8")
     assert "progress_view" in tk_src
-    assert "timing_text" in tk_src
+    # Every view draws the shared glance (#132).
+    assert "glance_headline" in tk_src and "stopping_text" in tk_src
     from beamo_wipe.ui import console_wizard as cui
 
     con = Path(cui.__file__).read_text(encoding="utf-8")
     assert "progress_view" in con
-    assert "status_text" in con
+    assert "glance_lines" in con and "ProgressAnnouncer" in con
 
 
 def test_chrome_show_more_progress_and_cancel(tmp_path):
@@ -146,7 +147,7 @@ def test_chrome_show_more_progress_and_cancel(tmp_path):
         out.pathNote = document.getElementById('more-detail').textContent;
         location.hash = '#s=working&disk=0&progress=stale';
         applyHash();
-        out.stalePulse = document.getElementById('pulse').innerText;
+        out.stalePulse = document.getElementById('stale').innerText;  // #132 glance
         out.stalePct = document.getElementById('pct').innerText;
         location.hash = '#s=working&disk=0&pct=100';
         applyHash();
@@ -154,7 +155,7 @@ def test_chrome_show_more_progress_and_cancel(tmp_path):
         out.pct100Text = document.getElementById('pct').innerText;
         location.hash = '#s=working&disk=0&progress=mismatch';
         applyHash();
-        out.mismatch = document.getElementById('pulse').innerText;
+        out.mismatch = document.getElementById('step-line').innerText;  // #132 glance
         location.hash = '#s=working&disk=0&progress=writing';
         applyHash();
         [...document.querySelectorAll('button')].find(b => b.textContent === P.stop.ask).click();
@@ -208,7 +209,9 @@ def test_chrome_show_more_progress_and_cancel(tmp_path):
     assert out["stopHeading"] == C.STOP_TITLE
     assert out["stopFocus"] == C.STOP_KEEP
     assert out["stoppingTitle"] == C.BUSY_STOPPING_TITLE
-    assert P.phase_display("Stopping") in out["stoppingTiming"]
+    # #132: Stopping shows the last known step and elapsed time only.
+    assert P.ELAPSED_LABEL.split("{", 1)[0] in out["stoppingTiming"]
+    assert P.STAGE_STEP.split("{", 1)[0] in out["stoppingTiming"]
     assert out["stopMethod"]
     assert out["moreFromHash"] == "true"
     assert ident.SYSTEM_PATH_NOTE in out["moreFromHashText"]

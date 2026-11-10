@@ -39,6 +39,7 @@ def fake_native_boundaries(monkeypatch):
     monkeypatch.setattr(module.subprocess, "run", forbidden)
     monkeypatch.setattr(module, "pinned_nwipe_already_running", forbidden)
     monkeypatch.setattr(module, "_recheck_identity_under_lock", forbidden)
+    monkeypatch.setattr(module, "_reserve_target_under_lock", forbidden)
     monkeypatch.setattr(module, "_try_log_diag", lambda *_args: None)
     monkeypatch.setattr(os, "kill", forbidden)
     original_realpath, original_open = os.path.realpath, os.open

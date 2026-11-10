@@ -28,6 +28,34 @@ NO_BATTERY = "No system battery reported."
 INCOMPLETE = "Some power information is unavailable."
 LOW_BATTERY = "Low battery. Check wall power now."
 CONNECT_WALL = "Connect wall power now."
+# Header badge (#144): one short state, always text (never colour alone).
+# "Plugged in" only when wall power is reported online; unknown stays
+# "Power: unknown"; a full reading with no battery is a desktop on mains.
+BADGE_PLUGGED = "Plugged in"
+BADGE_BATTERY = "On battery — plug in"
+BADGE_UNKNOWN = "Power: unknown"
+BADGE_MAINS = "Mains power"
+BADGE_SPOKEN = "Power: {state}"
+
+
+@dataclass(frozen=True)
+class PowerBadge:
+    """``kind``: ok (plugged in), warn (on battery), neutral (unknown, mains)."""
+
+    kind: str
+    text: str
+
+    @property
+    def display(self) -> str:
+        """What the badge shows: the text, with ✓ only when plugged in."""
+        return f"{self.text} ✓" if self.kind == "ok" else self.text
+
+    @property
+    def spoken(self) -> str:
+        """Screen-reader name; "Power: unknown" already says it is power."""
+        if self.text == BADGE_UNKNOWN:
+            return self.text
+        return BADGE_SPOKEN.format(state=self.text)
 
 
 @dataclass(frozen=True)
@@ -35,6 +63,18 @@ class PowerStatus:
     ac: bool | None = None
     batteries: tuple[int | None, ...] = ()
     complete: bool = False
+
+    @property
+    def badge(self) -> PowerBadge:
+        """The header badge for this reading (#144). Never "Plugged in"
+        unless wall power is reported online."""
+        if self.ac is True:
+            return PowerBadge("ok", BADGE_PLUGGED)
+        if self.ac is False and self.batteries:
+            return PowerBadge("warn", BADGE_BATTERY)
+        if self.ac is None and not self.batteries and self.complete:
+            return PowerBadge("neutral", BADGE_MAINS)
+        return PowerBadge("neutral", BADGE_UNKNOWN)
 
     @property
     def low(self) -> bool:
