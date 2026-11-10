@@ -114,6 +114,8 @@ reconnect after flashing. It explicitly excludes this development host. Keep
 that procedure intact. Do not substitute software eject/re-enumeration,
 filesystem cache flushing, disk offlining or a warm read for those prerequisites.
 
+The full human-run packet is [physical acceptance #116](acceptance/physical/README.md).
+
 The prior Q12 image authentication, writer completion and verification-screen
 observations remain separate evidence. They do not supply the still-missing
 independent post-flash readback. This host's currently visible volume letters

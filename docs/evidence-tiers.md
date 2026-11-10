@@ -70,6 +70,9 @@ Operator scaffolding for those named-machine runs lives in
 It is a blank matrix (every cell **NOT TESTED**), not a receipt. QEMU and
 USB-lab evidence remain Tier 2.
 
+The wider Tier 3 packet (brands, disks, erase, cold readback, reports,
+launchers, accessibility) is [physical acceptance #116](acceptance/physical/README.md).
+
 ## 2. Receipt schema
 
 Every Tier 2 or Tier 3 executed claim needs a dated receipt containing:

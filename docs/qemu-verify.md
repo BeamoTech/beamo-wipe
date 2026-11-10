@@ -97,3 +97,5 @@ physical Secure Boot trust/revocations, RAID, SSD spare-area erasure, or a human
 click-through of every graphical screen. Those require separately authorized
 lab hardware and are not claimed. Use [the inspected-chain physical cases](secure-boot-acceptance.md)
 and keep untested hardware states NOT TESTED.
+
+The physical rows are in the [#116 packet](acceptance/physical/README.md).

@@ -63,6 +63,9 @@ differ (many Lenovo laptops need Fn+F12 or the Novo button; ASUS laptops and
 desktop boards differ; Acer may need the menu turned on in firmware setup,
 which is a firmware change: see the BitLocker note in the Boot helper).
 
+Each brand's key is tested on a real model by the PHY-<brand>-01 rows of the
+[#116 packet](acceptance/physical/matrix.md).
+
 ## Sources (reviewed 2026-11-07/08)
 
 | Brand | Source | Checked |

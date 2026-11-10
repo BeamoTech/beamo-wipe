@@ -12,6 +12,9 @@ keyboards, touchpads, audio, power, plus these desktop-USB cases) is
 That folder is scaffolding: every physical cell is **NOT TESTED**. QEMU,
 USB-lab, and GCP desktop VM receipts must not be copied into a Pass.
 
+The full human-run packet (matrix, procedures and evidence forms) is
+[physical acceptance #116](acceptance/physical/README.md).
+
 ## Record the configuration
 
 - Tester and date:

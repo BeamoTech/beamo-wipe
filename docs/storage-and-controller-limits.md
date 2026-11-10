@@ -175,6 +175,9 @@ Preview: `./preview --scenario hidden` (Tk) and **Disk hidden by
 Intel VMD** in `./preview --web`, both from fake lsblk and fake `lspci -nnk`
 data (`demo.DEMO_LSPCI_VMD`).
 
+Real-hardware rows: PHY-DISK-07 and PHY-DISK-08 in the
+[#116 packet](acceptance/physical/matrix.md).
+
 ---
 
 ## 7. Honest supported / degraded / unsupported — summarized

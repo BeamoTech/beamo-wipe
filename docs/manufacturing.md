@@ -10,6 +10,8 @@ This single procedure for producing, checking, packing and recalling sold sticks
 never authorizes erasing a disk, changing firmware or Secure Boot settings, or
 publishing a release.
 
+Physical rows for sticks (PHY-MFG) are in the [#116 packet](acceptance/physical/matrix.md).
+
 ## 1. Golden image (release identity)
 
 - The only source is a **published, signed GitHub release**, verified with

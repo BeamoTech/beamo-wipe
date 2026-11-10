@@ -174,3 +174,5 @@ on both BIOS and UEFI USB boots. It requires the accessible-mode marker,
 completed disk discovery, and a rendered GTK keyboard screen before passing.
 The Linux suite separately verifies real Orca announcements through AT-SPI.
 These checks do not certify audible output on every physical sound device.
+
+Real-speaker rows: PHY-A11Y in the [#116 packet](acceptance/physical/matrix.md).

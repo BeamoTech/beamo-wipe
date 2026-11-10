@@ -1,5 +1,7 @@
 # Beamo Wipe — Boot and Hardware Compatibility Matrix
 
+**Physical acceptance (#116):** every hardware row here stays unproven until a person runs the [physical acceptance packet](acceptance/physical/README.md) on real machines. Virtual or CI evidence never fills a physical row.
+
 **Current gate (2026-09-27):** Blacksmith GitHub Actions runs the full Linux ISO/QEMU and native Windows checks on each main commit. The signed release workflow is manual and requires its dedicated GCP publishing identity. The older Cloud Build notes below are historical.
 
 **Historical cross-platform verification (2026-09-08):** then-current source checks, the actual

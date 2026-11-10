@@ -8,6 +8,8 @@ This runbook is for the support operator who answers "the USB won't boot / it sh
 
 Customer-facing destination on error screens, the helper, and the printed boot card: **beamosupport.com** (QR payload `https://beamosupport.com`). Do not substitute a store page, GitHub issues URL, or a different domain. Canonical outcome strings still say "contact support"; the destination is shown beside them, not inside them.
 
+Real-hardware checks of releases follow the [physical acceptance packet](acceptance/physical/README.md) (#116). A support reproduction never counts as acceptance.
+
 No step in this runbook allows disabling boot-media exclusion, skipping owner/type-to-confirm/5 s delay, manually targeting `/dev/...` without safe identification, or running `nwipe` on a developer/host disk.
 
 ---

@@ -67,6 +67,8 @@ or delivering TERM/HUP exits without launching a login shell. If the shell or
 kernel itself cannot run, this recovery interface cannot be provided. It is not
 firmware or physical-hardware recovery.
 
+Real-console rows: PHY-KIOSK in the [#116 packet](acceptance/physical/matrix.md).
+
 ## Acceptance and regression evidence
 
 Baseline main: `7bb744948b035acaf912a67195bee01e4781828f`.
