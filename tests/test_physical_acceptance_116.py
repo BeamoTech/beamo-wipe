@@ -42,7 +42,9 @@ ID_RE = re.compile(r"^PHY-[A-Z0-9]+-\d{2}$")
 # #111 owns these prefixes; #116 must not reuse them.
 PREFIXES_111 = {"FW", "MON", "PORT", "USB", "KB", "TP", "AUD", "PWR", "DESK", "DEST"}
 RUN_RE = re.compile(r"\brun: RUN-\d{8}-\d{2}\b")
-FILE_RE = re.compile(r"\b[\w./-]+\.(?:jpg|jpeg|png|txt|log|json|md|mp4|webm|wav|ogg|m4a)\b")
+FILE_RE = re.compile(
+    r"\b[\w./-]+\.(?:jpg|jpeg|png|txt|log|json|md|mp4|webm|wav|ogg|m4a)\b"
+)
 VIRTUAL_RE = re.compile(
     r"qemu|ovmf|seabios|qcow2|virtual machine|\bvm\b|virtio|xvfb|preview|"
     r"hosted ci|github actions|blacksmith|fixture|rehearsal|simulat",
@@ -61,7 +63,10 @@ def _md_rows() -> list[list[str]]:
     for line in lines[start:]:
         if not line.startswith("| "):
             continue
-        cells = [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", line.strip())[1:-1]]
+        cells = [
+            c.strip().replace("\\|", "|")
+            for c in re.split(r"(?<!\\)\|", line.strip())[1:-1]
+        ]
         rows.append(cells)
     assert rows[0] == list(HEADER)
     assert set(rows[1]) == {"---"}
@@ -130,11 +135,17 @@ def test_results_need_a_physical_run_and_evidence():
     for row in _csv_rows():
         status, evidence = row[6], row[5]
         if status in NEEDS_RUN:
-            assert RUN_RE.search(evidence), f"{row[0]}: {status} needs 'run: RUN-YYYYMMDD-NN'"
-            assert FILE_RE.search(evidence.split("run:", 1)[1]), f"{row[0]}: {status} needs an evidence file"
+            assert RUN_RE.search(evidence), (
+                f"{row[0]}: {status} needs 'run: RUN-YYYYMMDD-NN'"
+            )
+            assert FILE_RE.search(evidence.split("run:", 1)[1]), (
+                f"{row[0]}: {status} needs an evidence file"
+            )
         if status == "Pass":
             filled = evidence.split("run:", 1)[1]
-            assert not VIRTUAL_RE.search(filled), f"{row[0]}: Pass cites virtual evidence: {filled}"
+            assert not VIRTUAL_RE.search(filled), (
+                f"{row[0]}: Pass cites virtual evidence: {filled}"
+            )
 
 
 def test_every_row_names_virtual_evidence_that_does_not_count():
@@ -155,14 +166,37 @@ def test_required_areas_are_covered():
     ids = {row[0] for row in _csv_rows()}
     prefixes = {id_.rsplit("-", 1)[0] for id_ in ids}
     for needed in (
-        "PHY-MFG", "PHY-WIN", "PHY-LNX", "PHY-DISK", "PHY-EXCL", "PHY-ERASE",
-        "PHY-COLD", "PHY-RPT", "PHY-INT", "PHY-A11Y", "PHY-LAY", "PHY-KIOSK",
+        "PHY-MFG",
+        "PHY-WIN",
+        "PHY-LNX",
+        "PHY-DISK",
+        "PHY-EXCL",
+        "PHY-ERASE",
+        "PHY-COLD",
+        "PHY-RPT",
+        "PHY-INT",
+        "PHY-A11Y",
+        "PHY-LAY",
+        "PHY-KIOSK",
     ):
         assert needed in prefixes, needed
     text = _read(MATRIX_CSV)
-    for needle in ("FAT32", "exFAT", "VMD", "SmartScreen", "Restart to boot options",
-                   "Everyday", "Three overwrites", "Quick zero", "High contrast",
-                   "1024×600", "eMMC", "NVMe", "legacy BIOS", "Secure Boot enforcing"):
+    for needle in (
+        "FAT32",
+        "exFAT",
+        "VMD",
+        "SmartScreen",
+        "Restart to boot options",
+        "Everyday",
+        "Three overwrites",
+        "Quick zero",
+        "High contrast",
+        "1024×600",
+        "eMMC",
+        "NVMe",
+        "legacy BIOS",
+        "Secure Boot enforcing",
+    ):
         assert needle in text, needle
 
 
@@ -282,7 +316,7 @@ def test_scanner_finds_a_marker_across_a_chunk_boundary(scanner, tmp_path):
     marker = "BEAMO-SEED-RUN-20270115-01"
     data = bytearray(3 * 1024 * 1024)
     at = 1024 * 1024 - 9
-    data[at:at + len(marker)] = marker.encode()
+    data[at : at + len(marker)] = marker.encode()
     disk = tmp_path / "seeded.bin"
     disk.write_bytes(bytes(data))
     present = _run(scanner, "present", str(disk), marker, "--rehearsal")
