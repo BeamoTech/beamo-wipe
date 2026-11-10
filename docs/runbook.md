@@ -71,7 +71,7 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence 
 ### 4.a Failed boot — USB never appears in firmware boot menu
 
 ```
-Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
+Symptom: the stick never appears in the boot menu (Dell F12, HP Esc then F9, ASUS Esc or F8, Lenovo F12; full list in `docs/boot-card.md`, generated from `desktop/bootkeys.json`)
   ├─ Ask: does live USB show on *another* x64 PC already configured to accept this image?
   │   ├─ No on any PC → suspect stick or flash. Verify the actual downloaded format and post-flash readback (release verification).
   │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.14-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.

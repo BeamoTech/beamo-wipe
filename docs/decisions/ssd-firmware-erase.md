@@ -1,6 +1,9 @@
 # Decision record: SSD firmware erase (ATA Secure Erase, ATA Sanitize, NVMe Sanitize and Format)
 
-> **Status: PROPOSAL. Owner decision required (backlog #186, UI review item 60; related #158).**
+> **Status: DECIDED 2026-11-10 — Option A (keep nwipe overwrite only). See §12 for the
+> recorded answers. Backlog #186, UI review item 60; related #158.**
+>
+> Original status: PROPOSAL, owner decision required.
 > Prepared 2026-11-07 and source-checked 2026-11-08 by Claude (Opus 5.5) on branch
 > `docs/ssd-erase-decision-186` from `84efc57`. Research and decision only: no code, no `docs/claims.md`
 > change and no product-copy change. Today's rules stay in force until the
@@ -385,6 +388,30 @@ approval:
 6. Budget and location for the physical lab (this computer is remote-only). Who owns the hardware evidence?
 7. Support policy for disks left mid-sanitize or failed, and the warranty statement.
 8. Evidence schema: a new `checks[]` kind only (recommended), or a new outcome?
+
+### Owner answers (2026-11-10)
+
+On 2026-11-10 the owner directed: apply the recommended option for each point
+and record it. Nothing in `AGENTS.md`, `docs/claims.md`, the product copy or the
+code changes. Any later change needs a new, explicit owner decision.
+
+1. **Option A.** Keep the "nwipe only / no ATA/NVMe sanitize" rule. Stage 1 is
+   not authorized.
+2. **Not authorized.** No `nvme-cli` or `hdparm` queries, and no new packages in
+   the image. (Only relevant if Stage 1 is approved later.)
+3. **Recorded default for any future Stage 2:** NVMe Sanitize Crypto Erase, else
+   Block Erase, on internal PCIe NVMe only. Always an added first step before
+   Everyday, never alone and never the default. Not built now.
+4. **Deferred.** There is no recommendation in this record, and the question only
+   matters for Stage 2. A future Stage 2 proposal must bring a recommendation.
+5. **No change.** `docs/claims.md` keeps its four lines in §8 as they are. Listing
+   copy does not name NIST SP 800-88 or IEEE 2883.
+6. **No lab now.** No budget or location is assigned. Hardware evidence for the
+   current product stays with the physical acceptance packet (#116).
+7. **Not applicable.** No firmware erase ships, so the current support policy
+   and warranty text stay as they are.
+8. **Recorded default for the future:** a new `checks[]` kind only, not a new
+   outcome.
 
 ## 13. Sources
 
