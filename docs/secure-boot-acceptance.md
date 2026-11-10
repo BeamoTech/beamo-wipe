@@ -13,6 +13,9 @@ a promise of acceptance by every firmware. Beamo's Ed25519 release key
 authenticates downloads; it is not an EFI signing key and needs no firmware
 enrollment. No physical configuration has been accepted by this task.
 
+The per-brand firmware rows that use these cases are in the
+[#116 packet](acceptance/physical/README.md).
+
 ## Inspected image identity — Q12
 
 Every case below names **Q12**, the published, qualified 0.2.12 bytes inspected

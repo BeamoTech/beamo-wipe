@@ -5309,6 +5309,31 @@ another very thorough and comprehensive pass of this." Repo
   cabforum.org/2025/11/17/ballot-csc-31-maximum-validity-reduction;
   docs.cloud.google.com/kms/docs/reference/pkcs11-jsign; ebourg.github.io/jsign;
   shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
+- 2026-11-09, Claude (Opus 5.5), research sub-agent. Owner direction
+  2026-11-10: prepare so only the purchase remains. LOCAL ONLY, uncommitted, in
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110` (branch
+  `fix/owner-decisions-20261110` = origin/main d1c8508). Nothing bought, no
+  account, no secret, no push, no hosted run.
+  * DECISION RECORDED in `docs/code-signing.md`: Microsoft Artifact Signing
+    Basic, US $9.99/month (Azure retail price API, read 2026-11-09), + tax.
+    Runner-up: SSL.com OV $129/yr + Google Cloud HSM key ($75 attestation +
+    KMS fee). Fallback in same service: individual validation (US/Canada only;
+    shows the owner's own name).
+  * NEW: `scripts/sign_windows_launcher.py` (jsign 7.6 TRUSTEDSIGNING, pinned
+    jar hash, RFC 3161 timestamp, osslsigncode verify, --dry-run) and
+    `tests/test_sign_windows_launcher_182.py` (23 passed natively on Windows).
+    `release.yml` NOT changed (signing must happen before desktop-build.json
+    records the launcher hash; snippet is in the doc).
+  * OWNER: confirm legal entity name, country, founding year (3-year rule
+    unconfirmed), business ID; then do the purchase steps in the doc and hand
+    back the variable names listed there.
+  * CODE STILL NEEDED AFTER PURCHASE (not purchase work): opt-in signing hook in
+    `scripts/build_desktop.py` before hashing + tests; `verify` job
+    `id-token: write` (owner trust decision) + snippet; Microsoft roots PEM at
+    `packaging/signing/` with pinned hash; release refusal of unsigned launcher
+    when enabled; Blacksmith runner tool check (az, Java, osslsigncode); real
+    Windows 10/11 SmartScreen/Smart App Control check; boot-card wording only
+    after a signed release ships.
 
 ## BW-155B — Confirm layout hint held a hidden Change button (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
 
@@ -6248,3 +6273,150 @@ another very thorough and comprehensive pass of this." Repo
 - NEXT: full run clean -> push f22493b+ to fix/release-readiness-20261026
   and integrate/ui-review-20261107 (triggers the PR ci.yml run), watch,
   read comments, repeat. No merge, no release.
+
+## BW-INT-20261107 — PR 94 hosted CI GREEN on f00e55c (2026-11-09, lead)
+
+- STATUS: readiness pass complete for everything that can run here. PR 94
+  head f00e55c (fix/release-readiness-20261026). NOT merged, NOT released
+  (owner decision 2026-11-07 stands).
+- Hosted ci.yml run 42602052511 on f00e55c: Linux image gate success
+  (lint, tests 15838 passed / 16 skipped, preview, desktop-launchers,
+  negative, iso 344s, qemu 711s; Orca separate run 1 passed); QEMU cases
+  incl. bios-sata-usb report export pass (closes the SATA release-ack
+  risk from 41528619370); Windows launcher tests success; CI gate success.
+  CodeQL actions/go/js/python pass; 0 open code-scanning alerts; no
+  unresolved review threads. PR body updated to f00e55c.
+- Fixes since 23e9ef5: 43bf711 (Tk #149 comparison opener leak; #133
+  probe cancelled at teardown), f22493b (tests follow intentional
+  changes), f00e55c (GTK Done not rebuilt by #133 sound updates).
+- Local note: test_orca_announces_every_result is intermittent only under
+  WSL's Orca 46 (heading reported [DEAD] after the dense result screen);
+  9c16e13 passes 3/3 there. Hosted/ISO Orca 43.1 passes. Watch it on
+  future hosted runs.
+- This record entry is committed on integrate/ui-review-20261107 only
+  (one docs commit ahead of the PR head) so the verified PR SHA and its
+  hosted evidence stay exact; fold it into the PR with the next real push.
+- Notion: DEFERRED. No Notion connector/API in this session; old UI
+  automation is gone and mis-pasted on 2026-11-07. Ready-to-paste notes:
+  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
+  (#158, #181, #183, #184, #185, #186 -> Done; #182 stays deferred, owner
+  chose unsigned; #116 stays blocked).
+- STILL BLOCKED / OPEN: #183 Windows 10/11 VM acceptance (no VM
+  authorized; host must never restart); #116 physical hardware (no
+  physical access); FR/DE/ES/IT native-speaker review of all new strings;
+  owner questions (#184 HP/ASUS keys + runbook/matrix "HP F9/Esc"; #185
+  "computer's" wording and VMD-bound/no-NVMe case; #186 §12 decisions;
+  Tk footer keys at Extra and 3-row translated footers; console power
+  badge vs step name at 80 cols; #180f evidence text; #177g extra wrap
+  row; #158 Quick zero below the fold at 800x600 and GTK button in the
+  expander); merge approval.
+
+### BW-PR94-RECHECK-20261109 (Claude, 2026-11-09) — re-verified from the PR
+
+- `gh pr view 94`: head f00e55ca526c400b4a4a1c75bbd780d79aa9efae, OPEN,
+  MERGEABLE, not draft. `gh pr checks 94`: Linux image gate (56m56s),
+  Windows launcher tests, CI gate, CodeQL and Analyze
+  (actions/go/javascript-typescript/python) all pass.
+- Review threads (GraphQL): 14 total, 0 unresolved.
+- CORRECTION to the entry above: "0 open code-scanning alerts" holds for
+  refs/pull/94/merge only. refs/pull/94/head shows 9 open alerts (#1-#6
+  py/clear-text-storage-sensitive-data in docs/evidence/usb-lab-20260907
+  seed recipes; #10, #11 py/incomplete-url-substring-sanitization in
+  tests/test_live_image.py:134/158; #36 same rule in
+  docs/evidence/release-tk-pool-review-20261017/codeql/trace-findings.py).
+  All 9 are also open on main (main has 30 open) and date from
+  2026-09-23/2026-10-18; PR 94 adds none. The test_live_image hits are
+  false positives (asserting on script text); the evidence files are
+  preserved historical records. Not fixed in PR 94 (out of scope; a push
+  would rerun the full hosted gate). Triage on main separately:
+  BW-CODEQL-MAIN-BACKLOG, owner decision whether to dismiss or fix.
+- Notion: still DEFERRED. ToolSearch finds no Notion connector (only a
+  Claude Docs "notion" export format). The T3 preview browser's default
+  profile redirects https://www.notion.so to /login (not signed in);
+  signing in needs Jack. Notes stay ready to paste in
+  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
+
+### BW-NOTION-20261109 (Claude, 2026-11-09) — Notion updates applied
+
+- Posted by the supervising agent through its own signed-in Notion
+  connector from agent-tasks-20261108/notion-notes-20261109.md (reported
+  back here; this session did not read Notion itself).
+- Wipe To Do refs 158, 181, 183, 184, 185, 186: "Claude, 2026-11-09"
+  comment added first, then Status = Done; re-read verified. 158, 181 and
+  186 already archived by "Project To Do Cleanup". Comments on 184 and 185
+  render the quoted phrases without quotation marks; wording otherwise
+  exact.
+- 182 (unsigned, deferred) and 116 (physical, BLOCKED) left In progress.
+- Remaining open items are only those in BW-PR94-RECHECK-20261109 and the
+  STILL BLOCKED list above; PR 94 merge stays Jack's decision.
+
+## BW-116-PACKET — Physical acceptance packet (DOCS WRITTEN LOCALLY, UNCOMMITTED; EVERY PHYSICAL ROW NOT TESTED / BLOCKED ON HARDWARE)
+
+- 2026-11-10, Claude (Opus 5.5, delegated implementation sub-agent).
+  Worktree beamo-wipe-dec-20261110 (next to the main checkout), branch
+  fix/owner-decisions-20261110, base HEAD fef92745 (sparse, no docs/evidence).
+  Owner direction 2026-11-10: build the complete packet for a human run;
+  virtual evidence must never fill a physical row.
+- DONE (local, not staged): docs/acceptance/physical/{README.md, matrix.md,
+  matrix.csv, procedures.md, forms/machine-intake.md,
+  forms/test-run-record.md, forms/cold-readback.md, forms/sign-off.md};
+  tests/test_physical_acceptance_116.py (17 tests: md/csv match, statuses,
+  Pass needs run ID + non-virtual evidence file, #184 keys match
+  desktop/bootkeys.json, links/anchors, embedded cold-readback scanner run in
+  --rehearsal mode on tmp files, seeder refusal only). One-line links added
+  to 12 docs (desktop-hardware-acceptance, evidence-tiers, manufacturing,
+  secure-boot-acceptance, restart-boot-options, boot-keys,
+  storage-and-controller-limits, live-session-power, kiosk-recovery,
+  screen-reader, qemu-verify, remote-development). compatibility-matrix.md
+  and runbook.md NOT linked (another agent was editing them): add one line
+  each later.
+- 121 matrix rows, all NOT TESTED; #111 sheets keep their own rows.
+- CHECKS (Windows-native venv + scratch fcntl shim, judged by baseline
+  diff): sparse tree 280 pass / 19 skip / 32 fail vs baseline 263/18/33;
+  full-tree copy 303/19/9 vs 286/18/10; no new failures (all failures are
+  sparse docs/evidence or Windows environment). ruff pass. Linux not run.
+- BLOCKED (needs a human with hardware; owner authorization): every PHY row
+  in docs/acceptance/physical/matrix.md and the #111 sheets; a release image
+  containing the PR #94 UI work (#127-#187) is needed for the #133, #135,
+  #179, #183, #184, #185, #187 rows (tag v0.2.14 predates them); a Secure
+  Boot component inspection for any image after 0.2.14 (else SB-INSPECTION).
+- NEXT: lead reviews and commits explicit paths; owner names the lab, the
+  image and the private evidence store; Notion #116 stays In progress.
+
+## BW-OWNER-20261110 — Owner directive: merge, decide, prepare (lead entry)
+
+- 2026-11-10, Claude (Opus 5.5), lead. Owner directive (Nov 9/10): merge
+  PR 94; merge PR 95 the same way if its checks pass; apply the recommended
+  option on every wording/decision item and record it; fix or rebut the 9
+  older CodeQL alerts; prepare #182 to purchase-only; build the #116
+  physical packet. Branch `fix/owner-decisions-20261110` from main d1c8508,
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110`. The two
+  sub-agent entries above (BW-182 dated note, BW-116-PACKET) say
+  "uncommitted": their files are now committed on this branch (fef92745,
+  c7adb3ee, 586367a7); the compatibility-matrix and runbook links were added.
+- PR 94: MERGED 2026-11-10T02:28:47Z as d1c85087 (merge commit, pinned
+  to verified head f00e55c). Post-merge ci.yml run on main: 42743060857.
+- PR 95 (backlog only, jallieson): branch updated from main to 7c6090a to
+  satisfy strict "CI gate"; its ci.yml run 42743109639. Merge only when
+  every check passes.
+- DECISIONS (owner: apply recommended) recorded in
+  docs/decisions/ui-review-owner-answers-2026-11-10.md and §12 of
+  docs/decisions/ssd-firmware-erase.md (Option A). Runbook and
+  compatibility matrix FW-06 now say HP "Esc then F9", ASUS "Esc or F8".
+- CODEQL (9 older alerts, also open on main): #10, #11 FIXED by parsing
+  Debian mirror URLs in tests/test_live_image.py (4248c371). #1-#6
+  (random per-run lab VM passwords written 0600 by preserved evidence
+  recipes) and #36 (hostname check in a preserved evidence trace script):
+  to be dismissed with rebuttals posted on this branch's PR; evidence
+  files are historical and not edited.
+- CHECKS (WSL hosted-matching route, tree bw-linux-20261107/dec = this
+  branch + docs/evidence from f00e55c): the 25 test files that read any
+  changed file 477 passed / 2 skipped / 0 failed; #116 guard 17 passed
+  after ruff format. ruff (src+tests, tests S-set, new script) clean;
+  git diff --check clean. Hosted gate: this branch's PR run.
+- STILL BLOCKED / OWNER: #182 purchase and the entity facts listed in
+  docs/code-signing.md, then the post-purchase build hook and the
+  `id-token: write` trust decision; #116 every physical row (lab, release
+  image with the PR 94 UI work, Secure Boot inspection, private evidence
+  store); #183 Windows VM acceptance; FR/DE/ES/IT native review; merge of
+  this branch's PR (not covered by the owner's PR 94/95 merge instruction).

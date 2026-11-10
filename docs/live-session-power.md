@@ -49,6 +49,9 @@ and are not implied by QEMU. See
 and the still-untested physical rows in
 [physical acceptance #111](evidence/physical-acceptance-111/results/power.md).
 
+Power events during an erase are the PHY-INT rows of the
+[#116 packet](acceptance/physical/matrix.md).
+
 ## Laptop guidance and power readings
 
 Keep wall power connected and keep the lid open. The introduction, final review,

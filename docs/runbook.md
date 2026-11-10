@@ -8,6 +8,8 @@ This runbook is for the support operator who answers "the USB won't boot / it sh
 
 Customer-facing destination on error screens, the helper, and the printed boot card: **beamosupport.com** (QR payload `https://beamosupport.com`). Do not substitute a store page, GitHub issues URL, or a different domain. Canonical outcome strings still say "contact support"; the destination is shown beside them, not inside them.
 
+Real-hardware checks of releases follow the [physical acceptance packet](acceptance/physical/README.md) (#116). A support reproduction never counts as acceptance.
+
 No step in this runbook allows disabling boot-media exclusion, skipping owner/type-to-confirm/5 s delay, manually targeting `/dev/...` without safe identification, or running `nwipe` on a developer/host disk.
 
 ---
@@ -71,7 +73,7 @@ Each tree ends in exactly one of: **resolve with guidance**, **collect evidence 
 ### 4.a Failed boot — USB never appears in firmware boot menu
 
 ```
-Symptom: stick never appears (Dell F12, HP F9/Esc, Lenovo F12 not listed)
+Symptom: the stick never appears in the boot menu (Dell F12, HP Esc then F9, ASUS Esc or F8, Lenovo F12; full list in `docs/boot-card.md`, generated from `desktop/bootkeys.json`)
   ├─ Ask: does live USB show on *another* x64 PC already configured to accept this image?
   │   ├─ No on any PC → suspect stick or flash. Verify the actual downloaded format and post-flash readback (release verification).
   │   │       Reflash on Linux: `sudo dd if=dist/beamo-wipe-0.2.14-amd64.iso ...` (verify `/dev/sdX` *is* USB via `lsblk`), or BalenaEtcher. Retry.

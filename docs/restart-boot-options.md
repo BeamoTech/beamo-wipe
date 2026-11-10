@@ -104,3 +104,6 @@ Also not verified: whether Windows, after the owner cancels the restart at the
 "apps are preventing restart" prompt, still opens the boot options at the next
 restart. If it does, choosing Continue returns to Windows. No BootNext or
 other firmware variable is written either way.
+
+The physical rows are PHY-WIN-05 to PHY-WIN-11 in the
+[#116 packet](acceptance/physical/matrix.md).

@@ -1,5 +1,7 @@
 # Beamo Wipe — Boot and Hardware Compatibility Matrix
 
+**Physical acceptance (#116):** every hardware row here stays unproven until a person runs the [physical acceptance packet](acceptance/physical/README.md) on real machines. Virtual or CI evidence never fills a physical row.
+
 **Current gate (2026-09-27):** Blacksmith GitHub Actions runs the full Linux ISO/QEMU and native Windows checks on each main commit. The signed release workflow is manual and requires its dedicated GCP publishing identity. The older Cloud Build notes below are historical.
 
 **Historical cross-platform verification (2026-09-08):** then-current source checks, the actual
@@ -104,7 +106,7 @@ All ISO boot tests are **QEMU x86_64**; on Apple silicon they are TCG and marked
 | **FW-03** | x64 UEFI Secure Boot enforcing; actual trust/revocations inspected | USB-A | Any eligible target; no erase needed for boot test | Known permitted Q12 chain reaches guide; proven denial refuses at its identified stage; unknown policy/inspection failure never qualifies Pass | Q12 signature inspection and enforced OVMF USB acceptance; physical cases NOT TESTED | **Firmware-dependent**; no universal acceptance claim | [Exact image, component identities and cases](secure-boot-acceptance.md); `docs/claims.md` forbids circumvention | Use an already configured dedicated machine; capture db/dbx, shim/SBAT, enforcement and selected entry; apply SB-ACCEPT / SB-NO-ANCHOR / SB-DBX / SB-SHIM / SB-UNKNOWN / SB-INSPECTION |
 | **FW-04** | UEFI already non-enforcing | USB-A | Any | Ordinary boot as FW-02; not Secure Boot evidence | Same as FW-02 | **Supported ordinary boot path** | Same as FW-02 | Record the existing state; this case does not prescribe disabling Secure Boot |
 | **FW-05** | Legacy BIOS with CSM on UEFI machine | USB-A | Virtio 10 GB (`/dev/vda`) via QEMU | Boots via BIOS compatibility; lists virtio disk as HDD kind | Fixture `lsblk_vm_iso.json` (`vda` tran virtio, rota true) → kind HDD, size 11 GB | **Supported** | `tests/test_discover.py::test_vm_iso_boot_marks_rom_and_lists_virtio` | QEMU default SeaBIOS; `discover(payload=lsblk_vm_iso.json, boot_path=/dev/sr0)` |
-| **FW-06** | BIOS boot menu key variant (F12/Esc/F9) | — | — | Not a Beamo bug — user uses firmware key from `docs/boot-card.md`; helper page lists per-vendor keys | Manual doc check | **Supported via docs** | `docs/boot-card.md`, `helper/index.html` (key caps F12/Esc/F9) | Follow card: Dell F12, HP F9/Esc, Lenovo F12, etc.; `helper/index.html` renders key caps |
+| **FW-06** | BIOS boot menu key variant (F12/Esc/F9) | — | — | Not a Beamo bug — user uses firmware key from `docs/boot-card.md`; helper page lists per-vendor keys | Manual doc check | **Supported via docs** | `docs/boot-card.md`, `helper/index.html` (key caps F12/Esc/F9) | Follow card: Dell F12, HP Esc then F9, ASUS Esc or F8, Lenovo F12, etc. (one table: `desktop/bootkeys.json`, owner-approved 2026-11-10); `helper/index.html` renders key caps |
 
 ---
 
