@@ -39,6 +39,8 @@ def test_idle_inventory_overlay_yields_between_paints(monkeypatch):
         wants_new_session=False,
         can_open_diagnostic=False,
         can_refresh=False,
+        refresh_offered=False,
+        refresh_guarded=False,
         can_open_keyboard=False,
         can_open_report_help=False,
         selectable=[],
@@ -48,6 +50,7 @@ def test_idle_inventory_overlay_yields_between_paints(monkeypatch):
         protected_boot=None,
         error="",
         inventory_count="",
+        owner_carried=False,  # #187
         selected=None,
         tick=lambda: None,
     )

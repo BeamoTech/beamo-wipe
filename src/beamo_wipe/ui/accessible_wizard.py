@@ -8,6 +8,8 @@ import os
 import subprocess
 import sys
 import threading
+import time
+from xml.sax.saxutils import escape as _markup_escape
 
 import gi
 
@@ -19,6 +21,7 @@ gi.require_version("Atk", "1.0")
 from gi.repository import Atk, Gdk, GLib, Gtk, Pango  # noqa: E402
 
 from beamo_wipe import copy as C  # noqa: E402
+from beamo_wipe.disk_order import pick_order  # noqa: E402
 from beamo_wipe import diagnostic_report as D, inventory, storage_limits  # noqa: E402
 from beamo_wipe.outcomes import may_have_erased  # noqa: E402
 from beamo_wipe.recovery import (  # noqa: E402
@@ -30,13 +33,65 @@ from beamo_wipe.recovery import (  # noqa: E402
 )
 from beamo_wipe import keyboard as _keyboard  # noqa: E402
 from beamo_wipe.keyboard import LAYOUT_ORDER  # noqa: E402
-from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER  # noqa: E402
+from beamo_wipe.lang import LANGUAGE_NAMES, LANGUAGE_ORDER, LANGUAGE_PICKER_LABEL  # noqa: E402
 from beamo_wipe.methods import METHODS  # noqa: E402
 from beamo_wipe.models import Screen  # noqa: E402
+from beamo_wipe.progress import ProgressAnnouncer  # noqa: E402
 from beamo_wipe.diagnostics import emit_serial_marker  # noqa: E402
 from beamo_wipe.safety import same_size_conflict  # noqa: E402
 from beamo_wipe.ui import StartupDisplayUnavailable  # noqa: E402
-from beamo_wipe.wizard import Wizard, error_needs_support  # noqa: E402
+from beamo_wipe.wizard import PREPARATION_PATH, Wizard, error_needs_support  # noqa: E402
+
+# #179: GTK's built-in high-contrast theme, plus our own overrides so the
+# wizard's colours (identity card, actions, warnings) follow it too.
+HIGH_CONTRAST_THEME = "HighContrast"
+HIGH_CONTRAST_CSS = """
+            #beamo-accessible { background: #FFFFFF; color: #000000; }
+            #beamo-accessible label, #beamo-accessible .screen-heading { color: #000000; }
+            #beamo-accessible .disk-identity { background: #FFFFFF; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible .preview-notice { background: #FFD000; color: #000000; }
+            #beamo-accessible .power-ok, #beamo-accessible .power-warn, #beamo-accessible .power-neutral { color: #000000; }
+            #beamo-accessible button { background-image: none; background-color: #FFFFFF; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible button.primary-action { background-color: #002A54; color: #FFFFFF; }
+            #beamo-accessible button.destructive-action { background-color: #8A0000; color: #FFFFFF; }
+            #beamo-accessible button.utility-action { background-color: #FFFFFF; color: #000000; }
+            #beamo-accessible button.selected-choice { background-color: #E5EDF7; color: #000000; border: 3px solid #000000; }
+            #beamo-accessible button:disabled { background-color: #FFFFFF; color: #3A3A3A; border: 2px dashed #000000; }
+            #beamo-accessible *:focus { outline: 4px solid #000000; outline-offset: 2px; }
+            #beamo-accessible .erase-warning, #beamo-accessible .report-warning { background: #FFF0A0; color: #000000; border: 2px solid #000000; }
+            #beamo-accessible .report-saved { background: #FFFFFF; color: #0A4A22; border: 2px solid #0A4A22; }
+            #beamo-accessible .error-message { color: #8A0000; }
+"""
+
+# #177: identifiers in monospace, regular weight, slightly spaced (0.75 pt);
+# Pango letter_spacing is in 1/1024 pt. The label's text stays the plain
+# identifier, so Orca reads it unchanged.
+SERIAL_SPAN = '<span font_family="monospace" weight="normal" letter_spacing="768">'
+
+
+def _record_image(text: str, scale: int = 4):
+    """Gtk.Image of the record code, or None when it cannot be drawn."""
+    try:
+        gi.require_version("GdkPixbuf", "2.0")
+        from gi.repository import GdkPixbuf
+
+        from beamo_wipe.erase_record import qr_matrix
+
+        matrix = qr_matrix(text)
+        size = len(matrix) * scale
+        rows = []
+        for modules in matrix:
+            row_bytes = bytearray()
+            for dark in modules:
+                row_bytes.extend((b"\x00\x00\x00" if dark else b"\xff\xff\xff") * scale)
+            rows.append(bytes(row_bytes) * scale)
+        data = GLib.Bytes.new(b"".join(rows))
+        pixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
+            data, GdkPixbuf.Colorspace.RGB, False, 8, size, size, size * 3
+        )
+        return Gtk.Image.new_from_pixbuf(pixbuf)
+    except Exception:
+        return None
 
 
 def _error_text(wizard: Wizard) -> str:
@@ -48,6 +103,73 @@ def _error_text(wizard: Wizard) -> str:
     if error_needs_support(wizard.error):
         text += " " + C.support_text()
     return text
+
+
+def _widget_text(widget) -> str:
+    """The words a focused label or button shows, else ""."""
+    if widget is None:
+        return ""
+    try:
+        if isinstance(widget, Gtk.Button):
+            return widget.get_label() or ""
+        if isinstance(widget, Gtk.Label):
+            return widget.get_text() or ""
+    except Exception:  # noqa: BLE001 - destroyed or foreign widget
+        return ""
+    return ""
+
+
+def _find_by_text(root, text: str):
+    """First focusable, sensitive label or button showing exactly ``text``."""
+    stack = [root]
+    while stack:
+        widget = stack.pop(0)
+        if (
+            widget.get_can_focus()
+            and widget.get_sensitive()
+            and _widget_text(widget) == text
+        ):
+            return widget
+        if isinstance(widget, Gtk.Container):
+            stack.extend(widget.get_children())
+    return None
+
+
+# A disk button opens Review this disk on one click (#150); the rest of a
+# double-click must not press a control on the next screen. Same window as
+# the Tk view's DOUBLE_CLICK_MS.
+DOUBLE_CLICK_MS = 500
+_POINTER_EVENTS = (
+    "BUTTON_PRESS", "BUTTON_RELEASE", "_2BUTTON_PRESS", "_3BUTTON_PRESS",
+    "DOUBLE_BUTTON_PRESS", "TRIPLE_BUTTON_PRESS", "TOUCH_BEGIN", "TOUCH_END",
+)
+
+
+def _pointer_event_time():
+    """Server time (ms) of the pointer event behind this activation.
+
+    None for keyboard and AT-SPI activations: Enter, Space and Orca's
+    "press" are never treated as the tail of a double-click.
+    """
+    try:
+        event = Gtk.get_current_event()
+    except Exception:  # noqa: BLE001 - unknown: no extra guard; every wizard gate still applies
+        return None
+    if event is None:
+        return None
+    kind = getattr(event, "type", None)
+    if kind is None and hasattr(event, "get_event_type"):
+        kind = event.get_event_type()
+    types = getattr(Gdk, "EventType", None)
+    pointer = {getattr(types, name, None) for name in _POINTER_EVENTS} - {None}
+    if kind not in pointer:
+        return None
+    try:
+        when = event.get_time() if hasattr(event, "get_time") else getattr(event, "time", None)
+    except Exception:  # noqa: BLE001
+        when = None
+    # A synthetic event without a time uses a monotonic clock, as in Tk.
+    return when if isinstance(when, int) and when > 0 else int(time.monotonic() * 1000)
 
 
 class AccessibleWizard:
@@ -69,6 +191,11 @@ class AccessibleWizard:
             # Keep manual selection available without selecting text on arrival.
             self.window.get_settings().set_property("gtk-label-select-on-focus", False)
             self.window.set_name("beamo-accessible")
+            # #179: a session already in a high-contrast GTK theme starts in
+            # high contrast here too.
+            theme = str(self.window.get_settings().get_property("gtk-theme-name") or "")
+            if "contrast" in theme.lower() and hasattr(self.w, "set_high_contrast"):
+                self.w.set_high_contrast(True)
             self._style = Gtk.CssProvider()
             self._apply_type_css()
             # Size before the first show: a low-resolution live session may have
@@ -95,7 +222,14 @@ class AccessibleWizard:
             self._release_times: dict[int, int] = {}
             self.primary = None
             self.progress_label = None
+            self.progress_bar = None
+            self.progress_announcer = ProgressAnnouncer()
+            self.walk_away_label = None
+            self.finish_reason_label = None
+            self.finish_toggle = None
+            self._rendered_sound_message = ""
             self.countdown_label = None
+            self.ready_label = None  # #163
             self.error_label = None
             self.shown = None
             self.report_revision = -1
@@ -118,15 +252,19 @@ class AccessibleWizard:
             #beamo-accessible label {{ font-size: {body}px; }}
             #beamo-accessible .screen-heading {{ font-size: {heading}px; font-weight: bold; color: #12202E; }}
             #beamo-accessible .preview-notice {{ background: #E6A817; color: #0A1B34; padding: 8px; }}
+            #beamo-accessible .power-ok {{ color: #17703F; font-weight: bold; }}
+            #beamo-accessible .power-warn {{ color: #7A5200; font-weight: bold; }}
+            #beamo-accessible .power-neutral {{ color: #4A5A6A; }}
             #beamo-accessible .disk-identity {{ background: #F0F5FA; color: #12202E; padding: 16px 20px; border: 1px solid #1C4A73; border-radius: 12px; }}
             #beamo-accessible button {{ padding: 10px 20px; border-radius: 999px; }}
             #beamo-accessible button.primary-action {{ background-image: none; background-color: #1C4A73; color: #FFFFFF; }}
             #beamo-accessible button.primary-action:hover {{ background-color: #163A5C; }}
             #beamo-accessible button.primary-action:active {{ background-color: #102A44; }}
             #beamo-accessible button.destructive-action {{ background-image: none; background-color: #B3261E; color: #FFFFFF; }}
+            #beamo-accessible button:disabled {{ background-image: none; background-color: #F0F5FA; color: #4A6684; border: 1px dashed #6A84A1; }}
+            #beamo-accessible button.selected-choice {{ background-image: none; background-color: #F0F5FA; color: #1C4A73; border: 2px solid #1C4A73; }}
             #beamo-accessible button.destructive-action:hover {{ background-color: #8E1D16; }}
             #beamo-accessible button.destructive-action:active {{ background-color: #6E1510; }}
-            #beamo-accessible button:disabled {{ background-image: none; background-color: #E8ECF1; color: #6E7989; }}
             #beamo-accessible button:focus {{ outline: 3px solid #2563EB; outline-offset: 2px; }}
             #beamo-accessible checkbutton {{ padding: 8px 10px; border-radius: 12px; }}
             #beamo-accessible checkbutton:hover {{ background-color: #F4F6F8; }}
@@ -142,7 +280,52 @@ class AccessibleWizard:
             #beamo-accessible .report-saved {{ background: #E7F2EB; color: #17703F; padding: 10px 14px; border-radius: 12px; }}
             #beamo-accessible .error-message {{ color: #B3261E; font-weight: bold; }}
         """
+        if getattr(self.w, "high_contrast", False):
+            css += HIGH_CONTRAST_CSS  # #179: later rules win
         self._style.load_from_data(css.encode())
+        self._sync_gtk_theme()
+
+    def _sync_gtk_theme(self) -> None:
+        """#179: use GTK's built-in HighContrast theme while high contrast is on.
+
+        The theme the session started with is restored when it is turned off.
+        """
+        window = getattr(self, "window", None)
+        if window is None:
+            return
+        settings = window.get_settings()
+        if not hasattr(self, "_start_theme"):
+            self._start_theme = settings.get_property("gtk-theme-name") or "Adwaita"
+        want = HIGH_CONTRAST_THEME if getattr(self.w, "high_contrast", False) else self._start_theme
+        if settings.get_property("gtk-theme-name") != want:
+            settings.set_property("gtk-theme-name", want)
+
+    def result_card_list(self) -> None:
+        """#171: the result card's method, check result and times as a list.
+
+        The disk identity is announced just before by identity(). Each fact
+        is a focusable list item so Orca reads it with Tab or arrow keys.
+        """
+        from beamo_wipe import erase_record as R
+
+        card = self.w.result_card
+        if card is None or not card.detail_rows:
+            return
+        title = self.label(R.CARD_TITLE, focusable=True)
+        title.get_accessible().set_role(Atk.Role.HEADING)
+        group = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        group.get_accessible().set_role(Atk.Role.LIST)
+        group.get_accessible().set_name(R.CARD_TITLE)
+        for label, value in card.detail_rows:
+            item = Gtk.Label(label=f"{label}: {value}")
+            item.set_line_wrap(True)
+            item.set_xalign(0)
+            item.set_max_width_chars(70)
+            item.set_can_focus(True)
+            item.set_selectable(True)
+            item.get_accessible().set_role(Atk.Role.LIST_ITEM)
+            group.pack_start(item, False, False, 0)
+        self.body.pack_start(group, False, False, 4)
 
     def label(self, text: str, *, focusable: bool = False):
         widget = Gtk.Label(label=text)
@@ -154,6 +337,31 @@ class AccessibleWizard:
         widget.set_selectable(focusable)
         self.body.pack_start(widget, False, False, 4)
         return widget
+
+    def erase_record(self) -> None:
+        """Erase record (#127): heading, code, then the same summary as text.
+
+        The code image is not focusable; its accessible name says the text
+        follows. Orca reads the focusable summary label line by line.
+        """
+        record = self.w.erase_record
+        if record is None:
+            return
+        heading = self.label(C.RECORD_TITLE, focusable=True)
+        heading.get_accessible().set_role(Atk.Role.HEADING)
+        self.label(C.RECORD_PREVIEW_NOTE if record.preview else C.RECORD_LEAD, focusable=True)
+        image = _record_image(record.text)
+        if image is None:
+            self.label(C.RECORD_NO_CODE)
+        else:
+            image.set_halign(Gtk.Align.START)
+            image.get_accessible().set_name(C.RECORD_CODE_NAME)
+            self.body.pack_start(image, False, False, 8)
+        self.label(C.RECORD_TEXT_LABEL)
+        summary = self.label("\n".join(record.lines), focusable=True)
+        summary.get_accessible().set_name(record.text)
+        if not record.preview:
+            self.label(C.RECORD_NOTE)
 
     def support_identity_labels(self) -> None:
         ident = self.w.support_identity
@@ -169,17 +377,21 @@ class AccessibleWizard:
             heading.get_style_context().add_class("recovery-heading")
             self.label(body, focusable=True)
         if sections.technical:
-            from beamo_wipe import recovery as Rec
+            self.technical(sections.technical)
 
-            expander = Gtk.Expander.new(Rec.RECOVERY_TECHNICAL)
-            reader = Gtk.Label(label=sections.technical)
-            reader.set_line_wrap(True)
-            reader.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-            reader.set_max_width_chars(65)
-            reader.set_selectable(True)
-            reader.set_can_focus(True)
-            expander.add(reader)
-            self.body.pack_start(expander, False, False, 4)
+    def technical(self, text: str) -> None:
+        """Technical details stay behind an expander, read on demand."""
+        from beamo_wipe import recovery as Rec
+
+        expander = Gtk.Expander.new(Rec.RECOVERY_TECHNICAL)
+        reader = Gtk.Label(label=text)
+        reader.set_line_wrap(True)
+        reader.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        reader.set_max_width_chars(65)
+        reader.set_selectable(True)
+        reader.set_can_focus(True)
+        expander.add(reader)
+        self.body.pack_start(expander, False, False, 4)
 
     def button(self, text: str, action: Callable, *, enabled: bool = True,
                utility: bool = False, in_body: bool = False):
@@ -207,6 +419,9 @@ class AccessibleWizard:
             # A queued AT-SPI or key action from a replaced screen is stale.
             if self.closed or generation != self.generation or not widget.get_sensitive():
                 return
+            if self._pointer_quiet(_pointer_event_time()):
+                return  # the second click of a disk double-click (#150)
+            getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
             action()
             if self.w.wants_shutdown or self.w.wants_new_session:
                 self.close()
@@ -234,16 +449,55 @@ class AccessibleWizard:
             for child in widget.get_children():
                 self._style_tree(child)
 
-    def identity(self):
+    def identity(self, *, token: bool = False):
         disk = self.w.operation_disk
         if disk is not None:
-            self.label(self.w.disk_view(disk).announcement).get_style_context().add_class(
-                "disk-identity"
-            )
+            view = self.w.disk_view(disk)
+            marked = token and view.token_end > view.token_start
+            # On Confirm the identity is focusable and selectable, so Orca can
+            # read the serial or hardware ID character by character (#129).
+            widget = self.label(view.announcement, focusable=marked)
+            widget.get_style_context().add_class("disk-identity")
+            # #177: the identifier in monospace, regular weight, slightly
+            # spaced; the #129 token stays bold and underlined inside it.
+            self._mark_token(widget, view, token=marked)
         elif self.w.operation_identity_text:
             self.label(self.w.operation_identity_text).get_style_context().add_class(
                 "disk-identity"
             )
+
+    def _mark_token(self, widget, view, *, token: bool = True) -> None:
+        """Underline the confirmation characters inside the identity text.
+
+        The label's text (what AT-SPI and Orca read) is unchanged; Pango
+        markup underlines, bolds and tints the ending of the identifier, so
+        the mark is not colour alone.
+        """
+        text = view.announcement
+        field = f"{view.id_label}: {view.id_value}"
+        at = text.find(field)
+        if at < 0:
+            return
+        value_start = at + len(view.id_label) + 2
+        value_end = value_start + len(view.id_value)
+        esc = GLib.markup_escape_text
+        if token and view.token_end > view.token_start:
+            start = value_start + view.token_start
+            end = value_start + view.token_end
+            value = (
+                esc(text[value_start:start])
+                + '<span underline="double" weight="bold" background="#FFF3C4">'
+                + esc(text[start:end])
+                + "</span>"
+                + esc(text[end:value_end])
+            )
+        else:
+            value = esc(text[value_start:value_end])
+        widget.set_markup(
+            esc(text[:value_start])
+            + SERIAL_SPAN + value + "</span>"
+            + esc(text[value_end:])
+        )
 
     def reader(self, text: str):
         view = Gtk.TextView()
@@ -271,10 +525,30 @@ class AccessibleWizard:
             self.w.screen == Screen.LAST_CHANCE and self.shown != Screen.LAST_CHANCE
         )
         self.generation += 1
+        # Orca reads the window title; follow a language change.
+        if self.window.get_title() != C.ACCESSIBLE_TITLE:
+            self.window.set_title(C.ACCESSIBLE_TITLE)
         self._apply_type_css()
         self.actions = {}
         self.primary = self.progress_label = self.countdown_label = None
+        self.ready_label = None  # #163
+        self.owner_reason = None  # #143: set again by the Owner screen
+        self.progress_bar = None
+        self.progress_announcer = ProgressAnnouncer()
+        self.walk_away_label = None
+        self.finish_reason_label = None
+        self.finish_toggle = None
+        self._rendered_sound_message = self.w.sound_message
         self.power_label = None
+        # A Done re-render (live report-USB status, #135) keeps Orca where
+        # it was; from inside the report panel it moves to the new status.
+        refocus_text, refocus_panel = "", False
+        if getattr(self, "shown", None) == Screen.DONE == self.w.screen:
+            focused = self.window.get_focus()
+            refocus_text = _widget_text(focused)
+            refocus_panel = focused is not None and focused in getattr(self, "_panel_widgets", ())
+        self._panel_widgets: list = []
+        self._panel_status = None
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
         self.sound_revision = getattr(self.w, "sound_revision", 0)
@@ -290,6 +564,18 @@ class AccessibleWizard:
         shell.pack_start(scroll, True, True, 0)
         self.body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         scroll.add(self.body)
+        # #144: the power badge, on every screen, before the page. Focusable
+        # so Orca reads it; its name says "Power: ...".
+        badge = self.w.power_badge
+        self.power_badge_label = Gtk.Label(label=badge.display)
+        self.power_badge_label.set_xalign(1)
+        self.power_badge_label.set_can_focus(True)
+        self.power_badge_label.set_selectable(True)
+        self.power_badge_label.get_accessible().set_name(badge.spoken)
+        self.power_badge_label.get_style_context().add_class(f"power-{badge.kind}")
+        self._shown_power_badge = badge
+        shell.pack_start(self.power_badge_label, False, False, 0)
+        shell.reorder_child(self.power_badge_label, 0)
         self.footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         self.footer.get_style_context().add_class("screen-actions")
         shell.pack_start(self.footer, False, False, 0)
@@ -305,6 +591,8 @@ class AccessibleWizard:
         self.utilities.get_accessible().set_name(C.ASSIST_LABEL)
         self._utility_count = 0
         self.footer.pack_start(self.utilities, False, False, 0)
+        # #175: Help & settings first, in the same place on every screen.
+        self._help_menu_button()
         self.navigation = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         self.navigation.get_accessible().set_role(Atk.Role.PANEL)
         self.navigation.get_accessible().set_name(C.NAV_LABEL)
@@ -318,37 +606,81 @@ class AccessibleWizard:
         arrival = heading
         if screen == Screen.SPLASH:
             heading.set_text(C.SPLASH_TAGLINE)
+            # The header's stages, from the same source (#138).
+            self.label(C.splash_roadmap(PREPARATION_PATH), focusable=True)
             self.button(C.primary_action(Screen.SPLASH), self.w.skip_splash)
         elif screen == Screen.KEYBOARD:
             heading.set_text(C.TITLE_KEYBOARD)
-            self.label(C.KEYBOARD_LEAD)
-            self.label(C.KEYBOARD_LIMITS)
+            # #131: language is the first control, each in its own name, so
+            # Orca users reach it before the rest of the instructions.
+            self.label(LANGUAGE_PICKER_LABEL)
+            chosen_language = None
+            for code in LANGUAGE_ORDER:
+                state = C.ACCESSIBLE_SELECTED if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
+                language_button = self.button(
+                    f"{LANGUAGE_NAMES[code]} ({state})",
+                    lambda lang_code=code: self.w.choose_language(lang_code),
+                    in_body=True,
+                )
+                if self.w.language == code:
+                    chosen_language = language_button
+                    language_button.get_style_context().add_class("selected-choice")  # #176
+            self.label(C.LANGUAGE_LEAD)
+            # #139: language, then text size, then the keyboard; each part
+            # starts with a heading Orca can jump to.
+            size_heading = self.label(C.TEXT_SIZE_UTILITY, focusable=True)
+            size_heading.get_accessible().set_role(Atk.Role.HEADING)
             self.label(C.TEXT_SIZE_LEAD)
             for size_id, label in C.TEXT_SIZE_LABELS.items():
-                state = "selected" if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
+                state = C.ACCESSIBLE_SELECTED if self.w.text_size == size_id else C.ACCESSIBLE_NOT_SELECTED
+                size_button = self.button(
                     f"{label} ({state})",
                     lambda sid=size_id: self.w.set_text_size(sid),
                     in_body=True,
                 )
+                if self.w.text_size == size_id:
+                    size_button.get_style_context().add_class("selected-choice")  # #176
+            # #179: contrast, after text size, each with its state in words.
+            contrast_heading = self.label(C.CONTRAST_TITLE, focusable=True)
+            contrast_heading.get_accessible().set_role(Atk.Role.HEADING)
+            self.label(C.CONTRAST_LEAD)
+            for on, label in ((False, C.CONTRAST_STANDARD), (True, C.CONTRAST_HIGH)):
+                chosen = bool(self.w.high_contrast) == on
+                state = C.ACCESSIBLE_SELECTED if chosen else C.ACCESSIBLE_NOT_SELECTED
+                contrast_button = self.button(
+                    f"{label} ({state})",
+                    lambda value=on: self.w.set_high_contrast(value),
+                    in_body=True,
+                )
+                if chosen:
+                    contrast_button.get_style_context().add_class("selected-choice")
+            keyboard_heading = self.label(C.KEYBOARD_LEAD, focusable=True)
+            keyboard_heading.get_accessible().set_role(Atk.Role.HEADING)
+            notice = C.keyboard_layout_notice(self.w)
+            if notice:
+                self.label(notice)
             for index, layout_id in enumerate(LAYOUT_ORDER, 1):
                 spec = _keyboard.LAYOUTS[layout_id]
-                state = "selected" if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
+                state = C.ACCESSIBLE_SELECTED if self.w.keyboard_layout == layout_id else C.ACCESSIBLE_NOT_SELECTED
+                layout_button = self.button(
                     f"{index} {spec.title} ({state})",
                     lambda lid=layout_id: self.w.set_keyboard_layout(lid),
                     in_body=True,
                 )
+                if self.w.keyboard_layout == layout_id:
+                    layout_button.get_style_context().add_class("selected-choice")  # #176
                 self.label(spec.note)
-            self.label(C.TITLE_LANGUAGE)
-            self.label(C.LANGUAGE_LEAD)
-            for code in LANGUAGE_ORDER:
-                state = "selected" if self.w.language == code else C.ACCESSIBLE_NOT_SELECTED
-                self.button(
-                    f"{LANGUAGE_NAMES[code]} ({state})",
-                    lambda lang_code=code: self.w.set_language(lang_code),
-                    in_body=True,
-                )
+            # #141: layout fine print behind Show more (an expander).
+            limits = Gtk.Expander.new(C.BTN_MORE)
+            limits.set_expanded(False)
+            limits_text = Gtk.Label(label=C.KEYBOARD_LIMITS)
+            limits_text.set_line_wrap(True)
+            limits_text.set_xalign(0)
+            limits_text.set_max_width_chars(70)
+            limits_text.set_can_focus(True)
+            limits_text.set_selectable(True)
+            limits.add(limits_text)
+            self.body.pack_start(limits, False, False, 4)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -371,34 +703,77 @@ class AccessibleWizard:
                 lambda widget: self._typing(widget.get_text(), generation),
             )
             self.body.pack_start(entry, False, False, 4)
-            arrival = entry
+            # Guided check (#140): Orca reads the prompt as the box's name;
+            # a result is an alert label that takes focus so it is spoken.
+            entry.get_accessible().set_name(C.KEYBOARD_CHECK_LABEL)
+            entry.connect(
+                "key-press-event",
+                lambda _widget, event: self._keyboard_check_key(event, generation),
+            )
+            arrival = chosen_language or entry
+            result = self.w.keyboard_check_text
+            if result:
+                result_label = self.label(result, focusable=True)
+                result_label.get_accessible().set_role(Atk.Role.ALERT)
+                if getattr(self, "_check_fresh", False):
+                    arrival = result_label
+                switch = self.w.keyboard_check_switch
+                if switch:
+                    self.button(switch, self.w.accept_keyboard_suggestion, in_body=True)
+            self._check_fresh = False
             self.button(C.primary_action(Screen.KEYBOARD), self.w.accept_keyboard)
         elif screen in (Screen.WHAT, Screen.OWNER):
             heading.set_text(C.TITLE_OWNER)
             self.label(C.WHAT_LEAD)
             self.label(C.TITLE_WHAT)
-            self.label("\n".join(C.WHAT_BULLETS))
+            self.label("\n".join(C.owner_bullets()))
+            # #146: pre-boot platform guidance behind Show more (an expander).
+            platforms = Gtk.Expander.new(C.BTN_MORE)
+            platforms.set_expanded(False)
+            platforms_text = Gtk.Label(label=C.owner_platforms_line())
+            platforms_text.set_line_wrap(True)
+            platforms_text.set_xalign(0)
+            platforms_text.set_max_width_chars(70)
+            platforms_text.set_can_focus(True)
+            platforms_text.set_selectable(True)
+            platforms.add(platforms_text)
+            self.body.pack_start(platforms, False, False, 4)
             self.label(C.this_usb_line())
             self.label(C.REPORT_MEDIA_WHAT, focusable=True)
-            self.label(C.POWER_REMINDER)
-            self.label(C.POWER_BLANKING)
+            learn = self.button(C.LEARN_MORE, self.w.open_report_help, in_body=True)
+            learn.get_accessible().set_name(C.LEARN_MORE_REPORT_NAME)  # #145
+            self.label(C.POWER_REMINDER)  # #168: no dark-screen note (kept lit)
             self.label(C.POWER_EVENTS, focusable=True)
             self.support_identity_labels()
+            if self.w.owner_carry_note:
+                # #187: the earlier tick did not carry (new or unmatched disk).
+                self.label(self.w.owner_carry_note, focusable=True)
             self.label(C.OWNER_LEAD)
             check = Gtk.CheckButton.new_with_label(C.OWNER_CHECKBOX)
             check.get_child().set_line_wrap(True)
             check.get_child().set_max_width_chars(65)
             check.set_active(self.w.owner_ok)
             self.body.pack_start(check, False, False, 4)
+            # #143: why Choose a disk is greyed, beside the box and as the
+            # button's accessible description; hidden once the box is ticked.
+            self.owner_reason = self.label(C.OWNER_CONTINUE_REASON, focusable=True)
+            self.owner_reason.set_no_show_all(True)
+            self.owner_reason.set_visible(not self.w.owner_ok)
             self.primary = self.button(
                 C.primary_action(Screen.OWNER), self.w.continue_owner, enabled=self.w.owner_ok
             )
+            self._sync_owner_reason()
             check.connect(
                 "toggled", lambda widget: self._owner(widget.get_active(), generation)
             )
         elif screen == Screen.PICK:
             heading.set_text(C.TITLE_PICK)
             self.label(C.pick_subtitle())
+            if self.w.owner_carried:
+                # #187: the tick carried over from the previous erase.
+                self.label(C.OWNER_CARRY_LINE, focusable=True)
+                change = self.button(C.OWNER_CARRY_CHANGE, self.w.change_ownership, in_body=True)
+                change.get_accessible().set_name(f"{C.OWNER_CARRY_CHANGE}: {C.OWNER_CARRY_LINE}")
             self.button(C.DISK_HELP_BUTTON, self.w.open_disk_help, in_body=True)
             if same_size_conflict(self.w.listed_disks):
                 self.label(f"{C.SEVERITY_WARNING}: {C.SAME_SIZE_HINT}")
@@ -412,10 +787,29 @@ class AccessibleWizard:
                 self.label(C.REPORT_MEDIA_WANTED, focusable=True)
             self._inventory_count()
             self._protected_boot()
-            for disk in sorted(self.w.selectable, key=lambda d: d.path):
-                text = f"Select {self.w.disk_view(disk).announcement}"
-                self.button(text, lambda path=disk.path: self._select(path), in_body=True)
-                nested = inventory.card_nesting_text(self.w.nested_components(disk))
+            # Internal disks first, then external; stable (#151).
+            for disk in pick_order(self.w.selectable):
+                text = C.ACCESSIBLE_SELECT_DISK.format(disk=self.w.disk_view(disk).announcement)
+                select = self.button(text, lambda path=disk.path: self._select(path), in_body=True)
+                hint = C.contents_hint(disk)
+                children = self.w.nested_components(disk)
+                summary = inventory.contents_summary(children)
+                # Factual contents lines: shown under the row and spoken with
+                # it, so Orca users hear what sighted owners see (#147: the
+                # partition names and formats too).
+                # #154: "BitLocker (Windows encryption)" / "Encrypted (LUKS)",
+                # shown under the row and spoken with it, like the hint.
+                # #187: and "Erased earlier (…)" for a disk erased in this run.
+                tags = " · ".join(self.w.disk_tags(disk))
+                spoken = ". ".join(part for part in (text, tags, hint, summary) if part)
+                if spoken != text:
+                    select.get_accessible().set_name(spoken)
+                self._mark_serial(select, text, self.w.disk_view(disk))
+                if tags:
+                    self.label(tags)
+                if hint:
+                    self.label(hint)
+                nested = inventory.card_nesting_text(children)
                 if nested:
                     self.label(nested, focusable=True)
             if len(self.w.selectable) > 1:
@@ -435,7 +829,8 @@ class AccessibleWizard:
             )
             self._inventory_count()
             if screen == Screen.PICK_EMPTY:
-                self.recovery(recovery_for_empty())
+                # #185: Intel VMD / RST steps only when detection is certain.
+                self.recovery(recovery_for_empty(getattr(self.w, "empty_storage_hint", "")))
                 self.label(C.support_text(), focusable=True)
                 self._protected_boot()
             else:
@@ -447,31 +842,49 @@ class AccessibleWizard:
             self.button(C.BTN_SHUTDOWN, self.w.shutdown)
         elif screen == Screen.CONFIRM:
             heading.set_text(C.TITLE_CONFIRM)
-            self.identity()
+            self.identity(token=True)
             arrival = self.label(f"{C.SEVERITY_WARNING}: {self.w.warning_text()}", focusable=True)
             arrival.get_style_context().add_class("erase-warning")
             arrival.get_accessible().set_role(Atk.Role.ALERT)
-            self.label(C.CONFIRM_KEYBOARD_LINE.format(
-                layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title,
-                language=LANGUAGE_NAMES[self.w.language],
-            ))
-            prompt = self.w.confirm.prompt if self.w.confirm else C.ACCESSIBLE_NO_TARGET
+            prompt = C.confirm_prompt(self.w.confirm) if self.w.confirm else C.ACCESSIBLE_NO_TARGET
             self.label(prompt)
             entry = Gtk.Entry()
             entry.get_accessible().set_name(prompt)
             entry.set_text(self.w.confirm_input)
             self.body.pack_start(entry, False, False, 4)
+            # #156: what was typed, wrong characters marked, and which
+            # positions are wrong; Orca hears it without the brackets.
+            self.token_feedback = self.label("", focusable=True)
+            self.token_feedback.set_no_show_all(True)
+            # #155: keyboard-layout help only after a wrong entry; focusable
+            # so Orca reads it, with a Change button to the layout screen.
+            self.layout_hint = self.label(
+                C.CONFIRM_LAYOUT_HINT.format(layout=_keyboard.LAYOUTS[self.w.keyboard_layout].title),
+                focusable=True,
+            )
+            self.layout_change = self.button(C.CONFIRM_LAYOUT_CHANGE, self.w.open_keyboard, in_body=True)
+            for widget in (self.layout_hint, self.layout_change):
+                widget.set_no_show_all(True)
+            self._sync_layout_hint()
             self.primary = self.button(
                 C.primary_action(Screen.CONFIRM), self.w.continue_confirm, enabled=self.w.token_ok
             )
             entry.connect(
                 "changed", lambda widget: self._token(widget.get_text(), generation)
             )
+            # Enter in the box: a non-matching entry is a wrong entry (#155).
+            entry.connect("activate", lambda _widget: self._token_entered(generation))
         elif screen == Screen.METHOD:
             heading.set_text(C.TITLE_METHOD)
             self.identity()
-            self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}", focusable=True)
+            # #158: one storage limits line between the disk and the
+            # choices, as on every view; the full notice is under its Show
+            # more after the choices (one line here keeps all three radios
+            # above the footer at 800x600).
+            limits_line = self.label(f"{C.SEVERITY_LIMITS}: {self.w.storage_line}", focusable=True)
+            self.body.child_set_property(limits_line, "padding", 2)
             group = None
+            guides = []
             for method, spec in METHODS.items():
                 card = C.METHOD_CARDS[method]
                 # Keep the radio ATK name as the method summary. Plain lead
@@ -480,13 +893,21 @@ class AccessibleWizard:
                 label = spec.summary
                 if card["mark"]:
                     label = f"{label} [{card['mark']}]"
-                if card["extra"]:
-                    label = f"{label} {card['extra']}"
+                # #161: the Three overwrites explanation (why it is rarely
+                # needed) is under that method's Show more, below.
                 choice = Gtk.RadioButton.new_with_label_from_widget(group, label)
                 choice.get_child().set_line_wrap(True)
                 choice.get_child().set_max_width_chars(65)
                 group = choice
                 choice.set_active(self.w.method == method)
+                # Orca reads the rough duration with its choice. The visible
+                # copy follows the choices so 800x600 keeps all three above
+                # the footer; the name still starts with the visible label.
+                # #159: every method has a time line ("Time depends on the
+                # disk" when no range can be given).
+                guide = C.method_time_line(method, self.w.selected)
+                choice.get_accessible().set_name(f"{label} {guide}")
+                guides.append(f"{spec.title}: {guide}")
                 if spec.plain_lead:
                     choice.get_accessible().set_description(spec.plain_lead)
                 self.body.pack_start(choice, False, False, 3)
@@ -496,14 +917,58 @@ class AccessibleWizard:
                     if widget.get_active() and generation == self.generation
                     else None,
                 )
+            # The full storage limits notice follows the choices (the next
+            # Tab stop after them) under Show more (#158): above the radios
+            # it pushed the third choice under the footer at 800x600 for
+            # hard disks and German. Same text as before, unchanged.
+            limits_more = Gtk.Expander.new(C.BTN_MORE)
+            limits_more.set_expanded(False)
+            limits_more.get_accessible().set_name(f"{C.BTN_MORE}: {C.SEVERITY_LIMITS}")
+            notice_text = Gtk.Label(label=f"{C.SEVERITY_LIMITS}: {self.w.storage_notice}")
+            notice_text.set_line_wrap(True)
+            notice_text.set_xalign(0)
+            notice_text.set_max_width_chars(70)
+            notice_text.set_can_focus(True)
+            notice_text.set_selectable(True)
+            # Owner 2026-11-08 (option b, as Tk and the web preview): Storage
+            # limits (L) sits with the opened notice, not in the footer, where
+            # its long translations took a second footer row and pushed the
+            # third choice under it at 800x600. The L key works either way.
+            limits_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            limits_box.pack_start(notice_text, False, False, 0)
+            limits_more.add(limits_box)
+            self.body.pack_start(limits_more, False, False, 4)
+            for text in guides:
+                self.label(text)
             for spec in METHODS.values():
                 self.label(spec.plain_lead)
-            for spec_method in METHODS:
-                note = str(C.METHOD_CARDS[spec_method]["limits"] or "")
-                if note:
-                    self.label(note, focusable=True)
-            self.button(storage_limits.BUTTON, self.w.open_limits, utility=True)
-            self.button(C.BTN_ADVANCED, self.w.open_advanced, utility=True)
+            # #160: the Everyday caveat ("checks only storage the disk
+            # exposes ...") sits behind Show more (an expander, as #141 and
+            # #146), named for its method; Orca reads it when expanded.
+            # #161: so does the Three overwrites explanation.
+            for spec_method, note_spec in METHODS.items():
+                more_card = C.METHOD_CARDS[spec_method]
+                note = "\n".join(
+                    str(part) for part in (more_card["extra"], more_card["limits"]) if part
+                )
+                if not note:
+                    continue
+                more = Gtk.Expander.new(C.BTN_MORE)
+                more.set_expanded(False)
+                more.get_accessible().set_name(f"{C.BTN_MORE}: {note_spec.title}")
+                note_text = Gtk.Label(label=note)
+                note_text.set_line_wrap(True)
+                note_text.set_xalign(0)
+                note_text.set_max_width_chars(70)
+                note_text.set_can_focus(True)
+                note_text.set_selectable(True)
+                more.add(note_text)
+                self.body.pack_start(more, False, False, 4)
+            pages = self.button(storage_limits.BUTTON, self.w.open_limits, in_body=True)
+            self.body.remove(pages)
+            pages.set_halign(Gtk.Align.START)
+            limits_box.pack_start(pages, False, False, 0)
+            # #175: Advanced is in Help & settings (still from Method only).
             self.button(C.primary_action(Screen.METHOD), self.w.continue_method)
         elif screen == Screen.DISK_HELP:
             heading.set_text(C.DISK_HELP_TITLE)
@@ -564,15 +1029,13 @@ class AccessibleWizard:
             heading.set_text(C.TITLE_LAST)
             self.label(C.LAST_LEAD)
             self.identity()
-            self.label(self.w.prepare_text())
-            self.label(self.w.operation_summary)
+            self.label(self.w.review_method_line)  # #164: the one method line
             # Orca reads a label's actual text, even when its accessible name
             # differs. Focus the full warning notice so arrival still speaks
             # the destructive consequence, without an oversized heading.
             arrival = self.label(f"{C.SEVERITY_WARNING}: {self.w.erase_label()}", focusable=True)
             arrival.get_style_context().add_class("erase-warning")
             arrival.get_accessible().set_role(Atk.Role.ALERT)
-            self.label(self.w.method_summary)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -581,6 +1044,16 @@ class AccessibleWizard:
                     self.label(f"{C.SEVERITY_ERROR}: {self.w.error}", focusable=True)
             self.support_identity_labels()
             self.countdown_label = self.label("")
+            # #163: "Ready. Erase now is available." is an alert hidden until
+            # the review period ends; it appears then, so Orca announces it
+            # without moving focus from Back. The countdown still only
+            # enables Erase now.
+            self.ready_label = self.label(
+                f"{C.COUNTDOWN_READY_WORD}. {C.COUNTDOWN_AVAILABLE}", focusable=True
+            )
+            self.ready_label.get_accessible().set_role(Atk.Role.ALERT)
+            self.ready_label.set_no_show_all(True)
+            self.ready_label.set_visible(self.w.erase_enabled)
             self.primary = self.button(
                 C.BTN_ERASE, self.w.begin_erase, enabled=self.w.erase_enabled
             )
@@ -600,7 +1073,29 @@ class AccessibleWizard:
                              else C.WORKING_PULSE)
             self.identity()
             self.label(self.w.method_summary)
-            self.progress_label = self.label("")
+            # Glance (#132): percentage, time line, current step. Focusable
+            # so Tab reads it; its text changes at the announcer's pace, not
+            # on every poll. The bar's value moves at the same pace, so
+            # Orca's own progress-bar speech cannot run every tick either.
+            self.progress_label = self.label("", focusable=True)
+            self.progress_bar = Gtk.ProgressBar()
+            self.progress_bar.get_accessible().set_name(C.ERASE_PROGRESS_LABEL)
+            self.body.pack_start(self.progress_bar, False, False, 4)
+            # Walk away (#133): the beep is promised only when it can play.
+            # The laptop power/lid advice follows at the end of this screen.
+            self.walk_away_label = self.label(self.w.walk_away_text, focusable=True)
+            self.finish_reason_label = self.label(self.w.finish_sound_reason)
+            self.finish_reason_label.set_no_show_all(True)
+            finish = Gtk.CheckButton.new_with_label(C.FINISH_SOUND_TOGGLE)
+            finish.get_child().set_line_wrap(True)
+            finish.get_child().set_max_width_chars(65)
+            self.body.pack_start(finish, False, False, 4)
+            self.finish_toggle = finish
+            self._sync_finish_sound()
+            finish.connect(
+                "toggled",
+                lambda widget: self._finish_toggled(widget, generation),
+            )
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
                 if sections:
@@ -620,8 +1115,14 @@ class AccessibleWizard:
         elif screen == Screen.DONE:
             self.w.request_auto_outcome_sound()
             result = self.w.result_view
+            plain = self.w.result_plain
             sections = recovery_for_view(result)
-            heading.set_text(result.message if sections else result.announcement)
+            # The plain headline is the heading (#134). A preview keeps its
+            # one-sentence announcement; finished outcomes read their note
+            # and What next list as the labels that follow.
+            heading.set_text(
+                plain.headline if sections or plain.checklist else result.announcement
+            )
             heading.get_accessible().set_role(Atk.Role.HEADING)
             icon = Gtk.Image.new_from_icon_name(
                 {
@@ -632,7 +1133,7 @@ class AccessibleWizard:
                 }[result.icon],
                 Gtk.IconSize.DIALOG,
             )
-            icon.get_accessible().set_name(result.message)
+            icon.get_accessible().set_name(plain.headline)
             css = Gtk.CssProvider()
             color = {
                 "ok": "#17703F",
@@ -649,58 +1150,45 @@ class AccessibleWizard:
                 f"Result: {result.code}. Status: {result.tone}."
             )
             self.identity()
-            self.label(self.w.method_summary)
+            self.result_card_list()  # #171: the facts as a list for Orca
             self.label(self.w.elapsed_text)
+            panel = self.w.report_panel
+            if panel.kind == "evidence":
+                # Ref #153: the evidence failure and Retry come first.
+                self.report_panel(panel)
             if sections:
                 self.recovery(sections)
+            elif plain.checklist:
+                from beamo_wipe import outcomes as O
+
+                self.label(plain.note, focusable=True)
+                next_heading = self.label(O.WHAT_NEXT, focusable=True)
+                next_heading.get_accessible().set_role(Atk.Role.HEADING)
+                for item in plain.numbered:
+                    self.label(item, focusable=True)
             else:
                 self.label(self.w.result_view.next_step)
             if self.w.done_support_needed:
                 self.label(C.support_text(), focusable=True)
             self.support_identity_labels()
-            if may_have_erased(result.code):
+            if plain.checklist:
+                # Support wording: the exact status message and result code.
+                self.technical(self.w.result_technical)
+            elif may_have_erased(result.code):
                 self.label(C.POST_ERASE_BOOT)
             for alert in self.w.check_alerts:
                 self.label(f"{C.SEVERITY_WARNING}: {alert}")
             report = self.w.report_view
-            report_heading = self.label(C.REPORT_STATUS_TITLE, focusable=True)
-            report_heading.get_accessible().set_role(Atk.Role.HEADING)
-            report_heading.get_style_context().add_class("screen-heading")
-            if self.w.preview:
-                report_summary = self.label(C.REPORT_PREVIEW, focusable=True)
-            elif report.tone == "ok":
-                report_summary = self.label(f"{C.SEVERITY_SAVED}: {report.headline}", focusable=True)
-                report_summary.get_style_context().add_class("report-saved")
-            elif report.tone == "warn":
-                report_summary = self.label(f"{C.SEVERITY_WARNING}: {report.headline}", focusable=True)
-                report_summary.get_style_context().add_class("report-warning")
-                report_summary.get_accessible().set_role(Atk.Role.ALERT)
-            else:
-                report_summary = self.label(report.headline, focusable=True)
-            self.label(C.REPORT_STATUS_NOTICE)
-            if report.evidence_error:
-                self.label(f"{C.SEVERITY_WARNING}: {self.w.evidence_warning}")
-            if not self.w.preview and not report.evidence_error:
-                self.label(
-                    C.report_aftercare(
-                        can_save=report.can_save,
-                        status=report.status,
-                        message=report.message,
-                    )
-                )
+            if panel.kind != "evidence":
+                self.report_panel(panel)
+            self.erase_record()
+            # Two final actions (#135). Report controls are in the panel;
+            # the Sound check utility below holds the sound settings.
             if self.w.preview:
                 self.button(C.BTN_RUN_AGAIN, self.w.reset_for_preview)
             else:
-                if report.evidence_error:
-                    self.button(C.RETRY_SAVE, self.w.begin_evidence_retry,
-                                enabled=report.can_retry_evidence)
-                self.button(
-                    C.BTN_SAVE_REPORT,
-                    self.w.begin_report_export,
-                    enabled=report.can_save,
-                )
-            if not self.w.preview:
-                self.label(C.ANOTHER_HINT)
+                reason = self.w.done_actions_reason
+                self.label(reason or C.ANOTHER_HINT, focusable=bool(reason))
                 self.button(C.BTN_ERASE_ANOTHER, self.w.erase_another_disk,
                             enabled=self.w.can_erase_another)
             self.button(
@@ -709,9 +1197,17 @@ class AccessibleWizard:
             )
         elif screen == Screen.REFRESH_CONFIRM:
             heading.set_text(C.TITLE_REFRESH)
-            self.label(C.REFRESH_LEAD, focusable=True)
-            self.button(C.BTN_REFRESH, self._begin_refresh_scan)
-            self.button(C.BTN_BACK, self.w.back)
+            if self.w.refresh_guarded:
+                # #136: Cancel comes first and is the safe choice; Enter on
+                # the arrival heading does nothing, F5 cannot accept.
+                self.label(C.REFRESH_GUARD_LEAD, focusable=True)
+                self.label(C.HINT_REFRESH_GUARD, focusable=True)
+                self.button(C.BTN_REFRESH_CANCEL, self.w.back)
+                self.button(C.BTN_REFRESH, self._begin_refresh_scan)
+            else:
+                self.label(C.REFRESH_LEAD, focusable=True)
+                self.button(C.BTN_REFRESH, self._begin_refresh_scan)
+                self.button(C.BTN_BACK, self.w.back)
         elif screen == Screen.SHUTDOWN_CONFIRM:
             heading.set_text(self.w.exit_confirmation_title)
             self.label(self.w.exit_confirmation_loss)
@@ -766,23 +1262,10 @@ class AccessibleWizard:
             self.button(C.SOUND_CHECK_BUTTON, self.open_sound_check, utility=True)
         if self.w.can_open_diagnostic:
             self.button(C.DIAGNOSTIC_TITLE, self.w.open_diagnostic, utility=True)
-        if self.w.can_open_report_help:
-            self.button(C.REPORT_HELP_TITLE, self.w.open_report_help, utility=True)
-        if self.w.can_refresh and screen != Screen.REFRESH_CONFIRM:
+        # #175: report help, keyboard and text size are in Help & settings.
+        if self.w.refresh_offered:
+            # #136: not on What/Owner; guarded from Confirm, Method, Review.
             self.button(C.BTN_REFRESH_UTILITY, self.w.open_refresh_confirm, utility=True)
-        if self.w.can_open_keyboard and screen != Screen.KEYBOARD:
-            self.button(C.KEYBOARD_UTILITY, self.w.open_keyboard, utility=True)
-        if screen not in {
-            Screen.SPLASH, Screen.KEYBOARD, Screen.WORKING, Screen.STOPPING,
-            Screen.CHECKING, Screen.REFRESHING, Screen.DONE, Screen.SHUTDOWN_CONFIRM,
-            Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED, Screen.LIMITS,
-            Screen.DISK_HELP, Screen.REPORT_HELP,
-        }:
-            self.button(
-                f"{C.TEXT_SIZE_UTILITY}: {C.TEXT_SIZE_LABELS.get(self.w.text_size, C.TEXT_SIZE_STANDARD)}",
-                self.w.cycle_text_size,
-                utility=True,
-            )
         if screen in {
             Screen.WHAT,
             Screen.OWNER,
@@ -798,9 +1281,10 @@ class AccessibleWizard:
             Screen.ADVANCED,
         } or (screen == Screen.KEYBOARD and self.w._keyboard_from):
             self.button(C.BTN_BACK, self.w.back)
-        if screen in {Screen.WHAT, Screen.OWNER, Screen.LAST_CHANCE, Screen.CHECKING, Screen.WORKING, Screen.STOPPING}:
-            if screen not in {Screen.WHAT, Screen.OWNER}:
-                self.label(C.POWER_KEEP)
+        if screen in {Screen.LAST_CHANCE, Screen.CHECKING, Screen.WORKING, Screen.STOPPING}:
+            # Erase-time power warnings stay (#165/#183); Owner relies on
+            # the power badge above (#144).
+            self.label(C.POWER_KEEP)
             self.power_label = self.label(self.w.power_text, focusable=True)
         self._style_tree(self.window)
         self.window.show_all()
@@ -809,19 +1293,152 @@ class AccessibleWizard:
             self.utilities.destroy()
         self.arrival = arrival
         if self._focus_active_window() is self.window:
-            arrival.grab_focus()
+            target = _find_by_text(self.window, refocus_text) if refocus_text else None
+            if target is None and refocus_panel:
+                target = self._panel_status
+            (target or arrival).grab_focus()
         if first_review_frame:
             # Building and showing the first review may consume its original
             # timer. Give Orca users the full five seconds after arrival.
             self.w.restart_review_countdown()
         self.update_status()
-        # Stage is ATK description, not a prefix on the heading name.
-        # Result/busy tests match the canonical announcement exactly;
+        # Stage and step are the ATK description, not a prefix on the heading
+        # name: "Preparation, step 3 of 6: Choose a disk." (#130). Result and
+        # busy screens keep the canonical stage announcement exactly;
         # "Result. Erase completed…" hid that title from heading names.
-        spoken_stage = C.journey_announcement(screen)
+        spoken_stage = C.journey_step_announcement(self.w)
         if spoken_stage:
             heading.get_accessible().set_description(spoken_stage)
+        reopen = getattr(self, "_help_reopen", "")
+        self._help_reopen = ""
+        if reopen and self.w.screen == screen:
+            # #175: a setting (text size, sounds) keeps the menu open on it.
+            self._show_help_menu(reopen)
         emit_serial_marker(f"BEAMO_WIPE_ACCESSIBLE_SCREEN_{screen.name}")
+
+    def _help_menu_button(self) -> None:
+        """#175: Help & settings, first among the footer tools.
+
+        A menu button with a popover. Items that apply here are buttons; an
+        item that does not is a focusable label that carries its reason, so
+        Orca reads why instead of skipping it. Esc closes the popover and
+        focus returns to the menu button. Nothing here starts, confirms or
+        stops an erase: items call the wizard's guarded actions only.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        generation = self.generation
+        button = Gtk.MenuButton()
+        button.set_label(C.MENU_TITLE)
+        label = button.get_child()
+        if isinstance(label, Gtk.Label):
+            # Wrap like the other footer tools (button()): the utilities grid
+            # has equal columns, so one unwrapped label ("Hilfe und
+            # Einstellungen" at Extra large) widened the window past 800 px.
+            label.set_line_wrap(True)
+            label.set_line_wrap_mode(Pango.WrapMode.WORD)
+            label.set_max_width_chars(24)
+        button.set_can_default(False)
+        button.set_receives_default(False)
+        button.get_accessible().set_name(C.MENU_TITLE)
+        button.get_style_context().add_class("utility-action")
+        popover = Gtk.Popover.new(button)
+        popover.set_position(Gtk.PositionType.TOP)
+        popover.set_modal(True)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        box.set_border_width(10)
+        box.get_accessible().set_role(Atk.Role.PANEL)
+        box.get_accessible().set_name(C.MENU_TITLE)
+        title = Gtk.Label(label=C.MENU_TITLE)
+        title.set_xalign(0)
+        title.get_accessible().set_role(Atk.Role.HEADING)
+        box.pack_start(title, False, False, 0)
+        self._help_items: dict = {}
+        for item in self.w.help_menu():
+            if item.key == _menu.SHORTCUTS:
+                widget = Gtk.Expander.new(item.label)
+                text = Gtk.Label(label="\n".join(self._help_shortcut_lines()))
+                text.set_line_wrap(True)
+                text.set_xalign(0)
+                text.set_max_width_chars(48)
+                text.set_can_focus(True)
+                text.set_selectable(True)
+                widget.add(text)
+            elif item.enabled:
+                widget = Gtk.Button.new_with_label(item.label)
+                widget.set_can_default(False)
+                widget.set_receives_default(False)
+                widget.connect(
+                    "clicked",
+                    lambda _b, key=item.key: self._help_activate(key, generation),
+                )
+            else:
+                widget = Gtk.Label(label=item.spoken)
+                widget.set_line_wrap(True)
+                widget.set_xalign(0)
+                widget.set_max_width_chars(48)
+                widget.set_can_focus(True)
+                widget.set_selectable(True)
+                widget.get_style_context().add_class("dim-label")
+            box.pack_start(widget, False, False, 0)
+            self._help_items[item.key] = widget
+        close = Gtk.Button.new_with_label(C.MENU_CLOSE)
+        close.set_can_default(False)
+        close.connect("clicked", lambda _b: popover.popdown())
+        box.pack_start(close, False, False, 4)
+        box.show_all()
+        popover.add(box)
+        button.set_popover(popover)
+        popover.connect("closed", lambda _p: self._help_closed(generation))
+        self.utilities.attach(button, 0, 0, 1, 1)
+        self._utility_count += 1
+        self.help_button = button
+        self.help_popover = popover
+
+    def _help_shortcut_lines(self) -> list[str]:
+        lines = [C.MENU_SHORTCUTS_COMMON]
+        if self.w.screen == Screen.METHOD:
+            lines.append(C.MENU_SHORTCUTS_LIMITS)  # #158
+        if self.w.refresh_offered:
+            lines.append(C.MENU_SHORTCUTS_REFRESH)
+        lines.append(C.MENU_SHORTCUTS_MENU)
+        return lines
+
+    def _show_help_menu(self, focus_key: str = "") -> None:
+        popover = getattr(self, "help_popover", None)
+        if popover is None:
+            return
+        popover.popup()
+        items = getattr(self, "_help_items", {})
+        target = items.get(focus_key)
+        if target is None:
+            target = next((w for w in items.values() if w.get_can_focus()), None)
+        if target is not None:
+            target.grab_focus()
+
+    def _help_closed(self, generation: int) -> None:
+        # Focus returns to the menu button unless an item moved on.
+        if self.closed or generation != self.generation:
+            return
+        button = getattr(self, "help_button", None)
+        if button is not None:
+            button.grab_focus()
+
+    def _help_activate(self, key: str, generation: int) -> None:
+        from beamo_wipe import help_menu as _menu
+
+        if self.closed or generation != self.generation:
+            return
+        if not self.w.activate_help_item(key):
+            return
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
+        self._help_reopen = key if key in _menu.STAYS_OPEN else ""
+        popover = getattr(self, "help_popover", None)
+        if popover is not None:
+            # Leaving: do not pull focus back to the old button.
+            self.generation += 1
+            popover.popdown()
+        self.render()
 
     def _protected_boot(self):
         if self.w.protected_boot_text:
@@ -837,6 +1454,53 @@ class AccessibleWizard:
         if self.w.other_devices:
             self.label(inventory.TITLE)
             self.reader(inventory.full_text(self.w.other_devices))
+
+    def report_panel(self, panel) -> None:
+        """Save a report (#135): heading, state, numbered steps, controls.
+
+        Steps are focusable so Orca reads them in order; a greyed control is
+        followed by its reason.
+        """
+        widgets = self._panel_widgets
+        heading = self.label(C.REPORT_STATUS_TITLE, focusable=True)
+        heading.get_accessible().set_role(Atk.Role.HEADING)
+        heading.get_style_context().add_class("screen-heading")
+        widgets.append(heading)
+        if panel.kind == "preview":
+            widgets.append(self.label(panel.headline, focusable=True))
+            return
+        if panel.tone == "ok":
+            summary = self.label(f"{C.SEVERITY_SAVED}: {panel.headline}", focusable=True)
+            summary.get_style_context().add_class("report-saved")
+        elif panel.tone == "warn":
+            summary = self.label(f"{C.SEVERITY_WARNING}: {panel.headline}", focusable=True)
+            summary.get_style_context().add_class("report-warning")
+            summary.get_accessible().set_role(Atk.Role.ALERT)
+        else:
+            summary = self.label(panel.headline, focusable=True)
+        widgets.append(summary)
+        self._panel_status = summary
+        if panel.detail:
+            prefix = f"{C.SEVERITY_WARNING}: " if panel.kind == "evidence" else ""
+            widgets.append(self.label(prefix + panel.detail, focusable=True))
+        for index, line in enumerate(panel.step_lines):
+            step = self.label(line, focusable=True)
+            widgets.append(step)
+            if index == 1 and panel.kind in ("ready", "failed"):
+                # The live USB line: where Orca lands when it changes.
+                self._panel_status = step
+        if panel.show_retry:
+            widgets.append(self.button(C.RETRY_SAVE, self.w.begin_evidence_retry,
+                                       enabled=panel.retry_enabled, in_body=True))
+            if not panel.retry_enabled:
+                widgets.append(self.label(panel.retry_reason, focusable=True))
+        if panel.show_save:
+            widgets.append(self.button(C.BTN_SAVE_REPORT, self.w.begin_report_export,
+                                       enabled=panel.save_enabled, in_body=True))
+            if not panel.save_enabled:
+                widgets.append(self.label(panel.save_reason, focusable=True))
+        if panel.notice:
+            self.label(panel.notice)
 
     def open_sound_check(self):
         from beamo_wipe.ui.sound_dialog import SoundDialog
@@ -873,21 +1537,118 @@ class AccessibleWizard:
         if self._focus_active_window() is self.window:
             self.arrival.grab_focus()
 
+    def _mark_serial(self, button, text: str, view) -> None:
+        """#152: bold and underline the differing serial characters on the button.
+
+        Visible only (Pango markup); the accessible name stays the plain
+        text, and the comparison note in it says where the serial differs
+        ("Differs from the other 256 GB disk at characters 11 to 14").
+        """
+        if not view.comparison_marks:
+            return
+        plain = f"{view.id_label}: {view.id_value}"
+        at = text.find(plain)
+        if at < 0:
+            return
+        marked = "".join(
+            f"<b><u>{_markup_escape(part)}</u></b>" if flagged else _markup_escape(part)
+            for part, flagged in view.comparison_segments
+        )
+        markup = (
+            _markup_escape(text[:at]) + _markup_escape(view.id_label) + ": " + marked
+            + _markup_escape(text[at + len(plain):])
+        )
+        child = button.get_child()
+        if child is not None and hasattr(child, "set_markup"):
+            child.set_markup(markup)
+
     def _select(self, path):
+        # Activating a disk button (Enter, Space, click, Orca's press) is
+        # Review this disk for that disk: the GTK equivalent of a list's
+        # row-activated (#150). continue_pick keeps every gate: a disk it
+        # cannot confirm stays on Pick with the reason shown.
         self.w.select_disk(path)
         self.w.continue_pick()
+        when = _pointer_event_time()
+        if when is not None and self.w.screen != Screen.PICK:
+            self._pointer_quiet_until = when + DOUBLE_CLICK_MS
+
+    def _pointer_quiet(self, when) -> bool:
+        """True for a pointer click that is the tail of a disk double-click."""
+        until = getattr(self, "_pointer_quiet_until", None)
+        if until is None or when is None:
+            return False
+        if until - DOUBLE_CLICK_MS <= when <= until:
+            return True
+        self._pointer_quiet_until = None
+        return False
 
     def _owner(self, checked, generation):
         if generation != self.generation or self.w.screen not in {Screen.WHAT, Screen.OWNER}:
             return
         self.w.set_owner(checked)
         self.primary.set_sensitive(self.w.owner_ok)
+        self._sync_owner_reason()
+
+    def _sync_owner_reason(self) -> None:
+        """#143: show and describe the reason only while the button is greyed."""
+        waiting = not self.w.owner_ok
+        reason = getattr(self, "owner_reason", None)
+        if reason is not None:
+            reason.set_visible(waiting)
+        if self.primary is not None:
+            self.primary.get_accessible().set_description(
+                C.OWNER_CONTINUE_REASON if waiting else ""
+            )
 
     def _token(self, text, generation):
         if generation != self.generation or self.w.screen != Screen.CONFIRM:
             return
         self.w.set_confirm_input(text)
         self.primary.set_sensitive(self.w.token_ok)
+        self._sync_layout_hint()
+
+    def _token_entered(self, generation) -> None:
+        """Enter in the confirmation box. Never advances on its own (#155)."""
+        if generation != self.generation or self.w.screen != Screen.CONFIRM:
+            return
+        if not self.w.token_ok:
+            self.w.continue_confirm()  # records the wrong entry; does not move
+            self._sync_layout_hint()
+
+    def _sync_layout_hint(self) -> None:
+        shown = bool(self.w.confirm_layout_hint)
+        for name in ("layout_hint", "layout_change"):
+            widget = getattr(self, name, None)
+            if widget is not None:
+                widget.set_visible(shown)
+        label = getattr(self, "token_feedback", None)
+        if label is not None:
+            fb = self.w.confirm_feedback  # #156
+            if fb is None:
+                label.set_visible(False)
+            else:
+                label.set_text(f"{fb.display}\n{fb.message}")
+                label.get_accessible().set_name(fb.spoken)
+                label.set_visible(True)
+
+    def _keyboard_check_key(self, event, generation) -> bool:
+        """Guided check (#140): the keysym the key printed Z produced."""
+        if generation != self.generation or self.w.screen != Screen.KEYBOARD:
+            return False
+        name = Gdk.keyval_name(event.keyval) or ""
+        if len(name) != 1:
+            code = Gdk.keyval_to_unicode(event.keyval)
+            name = chr(code) if code else ""
+        if self.w.check_keyboard_key(name) is not None:
+            self._check_fresh = True
+            GLib.idle_add(self._rerender_keyboard_check, generation)
+        return False  # the key still reaches the box
+
+    def _rerender_keyboard_check(self, generation) -> bool:
+        if generation == self.generation and self.w.screen == Screen.KEYBOARD:
+            self.render()
+        return False
 
     def _typing(self, text, generation):
         if generation != self.generation or self.w.screen != Screen.KEYBOARD:
@@ -897,6 +1658,17 @@ class AccessibleWizard:
     def update_status(self):
         if self.power_label and self.power_label.get_text() != self.w.power_text:
             self.power_label.set_text(self.w.power_text)
+        badge = self.w.power_badge
+        label = getattr(self, "power_badge_label", None)
+        if label is not None and badge != getattr(self, "_shown_power_badge", None):
+            # #144: live, in place; the old state class goes, the new one comes.
+            previous = getattr(self, "_shown_power_badge", None)
+            if previous is not None:
+                label.get_style_context().remove_class(f"power-{previous.kind}")
+            label.get_style_context().add_class(f"power-{badge.kind}")
+            label.set_text(badge.display)
+            label.get_accessible().set_name(badge.spoken)
+            self._shown_power_badge = badge
         if self.countdown_label:
             text = (
                 f"{self.w.countdown_display} {C.COUNTDOWN_CAPTION}"
@@ -905,19 +1677,94 @@ class AccessibleWizard:
             )
             if self.countdown_label.get_text() != text:
                 self.countdown_label.set_text(text)
+            ready = getattr(self, "ready_label", None)
+            if ready is not None and ready.get_visible() != self.w.erase_enabled:
+                ready.set_visible(self.w.erase_enabled)
             self.primary.set_sensitive(self.w.erase_enabled)
         if self.progress_label:
-            text = self.w.progress_view.status_text
-            # Integer percentage, minute elapsed, coarse ETA; no 100 ms
-            # duplicate ATK text-change events or focus theft.
-            if self.progress_label.get_text() != text:
-                self.progress_label.set_text(text)
+            view = self.w.progress_view
+            if self.w.screen == Screen.STOPPING:
+                text = view.stopping_text
+                if self.progress_label.get_text() != text:
+                    self.progress_label.set_text(text)
+            else:
+                # Paced (#132): a new step, quiet or resumed progress,
+                # stopping or finishing speak promptly; otherwise at most
+                # once a minute. No focus theft, no duplicate ATK events.
+                spoken = self.progress_announcer.update(view, time.monotonic())
+                if spoken is not None:
+                    self._show_glance(view, spoken)
         if self.error_label:
             message = _error_text(self.w)
             changed = self.error_label.get_text() != message
             self.error_label.set_text(message)
             if changed and message:
                 self.error_label.grab_focus()
+
+    def _finish_toggled(self, widget, generation) -> None:
+        if (
+            generation != self.generation
+            or self.w.screen != Screen.WORKING
+            or getattr(self, "_syncing_finish", False)
+        ):
+            return
+        self.w.set_finish_sound(widget.get_active())
+        self._sync_finish_sound()
+
+    def _sync_finish_sound(self) -> bool:
+        """Update the walk-away line and toggle in place (#133).
+
+        Returns False when a full render is needed instead (another sound
+        message to show). In-place updates keep focus where it is.
+        """
+        toggle = self.finish_toggle
+        if toggle is None or self.w.screen != Screen.WORKING:
+            return False
+        if self.w.sound_message != self._rendered_sound_message:
+            return False
+        enabled = self.w.finish_sound_toggle_enabled
+        active = bool(self.w.sounds_enabled and enabled)
+        if toggle.get_active() != active:
+            # set_active emits "toggled"; this is not a person's choice.
+            self._syncing_finish = True
+            try:
+                toggle.set_active(active)
+            finally:
+                self._syncing_finish = False
+        toggle.set_sensitive(enabled)
+        reason = self.w.finish_sound_reason
+        toggle.get_accessible().set_description(reason)
+        for label, text in (
+            (self.walk_away_label, self.w.walk_away_text),
+            (self.finish_reason_label, reason),
+        ):
+            if label is not None and label.get_text() != text:
+                label.set_text(text)
+        if self.finish_reason_label is not None:
+            self.finish_reason_label.set_visible(bool(reason))
+        self.sound_revision = getattr(self.w, "sound_revision", 0)
+        return True
+
+    def _show_glance(self, view, spoken: str) -> None:
+        label = self.progress_label
+        if label is None:
+            return
+        lines = list(view.glance_lines)
+        if view.glance_stale:
+            lines.append(view.glance_stale)
+        lines.extend(view.glance_notes)
+        if lines:
+            head, rest = lines[0], lines[1:]
+            markup = f'<span size="xx-large" weight="bold">{_markup_escape(head)}</span>'
+            if rest:
+                markup += "\n" + _markup_escape("\n".join(rest))
+            label.set_markup(markup)
+        label.get_accessible().set_name(spoken)
+        if self.progress_bar is not None:
+            percent = view.percent
+            self.progress_bar.set_fraction(
+                0.0 if percent is None else max(0.0, min(percent, 99.9)) / 100.0
+            )
 
     def _begin_refresh_scan(self) -> bool:
         """Keep GTK and Orca responsive while inventory I/O runs."""
@@ -987,9 +1834,22 @@ class AccessibleWizard:
             self.close()
             return False
         if (
+            self.shown == self.w.screen == Screen.WORKING
+            and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0)
+        ):
+            self._sync_finish_sound()
+        if (
+            self.shown == self.w.screen == Screen.DONE
+            and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0)
+        ):
+            # Done shows no sound state (#135: the Sound check utility holds
+            # it), so a finish-sound play, repeat or availability answer
+            # (#133) must not rebuild the result a screen reader is reading.
+            self.sound_revision = getattr(self.w, "sound_revision", 0)
+        if (
             self.shown != self.w.screen
             or self.report_revision != self.w.report_view.revision
-            or (self.w.screen in {Screen.DONE, Screen.WORKING} and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
+            or (self.w.screen == Screen.WORKING and getattr(self, "sound_revision", 0) != getattr(self.w, "sound_revision", 0))
         ):
             self.render()
         else:
@@ -1030,9 +1890,26 @@ class AccessibleWizard:
     def _key_press(self, _window, event):
         if getattr(self, "closed", False):
             return True
+        # Someone is back (#133): stop repeating the finish sound.
+        getattr(self.w, "acknowledge_finish_sound", lambda: None)()
         if self._remember_key_press(event):
             return True
         key = event.keyval
+        popover = getattr(self, "help_popover", None)
+        if popover is not None and key == Gdk.KEY_F10:
+            # #175: F10 opens or closes Help & settings on every screen.
+            if popover.get_visible():
+                popover.popdown()
+            else:
+                self._show_help_menu()
+            return True
+        if popover is not None and popover.get_visible():
+            # The open menu owns the keyboard: Esc closes it; Tab, arrows,
+            # Enter and Space act inside it and never on the screen behind.
+            if key == Gdk.KEY_Escape:
+                popover.popdown()
+                return True
+            return False
         if key in (Gdk.KEY_l, Gdk.KEY_L) and self.w.screen == Screen.METHOD:
             self.w.open_limits()
             self.render()
@@ -1049,8 +1926,10 @@ class AccessibleWizard:
             return True
         if key == Gdk.KEY_F5 and self.w.can_refresh:
             if self.w.screen == Screen.REFRESH_CONFIRM:
-                self._begin_refresh_scan()
-            else:
+                # A second F5 accepts only the unguarded (Pick) dialog (#136).
+                if not self.w.refresh_guarded:
+                    self._begin_refresh_scan()
+            elif self.w.refresh_offered:
                 self.w.open_refresh_confirm()
             self.render()
             return True

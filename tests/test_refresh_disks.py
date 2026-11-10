@@ -97,7 +97,7 @@ def test_refresh_requires_every_authorization_again(change):
     )
     calls = []
     wiz._rediscover = lambda: calls.append(True) or fresh
-    assert wiz.refresh_disks()
+    assert (wiz.open_refresh_confirm() and wiz.confirm_refresh())  # #136: guarded dialog
     assert calls == [True] and wiz.discovery is fresh
     assert wiz.screen == Screen.OWNER and not wiz.owner_ok
     assert wiz.selected is None and wiz.confirm_input == ""
@@ -132,7 +132,7 @@ def test_refresh_failure_never_retains_stale_targets(bad):
         return bad
 
     wiz._rediscover = discover
-    assert wiz.refresh_disks()
+    assert (wiz.open_refresh_confirm() and wiz.confirm_refresh())  # #136: guarded dialog
     assert wiz.screen == Screen.PICK_BLOCKED
     assert not wiz.selectable and not wiz.other_devices and wiz.selected is None
     assert not wiz.owner_ok and not wiz.confirm_input and not wiz.erase_enabled
@@ -151,7 +151,8 @@ def test_refresh_claim_blocks_repeat_navigation_and_start():
         return fresh
 
     wiz._rediscover = discover
-    worker = threading.Thread(target=wiz.refresh_disks)
+    assert wiz.open_refresh_confirm()  # #136: from Review, through the dialog
+    worker = threading.Thread(target=wiz.confirm_refresh)
     worker.start()
     try:
         assert entered.wait(5)
@@ -228,6 +229,6 @@ def test_refresh_after_back_navigation_clears_token_and_method(screen):
     wiz = authorized()
     wiz.screen = screen
     wiz.back()
-    assert wiz.refresh_disks()
+    assert (wiz.open_refresh_confirm() and wiz.confirm_refresh())  # #136: guarded dialog
     assert wiz.screen == Screen.OWNER
     assert wiz.selected is None and not wiz.confirm_input and not wiz.owner_ok

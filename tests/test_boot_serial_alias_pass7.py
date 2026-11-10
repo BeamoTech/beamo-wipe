@@ -34,7 +34,7 @@ def test_constructed_discovery_rejects_boot_serial_alias() -> None:
     )
     alias = replace(result.selectable[0], serial="BOOT-ALIAS-1")
     injected = replace(result, disks=(*result.disks, alias), selectable=(alias,))
-    with pytest.raises(SafetyError, match="Boot USB appeared"):
+    with pytest.raises(SafetyError, match="Beamo USB appeared"):
         assert_boot_excluded(injected)
 
 

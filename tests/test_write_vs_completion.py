@@ -189,10 +189,17 @@ def test_german_transition_note_wraps_on_80x24(monkeypatch):
     lang.set_language("de")
     try:
         _shown, packed, term = _draw(monkeypatch, wiz)
+        # #132: curses shows the Working glance (percent, time, step); the
+        # step line names the step without the old "(N% insgesamt)" suffix,
+        # which stays in status_text for the plain/spoken summaries.
+        step = wiz.progress_view.glance_step
+        percent = wiz.progress_view.glance_headline
     finally:
         lang.set_language("en")
+    assert step.startswith("Schritt 4 von 4: ") and "Prüfen" in step
+    assert step in packed
+    assert percent and percent in packed
     assert "Ergebnisbildschirm" in packed
-    assert "insgesamt" in packed
     assert all(len(line) < 80 for line in term.frames[-1].values())
 
 

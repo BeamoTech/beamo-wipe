@@ -66,6 +66,8 @@ def test_actual_woken_refresh_worker_observes_locked_acceptance(monkeypatch, req
     worker_passed = real_event()  # Created before the module Event factory is patched.
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     app_class = module.TkWizard if surface == "tk" else module.AccessibleWizard
     app = app_class.__new__(app_class)

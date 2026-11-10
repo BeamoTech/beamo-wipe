@@ -1,17 +1,21 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """User-facing strings. 8th-grade English. No forbidden claims."""
 
+from typing import Optional
+
 from beamo_wipe import inventory as _inventory
 from beamo_wipe import outcomes as _outcomes
+from beamo_wipe import progress as _progress
 from beamo_wipe import storage_limits as _limits
 from beamo_wipe.models import (
-    CONTENTS_DATA,
     CONTENTS_SYSTEM,
     CONTENTS_UNKNOWN,
     CONTENTS_WINDOWS,
     Disk,
     DiskKind,
+    MethodId,
     Screen,
+    capacity_phrase,
 )
 from beamo_wipe.methods import DEFAULT_METHOD, METHODS
 
@@ -82,10 +86,91 @@ def journey_announcement(screen: Screen) -> str:
         return ""
     return f"{caption}."
 
+
+# Preparation steps (#130). One vocabulary (#138): the stages above
+# (Preparation, Erase, Result) name the header stepper, the progress strip,
+# spoken announcements and the start-screen roadmap; these names are the
+# steps inside Preparation. Review is the last step before Erase, so its
+# name says it is the final check (#166) but not "erase" (#138). Order and
+# count come from wizard.PREPARATION_PATH.
+STEP_NAME_KEYBOARD = "Check keyboard"
+STEP_NAME_OWNER = "Confirm ownership"
+STEP_NAME_PICK = "Choose a disk"
+STEP_NAME_CONFIRM = "Confirm its identity"
+STEP_NAME_METHOD = "Choose a method"
+STEP_NAME_REVIEW = "Final check"
+STEP_CAPTION = "Step {n} of {total} · {name}"
+STEP_SPOKEN = "{stage}, step {n} of {total}: {name}."
+_ROADMAP_ARROW = "  →  "  # not translated: an arrow
+# Start-screen roadmap entry for the first stage (#138): its name and how
+# many steps the header will count through.
+ROADMAP_STAGE_STEPS = "{stage} ({count} steps)"
+
+_STEP_NAME_KEYS = {
+    Screen.KEYBOARD: "STEP_NAME_KEYBOARD",
+    Screen.OWNER: "STEP_NAME_OWNER",
+    Screen.PICK: "STEP_NAME_PICK",
+    Screen.CONFIRM: "STEP_NAME_CONFIRM",
+    Screen.METHOD: "STEP_NAME_METHOD",
+    Screen.LAST_CHANCE: "STEP_NAME_REVIEW",
+}
+
+
+def step_name(screen: Screen) -> str:
+    """Active-language name of a Preparation step screen."""
+    return str(globals()[_STEP_NAME_KEYS[screen]])
+
+
+def _journey_step(wizard) -> Optional[tuple[int, int, Screen]]:
+    return getattr(wizard, "journey_step", None)
+
+
+def journey_step_caption(wizard) -> str:
+    """Header / console text for the current screen (#130).
+
+    Preparation screens: "Step 3 of 6 · Choose a disk". Other journey
+    screens keep their stage name ("Erase", "Result"); screens without
+    journey chrome return "".
+    """
+    step = _journey_step(wizard)
+    if step is not None:
+        number, total, screen = step
+        return STEP_CAPTION.format(n=number, total=total, name=step_name(screen))
+    return journey_caption(wizard.screen)
+
+
+def journey_step_short(wizard) -> str:
+    """"Step 3 of 6" when the full caption does not fit; else the stage."""
+    step = _journey_step(wizard)
+    if step is not None:
+        return STEP_OF.format(n=step[0], total=step[1])
+    return journey_caption(wizard.screen)
+
+
+def journey_step_announcement(wizard) -> str:
+    """Spoken stage and step: "Preparation, step 3 of 6: Choose a disk."."""
+    step = _journey_step(wizard)
+    if step is not None:
+        number, total, screen = step
+        return STEP_SPOKEN.format(stage=JOURNEY_LABELS[JOURNEY_PREPARATION - 1],
+                                  n=number, total=total, name=step_name(screen))
+    return journey_announcement(wizard.screen)
+
+
+def roadmap_parts(path: tuple[Screen, ...]) -> tuple[str, ...]:
+    """The stages as the header names them (#138): "Preparation (6 steps)",
+    "Erase", "Result". The step count is the header's "Step n of N" total."""
+    first = ROADMAP_STAGE_STEPS.format(stage=JOURNEY_LABELS[0], count=len(path))
+    return (first, *JOURNEY_LABELS[1:])
+
+
+def splash_roadmap(path: tuple[Screen, ...]) -> str:
+    """Start-screen roadmap: the header's stages, from the same source."""
+    return _ROADMAP_ARROW.join(roadmap_parts(path))
+
 SELECTED_DISK = "This disk"
 SERIAL_LABEL = "Serial number"
 REVIEW_CHECK = "Check the disk and method before you erase."
-SPLASH_ROADMAP = "Choose a disk  →  Confirm its identity  →  Review and erase"
 
 # --- Screen titles (happy path talks like a person) ------------------------
 
@@ -113,25 +198,47 @@ BLOCKED_HEADING_REDISCOVER = "Could not check the disks again"
 
 TITLE_REFRESH = "Check disks again?"
 
-# --- Splash: they already booted. Do not lecture. --------------------------
+# --- Splash: what this is, and that nothing happens yet (#137). ------------
+# Truthful: the only erase action is the separate Erase now button (BTN_ERASE),
+# after ownership, the typed check and the review countdown.
 
 SPLASH_TAGLINE = (
-    "You already started from this USB. Next you will pick a disk to erase."
+    "Erase a disk in a few steps. Nothing is erased until you choose Erase now."
 )
 
 KEYBOARD_LEAD = (
     "Choose the layout that matches the keys you see. "
-    "Then type a few characters to check."
+    "Then press one key below to check it."
 )
 KEYBOARD_LIMITS = (
-    "Only US QWERTY, French AZERTY, and German QWERTZ. "
+    "Only the layouts listed here are offered. "
     "The change lasts until this USB restarts. "
     "It does not change firmware or BIOS keyboards."
 )
-KEYBOARD_CHECK_LABEL = "Type here to check. This is not a password and is not saved."
-KEYBOARD_CHECK_HINT = "Try letters that differ on your keyboard, then a number."
+# Guided check (#140): one key, advisory, never blocks Continue. "Z" is the
+# key label printed on the keyboard; keep it as is in every language.
+KEYBOARD_CHECK_LABEL = (
+    "Optional check: press the key labelled Z here. Nothing you type is saved."
+)
+KEYBOARD_CHECK_HINT = "Press the key labelled Z"
+KEYBOARD_CHECK_MATCH = "✓ Letters and numbers match {layout}."
+KEYBOARD_CHECK_OTHER = "That looks like {layout}. Switch to it?"
+KEYBOARD_CHECK_SWITCH = "Switch to {layout}"
+KEYBOARD_CHECK_UNCLEAR = (
+    "That key typed “{typed}”. Press the key labelled Z to check, or just continue."
+)
+CON_KEYBOARD_CHECK_SWITCH = "F3: switch to {layout}"
+CON_KEYBOARD_CHECK_SWITCH_WORD = "Type SWITCH to use {layout}."
 KEYBOARD_UTILITY = "Keyboard layout"
 TEXT_SIZE_LEAD = "Choose a size that is easy to read. You can change it later."
+# #179: high contrast, on the first screen and in Help & settings.
+MENU_HIGH_CONTRAST_ON = 'High contrast: on'
+MENU_HIGH_CONTRAST_OFF = 'High contrast: off'
+CONTRAST_TITLE = 'Contrast'
+CONTRAST_STANDARD = 'Standard contrast'
+CONTRAST_HIGH = 'High contrast'
+CONTRAST_LEAD = 'High contrast uses black text, strong edges and thick focus rings.'
+CON_CONTRAST_KEY = 'F4: {state}'
 TEXT_SIZE_STANDARD = "Standard"
 TEXT_SIZE_LARGE = "Large"
 TEXT_SIZE_EXTRA = "Extra large"
@@ -139,6 +246,37 @@ TEXT_SIZE_UTILITY = "Text size"
 TEXT_SIZE_CONSOLE = (
     "Text size is for the graphical screens. This text console stays this size."
 )
+
+# #175: one fixed Help & settings menu on every screen. Items that do not
+# apply here stay listed, disabled, with one of the reasons below.
+MENU_TITLE = 'Help & settings'
+MENU_LANGUAGE = 'Language and keyboard'
+MENU_HIGH_CONTRAST = 'High contrast'
+MENU_REPORT_HELP = 'Report help'
+MENU_SHORTCUTS = 'Keyboard shortcuts'
+MENU_CLOSE = 'Close'
+MENU_BACK = 'Back to the menu'
+MENU_REASON_HERE = 'This screen is open now.'
+MENU_REASON_FINAL_CHECK = 'Not on the final check. Go back to change it.'
+MENU_REASON_BUSY = 'Wait for this step to finish.'
+MENU_REASON_LANGUAGE_NEXT = 'The next screen sets the language and keyboard.'
+MENU_REASON_LANGUAGE_BEFORE = 'Only before an erase starts.'
+MENU_REASON_NOT_HERE = 'Not available on this screen.'
+MENU_REASON_NO_SOUND = 'No sound output was found.'
+MENU_REASON_NOT_YET = 'Not available in this version.'
+MENU_REASON_REPORT_HELP = 'Opens from the first screens or the method step, before an erase.'
+MENU_REASON_ADVANCED = 'Opens from the method step.'
+MENU_KEY = 'F10: Help & settings'
+MENU_SHORTCUTS_COMMON = 'Tab moves between controls. Enter or Space presses the one with focus.'
+MENU_SHORTCUTS_MENU = 'F10 opens or closes this menu. Esc closes it.'
+MENU_SHORTCUTS_REFRESH = 'F5 checks disks again.'
+MENU_SHORTCUTS_READER = 'F8 opens the screen-reader view.'
+# #158: on the Method screen the Storage limits (L) button shows only with
+# the limits line opened, so the shortcuts list names the L key there.
+MENU_SHORTCUTS_LIMITS = 'L opens the storage limits.'
+CON_MENU_KEYS = 'Up/Down or 1–7 chooses. Enter selects. Esc closes.'
+CON_MENU_HINT = 'Type MENU for Help & settings.'
+CON_MENU_PROMPT = 'Number (Enter closes): '
 TEXT_SIZE_LABELS = {
     "standard": TEXT_SIZE_STANDARD,
     "large": TEXT_SIZE_LARGE,
@@ -147,16 +285,31 @@ TEXT_SIZE_LABELS = {
 
 WHAT_LEAD = "Nothing starts until you say so."
 
+# One erase warning per screen (#128). Owner says once what the tool does;
+# Confirm and Review carry the disk-specific ERASE_EVERYTHING* warning.
 WHAT_BULLETS = (
-    "Check that you have the copies you need. You will pick a disk. "
-    "Everything on that disk will be erased. You cannot get the files back.",
-    "If that disk holds an operating system, erasing it also removes "
-    "Windows or Linux, applications, files, and recovery partitions on that disk.",
+    "Beamo Wipe erases everything on the disk you choose, including any "
+    "Windows or Linux on it.",
+    "Make sure you have copies of anything you want to keep.",
     # Literal must stay in lockstep with compat_story.PLATFORMS so language
     # sweep still sees WHAT_BULLETS (aliases are invisible to ast.literal_eval).
     "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. "
     "Not Apple Silicon Macs. Not Chromebooks.",
 )
+
+
+# #146: once the wizard runs, the PC has already started from this USB, so
+# the platform bullet (compat_story.PLATFORMS) is pre-boot guidance. Launchers,
+# the helper pages and docs keep it up front; the live Owner screen shows it
+# under Show more. Read at render time: a language switch replaces the tuple.
+def owner_bullets() -> tuple[str, ...]:
+    """WHAT_BULLETS for the Owner screen's main view (without the platforms)."""
+    return tuple(WHAT_BULLETS[:-1])
+
+
+def owner_platforms_line() -> str:
+    """The platform bullet, shown on Owner only under Show more."""
+    return WHAT_BULLETS[-1]
 
 POWER_REMINDER = (
     "If this computer has a battery, plug it into wall power before you erase. "
@@ -166,33 +319,18 @@ POWER_REMINDER = (
 
 POWER_KEEP = "Laptop: keep wall power connected and keep the lid open."
 POWER_EVENTS = (
-    "This live USB asks Linux to ignore lid closure and a short power-button press, "
+    "The Beamo USB asks Linux to ignore lid closure and a short power-button press, "
     "and disables sleep. Firmware or a held power button can still stop the erase. "
     "Use Stop erase to stop; wait for the result before shutting down. "
     "A power cut can leave the disk partly erased and lose unsaved reports. "
-    "An interrupted erase does not resume automatically."
+    "An interrupted erase does not resume automatically. Start it again from the beginning."
 )
 
+# #168: shown only by the console fallbacks; the X screen stays lit while
+# erasing, so Tk, GTK and the web preview no longer show it.
 POWER_BLANKING = (
     "The screen may go dark. Press a key or move the mouse to bring it back. "
     "That is the display, not sleep."
-)
-
-PREPARE_WINDOWS = (
-    "This selected disk shows Windows partitions. Erasing it also removes "
-    "Windows, applications, files, and recovery partitions on this disk."
-)
-PREPARE_SYSTEM = (
-    "This selected disk shows operating-system partitions. Erasing it also removes "
-    "the operating system, applications, files, and recovery partitions on this disk."
-)
-PREPARE_DATA = (
-    "This selected disk does not show operating-system partitions. "
-    "Erasing it still removes every file on this disk."
-)
-PREPARE_UNKNOWN = (
-    "Erasing this selected disk removes every file on it, including any "
-    "operating system, applications, files, and recovery partitions on this disk."
 )
 
 # Closed-by-default Show more. Help first; nwipe by name only for honesty.
@@ -224,17 +362,39 @@ OWNER_CHECKBOX = (
 # is verified by discovery itself, never by these lines.
 STARTUP_TITLE = "Starting Beamo Wipe"
 STARTUP_TITLE_HINT = "Getting ready."
-STARTUP_STAGE_BOOT_USB = "Checking the boot USB"
+STARTUP_STAGE_BOOT_USB = "Checking the Beamo USB"
 STARTUP_STAGE_BOOT_USB_HINT = (
     "Learning which disk is this USB stick, so it is never offered for erasure."
 )
 STARTUP_STAGE_FINDING = "Finding disks"
 STARTUP_STAGE_FINDING_HINT = "Listing the disks connected to this computer."
 STARTUP_STILL_WORKING = (
-    "Still working — this can take a minute on older machines."
+    "Still working — this can take a minute on older computers."
 )
 
+# #187: after Erase another disk, the owner's tick carries over within this
+# app run (only while no new disk is connected). Pick shows it with Change.
+OWNER_CARRY_LINE = (
+    "You confirmed that you own these disks or have written permission to erase them."
+)
+OWNER_CARRY_CHANGE = "Change"
+OWNER_CARRY_NEW_DISK = "A disk was connected since you confirmed. Confirm again."
+OWNER_CARRY_UNSURE = "We cannot match these disks to the ones you confirmed. Confirm again."
+CON_OWNER_CARRY_KEY = "W: change ownership"
+CON_OWNER_CARRY_HINT = "Type OWNER to confirm ownership again."
+# A disk erased earlier in this app run (#187). Display only: still selectable.
+TAG_ERASED_CHECKED = "Erased earlier (checked)"
+TAG_ERASED_UNCHECKED = "Erased earlier (not checked)"
+TAG_ERASED_UNCONFIRMED = "Earlier erase not confirmed"
+
 OWNER_LEAD = "Check the box, then continue."
+# Next to the greyed Choose a disk (#143); gone once the box is ticked.
+OWNER_CONTINUE_REASON = "Tick the box above to continue."
+# #178: every greyed primary button has its reason beside it.
+PICK_CONTINUE_REASON = 'Choose a disk above first.'
+DISABLED_BUSY = 'Wait: this step is still running.'
+CONFIRM_CONTINUE_REASON = 'Type the characters above first.'
+REVIEW_ERASE_REASON = 'Available when the countdown ends.'
 
 BOOT_USB_BANNER = "Beamo USB — protected, cannot be erased"
 BOOT_DISC_BANNER = "Beamo boot disc — protected, cannot be erased"
@@ -335,7 +495,7 @@ SSD_FOOTER = _limits.OVERWRITE_LIMITS + SSD_FOOTER_SUFFIX
 WORKING_PULSE = (
     "Leave the USB in. Keep wall power connected if this computer has a battery. "
     "Keep the lid open. "
-    "Do not turn the PC off."
+    "Keep the computer on."
 )
 
 DONE_OK = _outcomes.VIEWS["verified"].message
@@ -368,17 +528,28 @@ CONFIRM_LEAD = "Type what we ask for, then continue."
 CONFIRM_MATCH_WAIT = "Type it exactly, then you can continue."
 CONFIRM_MATCH_OK = "That matches. You can continue."
 
-COUNTDOWN_CAPTION = "seconds until Erase is available."
+COUNTDOWN_CAPTION = "seconds until Erase now is available."
 COUNTDOWN_READY = "Nothing has started. Choose Erase now to erase this disk."
+# #163: the ready state is a check mark plus this word (never icon-only);
+# screen readers hear "Ready. Erase now is available." Behaviour unchanged.
+COUNTDOWN_READY_WORD = "Ready"
+COUNTDOWN_AVAILABLE = "Erase now is available."
 
 METHOD_LEAD = (
-    "Pick how thoroughly to overwrite the disk. Time is not promised."
+    "Pick how thoroughly to overwrite the disk. Large hard disks can take many "
+    "hours, so time is not promised."
 )
 
+# #162: says what starts the erase (the separate Erase now action), not
+# what the countdown does not do. Zero still only enables Erase now.
 LAST_LEAD = (
-    "Check the selected disk and method. The countdown never starts erasure."
+    "Check the selected disk and method. Erasing starts only when you press "
+    "Erase now."
 )
 AUTHORIZATION_STALE = "The disk or method changed. Confirm again."
+# #164: Review states the method once: its name and the operation
+# summary (overwrites and whether verification follows, #33).
+REVIEW_METHOD_LINE = "{method}: {operation}"
 
 def _method_cards() -> dict:
     return {
@@ -399,6 +570,86 @@ def _method_cards() -> dict:
 
 METHOD_CARDS = _method_cards()
 
+# Method-screen time guide (progress.time_guide): a rough range for the
+# selected disk and method, never a promise. Hidden when the size is unknown.
+TIME_GUIDE_HDD = "Rough guide for this {size} hard disk (not promised): {range}."
+TIME_GUIDE_SSD = "Rough guide for this {size} SSD (not promised): {range}."
+TIME_GUIDE_DISK = "Rough guide for this {size} disk (not promised): {range}."
+TIME_GUIDE_LONG = "Plan to leave it running overnight or longer."
+# #159: every method card shows a time line. Without a usable size the
+# estimator gives no range, so the card says so instead of guessing.
+TIME_GUIDE_UNKNOWN = "Time depends on the disk."
+TIME_RANGE_MINUTES = "{low}–{high} minutes"
+TIME_RANGE_HOURS = "{low}–{high} hours"
+TIME_RANGE_DAYS = "{low}–{high} days"
+TIME_RANGE_MIXED = "{low} to {high}"
+
+
+def _guide_amount(value: int, unit: str) -> str:
+    one, many = {
+        "minutes": (_progress.MINUTE_ONE, _progress.MINUTE_MANY),
+        "hours": (_progress.HOUR_ONE, _progress.HOUR_MANY),
+        "days": (_progress.DAY_ONE, _progress.DAY_MANY),
+    }[unit]
+    return (one if value == 1 else many).format(value=value)
+
+
+def time_guide_range(guide: _progress.TimeGuide) -> str:
+    """Like 3–8 hours, or 40 minutes to 2 hours when the units differ."""
+    if guide.low_unit == guide.high_unit:
+        template = {
+            "minutes": TIME_RANGE_MINUTES,
+            "hours": TIME_RANGE_HOURS,
+            "days": TIME_RANGE_DAYS,
+        }[guide.low_unit]
+        return template.format(low=guide.low, high=guide.high)
+    return TIME_RANGE_MIXED.format(
+        low=_guide_amount(guide.low, guide.low_unit),
+        high=_guide_amount(guide.high, guide.high_unit),
+    )
+
+
+def method_time_guide(method: MethodId, disk: "Disk | None") -> str:
+    """Per-method rough duration for this disk, or "" when it cannot be shown.
+
+    Presentation only: it never gates, starts, or describes an erase result.
+    """
+    spec = METHODS.get(method)
+    label = str(getattr(disk, "size_gb_label", "") or "").strip()
+    if disk is None or spec is None or not label.isdigit() or int(label) <= 0:
+        return ""
+    kind = getattr(disk, "kind", DiskKind.UNKNOWN)
+    usb = str(getattr(disk, "bus", "") or "").strip().casefold() == "usb"
+    guide = _progress.time_guide(
+        getattr(disk, "size_bytes", 0),
+        kind,
+        usb,
+        spec.overwrite_passes + spec.verification_passes,
+    )
+    if guide is None:
+        return ""
+    if kind == DiskKind.HDD:
+        template = TIME_GUIDE_HDD
+    elif kind in (DiskKind.SSD, DiskKind.NVME):
+        template = TIME_GUIDE_SSD
+    else:
+        template = TIME_GUIDE_DISK
+    text = template.format(
+        size=capacity_phrase(label).split(" (", 1)[0],
+        range=time_guide_range(guide),
+    )
+    return f"{text} {TIME_GUIDE_LONG}" if guide.long else text
+
+
+def method_time_line(method: MethodId, disk: "Disk | None") -> str:
+    """The time line every method card shows (#159): the rough guide for this
+    disk, or TIME_GUIDE_UNKNOWN when no cautious range can be given.
+
+    Presentation only, like method_time_guide.
+    """
+    return method_time_guide(method, disk) or TIME_GUIDE_UNKNOWN
+
+
 ADVANCED_LEAD = (
     "These are the nwipe names. For technicians. The other screens stay simple."
 )
@@ -408,85 +659,95 @@ REPORT_WANTED = "I want to save a report"
 REPORT_VOLATILE = (
     "Any unsaved report is lost when this live session shuts down or loses power."
 )
+REPORT_HELP_PHOTO = (
+    "No report USB? Photograph the code\n"
+    "After the erase, the result screen shows a square code. Take a photo of it "
+    "with your phone. The phone's camera shows it as plain text. The text gives the "
+    "result, the disk and its serial number, the method and the time. No app or internet is "
+    "needed. It is a summary, not a certificate. Anyone who sees the photo can "
+    "read the disk's serial number."
+)
 REPORT_HELP_NEED = (
-    "What you need\n"
-    "Saving a report is optional. You need a separate removable FAT32 USB device, "
-    "with one writable, unmounted volume. It must be different from the Beamo boot USB and "
-    "the disk you erase. exFAT, NTFS, FAT12 and FAT16 are not supported. "
+    "Saving the full report to a USB\n"
+    "Saving a report is optional. You need a separate removable USB stick, formatted "
+    "FAT32 or exFAT. It must have one writable, unmounted volume. It must be different "
+    "from the Beamo USB and "
+    "the disk you erase. NTFS, FAT12 and FAT16 are not supported. "
     "Beamo Wipe does not format or repair report media."
 )
 REPORT_HELP_INSERT = (
-    "When to insert the report USB\n"
-    "Keep the report USB unplugged while choosing the erase target, confirming, "
-    "and erasing. Only after the erase has stopped and the result screen offers "
-    "Save report to USB, insert exactly one report USB, then choose Save report to USB. "
-    "Leave the Beamo boot USB and selected erase disk connected."
+    "Keep the report USB unplugged while you choose, confirm and erase. Wait "
+    "until the erase has stopped and the result screen offers Save report to USB. "
+    "Only then insert exactly one report USB. Then choose Save report to USB. "
+    "Leave the Beamo USB and the selected disk connected."
+)
+REPORT_HELP_STAGES = (
+    "The result screen then guides you in five steps: 1. Insert the report USB. "
+    "2. Beamo Wipe looks for it and shows what it found, or why that stick cannot "
+    "be used. 3. Choose Save report to USB: Beamo Wipe saves the report and reads "
+    "the copy back. 4. It shows where the report was saved. 5. Remove the report "
+    "USB only after that. Never remove report media while saving. If saving fails, "
+    "follow the displayed error and retry while this session is still running."
 )
 REPORT_HELP_PLUGGED = (
-    "If the report USB is already plugged in\n"
-    "If you already inserted the report USB before erasing, remove only that "
-    "report USB. Leave the boot USB and erase disk connected. Choose Check disks "
-    "again, then choose and confirm the erase target again. Do not guess which "
-    "disk to unplug or erase."
+    "If you inserted the report USB before erasing, remove only that report USB. "
+    "Leave the Beamo USB and the selected disk connected. Choose Check disks again, then "
+    "choose and confirm the erase target again. Do not guess which disk to unplug "
+    "or erase."
 )
 REPORT_HELP_CONTAINS = (
     "What the report contains\n"
     "{volatile} This checkbox remembers only your preference for this "
     "session. It does not choose media or save a report. If you request a report "
-    "and no verified export has completed, Shut down asks before discarding it. "
-    "A report is available only if the operation produced eligible evidence. "
+    "and it has no verified export, Shut down asks before discarding it. "
+    "If the operation produced no evidence that can be saved, there is no report. "
     "The original report (result.json and RESULT.txt) includes disk identifiers. "
     "A sharing copy (SHARE.json and SHARE.txt) omits serials, hardware IDs, "
     "device paths, and engine logs. Do not use the sharing copy where full "
     "identity evidence is required. To share, copy only SHARE.json and SHARE.txt."
 )
-REPORT_HELP_REMOVE = (
-    "Removing the report USB\n"
-    "Wait for the saved and safe-to-remove message before removing the report USB. "
-    "If saving fails, follow the displayed error and retry while this session is "
-    "still running. Never remove report media while saving."
-)
 REPORT_HELP_START = (
-    "If the wipe cannot start\n"
-    "If the wipe cannot start, Diagnostic report has a separate flow: keep the "
-    "report USB unplugged for Prepare and insert it only when prompted. "
+    "If the erase cannot start\n"
+    "If the erase cannot start, Diagnostic report has a separate flow. Keep the "
+    "report USB unplugged for Prepare. Insert it only when asked. "
     "Diagnostics are not erase evidence and do not establish that an erase ran."
 )
-REPORT_HELP_STAGES = (
-    "Saving in stages\n"
-    "1. Insert the report USB, only when the result screen asks. "
-    "2. Check the USB: exactly one new FAT32 USB is accepted. "
-    "3. Save the report to that USB. "
-    "4. Verify the copy by reading it back. "
-    "5. Safe removal: only the saved message makes the report USB safe to remove. "
-    "Never remove report media while saving."
-)
-REPORT_HELP_SECTIONS = (
-    REPORT_HELP_NEED,
-    REPORT_HELP_INSERT,
-    REPORT_HELP_PLUGGED,
-    REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
-    REPORT_HELP_REMOVE,
-    REPORT_HELP_START,
-    REPORT_HELP_STAGES,
-)
+
+
+def _report_help_sections() -> tuple[str, ...]:
+    """Photo first (no report USB needed), then the USB report, then limits."""
+    return (
+        REPORT_HELP_PHOTO,
+        "\n".join(
+            (REPORT_HELP_NEED, REPORT_HELP_INSERT, REPORT_HELP_STAGES, REPORT_HELP_PLUGGED)
+        ),
+        REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
+        REPORT_HELP_START,
+    )
+
+
+REPORT_HELP_SECTIONS = _report_help_sections()
 REPORT_HELP_TEXT = "\n\n".join(REPORT_HELP_SECTIONS)
 REPORT_SHARE_REDACTED = (
-    "Also save a labeled sharing copy without serials, hardware IDs, device paths, "
-    "or engine logs. It is not identity evidence. The original report is kept."
+    "Also save a labeled sharing copy. It leaves out serials, hardware IDs, device "
+    "paths and engine logs. It is not identity evidence. The original report is kept."
 )
 
 REPORT_INSERT = (
-    "No erase is running. Leave the boot USB and selected disk connected. "
-    "Insert one separate FAT32 USB, then choose Save report to USB. "
+    "No erase is running. Leave the Beamo USB and the selected disk connected. "
+    "Insert one separate FAT32 or exFAT USB, then choose Save report to USB. "
     "The original report includes disk identifiers. A sharing copy, if saved, is not identity evidence."
 )
+# Owner heads-up (#145): one line. The photo record (#127) ships, so it
+# leads; "when asked" keeps the report USB unplugged until the result
+# screen. Media details (FAT32/exFAT, one volume) are in the report help.
 REPORT_MEDIA_WHAT = (
-    "Want a report afterwards? You will need a separate FAT32 USB stick with "
-    "one volume (any size). Keep it unplugged until the result screen asks "
-    "for it. A USB that is already plugged in cannot be used for the report. "
-    "Open Need a report? for the full requirements."
+    "Want a report? You can photograph a summary at the end, "
+    "or save it to a report USB when asked."
 )
+LEARN_MORE = "Learn more"
+LEARN_MORE_REPORT_NAME = "Learn more about saving a report"
+CON_REPORT_LEARN = "R: learn more"
 REPORT_MEDIA_WANTED = (
     "Report requested: keep the report USB unplugged until the result screen "
     "asks for it. Extra plugged-in USBs can confuse the disk list. If the "
@@ -494,9 +755,9 @@ REPORT_MEDIA_WANTED = (
     "Check disks again."
 )
 ADVANCED_LOG_LEAD = (
-    "Keep the separate FAT32 report USB unplugged until the erase has stopped "
-    "and Save report to USB is offered. Then insert it before choosing Save. "
-    "Leave the boot USB and selected disk connected. "
+    "Keep the separate FAT32 or exFAT report USB unplugged until the erase has stopped. "
+    "When Save report to USB is offered, insert it before choosing Save. "
+    "Leave the Beamo USB and the selected disk connected. "
 )
 ADVANCED_LOG_TAIL = " Open Need a report? for requirements and safe removal."
 ADVANCED_LOG_NOTE = ADVANCED_LOG_LEAD + REPORT_VOLATILE + ADVANCED_LOG_TAIL
@@ -507,9 +768,74 @@ POST_ERASE_BOOT = (
     "start normally now. To use that computer again, you may need to install "
     "an operating system first."
 )
-REPORT_STATUS_TITLE = "Report status"
+# The Save a report panel heading (#135; was "Report status").
+REPORT_STATUS_TITLE = "Save a report (optional)"
 REPORT_STATUS_NOTICE = "Saving or checking a report does not change the erase result."
 REPORT_PREVIEW = "Preview only. No report was saved."
+# Save a report panel on the result screen (#135). Steps run in order;
+# detection is a read-only check and Save runs the export's own checks.
+REPORT_STEP_INSERT = (
+    "Insert a separate USB stick now (FAT32 or exFAT). Keep the Beamo USB "
+    "and this disk connected."
+)
+REPORT_STEP_SAVE = "Choose Save report to USB."
+REPORT_STEP_SAVING = "Saving and checking the copy."
+REPORT_STEP_CHECKING = "Checking the USB again."
+REPORT_STEP_CHECKED = "USB checked."
+REPORT_STEP_SAVED = "Saved and checked."
+REPORT_STEP_WHERE = "See where it was saved."
+REPORT_STEP_REMOVE = "Remove the report USB."
+REPORT_STEP_REMOVE_NOW = "You can remove the report USB now."
+REPORT_USB_LOOKING = "Looking for a USB…"
+REPORT_USB_NONE = "Looking for a USB… none found yet."
+REPORT_USB_FOUND = "Found: {label} ({filesystem})"
+REPORT_USB_MANY = (
+    "More than one new USB stick is plugged in. Remove the extra one."
+)
+REPORT_USB_FORMAT = (
+    "This USB is formatted {filesystem} — use a FAT32 or exFAT stick."
+)
+REPORT_USB_FORMAT_UNKNOWN = (
+    "This USB is not formatted FAT32 or exFAT — use a FAT32 or exFAT stick."
+)
+REPORT_USB_UNAVAILABLE = "Could not check for a USB just now. Trying again…"
+REPORT_USB_ON_SAVE = "The USB is checked when you choose Save."
+REPORT_SAVE_WAIT = "Save is available when one suitable USB is found."
+REPORT_NOT_OFFERED = "A report can't be saved for this result."
+RETRY_UNAVAILABLE = (
+    "Retry evidence save is not available now. Keep this session open and "
+    "contact support."
+)
+DONE_WAIT_SAVING = (
+    "Shut down and Erase another disk come back when saving finishes."
+)
+DONE_WAIT_PREPARING = (
+    "Shut down and Erase another disk come back when the report is ready."
+)
+DONE_ANOTHER_OFF = (
+    "Erase another disk is not available because this erase may still be running."
+)
+DONE_ANOTHER_BUSY = "Erase another disk is not available right now."
+RECORD_TITLE = "Keep a record without a USB"
+RECORD_LEAD = (
+    "Photograph this code to keep a record of this erase. "
+    "It is a summary, not a certificate."
+)
+RECORD_NOTE = (
+    "Your phone's camera shows it as text. No app or internet is needed. "
+    "The photo shows the disk's serial number."
+)
+RECORD_PREVIEW_NOTE = (
+    "Sample code. After a real erase it holds the result, the disk and its "
+    "serial number, the method and the time."
+)
+RECORD_TEXT_LABEL = "The same summary as text"
+RECORD_NO_CODE = "The code could not be drawn. The same summary is shown as text."
+RECORD_CODE_NAME = "Erase summary code. The same summary follows as text."
+CON_RECORD_LEAD = (
+    "Write down or photograph this summary to keep a record of this erase. "
+    "It is a summary, not a certificate."
+)
 
 
 EXPORT_STAGE_INSERT = "Insert the report USB"
@@ -643,26 +969,37 @@ PRIMARY_ACTION_LABELS = frozenset(_primary_by_screen().values()) | {BTN_CONTINUE
 PREVIEW_BANNER = "PREVIEW on this computer — fake disks — nothing is erased"
 
 HINT_KEYBOARD = (
-    "1, 2, or 3 chooses a layout. Type in the check box. Enter continues. "
-    "Text size stays until this USB restarts."
+    "Left/Right chooses a language. Up/Down or 1–7 chooses a layout. "
+    "Tab reaches the check box. Enter continues."
 )
 HINT_DEFAULT = "Enter continues.  Esc goes back."
-HINT_PICK = "Click a disk, or use Up/Down.  Enter reviews this disk.  Esc goes back."
+HINT_PICK = "Click a disk, or use Up/Down to choose one.  Enter reviews this disk.  Esc goes back."
 HINT_OWNER = "Space checks the box.  Enter chooses a disk when it is checked."
 HINT_METHOD = "Press 1, 2, or 3 to choose. Enter reviews before erasing."
-HINT_CONFIRM = "Type exactly what we ask for, then Enter."
+HINT_CONFIRM = "Type exactly what we ask for, then press Enter to continue."
 HINT_ADVANCED = "Enter returns to methods.  Esc goes back."
-HINT_LAST_CHANCE = "Esc goes back.  Enter erases after the countdown."
-HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase, then Enter after the countdown."
+HINT_LAST_CHANCE_TK = "Esc goes back.  Tab to Erase now, then Enter after the countdown."
 HINT_BLOCKED = "Enter requests shutdown. Esc goes back."
 HINT_REFRESH = "Esc keeps your answers. Enter checks disks again."
+# Guarded Check disks again (#136): from Confirm, Method and Review the
+# dialog defaults to Cancel; Enter and Esc keep the answers.
+REFRESH_GUARD_LEAD = (
+    "This clears your confirmations. You will start again from choosing "
+    "a disk: you tick the ownership box again, then choose the disk."
+)
+REFRESH_THEN_READER = "Afterwards the screen-reader view opens."
+BTN_REFRESH_CANCEL = "Cancel"
+HINT_REFRESH_GUARD = "Enter or Esc keeps your answers. Tab to Check disks again to clear them."
 REFRESH_LEAD = (
-    "This clears the selected disk, the ownership acknowledgement, the typed "
-    "confirmation, the erase method, and the countdown. Preparation starts "
-    "again from the beginning."
+    "This clears the selected disk and unticks the ownership box. It also "
+    "clears the typed confirmation, the erase method and the countdown. "
+    "Preparation starts again from the beginning."
 )
 REFRESH_UTILITY_NOTE = "Check disks again (clears preparation)"
 HINT_DONE = "Enter requests shutdown."
+# #169: the preview result screen. Enter runs the preview again; Esc does
+# nothing on any result screen, so no hint offers it.
+HINT_DONE_PREVIEW = "Enter runs the preview again."
 SHUTDOWN_TITLE = "Shut down without saving?"
 SHUTDOWN_LOSS = (
     "You asked to save a report, but no verified export of the current report "
@@ -690,8 +1027,8 @@ MEDIA_STEP_RESTART = (
     "to come back here. Anything unsaved is still lost."
 )
 MEDIA_STEP_UNSURE = (
-    "If more than one USB is plugged in, or anything was unplugged and "
-    "plugged back in, do not guess which is which. Shut down first, then "
+    "Is more than one USB plugged in? Was anything unplugged and plugged "
+    "back in? Then do not guess which is which. Shut down first, then "
     "sort the USB sticks while the computer is off."
 )
 MEDIA_STEP_ANOTHER = (
@@ -730,11 +1067,45 @@ def kind_label(kind: DiskKind) -> str:
 
 
 KIND_HDD = "Hard disk"
+# Pick-row hint from observed partitions (models.CONTENTS_*). Factual only:
+# it helps an owner recognise the computer's own system disk and never says
+# which disk to erase. Only a recognised system is named. "data" means no
+# system was recognised, not that none exists (a legacy-BIOS Windows or
+# Linux install can look like plain data), so it shows no hint, like unknown.
+CONTENTS_HINT_WINDOWS = "Windows found on this disk"
+CONTENTS_HINT_SYSTEM = "Operating system found on this disk"
+
+
+def contents_hint(disk: Disk) -> str:
+    """Short pick-row line naming a recognised system, or ""."""
+    contents = getattr(disk, "contents", CONTENTS_UNKNOWN)
+    if contents == CONTENTS_WINDOWS:
+        return CONTENTS_HINT_WINDOWS
+    if contents == CONTENTS_SYSTEM:
+        return CONTENTS_HINT_SYSTEM
+    return ""
+
+
 CONFIRM_TYPE_SIZE = "Type these numbers so we know it is the right disk: {token}"
 CONFIRM_TYPE_FOUR = "Type these 4 characters so we know it is the right disk: {token}"
 CONFIRM_TYPE_CHARS = "Type these characters so we know it is the right disk: {token}"
-CONFIRM_WARNING_TEXT = "Every file on {title}, {size}, will be erased. You cannot get them back. {prep}"
-ERASE_NOW_TEXT = "This will erase {title}, {capacity}, {id}. You cannot get the files back."
+# Card token prompts (#129): they name the field and how many characters,
+# never the characters. The disk card marks them (CONFIRM_MARKED*).
+CONFIRM_SERIAL_END = "Type the last {count} characters of the serial number shown above."
+CONFIRM_SERIAL_ALL = "Type the whole serial number shown above."
+CONFIRM_HARDWARE_END = "Type the last {count} characters of the hardware ID shown above."
+CONFIRM_HARDWARE_ALL = "Type the whole hardware ID shown above."
+CONFIRM_LONGER = "Another listed disk ends with the same last 4 characters, so more are needed."
+CONFIRM_MARKED = "They are underlined in the disk details above."
+CONFIRM_MARKED_CONSOLE = "They are in [brackets] in the disk details above."
+# The destructive-action warning (#128), shared by Confirm and Review on
+# every surface so the wording cannot drift. It names the selected disk and,
+# when partitions show one, the system on it; it says once that the loss is
+# permanent. Owner states what the tool does in WHAT_BULLETS instead.
+ERASE_EVERYTHING = "Everything on {disk} will be erased."
+ERASE_EVERYTHING_WINDOWS = "Everything on {disk} will be erased, including Windows."
+ERASE_EVERYTHING_SYSTEM = "Everything on {disk} will be erased, including its operating system."
+ERASE_CANNOT_UNDO = "You cannot get it back."
 PICK_SUBTITLE = "Match the name, size and serial or hardware ID. Choose only the disk you intend to erase."
 
 
@@ -750,31 +1121,57 @@ def confirm_type_chars(token: str) -> str:
     return CONFIRM_TYPE_CHARS.format(token=token)
 
 
-def prepare_selected(disk: Disk) -> str:
-    """Consequence of erasing this disk, from observed filesystem evidence."""
+def confirm_type_card(field: str, count: int, *, whole: bool = False, longer: bool = False) -> str:
+    """Prompt for a card token: names the field and count, never the characters."""
+    if field == "wwn":
+        text = CONFIRM_HARDWARE_ALL if whole and longer else CONFIRM_HARDWARE_END.format(count=count)
+    else:
+        text = CONFIRM_SERIAL_ALL if whole and longer else CONFIRM_SERIAL_END.format(count=count)
+    return f"{text} {CONFIRM_LONGER}" if longer else text
+
+
+def confirm_prompt(spec, *, console: bool = False) -> str:
+    """The Confirm instruction every surface shows for ``spec`` (ConfirmSpec).
+
+    A card token adds where the characters are marked: underlined in the
+    graphical and screen-reader views, [bracketed] in text consoles.
+    """
+    if not getattr(spec, "in_card", False):
+        return spec.prompt
+    return f"{spec.prompt} {CONFIRM_MARKED_CONSOLE if console else CONFIRM_MARKED}"
+
+
+def erase_warning(disk: Disk, identity: str) -> str:
+    """The one destructive-action warning for ``disk``, named by ``identity``.
+
+    Windows or another operating system is named only when the disk's
+    partitions show one (models.CONTENTS_*). "Everything" already covers
+    files, applications and recovery partitions, so no second sentence
+    repeats the loss.
+    """
     contents = getattr(disk, "contents", CONTENTS_UNKNOWN)
     if contents == CONTENTS_WINDOWS:
-        return PREPARE_WINDOWS
-    if contents == CONTENTS_SYSTEM:
-        return PREPARE_SYSTEM
-    if contents == CONTENTS_DATA:
-        return PREPARE_DATA
-    return PREPARE_UNKNOWN
+        template = ERASE_EVERYTHING_WINDOWS
+    elif contents == CONTENTS_SYSTEM:
+        template = ERASE_EVERYTHING_SYSTEM
+    else:
+        template = ERASE_EVERYTHING
+    return f"{template.format(disk=identity)} {ERASE_CANNOT_UNDO}"
 
 
 def confirm_warning(disk: Disk) -> str:
+    """Confirm: the warning names the disk by model and size."""
     from beamo_wipe.identity import display_title
 
-    return CONFIRM_WARNING_TEXT.format(
-        title=display_title(disk), size=disk.size_phrase, prep=prepare_selected(disk)
-    )
+    return erase_warning(disk, f"{display_title(disk)}, {disk.size_phrase}")
 
 
 def erase_now_label(disk: Disk, peers=()) -> str:
+    """Review: the same warning, with the serial or hardware ID added."""
     from beamo_wipe.identity import present_disk
 
     view = present_disk(disk, peers)
-    return ERASE_NOW_TEXT.format(title=view.title, capacity=view.capacity, id=view.id_value)
+    return erase_warning(disk, f"{view.title}, {view.capacity}, {view.id_value}")
 
 
 def pick_subtitle() -> str:
@@ -785,17 +1182,17 @@ DISK_HELP_TITLE = "Let's identify the disk first"
 DISK_HELP_STOP = "Stop and shut down"
 DISK_HELP_TEXT = """You do not need to choose now. No disk is selected while you read this help.
 
-The disk you want to erase may be inside this computer, an external disk, or a disk from another computer. Do not choose a disk just because it is listed here.
+The disk you want to erase may be inside this computer. It may also be an external disk or a disk from another computer. Do not choose a disk just because it is listed here.
 
-Compare the name or model, capacity, and serial or hardware ID with a trusted label or record for the disk you intend to erase. Use Show more in the disk list for technical details where available.
+Compare the name or model, capacity, and serial or hardware ID. Check them against a trusted label or record for the disk you intend to erase. Use Show more in the disk list for technical details where available.
 
 If disks look alike or have the same capacity, compare their serial or hardware ID. Size alone is not enough. If identity is missing, duplicated, or does not match your record, do not guess. Ask someone you trust to help identify the disk.
 
-Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo boot USB; the connection type alone does not identify a disk. The Beamo boot USB remains protected.
+Technical detail: names such as /dev/sda can change between starts. A USB connection can be an external target or the Beamo USB. The connection type alone does not identify a disk. The Beamo USB remains protected.
 
-Still unsure? Stop and shut down before checking labels or changing connections. Wait until the computer is fully off. Keep the Beamo boot USB for restarting. Do not disconnect hardware while this session is running.
+Still unsure? Stop and shut down before checking labels or changing connections. Wait until the computer is fully off. Keep the Beamo USB for restarting. Do not disconnect hardware while this session is running.
 
-Back returns to the disk list with no disk selected. Continue only when you can identify the intended disk with confidence. You will still need to select it, type its confirmation, and wait through the final safety countdown."""
+Back returns to the disk list with no disk selected. Continue only when you are sure you can identify the disk to erase. You will still need to select it, type its confirmation, and wait through the final safety countdown."""
 
 STOP_TITLE = "Stop this erase?"
 STOP_ASK = "Stop erase"
@@ -846,15 +1243,15 @@ SOUND_NO_OUTPUT = (
     "Follow the recovery steps below."
 )
 SOUND_OFF_LIVE = (
-    "Sound check is available on the live USB. This preview cannot reach sound devices."
+    "Sound check is available on the Beamo USB. This preview cannot reach sound devices."
 )
 SOUND_ORCA_MISSING = (
     "The screen reader (Orca) is not running. The check below still works, "
     "but nothing will be spoken until Orca returns."
 )
 SOUND_RECOVERY = (
-    "If you hear nothing: check that speakers or headphones are plugged in, "
-    "then choose each output in turn and play the speech test. Make sure sound "
+    "If you hear nothing, check that speakers or headphones are plugged in. "
+    "Then choose each output in turn and play the speech test. Make sure sound "
     "is not muted and the volume is up. Unplug extra USB sound devices and try "
     "again. If sound comes from the wrong place, choose a different output. "
     "If nothing works, shut down, check the connections, and start from the USB "
@@ -871,8 +1268,21 @@ SOUND_PLAY_FAILED = (
 )
 SOUND_MUTED_SKIP = "Sound is muted, so nothing played."
 SOUND_NO_OUTPUT_PLAY = "No sound output was found, so nothing played."
+# Working screen finish sound (#133). The beep is promised only when an
+# unmuted output was found; the toggle is the same session sound setting
+# as "Sounds: on/off" and starts on for each erase.
+FINISH_SOUND_TOGGLE = "Play a sound when it's finished"
+WALK_AWAY_BEEP = "You can leave the computer. It will beep when it's done."
+WALK_AWAY_QUIET = "You can leave the computer and check back later."
+WALK_AWAY_NO_SOUND = "Sound isn't available on this computer — check back later."
+FINISH_SOUND_REASON_NO_OUTPUT = "No speakers or headphones were found."
+FINISH_SOUND_REASON_MUTED = "Sound is muted."
+FINISH_SOUND_REASON_PREVIEW = "This preview plays no sound."
+FINISH_SOUND_STATE_ON = "Play a sound when it's finished: on"
+FINISH_SOUND_STATE_OFF = "Play a sound when it's finished: off"
+FINISH_SOUND_STATE_UNAVAILABLE = "Play a sound when it's finished: not available"
 SOUND_OUTCOME_OFF_LIVE = (
-    "Outcome sounds play on the live USB. This preview stays silent."
+    "Outcome sounds play on the Beamo USB. This preview stays silent."
 )
 
 # Console-only chrome (CON_): terse key hints for the 80-column fallback.
@@ -887,7 +1297,7 @@ CON_KEYBOARD = "K: Keyboard layout"
 CON_KEYBOARD_LONG = "CHANGE KEYBOARD: Keyboard layout"
 CON_READ_ONLY = "Read only. Up/Down, PgUp/PgDn: read. Esc: back."
 CON_PRESS_ANY_KEY = "Press any key."
-CON_KEYBOARD_FOOTER = "1/2/3: layout. F2: language. Type to check. Enter continues."
+CON_KEYBOARD_FOOTER = "Left/Right: layout. F2: language. Type to check. Enter continues."
 CON_WHAT_FOOTER = "Enter: I understand    S: shut down"
 CON_READ_MORE = "Up/Down: read more"
 CON_OWNER_FOOTER = "Space to check. Enter chooses a disk only when checked. Esc: back"
@@ -908,7 +1318,6 @@ CON_REPORT_HELP_FOOTER = (
 )
 CON_LAST_WAIT = "Wait {seconds}s"
 CON_LAST_REVIEW_FIRST = "Read all review details (Up/Down). Wait 5 seconds afterward"
-CON_LAST_ERASE = "Enter to erase."
 CON_BACK_READ_MORE = "Esc: back    Up/Down: read more"
 CON_WORKING_STOP = "K / Esc / Enter: keep erasing. S: confirm stop."
 CON_WORKING_IDLE = "Esc: stop erase (cancel)"
@@ -917,14 +1326,18 @@ CON_STOPPING = "The disk may still be erasing. Keep this USB connected."
 CON_REFRESHING = "Please wait. Previous selections have been cleared."
 CON_REFRESH_ENTER = "Enter: check disks again"
 CON_REFRESH_ESC = "Esc: keep your answers"
+CON_REFRESH_GUARD_KEEP = "Enter/Esc: keep your answers (Cancel)"
+CON_REFRESH_GUARD_GO = "C: check disks again (clears your confirmations)"
+CON_REFRESH_GUARD_PROMPT = "Type CHECK DISKS AGAIN to clear your answers; Enter keeps them: "
 CON_SHUTDOWN_KEEP = "Enter/Esc: keep session open"
 CON_SHUTDOWN_DISCARD = "D: {action} (type confirmation)"
 CON_DIAG_SAVE = "save diagnostic report"
 CON_DIAG_PREPARE = "prepare baseline"
 CON_DIAG_LINE = "R: {action}    Esc: back    S: shut down"
 CON_DONE_PREVIEW = "Enter: run again    C: close"
-CON_DONE_SAVE = "R: save report to one FAT32 USB    Enter: shut down"
-CON_DONE_RETRY = "E: retry evidence save    Enter: shut down"
+CON_PANEL_SAVE = "R: save report to USB"
+CON_PANEL_RETRY = "E: retry evidence save"
+CON_PLAIN_RECHECK = "Insert the USB, then press Enter to check again."
 CON_DONE_SHUTDOWN = "Enter: shut down"
 CON_DONE_READ = "Up/Down, PgUp/PgDn: read aftercare."
 CON_DONE_ANOTHER = "{action}    A: erase another disk"
@@ -932,7 +1345,7 @@ CON_BACK = "Esc: back"
 CON_REFRESH_HINT_CONFIRM = (
     "Type CHECK DISKS AGAIN to continue. Type BACK to keep your answers."
 )
-CON_REFRESH_HINT = "Type CHECK DISKS AGAIN to refresh. This clears preparation."
+CON_REFRESH_HINT = "Type CHECK DISKS AGAIN to read the disk list again. This clears preparation."
 CON_DIAGNOSTIC_HINT = "Type DIAGNOSTIC for a diagnostic report (not erase evidence)."
 CON_REPORT_HINT = "Type REPORT for Need a report? (optional)."
 CON_INPUT_UNAVAILABLE = "Console input unavailable. Shutdown was not authorized."
@@ -951,7 +1364,7 @@ BUSY_CHECKING_TITLE = "Checking disk"
 BUSY_STOPPING_TITLE = "Stopping erase"
 BUSY_REFRESHING_TITLE = "Checking disks again"
 BUSY_CHECKING_MESSAGE = (
-    "Confirming disk identity and boot USB exclusions. "
+    "Confirming disk identity and that the Beamo USB is excluded. "
     "Please wait; controls are unavailable during this check."
 )
 BUSY_REFRESHING_MESSAGE = "Previous selections and confirmations have been cleared."
@@ -1017,8 +1430,11 @@ HINT_ESC_METHOD = "Esc returns to method selection."
 POWER_KEEP_CONNECTED = "Keep the disk and Beamo USB connected."
 ERASE_PROGRESS_LABEL = "Erase progress"
 RETRY_SAVE = "Retry evidence save"
-NO_WIPE_YET = "(no wipe yet)"
+NO_WIPE_YET = "(no erase yet)"
 ACCESSIBLE_TITLE = "Beamo Wipe — screen-reader view"
+# Screen-reader pick button: the action, then the spoken disk identity.
+ACCESSIBLE_SELECT_DISK = "Select {disk}"
+ACCESSIBLE_SELECTED = "selected"
 ACCESSIBLE_NOT_SELECTED = "not selected"
 ACCESSIBLE_NO_TARGET = "No target selected"
 ACCESSIBLE_REFRESHED = "Checking disks again. Previous confirmations have been cleared."
@@ -1028,28 +1444,74 @@ STARTUP_STATE_DONE = "Done"
 STARTUP_STATE_WAITING = "Waiting"
 STARTUP_STATE_WORKING = "Working…"
 
-CONFIRM_KEYBOARD_LINE = "Keyboard: {layout} · Language: {language}"
+# #155: shown on Confirm only after a wrong entry, with a Change action
+# (Tk/GTK/preview button, F2 in curses, K in the plain console).
+CONFIRM_LAYOUT_HINT = "Not matching? Check your keyboard layout (currently {layout})."
+CONFIRM_LAYOUT_CHANGE = "Change"
+CON_CONFIRM_LAYOUT_KEY = "F2: Change"
+# #156: which typed confirmation characters are wrong (token_feedback).
+# Never the expected characters; the card shows them.
+TOKEN_TYPED = "You typed: {typed}"  # noqa: S105 — UI message, not a secret
+TOKEN_WRONG_ONE = "Character {n} doesn't match."  # noqa: S105 — UI message, not a secret
+TOKEN_WRONG_MANY = "Characters {list} don't match."  # noqa: S105 — UI message, not a secret
+TOKEN_MISSING_ONE = "1 character is missing."  # noqa: S105 — UI message, not a secret
+TOKEN_MISSING_MANY = "{count} characters are missing."  # noqa: S105 — UI message, not a secret
+TOKEN_EXTRA_ONE = "1 character too many."  # noqa: S105 — UI message, not a secret
+TOKEN_EXTRA_MANY = "{count} characters too many."  # noqa: S105 — UI message, not a secret
+TOKEN_SPACE_NOTE = "Spaces between characters count; remove them."  # noqa: S105 — UI message, not a secret
+TOKEN_SPACE_WORD = "space"  # noqa: S105 — UI message, not a secret
 
 # Language selection. Option names are endonyms: identical in every language.
 TITLE_LANGUAGE = "Choose your language"
+# What choosing a language did to the keyboard layout (#131).
+KEYBOARD_AUTO = "Keyboard set to {layout} to match {language}."
+KEYBOARD_AUTO_ALT = "Using a {alt} keyboard? Choose it below."
+KEYBOARD_AUTO_OTHER = "Keys do not match? Choose your keyboard below."
+KEYBOARD_KEPT = "Keyboard stays {layout}, the layout you chose."
+KEYBOARD_STAYS = (
+    "Keyboard stays {layout} so your answers so far stay valid. "
+    "Choosing another layout below starts those answers again."
+)
+
+
+def keyboard_layout_notice(wizard) -> str:
+    """One line saying what choosing a language did to the layout, or ""."""
+    from beamo_wipe import keyboard as _kb
+    from beamo_wipe.lang import LANGUAGE_NAMES
+
+    kind = getattr(wizard, "layout_notice", None)
+    spec = _kb.LAYOUTS.get(getattr(wizard, "keyboard_layout", ""))
+    if kind is None or spec is None:
+        return ""
+    if kind == "kept":
+        return KEYBOARD_KEPT.format(layout=spec.title)
+    if kind == "stays":
+        return KEYBOARD_STAYS.format(layout=spec.title)
+    language = LANGUAGE_NAMES.get(getattr(wizard, "language", ""), "")
+    alt = _kb.LAYOUTS.get(_kb.LANGUAGE_ALTERNATIVE_LAYOUTS.get(getattr(wizard, "language", ""), ""))
+    follow = (KEYBOARD_AUTO_ALT.format(alt=alt.title) if alt is not None and alt.id != spec.id
+              else KEYBOARD_AUTO_OTHER)
+    return f"{KEYBOARD_AUTO.format(layout=spec.title, language=language)} {follow}"
 LANGUAGE_LEAD = "Pick the language for every screen, report, and help page."
-LANGUAGE_HINT = "1, 2, or 3 chooses a language. Enter continues."
 LANGUAGE_NAME_EN = "English"
 LANGUAGE_NAME_FR = "Français"
 LANGUAGE_NAME_DE = "Deutsch"
+LANGUAGE_NAME_ES = "Español"
+LANGUAGE_NAME_IT = "Italiano"
 
 # Web gallery scaffolding (preview only). Wizard content arrives via payload.
 GALLERY_TITLE = "Beamo Wipe — screen preview"
 GALLERY_NOTE = (
     "This is a <strong>preview</strong>. It does not erase disks. "
     "Click through like the USB wizard.\n"
-    "The real window (same Tk screens as the live USB): <code>./preview</code>\n"
-    "&nbsp;·&nbsp; <a href=\"{helper}\">Boot-menu helper</a>"
+    "The real window (same Tk screens as the Beamo USB): <code>./preview</code>\n"
+    "&nbsp;·&nbsp; <a href=\"{helper}\">Boot helper</a>"
 )
 GALLERY_HAPPY = "Happy path"
 GALLERY_EMPTY = "No other disks"
+GALLERY_HIDDEN = "Disk hidden by Intel VMD"
 GALLERY_BLOCKED = "Cannot identify USB"
-GALLERY_FAIL = "Failed wipe"
+GALLERY_FAIL = "Failed erase"
 GALLERY_FAKE_POWER = "Fake power"
 GALLERY_POWER_UNKNOWN = "Unknown"
 GALLERY_POWER_AC = "Wall power connected"
@@ -1085,15 +1547,7 @@ def _apply_language() -> None:
     }
     STOP_LEAD = _outcomes.STOP_WARNING + STOP_LEAD_SUFFIX
     WHAT_MORE = SECURE_BOOT_HINT + " " + ENGINE_LINE
-    REPORT_HELP_SECTIONS = (
-        REPORT_HELP_NEED,
-        REPORT_HELP_INSERT,
-        REPORT_HELP_PLUGGED,
-        REPORT_HELP_CONTAINS.format(volatile=REPORT_VOLATILE),
-        REPORT_HELP_REMOVE,
-        REPORT_HELP_START,
-        REPORT_HELP_STAGES,
-    )
+    REPORT_HELP_SECTIONS = _report_help_sections()
     REPORT_HELP_TEXT = "\n\n".join(REPORT_HELP_SECTIONS)
     ADVANCED_LOG_NOTE = ADVANCED_LOG_LEAD + REPORT_VOLATILE + ADVANCED_LOG_TAIL
     EXPORT_STAGES = (

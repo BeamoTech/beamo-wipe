@@ -392,7 +392,9 @@ def test_unchanged_working_revision_does_not_rebuild_controls():
         report_view=SimpleNamespace(revision=7),
         wants_shutdown=False, wants_new_session=False,
         tick=lambda: None,
+        power_badge=None,  # #144: the real wizard's header badge state
     )
+    ui._shown_power_badge = None
     ui._body = SimpleNamespace(configure=lambda **kw: None)
     ui._footer = object()
     ui._pick_canvas = None

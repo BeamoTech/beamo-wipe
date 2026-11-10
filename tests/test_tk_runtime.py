@@ -15,8 +15,9 @@ from types import SimpleNamespace
 import pytest
 from test_result_presentations import CASES as RESULT_CASES, case_evidence
 
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe.demo import make_demo_wizard
-from beamo_wipe.models import Screen
+from beamo_wipe.models import MethodId, Screen
 from beamo_wipe.methods import METHODS
 try:
     import tkinter as tk
@@ -232,6 +233,38 @@ def _button_named(app, text):
     visit(app.root)
     assert len(found) == 1
     return found[0]
+
+
+def _label_texts(app):
+    return [str(w.cget("text")) for w in descendants(app.root) if isinstance(w, tk.Label)]
+
+
+def _assert_outcome_message_reachable(app, labels=None):
+    """#134: the exact status message never leaves the result screen.
+
+    Failures and unconfirmed outcomes show it under What happened; finished
+    outcomes keep it, with the result code, as the technical line behind
+    Show more. The plain headline above both names the outcome.
+    """
+    from beamo_wipe import recovery as Rec
+
+    view = app.w.result_view
+    shown = " ".join(str(t) for t in (labels if labels is not None else _label_texts(app)))
+    if not app.w.result_plain.checklist:
+        assert view.message in shown
+        return
+    technical = f"{Rec.RECOVERY_TECHNICAL}: {app.w.result_technical}"
+    assert view.message in app.w.result_technical
+    assert technical not in shown
+    app._show_more = True
+    app._draw()
+    app.root.update()
+    try:
+        assert technical in " ".join(_label_texts(app))
+    finally:
+        app._show_more = False
+        app._draw()
+        app.root.update()
 
 
 def _drive_to(wiz, app, screen, size=WINDOW):
@@ -988,6 +1021,25 @@ def test_cancelled_space_release_callback_cannot_clear_repeat_press(monkeypatch)
     assert "BEAMO_WIPE_KEY_SPACE_RELEASED" not in markers
 
 
+def _settle_done_redraws(wiz, app):
+    """Let Done's background answers redraw before picking a control.
+
+    Done starts background work (report USB detection, the #133 finish
+    sound) whose answers redraw the screen. Waiting for them means the
+    control a test finds is the live one, not a widget a late redraw
+    replaces between focus and the key press.
+    """
+    settle = time.monotonic() + 3
+    while time.monotonic() < settle:
+        app.root.update()
+        if (wiz.report_view.revision == getattr(app, "_shown_report_revision", None)
+                and getattr(wiz, "_audio_request", None) is None
+                and getattr(wiz, "sound_revision", 0) == getattr(app, "_shown_sound_revision", 0)):
+            break
+        app._tick()
+        time.sleep(0.02)
+
+
 @pytest.mark.parametrize("run", range(5))
 def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypatch, run):
     """Keep Save alive through a server-delivered release, then redraw."""
@@ -1030,6 +1082,7 @@ def test_isolated_x11_physical_space_release_after_report(ui, tmp_path, monkeypa
 
     wiz._report_exporter = exporter
     app._draw()
+    _settle_done_redraws(wiz, app)
     save = _button_named(app, "Save report to USB")
     app._primary.focus_set()
     app.root.update()
@@ -1104,6 +1157,7 @@ def test_held_space_from_save_cannot_repeat_onto_shutdown(ui, tmp_path, monkeypa
 
     wiz._report_exporter = exporter
     app._draw()
+    _settle_done_redraws(wiz, app)
     save = _button_named(app, "Save report to USB")
     save.focus_set()
     app.root.update()
@@ -1155,7 +1209,7 @@ def test_pick_list_scrolls_selected_card_into_view(ui):
     _drive_to(wiz, app, Screen.PICK, size=MIN_WINDOW)
     if not _pick_list_overflows(app):
         pytest.skip("disk list fits without scrolling at this size")
-    ordered = sorted(wiz.selectable, key=lambda d: d.path)
+    ordered = list(pick_order(wiz.selectable))  # #151 shown order
     for _ in range(len(ordered)):
         (app.root.focus_get() or app.root).event_generate("<KeyPress>", keysym="Down")
         app.root.update()
@@ -1269,6 +1323,9 @@ def test_method_facts_render_for_every_choice(ui, method, screen):
         wiz.continue_method()
     if screen == Screen.DONE:
         wiz.screen = Screen.DONE  # preview only; never starts a runner
+    if screen == Screen.METHOD:
+        # #159: counts and checks sit under each card's Show more.
+        app._method_more.update(METHODS)
     app._draw()
     app.root.update()
     texts = []
@@ -1283,8 +1340,21 @@ def test_method_facts_render_for_every_choice(ui, method, screen):
         for spec in METHODS.values():
             assert spec.overwrite_description in text
             assert spec.verification_description in text
+    elif screen == Screen.LAST_CHANCE:
+        # #164: Review states the method once (name + operation summary).
+        assert wiz.review_method_line in text
+        assert METHODS[method].summary not in text
     else:
-        assert METHODS[method].summary in text
+        # #171: the result card names the method once, as a fact row; the
+        # repeated method line is gone.
+        from beamo_wipe import result_summary as RS
+
+        card = wiz.result_card
+        assert card is not None
+        method_rows = [value for label, value in card.detail_rows if label == RS.H_METHOD]
+        assert method_rows == [METHODS[method].title]
+        assert f"{RS.H_METHOD}:" in texts and METHODS[method].title in texts
+        assert METHODS[method].summary not in text
     if screen == Screen.DONE:
         assert wiz.method_result in text
     assert not _clipping_problems(app)
@@ -1306,14 +1376,38 @@ def test_storage_limits_visible_and_keyboard_reachable(ui, kind, size):
     method = wiz.method
     app._draw()
     app.root.update()
-    texts = []
-    def visit(widget):
-        if widget.winfo_ismapped() and widget.winfo_class() == "Label":
-            texts.append(str(widget.cget("text")))
-        for child in widget.winfo_children():
-            visit(child)
-    visit(app.root)
-    assert limits.notice(selected.kind) in texts
+    from beamo_wipe import copy as C
+
+    def shown():
+        texts = []
+
+        def visit(widget):
+            if widget.winfo_ismapped() and widget.winfo_class() == "Label":
+                texts.append(str(widget.cget("text")))
+            for child in widget.winfo_children():
+                visit(child)
+        visit(app.root)
+        return texts
+
+    # #158: the Method screen states the limits as one visible line for this
+    # disk's kind; the full notice is one keyboard press away (Show more).
+    assert f"{C.SEVERITY_LIMITS}: {limits.line(selected.kind)}" in shown()
+    assert not _clipping_problems(app)
+    assert not _off_window_problems(app)
+    toggle = app._limits_more_button
+    assert toggle is not None and toggle.winfo_ismapped()
+    assert str(toggle.cget("takefocus")) not in ("0", "")  # a Tab stop
+    app.root.focus_force()
+    toggle.focus_set()
+    app.root.update()
+    (app.root.focus_get() or toggle).event_generate("<Return>", time=90_000)
+    app.root.update()
+    app.root.event_generate("<KeyRelease-Return>", time=90_100)
+    app.root.update()
+    assert wiz.screen == Screen.METHOD and wiz.method == method
+    texts = shown()
+    assert f"{C.SEVERITY_LIMITS}: {limits.notice(selected.kind)}" in texts
+    assert limits.OVERWRITE_LIMITS in texts[texts.index(f"{C.SEVERITY_LIMITS}: {limits.notice(selected.kind)}")]
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
     app._on_key(SimpleNamespace(keysym="l", char="l"))
@@ -1389,23 +1483,33 @@ def test_every_terminal_result_renders_consistent_text(ui, case, size):
         for child in widget.winfo_children():
             visit(child)
     visit(app.root)
-    assert wiz.result_view.message in texts
-    assert wiz.result_view.next_step in texts
+    plain = wiz.result_plain
+    # #134: the plain headline names the outcome on every result.
+    assert plain.headline in texts
     assert evidence["presentation"]["announcement"] == wiz.result_view.announcement
     from beamo_wipe import recovery as Rec
     if wiz.result_view.success:
         assert Rec.RECOVERY_HAPPENED not in texts
+        # #134: a finished erase shows its note and the short What next
+        # list in place of the next-step paragraph.
+        assert plain.note in texts
+        assert list(plain.numbered) == [t for t in texts if t in plain.numbered]
     else:
+        assert wiz.result_view.next_step in texts
         assert Rec.RECOVERY_HAPPENED in texts
         assert Rec.RECOVERY_MEANING in texts
         assert Rec.RECOVERY_NEXT in texts
         assert Rec.recovery_for_view(wiz.result_view).meaning in texts
-    from beamo_wipe.outcomes import AFTERCARE_SUCCESS
+    _assert_outcome_message_reachable(app, texts)
+    from beamo_wipe.outcomes import AFTERCARE_SUCCESS, NEXT_ITEM_KEEP
     shown = " ".join(texts)
     if wiz.result_view.success:
-        assert AFTERCARE_SUCCESS in shown
+        # #134: "Keeping this computer?" replaces the aftercare paragraph.
+        assert NEXT_ITEM_KEEP in shown
+        assert AFTERCARE_SUCCESS not in shown
     else:
         assert AFTERCARE_SUCCESS not in shown
+        assert NEXT_ITEM_KEEP not in shown
         assert "was processed" not in shown
     from beamo_wipe.ui.tk_wizard import OK, WARN, DANGER
     tone = {"ok": OK, "warn": WARN, "danger": DANGER}[wiz.result_view.tone]
@@ -1423,8 +1527,16 @@ def test_held_f5_cannot_skip_refresh_wording(ui):
     assert wiz.selected is not None and wiz.owner_ok
     app._on_key(SimpleNamespace(keysym="F5", char=""))
     assert wiz.screen == Screen.REFRESH_CONFIRM
+    # #136: Review holds confirmations, so even a released and pressed
+    # again F5 never accepts the guarded dialog; only its own button does.
     app._on_f5_release()
     app._on_key(SimpleNamespace(keysym="F5", char=""))
+    assert wiz.screen == Screen.REFRESH_CONFIRM
+    assert wiz.selected is not None and wiz.owner_ok
+    from beamo_wipe import copy as C
+
+    app._draw()
+    _button_named(app, C.BTN_REFRESH)._command()
     assert wiz.screen == Screen.REFRESHING
     assert _await_scan_done(app) == Screen.OWNER
 
@@ -1432,6 +1544,10 @@ def test_held_f5_cannot_skip_refresh_wording(ui):
 @pytest.mark.parametrize("screen", [Screen.PICK, Screen.PICK_EMPTY, Screen.PICK_BLOCKED, Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE])
 def test_graphical_refresh_restarts_full_authorization(ui, screen):
     from types import SimpleNamespace
+
+    from beamo_wipe import copy as C
+    from beamo_wipe.wizard import REFRESH_DIRECT_SCREENS
+
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, Screen.LAST_CHANCE)
     wiz.screen = screen
@@ -1441,6 +1557,13 @@ def test_graphical_refresh_restarts_full_authorization(ui, screen):
     assert wiz.selected is not None
     app._on_f5_release()
     app._on_key(SimpleNamespace(keysym="F5", char=""))
+    if screen not in REFRESH_DIRECT_SCREENS:
+        # #136: on screens holding confirmations a second F5 never accepts;
+        # only the dialog's own Check disks again button clears them.
+        assert wiz.screen == Screen.REFRESH_CONFIRM
+        assert wiz.selected is not None and wiz.owner_ok
+        app._draw()
+        _button_named(app, C.BTN_REFRESH)._command()
     assert wiz.screen == Screen.REFRESHING
     assert _await_scan_done(app) == Screen.OWNER
     assert wiz.selected is None and not wiz.owner_ok and not wiz.confirm_input
@@ -1464,6 +1587,15 @@ def test_screen_reader_switch_clears_authorization(ui, monkeypatch, fresh_ok):
             raise OSError("fake discovery failure")
         wiz._rediscover = fail
     app._click_accessible()
+    # #136: Confirm holds confirmations, so the reader switch asks first
+    # and clears nothing until the dialog's own button is pressed.
+    from beamo_wipe import copy as C
+
+    assert wiz.screen == Screen.REFRESH_CONFIRM and wiz.refresh_then_reader
+    assert wiz.selected is not None and wiz.owner_ok and wiz.confirm_input
+    assert not app._accessible_requested
+    app._draw()
+    _button_named(app, C.BTN_REFRESH)._command()
     # Refresh now scans off the UI thread: the handoff lands once applied.
     assert wiz.screen == Screen.REFRESHING
     deadline = time.monotonic() + 15.0
@@ -1516,7 +1648,9 @@ def test_report_help_rendered_preference_and_layout(ui, wanted, size, origin):
         for child in widget.winfo_children():
             yield from widgets(child)
 
-    link = _button_named(app, C.REPORT_HELP_TITLE)
+    app._open_help_menu()  # #175: report help is in Help & settings
+    app.root.update_idletasks()
+    link = _button_named(app, C.MENU_REPORT_HELP)
     link._command()
     app.root.update_idletasks()
     reader = next(w for w in widgets(app.root) if isinstance(w, tk.Text))
@@ -1577,8 +1711,8 @@ def test_saved_receipt_location_fits_minimum_window(ui, tmp_path):
     assert "/run/" not in blob and "/dev/" not in blob
 
 
-@pytest.mark.parametrize('message', ['No new report USB found. Insert exactly one new FAT32 report USB, then try again.',
-                                    'Use a FAT32 report USB. Other filesystems are not mounted.',
+@pytest.mark.parametrize('message', ['No new report USB found. Insert exactly one new FAT32 or exFAT report USB, then try again.',
+                                    'Use a FAT32 or exFAT report USB. Other filesystems are not mounted.',
                                     'The report USB was removed.'])
 def test_report_aftercare_errors_and_lifetime_at_minimum_size(ui, tmp_path, message):
     from beamo_wipe import copy as C
@@ -1599,7 +1733,15 @@ def test_report_aftercare_errors_and_lifetime_at_minimum_size(ui, tmp_path, mess
         for child in w.winfo_children():
             visit(child)
     visit(app.root)
-    assert any(message in value and C.REPORT_VOLATILE in value for value in rendered)
+    # #135: the failed-save panel says what happened (the exact refusal)
+    # and, in its own notice line, that an unsaved report is lost at shut
+    # down; both stay on screen at 800x600.
+    from beamo_wipe import recovery as Rec
+
+    panel = wiz.report_panel
+    assert panel.kind == "failed"
+    assert any(f"{Rec.RECOVERY_HAPPENED}: {message}" in str(value) for value in rendered)
+    assert panel.notice in rendered and C.REPORT_VOLATILE in panel.notice
 
 
 @pytest.mark.parametrize("size", [WINDOW, MIN_WINDOW])
@@ -1784,6 +1926,10 @@ def test_working_timer_keeps_cancel_control_until_revision_changes(ui, monkeypat
     _drive_to(w, app, Screen.LAST_CHANCE)
     w._erase_until = 0
     w.confirm_erase()
+    # The first sound-availability answer (#133) redraws Working once;
+    # settle it here so only progress timer ticks are measured below.
+    w.set_audio_availability(False, "")
+    w._audio_probe_at = w.now + 3600
     app._draw()
     generation = app._draw_generation
     def walk(widget):
@@ -1814,14 +1960,17 @@ def test_timing_text_readable_and_working_controls_stable(ui, size):
     with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=view):
         app._draw()
         app.root.update_idletasks()
-        label = app._progress_label
-        assert label.cget("text") == view.timing_text
-        assert "Estimated time remaining: about 2 hours" in label.cget("text")
+        # Glance (#132): percentage, rounded time left, then the notes.
+        label = app._progress_time
+        # #167: when it started and the cautious time left, in large text.
+        assert label.cget("text") == view.glance_time == (
+            "Started 1 day 1 hour 1 minute ago · about 2 hours left")
+        assert app._progress_label.cget("text") == "\n".join(view.glance_notes)
         assert label.winfo_height() >= label.winfo_reqheight()
         assert label.winfo_rooty() + label.winfo_height() < app.root.winfo_rooty() + app.root.winfo_height()
         for _ in range(10):
             app._refresh_working()
-        assert app._progress_label is label
+        assert app._progress_time is label
         assert app._progress_pct.cget("text") == "82%"
 
 
@@ -1839,10 +1988,11 @@ def test_stale_progress_is_marked_old_and_does_not_animate(ui, size):
         app._draw()
         app.root.update_idletasks()
         assert app._progress_pct.cget("text") == "42% (old)"
-        assert "No new progress update for less than 1 minute." in app._progress_label.cget("text")
-        assert STALE_MEANING in app._progress_label.cget("text")
-        assert STALE_NEXT in app._progress_label.cget("text")
-        label = app._progress_label
+        # Stale progress (#132) sits in its own warning band.
+        assert "No new progress update for less than 1 minute." in app._progress_stale.cget("text")
+        assert STALE_MEANING in app._progress_stale.cget("text")
+        assert STALE_NEXT in app._progress_stale.cget("text")
+        label = app._progress_stale
         assert label.winfo_height() >= label.winfo_reqheight()
         assert label.winfo_rooty() + label.winfo_height() < app.root.winfo_rooty() + app.root.winfo_height()
         before = [app._progress_bar.coords(item) for item in app._progress_bar.find_all()]
@@ -1876,18 +2026,26 @@ def test_preparing_animates_only_before_the_first_number(ui):
         for _ in range(8):
             app._refresh_working()
         assert [app._progress_bar.coords(item) for item in app._progress_bar.find_all()] == frozen
-        assert "No new progress update" in app._progress_label.cget("text")
+        assert "No new progress update" in app._progress_stale.cget("text")
         assert app._progress_pct.cget("text") == ""
 
 
 def test_stopping_shows_elapsed_without_estimate(ui):
+    from beamo_wipe import progress as P
+    from beamo_wipe.progress import ProgressView, plan_stages
+    from unittest.mock import PropertyMock, patch
+    from beamo_wipe.wizard import Wizard
+
     wiz, app = ui()
     wiz.screen = Screen.STOPPING
-    app._draw()
-    app.root.update_idletasks()
-    assert "Stopping" in app._progress_label.cget("text")
-    assert "Elapsed:" in app._progress_label.cget("text")
-    assert "remaining" not in app._progress_label.cget("text")
+    view = ProgressView(P.PHASE_STOPPING, 42.0, 3010, stages=plan_stages(1, True), position=0)
+    with patch.object(Wizard, "progress_view", new_callable=PropertyMock, return_value=view):
+        app._draw()
+        app.root.update_idletasks()
+        # Stopping (#132): last known step and elapsed time, no estimate.
+        assert app._progress_label.cget("text") == "Step 1 of 2: Overwriting\nElapsed: 50 minutes"
+        assert app._progress_label.cget("text") == view.stopping_text
+        assert "left" not in app._progress_label.cget("text")
 
 
 def test_working_redraw_keeps_receiver_for_held_enter_release(ui, tmp_path, monkeypatch):
@@ -2058,12 +2216,13 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, Screen.OWNER, size=MIN_WINDOW)
     shown = _label_text(app)
-    for bullet in C.WHAT_BULLETS:
+    for bullet in C.owner_bullets():
         assert bullet in shown
-    assert "copies you need" in shown
-    assert "recovery partitions on that disk" in shown
+    assert C.owner_platforms_line() not in shown  # #146: under Show more
+    assert "copies of anything you want to keep" in shown
+    assert "Windows or Linux" in shown
     assert C.POWER_REMINDER in shown
-    assert C.POWER_BLANKING in shown
+    assert C.POWER_BLANKING not in shown  # #168: the screen stays lit while erasing
     assert C.TITLE_OWNER in shown
     assert C.OWNER_CHECKBOX in shown
     assert C.BTN_UNDERSTAND not in shown
@@ -2072,15 +2231,14 @@ def test_what_screen_shows_backup_and_os_prepare_at_minimum_size(ui):
 
 
 @pytest.mark.parametrize("contents,prepare", [
-    ("windows", "This selected disk shows Windows partitions"),
-    ("system", "This selected disk shows operating-system partitions"),
-    ("data", "does not show operating-system partitions"),
-    ("unknown", "including any operating system"),
+    ("windows", "will be erased, including Windows."),
+    ("system", "will be erased, including its operating system."),
+    ("data", "will be erased. You cannot get it back."),
+    ("unknown", "will be erased. You cannot get it back."),
 ])
 @pytest.mark.parametrize("screen", [Screen.CONFIRM, Screen.LAST_CHANCE])
 def test_prepare_text_visible_for_system_and_data_disks(ui, contents, prepare, screen):
     from dataclasses import replace
-    from beamo_wipe import copy as C
 
     wiz, app = ui(size=MIN_WINDOW)
     _drive_to(wiz, app, screen, size=MIN_WINDOW)
@@ -2092,7 +2250,8 @@ def test_prepare_text_visible_for_system_and_data_disks(ui, contents, prepare, s
     assert prepare in shown
     assert wiz.selected.display_name in shown
     assert wiz.selected.serial in shown
-    assert C.prepare_selected(wiz.selected) in shown
+    # #128: the one warning on each screen carries the system it found.
+    assert shown.count("will be erased") == 1
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
 
@@ -2129,6 +2288,9 @@ def test_serial_number_label_is_visible_without_show_more(ui, size):
     wiz, app = ui(size=size)
     wiz.screen = Screen.PICK
     app._show_more = False
+    # #149: unselected disks are one-line rows; the selected disk's card
+    # shows "Serial number" and the value without Show more.
+    wiz.select_disk("/dev/nvme0n1")
     app._draw()
     app.root.update()
     shown = _label_text(app)
@@ -2250,6 +2412,10 @@ def test_serial_comparison_markers_wrap_and_leave_controls_visible(size, long):
         app.root.geometry(f"{size[0]}x{size[1]}+40+40")
         _drive_to(wiz, app, Screen.PICK, size=size)
         for disk in wiz.selectable:
+            # #149: the serial and its marks are on the selected disk's card.
+            wiz.select_disk(disk.path)
+            app._draw()
+            app.root.update()
             labels = []
             def visit(widget):
                 if isinstance(widget, tk.Label):
@@ -2258,8 +2424,22 @@ def test_serial_comparison_markers_wrap_and_leave_controls_visible(size, long):
                     visit(child)
             visit(app._pick_cards[disk.path])
             view = wiz.disk_view(disk)
-            assert any(str(label.cget('text')).replace('\n', '') == view.marked_id for label in labels)
+            # #152: Tk keeps the plain serial in the label and draws the
+            # differing characters bold and underlined over it (no brackets).
+            assert view.comparison_marks
+            marked = [label for label in labels if getattr(label, "_beamo_serial_marked", False)]
+            assert len(marked) == 1
+            assert str(marked[0].cget('text')).replace('\n', '') == view.id_value
             assert any(view.comparison_note == str(label.cget('text')) for label in labels)
+            if not long:
+                from test_serial_tracking_177g import _bold_indices
+                for _ in range(3):
+                    app.root.update()
+                # #177 follow-up: the marks are drawn on the serial's own
+                # canvas cells (_SerialFace), not as overlay labels.
+                face = getattr(marked[0], "_beamo_serial_face", None)
+                assert face is not None and face.text == view.id_value
+                assert "".join(face.text[i] for i in _bold_indices(face)) in ("3", "4")
             for label in labels:
                 assert label.winfo_reqwidth() <= label.winfo_width() + 2
                 assert label.winfo_reqheight() <= label.winfo_height() + 2
@@ -2373,6 +2553,9 @@ def test_method_plain_lead_and_limits_fit_card_column(ui, code):
     try:
         wiz, app = ui(size=(800, 600))
         _drive_to(wiz, app, Screen.METHOD, size=(800, 600))
+        # #159: the Everyday limits note sits under that card's Show more.
+        app._method_more_buttons[MethodId.EVERYDAY]._command()
+        app.root.update()
         needles = [spec.plain_lead for spec in METHODS.values()] + [C.EVERYDAY_LIMITS]
         found = {needle: False for needle in needles}
 
@@ -2417,7 +2600,7 @@ def test_review_timer_is_secondary_and_completion_preserves_focus(ui, size):
     numeral = font.Font(root=app.root, font=app._countdown_num.cget("font"))
     assert abs(numeral.cget("size")) <= abs(app.font_bold.cget("size"))
     assert "selected disk and method" in C.LAST_LEAD
-    assert "never starts erasure" in C.LAST_LEAD
+    assert "Erasing starts only when you press Erase now." in C.LAST_LEAD  # #162
     wiz._erase_until = 0
     app._refresh_last_chance()
     app.root.update()
@@ -2472,12 +2655,15 @@ def test_done_separates_report_status_at_minimum_size(ui, case, status):
             yield from walk(child)
     labels = {widget.cget("text"): widget for widget in walk(app.root) if isinstance(widget, tk.Label)}
     # #95: the specific outcome is the main heading; the generic label is gone.
-    message = app.w.result_view.message
-    assert message in labels
+    # #134: that heading is the outcome's plain headline; the exact status
+    # message stays on screen (What happened) or behind Show more.
+    headline = app.w.result_plain.headline
+    assert headline in labels
     assert "Erase status" not in labels
     assert C.REPORT_STATUS_TITLE in labels
     assert app.w.report_view.headline in labels
-    assert labels[message].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    assert labels[headline].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    _assert_outcome_message_reachable(app, labels)
     assert not _clipping_problems(app)
     assert not _off_window_problems(app)
 
@@ -2570,13 +2756,17 @@ def test_working_sounds_toggle_and_hear(ui, size, monkeypatch):
     wiz, app = ui(size=size)
     wiz.screen = Screen.WORKING
     wiz.selected = wiz.selectable[0]
+    # An output was found (#133); no live availability check here.
+    wiz.set_audio_availability(True)
+    wiz._audio_probe_at = wiz.now + 3600
     app._draw()
     app.root.update_idletasks()
-    toggle = _button_named(app, C.SOUND_TOGGLE_OFF)
-    toggle._command()
+    # Working shows the labelled finish-sound check box, not "Sounds: off".
+    toggle = app._finish_toggle
+    assert toggle.cget("text") == C.FINISH_SOUND_TOGGLE
+    toggle.invoke()
     assert wiz.sounds_enabled is True
-    assert wiz.sound_message == C.SOUND_TOGGLE_ON
-    _button_named(app, C.SOUND_TOGGLE_ON)
+    assert bool(app._finish_toggle._variable.get()) is True
     app.root.update_idletasks()
     hear = _button_named(app, C.SOUND_HEAR)
     hear._command()
@@ -2610,8 +2800,12 @@ def test_done_auto_plays_once_and_offers_replay(ui, size):
         _await_sound(wiz)
     assert calls == [sound_module.KIND_ATTENTION]
     assert wiz.result_view.message == message_before
-    _button_named(app, C.SOUND_TOGGLE_ON)
+    # #175: Sounds on/off is in Help & settings; Hear again stays.
     replay = _button_named(app, C.SOUND_HEAR_AGAIN)
+    app._open_help_menu()
+    app.root.update_idletasks()
+    _button_named(app, C.SOUND_TOGGLE_ON)
+    app._close_help_menu()
     with patch.object(
         sound_module, "play_test",
         lambda kind: calls.append(("hear", kind))
@@ -2638,11 +2832,18 @@ def test_done_heading_is_outcome_message(ui, size, code):
     labels = {w.cget("text"): w for w in descendants(app.root) if isinstance(w, tk.Label)}
     message = VIEWS[code].message
     assert app.w.result_view.message == message
-    assert message in labels
+    # #134: the heading is this outcome's own plain headline (never a
+    # generic "Erase status"); the exact message stays reachable.
+    from beamo_wipe import outcomes
+
+    headline = outcomes.plain_result(VIEWS[code]).headline
+    assert app.w.result_plain.headline == headline
+    assert headline in labels
     assert "Erase status" not in labels
-    font_size = tkfont.nametofont(labels[message].cget("font")).actual("size")
+    font_size = tkfont.nametofont(labels[headline].cget("font")).actual("size")
     assert font_size == app.font_h.actual("size")
-    assert labels[message].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    assert labels[headline].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    _assert_outcome_message_reachable(app, labels)
     assert not _clipping_problems(app)
 
 
@@ -2680,11 +2881,22 @@ def test_done_post_erase_boot_note(ui, size, code, shown):
     app.w, _, _ = case_evidence(case)
     app._draw()
     app.root.update()
+    from beamo_wipe import outcomes
+
     labels = {w.cget("text"): w for w in descendants(app.root) if isinstance(w, tk.Label)}
-    assert (C.POST_ERASE_BOOT in labels) == shown
-    if shown:
-        message = app.w.result_view.message
-        assert labels[message].winfo_rooty() < labels[C.POST_ERASE_BOOT].winfo_rooty()
+    headline = app.w.result_plain.headline
+    if app.w.result_plain.checklist:
+        # #134: a finished erase says it once, as the What next item
+        # "Keeping this computer? ... install an operating system", not as a
+        # second separate note.
+        assert C.POST_ERASE_BOOT not in labels
+        keep = next(t for t in labels if outcomes.NEXT_ITEM_KEEP in str(t))
+        assert labels[headline].winfo_rooty() < labels[keep].winfo_rooty()
+        assert labels[keep].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
+    else:
+        assert (C.POST_ERASE_BOOT in labels) == shown
+    if shown and not app.w.result_plain.checklist:
+        assert labels[headline].winfo_rooty() < labels[C.POST_ERASE_BOOT].winfo_rooty()
         assert labels[C.POST_ERASE_BOOT].winfo_rooty() < labels[C.REPORT_STATUS_TITLE].winfo_rooty()
     assert not _clipping_problems(app)
 
@@ -2769,16 +2981,23 @@ def test_pick_report_media_notice_follows_preference(ui, wanted):
 
 
 @pytest.mark.parametrize(
-    "status,message,marked,unmarked",
+    "status,message,kind",
     [
-        ("idle", "", ("1. ", "(now)"), ()),
-        ("saving", None, ("(done)", "(now)"), ()),
-        ("saved", None, ("(done)", "(now)"), ()),
-        ("error", "Report USB was removed.", ("Save report to USB again",), ("Insert the report USB",)),
+        ("idle", "", "ready"),
+        ("saving", None, "saving"),
+        ("saved", None, "saved"),
+        ("error", "Report USB was removed.", "failed"),
     ],
 )
-def test_done_export_stages_per_state(ui, tmp_path, status, message, marked, unmarked):
+def test_done_export_stages_per_state(ui, tmp_path, status, message, kind):
+    """#135: the Save a report panel shows numbered steps for each state.
+
+    The panel replaced the old export stage list; every state still shows
+    which step is done and which is now, and a failed save offers Save again
+    with what happened.
+    """
     from beamo_wipe import copy as C
+    from beamo_wipe import progress as P
     from test_usb_report_workflow import _done_wizard, _success_receipt
 
     _, app = ui(size=MIN_WINDOW)
@@ -2798,12 +3017,32 @@ def test_done_export_stages_per_state(ui, tmp_path, status, message, marked, unm
     app.root.update()
     labels = {w.cget("text") for w in descendants(app.root) if isinstance(w, tk.Label)}
     blob = "\n".join(labels)
+    panel = wiz.report_panel
+    assert panel.kind == kind
+    assert C.REPORT_STATUS_TITLE in labels
+    assert len(panel.step_lines) == 5
+    for line in panel.step_lines:
+        assert line in labels
     for index, stage in enumerate(C.EXPORT_STAGES, 1):
-        assert (f"{index}. {stage}" in blob) == (status != "error")
-    for needle in marked:
-        assert needle in blob
-    for needle in unmarked:
-        assert needle not in blob
+        assert f"{index}. {stage}" not in blob  # the old stage list is gone
+    done, now = P.STAGE_DONE_MARK, P.STAGE_NOW_MARK
+    expected = {
+        "idle": (f"1. {C.REPORT_STEP_INSERT}{now}", f"3. {C.REPORT_STEP_SAVE}{now}"),
+        "saving": (f"1. {C.REPORT_STEP_INSERT}{done}", f"3. {C.REPORT_STEP_SAVING}{now}"),
+        "saved": (f"3. {C.REPORT_STEP_SAVED}{done}", f"5. {C.REPORT_STEP_REMOVE_NOW}{now}"),
+        "error": (f"1. {C.REPORT_STEP_INSERT}{now}", f"3. {C.REPORT_STEP_SAVE}{now}"),
+    }[status]
+    for line in expected:
+        assert line in labels
+    save = [b for b in descendants(app.root) if isinstance(b, _Button)
+            and b.itemcget(b._label, "text") == C.BTN_SAVE_REPORT]
+    if status in ("idle", "error"):
+        # Save is offered (again after a failure) and enabled.
+        assert len(save) == 1 and save[0]._enabled and save[0].winfo_ismapped()
+    else:
+        assert not save
+    if status == "error":
+        assert panel.detail and panel.detail in labels  # what happened, what to do
     assert not _clipping_problems(app)
 
 

@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import json
-import re
 import shutil
 import subprocess
 
@@ -12,10 +11,11 @@ import pytest
 
 from beamo_wipe import copy as C
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def _script() -> str:
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    scripts = [inline_script(gallery_html())]
     assert len(scripts) == 1
     return scripts[0]
 
@@ -83,12 +83,14 @@ if (method !== 'extra') throw Error('valid method lost');
 
 
 @pytest.mark.parametrize(
-    "screen,repeat,expected_refreshes",
-    (("owner", True, 0), ("working", False, 0),
-     ("owner", False, 1), ("refresh_confirm", False, 1)),
+    "screen,repeat,expected_refreshes,refresh_from",
+    (("owner", True, 0, "owner"), ("working", False, 0, "owner"),
+     ("owner", False, 1, "owner"), ("refresh_confirm", False, 1, "pick"),
+     # #136: a second F5 never accepts the guarded dialog (from Review).
+     ("refresh_confirm", False, 0, "last")),
 )
 def test_f5_never_reloads_browser_or_repeats_inventory_action(
-    screen, repeat, expected_refreshes
+    screen, repeat, expected_refreshes, refresh_from
 ):
     node = shutil.which("node")
     if node is None:
@@ -99,11 +101,13 @@ def test_f5_never_reloads_browser_or_repeats_inventory_action(
 let handler;
 const document = {addEventListener(_name, fn) {handler=fn;}};
 let screen = """ + json.dumps(screen) + """;
+let helpOpen = false;
 let refreshes=0;
 const requestRefresh=()=>{refreshes += 1;};
 const refreshPreview=()=>{refreshes += 1;};
 const draw=()=>{};
-let refreshFrom='owner', shutdownFrom='owner', reportHelpFrom='owner';
+let refreshFrom=""" + json.dumps(refresh_from) + """, shutdownFrom='owner', reportHelpFrom='owner';
+const refreshGuarded=()=>!['pick','empty','blocked','disk_help'].includes(refreshFrom);
 let event={key:'F5', repeat:""" + json.dumps(repeat) + """, defaultPrevented:false,
   preventDefault(){this.defaultPrevented=true;}};
 document.addEventListener("keydown", e => {""" + listener + "\n});\n" + """

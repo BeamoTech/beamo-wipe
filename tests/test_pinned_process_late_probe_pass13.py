@@ -48,6 +48,7 @@ def test_new_pinned_engine_after_initial_probe_blocks_spawn(tmp_path, monkeypatc
     monkeypatch.setattr(runner_module, "assert_log_not_on_target", lambda *_a: None)
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     monkeypatch.setattr(runner_module, "_recheck_identity_under_lock", lambda *_a: None)
+    monkeypatch.setattr(runner_module, "_reserve_target_under_lock", lambda *_a: None)
     monkeypatch.setattr(runner, "_acquire_wipe_lock", lambda _r: None)
     monkeypatch.setattr(runner, "_release_wipe_lock", release_owned_handles)
     monkeypatch.setattr(runner._sleep_inhibit, "start", lambda: None)

@@ -18,7 +18,7 @@ type readinessCheck struct {
 // an early return must not make a later check look successful.
 func explainReadiness(s Snapshot, p Plan) ([]readinessCheck, string) {
 	checks := []readinessCheck{
-		{"usb", "Original USB detection", "unverified", "Not verified. The check did not establish the original USB's identity.", "Keep the original USB connected and choose Check again, or close this window and open START-HERE.html on the USB."},
+		{"usb", "Beamo USB detection", "unverified", "Not verified. The check did not establish the Beamo USB's identity.", "Keep the Beamo USB connected and choose Check again, or close this window and open START-HERE.html on the USB."},
 		{"settings", "Startup-settings readability", "unverified", "Not verified. The check did not establish that startup settings could be read.", "Resolve the earlier check, then choose Check again. You can also use the boot instructions below."},
 		{"route", "Supported restart route", "unverified", "Not verified. A guided restart is not available from these results.", "Use the boot instructions below, or resolve the other checks and choose Check again."},
 	}
@@ -41,7 +41,7 @@ func explainReadiness(s Snapshot, p Plan) ([]readinessCheck, string) {
 	switch p.Problem {
 	case "media", "unattended":
 		usb.State = "fail"
-		usb.Detail = "Not confirmed. The original USB could not be safely accepted."
+		usb.Detail = "Not confirmed. The Beamo USB could not be safely accepted."
 		usb.Next = "Open the launcher from the original Beamo USB, not a copied application. Try a direct USB port, then choose Check again."
 		if p.Problem == "unattended" {
 			usb.Detail = "Blocked. Automated installation files were found on this USB."
@@ -74,6 +74,9 @@ func explainReadiness(s Snapshot, p Plan) ([]readinessCheck, string) {
 		route.State = "unsupported"
 		route.Detail = "Use the boot menu. Windows may cancel a requested restart after accepting it, so the launcher cannot safely set a one-time startup entry."
 		route.Next = "Save your work, use Windows Restart, then choose the Beamo USB from the computer's boot menu."
+		if p.AdvancedStartup {
+			route.Next = "Save your work, then choose Restart to boot options below and pick the Beamo USB under Use a device. Or use Windows Restart and the computer's boot menu."
+		}
 	case "pending":
 		route.State = "blocked"
 		route.Detail = "Already scheduled. Another special startup request is present; Beamo will not replace it."

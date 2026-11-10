@@ -10,10 +10,20 @@ physical checks. No new platform claim is established by this design alone.
 Insert the USB, open Start Beamo Wipe, and let the automatic read-only check
 finish. On Linux, an exact verified UEFI entry may offer a guided restart. On
 Windows, save work, use the normal Restart command, and select the USB from the
-computer's boot menu. The live wizard remains the only erase engine entry. It
+computer's boot menu, or (Windows 10/11, identified Beamo USB) confirm
+**Restart to boot options** and choose Use a device → the USB
+([restart-boot-options.md](restart-boot-options.md), #183). The live wizard remains the only erase engine entry. It
 asks for ownership, exact target confirmation, and the existing delay. A
 restart never authorizes an erase after boot.
 Ordinary BIOS/UEFI boot remains independent of the desktop launcher.
+
+Boot-menu key (#184): the check also reads the computer's reported
+manufacturer (Windows WMI `Win32_ComputerSystem`/`Win32_BaseBoard`, Linux
+`/sys/class/dmi/id`; no elevation, no serial numbers) and shows "Most <brand>
+computers: press <key> at power-on" with the full table under **Show more**.
+An unknown or unread brand shows the table open. The keys come from the one
+table in `desktop/bootkeys.json`, shared with the Boot helper and the boot
+card; see [boot-keys.md](boot-keys.md).
 
 The first delivery keeps both system and separate-drive erasure offline. The
 current nwipe-only boundary has no native Windows implementation. Installed
@@ -51,8 +61,13 @@ is only a local presentation surface; no internet or account is required.
   devices, and unsupported architecture receive a clear manual boot path.
 - Windows always uses the manual boot path. `ExitWindowsEx` can report success
   before another application or the user cancels shutdown, which could strand
-  `BootNext` for a later restart. The Windows launcher does not request a reboot
-  or write firmware startup variables.
+  `BootNext` for a later restart. The Windows launcher does not write firmware
+  startup variables. Its only restart is the optional, confirmed **Restart to
+  boot options** (#183): `shutdown.exe /r /o /t 0`, no `/f`, no elevation, no
+  BootNext (whether a cancelled restart still opens the boot options later is
+  not verified). The real runner is wired
+  only in `run()` and refuses inside test binaries; see
+  [restart-boot-options.md](restart-boot-options.md).
 - No automatic launch, restart, or erase on insertion. No automatic erase on
   boot. Preview cannot invoke platform mutation APIs.
 
@@ -96,7 +111,8 @@ No automatic insertion launch or universal double-click claim is justified.
 An exact existing USB Boot#### entry is required for Linux direct restart;
 firmware that exposes only a generic USB path receives manual boot instructions.
 Windows always receives manual boot instructions because a canceled shutdown
-could leave a one-time USB boot entry armed for a later restart.
+could leave a one-time USB boot entry armed for a later restart. Restart to boot
+options (#183) is offered beside them; it sets no boot entry.
 
 Native Windows Server runtime tests cover the actual Win32 read-only API and
 PowerShell inventory parser with simulated disks. They do not establish

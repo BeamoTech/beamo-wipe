@@ -154,3 +154,39 @@ def test_qemu_repeats_each_guest_on_a_distinct_scenario():
         f"{scenario}|{method}" for method in ("everyday", "extra", "quick_zero")
         for scenario in (method, f"{method}-repeat")
     ]
+
+
+def test_cdrom_booted_targets_keep_their_own_confirm_characters():
+    """Hosted run 41518189715: bios-quick_zero's target serial 0003 ended like
+    the -cdrom ISO's QEMU default serial QM00003. The guest correctly listed
+    both and fell back to the older rule (#129), while the host helper, which
+    models the boot media without a serial, typed 0003. Targets booted beside
+    the CD-ROM must keep a last-4 ending no QEMU default IDE serial has."""
+    from beamo_wipe.discover import size_gb_label
+    from beamo_wipe.models import Disk, DiskKind
+    from beamo_wipe.safety import confirm_spec
+
+    source = QEMU.read_text(encoding="utf-8")
+    serials = [row["serial"] for row in _cases()]
+    serials += re.findall(r'^QEMU_TARGET_SERIAL="(\d+)"$', source, re.M)
+    assert len(serials) == 5
+    size = 67108864
+    for serial in serials:
+        target = Disk(path="/dev/vda", name="vda", model="QEMU target", serial=serial,
+                      size_bytes=size, size_gb_label=size_gb_label(size),
+                      kind=DiskKind.HDD, bus="virtio", label="")
+        for unit in range(1, 13):
+            cdrom = Disk(path="/dev/sr0", name="sr0", model="QEMU DVD-ROM",
+                         serial=f"QM{unit:05d}", size_bytes=900_000_000,
+                         size_gb_label="1", kind=DiskKind.UNKNOWN, bus="ata",
+                         label="Beamo Wipe", is_boot=True)
+            spec = confirm_spec(target, (target, cdrom))
+            assert spec.in_card and spec.token == serial, (serial, cdrom.serial, spec.token)
+    # The old serial reproduces the hosted failure.
+    old = Disk(path="/dev/vda", name="vda", model="QEMU target", serial="0003",
+               size_bytes=size, size_gb_label=size_gb_label(size),
+               kind=DiskKind.HDD, bus="virtio", label="")
+    cdrom = Disk(path="/dev/sr0", name="sr0", model="QEMU DVD-ROM", serial="QM00003",
+                 size_bytes=900_000_000, size_gb_label="1", kind=DiskKind.UNKNOWN,
+                 bus="ata", label="Beamo Wipe", is_boot=True)
+    assert confirm_spec(old, (old, cdrom)).token != "0003"

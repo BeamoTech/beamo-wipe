@@ -33,7 +33,7 @@ def _parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="beamo-wipe",
         description=(
-            "Guided front-end for nwipe. This is not a wipe engine. "
+            "Guided front-end for nwipe. This is not an erase engine. "
             "It will not erase disks from inside Windows or macOS. "
             "On this computer, use --preview or ./preview (fake disks)."
         ),
@@ -50,24 +50,24 @@ def _parser() -> argparse.ArgumentParser:
         "--gallery",
         dest="web",
         action="store_true",
-        help="Open a browser click-through of the screens. Does not wipe.",
+        help="Open a browser click-through of the screens. Does not erase.",
     )
     p.add_argument(
         "--lang",
-        choices=("en", "fr", "de"),
+        choices=("en", "fr", "de", "es", "it"),
         default="en",
-        help="Gallery language: en, fr, or de. Preview only; ignored on the live USB.",
+        help="Gallery language: en, fr, de, es, or it. Preview only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--helper",
         action="store_true",
-        help="Open the boot-menu helper page (does not wipe).",
+        help="Open the Boot helper (does not erase).",
     )
     p.add_argument(
         "--scenario",
-        choices=("happy", "empty", "blocked", "fail"),
+        choices=("happy", "empty", "hidden", "blocked", "fail"),
         default="happy",
-        help="Preview disk list: happy, empty, blocked, or fail.",
+        help="Preview disk list: happy, empty, hidden (Intel VMD), blocked, or fail.",
     )
     p.add_argument("--empty", action="store_true", help="Preview: only the Beamo USB.")
     p.add_argument("--blocked", action="store_true", help="Preview: cannot identify USB.")
@@ -76,24 +76,24 @@ def _parser() -> argparse.ArgumentParser:
         "--fail-demo",
         dest="fail_demo",
         action="store_true",
-        help="Preview a failed wipe.",
+        help="Preview a failed erase.",
     )
     p.add_argument("--plain-console", action="store_true", help="Use sequential text prompts without curses screen redraws.")
     p.add_argument("--console", action="store_true", help="Use the keyboard console UI.")
     p.add_argument("--accessible", action="store_true", help="Use the Linux GTK screen-reader view.")
-    p.add_argument("--fullscreen", action="store_true", help="Fill the screen (live USB).")
+    p.add_argument("--fullscreen", action="store_true", help="Fill the screen (Beamo USB).")
     p.add_argument(
         "--dry-run",
         action="store_true",
-        help="Do not invoke nwipe. Test only; ignored on the live USB.",
+        help="Do not invoke nwipe. Test only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--lsblk-json",
-        help="Read disks from an lsblk JSON file. Test only; ignored on the live USB.",
+        help="Read disks from an lsblk JSON file. Test only; ignored on the Beamo USB.",
     )
     p.add_argument(
         "--boot-device",
-        help="Override live-medium path. Test only; ignored on the live USB.",
+        help="Override live-medium path. Test only; ignored on the Beamo USB.",
     )
     p.add_argument("--version", action=_VersionAction, nargs=0, help="Show version and USB image identity.")
     return p
@@ -237,7 +237,13 @@ def _build_wizard(args: argparse.Namespace, progress=None) -> Wizard:
             return discover(lsblk_payload=fresh_payload, boot_path=args.boot_device)
         return Wizard(discovery, runner, dry_run=True, rediscover=fresh_fake_discovery)
     live_runner = NwipeRunner()
-    return Wizard(discovery, live_runner, dry_run=False)
+    wizard = Wizard(discovery, live_runner, dry_run=False)
+    # #185: read-only sysfs PCI identity for the empty list's Intel VMD /
+    # RST hint. Display only; discovery above already decided the disks.
+    from beamo_wipe import hidden_storage
+
+    wizard.hidden_storage_probe = hidden_storage.read_sysfs
+    return wizard
 
 
 def _shutdown() -> bool:
@@ -482,6 +488,11 @@ def _run_session(args, *, session_store, use_console, want_accessible,
     keyboard_layout = None
     language = None
     text_size = None
+    high_contrast = None
+    # #187: in memory only, for this app run. A crash, kiosk restart or
+    # reboot starts a new process and the owner ticks the box again.
+    owner_carry = None
+    erased_history: tuple = ()
     owned_reader = None
     try:
         while True:
@@ -507,12 +518,15 @@ def _run_session(args, *, session_store, use_console, want_accessible,
                 args, session_store=session_store, use_console=use_console,
                 want_accessible=want_accessible, fullscreen=fullscreen, reader=reader,
                 keyboard_layout=keyboard_layout, language=language,
-                text_size=text_size)
+                text_size=text_size, high_contrast=high_contrast,
+                owner_carry=owner_carry, erased_history=erased_history)
             if not isinstance(code, Wizard):
                 return code
             keyboard_layout = code.keyboard_layout
             language = code.language
             text_size = code.text_size
+            high_contrast = code.high_contrast  # #179: for the whole session
+            owner_carry, erased_history = code.take_handoff()  # #187
             use_console = code.diagnostic_ui == "console"
             want_accessible = code.diagnostic_ui == "accessible"
             del code
@@ -527,7 +541,8 @@ def _run_session(args, *, session_store, use_console, want_accessible,
 
 def _run_one_session(args, *, session_store, use_console, want_accessible,
                      fullscreen, reader, keyboard_layout=None,
-                     language=None, text_size=None) -> int | Wizard:
+                     language=None, text_size=None, high_contrast=None,
+                     owner_carry=None, erased_history=()) -> int | Wizard:
     if args.demo:
         # Instant fake data: stages would flash meaninglessly.
         try:
@@ -565,6 +580,12 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
         wizard.keyboard_layout = keyboard_layout
     if text_size is not None:
         wizard.set_text_size(text_size)
+    if high_contrast is not None:
+        wizard.set_high_contrast(high_contrast)
+    if owner_carry is not None or erased_history:
+        # Offered once; the wizard uses it only if its own fresh discovery
+        # lists no erasable disk the owner did not confirm (#187).
+        wizard.offer_owner_carry(owner_carry, tuple(erased_history))
     wizard.diagnostic_ui = "console" if use_console else "graphical"
     # The language modules are process-wide. Every freshly constructed
     # wizard must record the same choice as the copy it will render. Keep
@@ -651,8 +672,8 @@ def _run_one_session(args, *, session_store, use_console, want_accessible,
     return code
 
 
-FAKE_REQUIRED = "A fake lsblk JSON file is required for refresh."
-SHUTDOWN_FAILED = "Shutdown failed: could not power off. Hold the power button."
+FAKE_REQUIRED = "A fake lsblk JSON file is required for Check disks again."
+SHUTDOWN_FAILED = "Shutdown failed: could not shut down. Hold the power button."
 POWER_REQUEST_BLOCKED = "Power request blocked: an erase or report action may still be active."
 STARTUP_BLOCKED = "Startup was blocked. Save a diagnostic report for support."
 STARTUP_BLOCKED_LOG = "Startup blocked ({code})."

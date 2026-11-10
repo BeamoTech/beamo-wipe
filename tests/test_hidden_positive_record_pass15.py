@@ -47,7 +47,8 @@ def test_malformed_positive_is_unavailable_in_runner_evidence(monkeypatch, tmp_p
         raise AssertionError('Native process/inventory reached')
     for name in ('subprocess.run', 'subprocess.Popen',
                  'beamo_wipe.nwipe_runner.pinned_nwipe_already_running',
-                 'beamo_wipe.nwipe_runner._recheck_identity_under_lock'):
+                 'beamo_wipe.nwipe_runner._recheck_identity_under_lock',
+                 'beamo_wipe.nwipe_runner._reserve_target_under_lock'):
         monkeypatch.setattr(name, forbidden)
     monkeypatch.setattr(runner_module, '_try_log_diag', lambda *_a, **_k: None)
     monkeypatch.setattr('beamo_wipe.evidence.evidence_identity', lambda: {

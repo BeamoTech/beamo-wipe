@@ -331,7 +331,7 @@ def test_baseline_protects_every_existing_disk_and_requires_boot(monkeypatch):
     payload, baseline = fake_baseline(monkeypatch)
     assert all(item.required and item.rdev for item in baseline)
     monkeypatch.setattr("beamo_wipe.discover.discover", lambda **kw: DiscoveryResult())
-    with pytest.raises(SafetyError, match="boot USB"):
+    with pytest.raises(SafetyError, match="Beamo USB"):
         export.capture_diagnostic_baseline(scan=lambda: payload)
 
 

@@ -42,7 +42,7 @@ def open_launcher(browser, value, size=(1024, 900), restart_status=200, storage_
         if path.startswith("/api/"):
             action = path.removeprefix("/api/")
             calls.append(action)
-            if action == "restart":
+            if action in ("restart", "advanced-startup"):
                 route.fulfill(status=restart_status, content_type="application/json",
                               body=json.dumps({"message": "Preview complete. Nothing was changed."})
                               if restart_status == 200 else "Permission declined. Check readiness and try again.")
@@ -173,7 +173,7 @@ def test_explained_checks_and_safe_next_actions(browser_cases, case):
     page, calls, _ = open_launcher(browser, fixtures[case])
     try:
         assert page.locator("#checks h3").all_text_contents() == [
-            "Original USB detection", "Startup-settings readability", "Supported restart route"]
+            "Beamo USB detection", "Startup-settings readability", "Supported restart route"]
         assert page.locator("#checks li").count() == 3
         for check in fixtures[case]["checks"]:
             assert check["detail"] in page.locator("#checks").inner_text()
@@ -185,7 +185,7 @@ def test_explained_checks_and_safe_next_actions(browser_cases, case):
         page.keyboard.press("Enter")
         assert page.locator("#technical-detail").is_visible()
         assert page.locator("#technical-detail").inner_text() == fixtures[case]["technical"]
-        assert 'heading "Original USB detection"' in page.locator("#readiness").aria_snapshot()
+        assert 'heading "Beamo USB detection"' in page.locator("#readiness").aria_snapshot()
         assert page.locator("#status").get_attribute("role") == "status"
         assert "restart" not in calls
     finally:
@@ -206,6 +206,34 @@ def test_empty_or_incomplete_response_fails_closed_and_recovers(browser_cases, b
         assert not page.locator("#saved").is_checked()
         assert page.locator("#restart").is_disabled()
         assert "restart" not in calls
+    finally:
+        page.close()
+
+
+@pytest.mark.parametrize("status", [200, 503])
+def test_restart_to_boot_options_needs_saved_work_and_falls_back(browser_cases, status):
+    """#183 with a fake API: nothing on the test computer restarts."""
+    browser, fixtures = browser_cases
+    page, calls, _ = open_launcher(browser, fixtures["advanced"], restart_status=status)
+    try:
+        section = page.locator("#boot-options")
+        assert section.is_visible()
+        assert page.locator("#confirm").is_hidden()
+        for text in ("Use a device", "EFI USB Device", "Save your work", "BitLocker recovery key"):
+            assert text in section.inner_text()
+        button = page.locator("#boot-options-restart")
+        assert button.is_disabled()
+        page.locator("#boot-options-saved").check()
+        assert button.is_enabled()
+        button.click()
+        page.wait_for_function("document.querySelector('#readiness').getAttribute('aria-busy') === 'false'")
+        assert calls.count("advanced-startup") == 1
+        assert "restart" not in calls
+        assert section.is_hidden()
+        assert page.locator("#inspect").is_visible()
+        assert (page.locator("#status").get_attribute("class") == "error") == (status == 503)
+        # The boot-menu key stays on the page as the fallback.
+        assert page.locator("#boot-key").is_visible()
     finally:
         page.close()
 

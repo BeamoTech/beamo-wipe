@@ -14,6 +14,7 @@ from typing import Iterable, Optional, Sequence, Tuple, Mapping
 
 from beamo_wipe import copy as _copy
 from beamo_wipe.copy import (
+    confirm_type_card,
     confirm_type_chars,
     confirm_type_four,
     confirm_type_size,
@@ -343,11 +344,22 @@ def boot_device_in_selectable(discovery: DiscoveryResult) -> bool:
 
 
 def confirm_spec(disk: Disk, selectable: Sequence[Disk]) -> ConfirmSpec:
-    """
-    Default token is the size label (e.g. 256).
-    If two listed disks share that size, use last 4 of serial when that
-    suffix is unique in the same-size set, else the full serial if unique,
-    else a unique hardware ID. Kernel device names are never tokens.
+    """The confirmation the owner must type for ``disk``.
+
+    Card token first (#129, see docs/screens.md "Confirmation characters"):
+    the last characters of the identifier the disk card shows (the serial
+    number, or the hardware ID when no serial is reported). The prompt names
+    the field and the count, never the characters; the card marks them.
+    Four characters normally; more when another listed disk shows the same
+    ending, so the token binds one disk. Only ASCII letters and digits
+    qualify; an identifier shorter than 4, or whose ending holds a space,
+    punctuation or other characters, falls back to the older rule below.
+
+    Older rule (fallback, prompt prints the token): the size label (e.g.
+    256). If two listed disks share that size, the last 4 of the serial when
+    that suffix is unique in the same-size set, else the full serial if
+    unique, else a unique hardware ID. Kernel device names are never tokens.
+    No usable token raises SafetyError: the disk cannot be confirmed.
     """
     from beamo_wipe.identity import AMBIGUOUS_IDENTITY
 
@@ -363,6 +375,9 @@ def confirm_spec(disk: Disk, selectable: Sequence[Disk]) -> ConfirmSpec:
             name_token = _safe_token(raw or "")
             if name_token:
                 banned.add(name_token.casefold())
+    card = _card_spec(disk, peers, banned)
+    if card is not None:
+        return card
     if len(same) == 1:
         token = _safe_token((disk.size_gb_label or "").strip())
         if token and token.casefold() not in banned:
@@ -371,6 +386,69 @@ def confirm_spec(disk: Disk, selectable: Sequence[Disk]) -> ConfirmSpec:
     if spec is None:
         raise SafetyError(AMBIGUOUS_IDENTITY)
     return spec
+
+
+CARD_TOKEN_MIN = 4
+# A card token is typed from what the owner reads, on any shipped keyboard
+# layout: ASCII letters and digits only.
+CARD_TOKEN_RE = re.compile(r"^[A-Za-z0-9]+$")
+
+
+def card_identifier(disk: Disk) -> Tuple[str, str]:
+    """The identifier the disk card shows, as shown: ("serial"|"wwn"|"missing", text).
+
+    Matches identity.present_disk: the reported serial, else the reported
+    hardware ID (WWN, as lsblk printed it), else nothing.
+    """
+    serial = meaningful_serial(disk.serial)
+    if serial:
+        return "serial", serial
+    if meaningful_wwn(disk.wwn):
+        return "wwn", (disk.wwn or "").strip()
+    return "missing", ""
+
+
+def _card_spec(
+    disk: Disk, peers: Sequence[Disk], banned: set[str]
+) -> Optional[ConfirmSpec]:
+    """The last N characters of the card identifier, unique among listed disks.
+
+    N starts at 4 and grows only while another listed disk's serial or
+    hardware ID ends with the same N characters, or the candidate equals any
+    other disk's size label, full identifier or a kernel name (``banned``).
+    Returns None, never a weaker token, when the identifier is missing,
+    shorter than 4, or its ending is not plain ASCII letters and digits.
+    """
+    field, value = card_identifier(disk)
+    if field == "missing" or len(value) < CARD_TOKEN_MIN:
+        return None
+    want = os.path.realpath(disk.path)
+    others: list[str] = []
+    for other in peers:
+        if os.path.realpath(other.path) == want:
+            continue
+        for raw in (meaningful_serial(other.serial), meaningful_wwn(other.wwn),
+                    canonical_wwn(other.wwn)):
+            text = (raw or "").strip().casefold()
+            if text:
+                others.append(text)
+    for count in range(CARD_TOKEN_MIN, len(value) + 1):
+        suffix = value[-count:]
+        if not CARD_TOKEN_RE.fullmatch(suffix):
+            # Every longer ending contains the same character.
+            return None
+        key = suffix.casefold()
+        if key in banned or any(len(text) >= count and text[-count:] == key for text in others):
+            continue
+        return ConfirmSpec(
+            token=suffix,
+            prompt=confirm_type_card(
+                field, count, whole=count == len(value), longer=count > CARD_TOKEN_MIN
+            ),
+            identity_field=field,
+            in_card=True,
+        )
+    return None
 
 
 def _cross_disk_tokens(disk: Disk, peers: Sequence[Disk]) -> set[str]:
@@ -468,8 +546,8 @@ def token_matches(typed: str, spec: ConfirmSpec) -> bool:
     return got.casefold() == want.casefold()
 
 
-BOOT_APPEARED_SELECTABLE = "Boot USB appeared as a selectable disk. Refusing to continue."
-BOOT_APPEARED_ALIAS = "Boot USB appeared through another device path. Refusing to continue."
+BOOT_APPEARED_SELECTABLE = "The Beamo USB appeared as a selectable disk. Refusing to continue."
+BOOT_APPEARED_ALIAS = "The Beamo USB appeared through another device path. Refusing to continue."
 TOKEN_MISMATCH = "Confirm token does not match."  # noqa: S105 — UI message, not a secret
 
 

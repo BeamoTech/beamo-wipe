@@ -31,12 +31,15 @@ def _at_pick(wanted: bool):
 
 
 def test_what_notice_names_media_timing_and_refusal():
-    assert "FAT32" in C.REPORT_MEDIA_WHAT
-    assert "one volume" in C.REPORT_MEDIA_WHAT
-    assert "unplugged" in C.REPORT_MEDIA_WHAT
-    assert "asks for it" in C.REPORT_MEDIA_WHAT
-    assert "already plugged in" in C.REPORT_MEDIA_WHAT
-    assert "Need a report?" in C.REPORT_MEDIA_WHAT
+    # #145: Owner keeps one line with the timing ("when asked") and the
+    # photo option; media rules and the refusal live in Need a report?,
+    # which the line's Learn more opens.
+    assert "photograph" in C.REPORT_MEDIA_WHAT and "when asked" in C.REPORT_MEDIA_WHAT
+    assert "report USB" in C.REPORT_MEDIA_WHAT
+    help_text = C.REPORT_HELP_TEXT
+    assert "FAT32 or exFAT" in help_text and "one writable, unmounted volume" in help_text
+    assert "Keep the report USB unplugged" in help_text
+    assert "If you inserted the report USB before erasing" in help_text
 
 
 def test_pick_notice_names_unplug_remedy_and_confusion():
@@ -128,13 +131,23 @@ def test_gallery_embeds_preesase_notices():
 
 def test_report_media_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     for key in ("REPORT_MEDIA_WHAT", "REPORT_MEDIA_WANTED"):
         assert key in fr_locale.STRINGS["copy"]
         assert key in de_locale.STRINGS["copy"]
+        assert key in es_locale.STRINGS["copy"]
+        assert key in it_locale.STRINGS["copy"]
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
+    assert "FAT32" in es_locale.STRINGS["copy"]["REPORT_HELP_NEED"]
+    assert "desconectada" in es_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
+    assert "FAT32" in it_locale.STRINGS["copy"]["REPORT_HELP_NEED"]
+    assert "scollegata" in it_locale.STRINGS["copy"]["REPORT_MEDIA_WANTED"]
 
 
 def test_report_media_notices_follow_active_language():
@@ -142,13 +155,14 @@ def test_report_media_notices_follow_active_language():
 
     try:
         lang.set_language("fr")
-        assert "FAT32" in C.REPORT_MEDIA_WHAT
-        assert "débranchée" in C.REPORT_MEDIA_WHAT or "débranché" in C.REPORT_MEDIA_WHAT
+        assert "photographier" in C.REPORT_MEDIA_WHAT  # #145: one line
+        assert "FAT32" in C.REPORT_HELP_NEED
+        assert "débranchée" in C.REPORT_MEDIA_WANTED or "débranché" in C.REPORT_MEDIA_WANTED
     finally:
         lang.set_language("en")
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_states_media_requirements_up_front(name):
     from beamo_wipe.gallery import project_root
 
@@ -158,6 +172,8 @@ def test_helper_states_media_requirements_up_front(name):
         "index.html": ("FAT32", "unplugged until"),
         "fr.html": ("FAT32", "débranchée jusqu"),
         "de.html": ("FAT32", "abgezogen, bis"),
+        "es.html": ("FAT32", "desconectada hasta"),
+        "it.html": ("FAT32", "scollegata finché"),
     }[name]
     for marker in markers:
         assert marker in card

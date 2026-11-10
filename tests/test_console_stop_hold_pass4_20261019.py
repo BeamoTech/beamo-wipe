@@ -26,6 +26,11 @@ def working(ready, monkeypatch):
         "beamo_wipe.sound._run", "beamo_wipe.sound._popen",
     ):
         monkeypatch.setattr(target, forbidden)
+    # #133's Working-screen finish-sound probe asks sound._on_live(), which
+    # reads the kernel command line on Linux. This is not the live USB; say
+    # so directly so the probe makes no native read (read_cmdline and the
+    # sound helpers stay forbidden for every other path).
+    monkeypatch.setattr("beamo_wipe.sound._on_live", lambda: False)
     ready.confirm_erase()
     assert ready.screen is Screen.WORKING and ready.runner.started
     original_confirm = ready.confirm_stop

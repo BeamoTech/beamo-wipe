@@ -13,7 +13,8 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Optional, Protocol
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Optional, Protocol
 
 from beamo_wipe import copy as C
 from beamo_wipe.copy import (
@@ -21,8 +22,10 @@ from beamo_wipe.copy import (
     erase_now_label,
 )
 from beamo_wipe import keyboard as _keyboard
+from beamo_wipe import owner_carry as _owner_carry
 from beamo_wipe.keyboard import (
     DEFAULT_LAYOUT,
+    LANGUAGE_LAYOUTS,
     apply_layout,
     is_allowed,
 )
@@ -79,7 +82,7 @@ CHECKING_AGAIN = "Checking disks again."
 FAKE_SOURCE_REQUIRED = "A fresh fake-device discovery source is required."
 INVALID_INVENTORY = "Discovery returned an invalid inventory."
 BOOT_UNIDENTIFIED = "Boot device could not be identified."
-ALREADY_RUNNING = "A wipe is already running."
+ALREADY_RUNNING = "An erase is already running."
 PREVIEW_NO_EXEC = "Preview and dry-run cannot exec nwipe."
 CHECKING_NO_START = "Disk checking could not start. Try again."
 REREAD_FAILED = "Could not re-read disks. Erase did not start."
@@ -125,18 +128,31 @@ def error_needs_support(error: object) -> bool:
         or error == VIEWS["stop_unconfirmed"].announcement
     )
 NO_EXPORT_EVIDENCE = "No current verified evidence to export"
-NO_FINISHED_REPORT = "A current finished wipe report is not available."
-EVIDENCE_UNREADABLE = "The saved wipe evidence could not be read. Try saving the report again."
-REPORT_CHANGED_BEFORE_SAVE = "The finished wipe report changed before it could be saved."
-REPORT_SAVING = "Saving and verifying the report USB. Leave it connected."
+NO_FINISHED_REPORT = "A current finished erase report is not available."
+EVIDENCE_UNREADABLE = "The saved erase evidence could not be read. Try saving the report again."
+REPORT_CHANGED_BEFORE_SAVE = "The finished erase report changed before it could be saved."
+REPORT_SAVING = "Saving the report to the USB and verifying it. Leave the USB connected."
 EXPORT_FAILED = "The report export failed. Shut down before removing the USB."
 REPORT_NOT_SAVED = "The report was not saved and verified. Shut down before removing the USB."
-REPORT_CHANGED_DURING_SAVE = "The finished wipe report changed while it was being saved. Shut down before removing the USB."
+REPORT_CHANGED_DURING_SAVE = "The finished erase report changed while it was being saved. Shut down before removing the USB."
 EXPORT_NO_START = "The report export could not start."
+REPORT_USB_POLL_S = 1.5  # read-only report-USB detection on Done (#135)
+# Check disks again (#136). Direct: a rescan clears at most the ownership
+# tick (and a highlighted disk). Offered: where the action is shown; every
+# offered screen outside the direct set goes through the guarded dialog.
+REFRESH_DIRECT_SCREENS = frozenset({
+    Screen.WHAT, Screen.OWNER, Screen.PICK, Screen.PICK_EMPTY,
+    Screen.PICK_BLOCKED, Screen.DISK_HELP,
+})
+REFRESH_OFFERED_SCREENS = frozenset({
+    Screen.PICK, Screen.PICK_EMPTY, Screen.PICK_BLOCKED, Screen.DISK_HELP,
+    Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE, Screen.ADVANCED,
+    Screen.LIMITS,
+})
 DIAG_VERIFYING = "Saving and verifying. Leave the USB connected."
 DIAG_CHECKING = "Checking connected disks."
 DIAG_NO_PREVIEW = "Diagnostic USB export is unavailable in preview or dry-run."
-DIAG_BASELINE_READY = "Baseline checked. Now insert one new removable FAT32 USB and choose {action}."
+DIAG_BASELINE_READY = "Baseline checked. Now insert one new removable FAT32 or exFAT USB and choose {action}."
 DIAG_NOT_SAVED = "Diagnostic report was not saved and verified. Shut down before removing the USB."
 DIAG_CONTEXT_CHANGED = "Startup status changed. Save a new diagnostic report before shutting down."
 DIAG_FAILED = "Diagnostic export failed. Shut down before removing the USB."
@@ -162,6 +178,12 @@ class Runner(Protocol):
 
 COUNTDOWN_S = 5.0
 SPLASH_S = 3.0
+# Finish sound (#133): a modest repeat until someone interacts, with a cap.
+FINISH_REPEAT_S = 60.0
+FINISH_PLAYS_MAX = 5
+# Availability checks for the beep promise run on the audio worker only.
+AUDIO_PROBE_S = 60.0
+AUDIO_PROBE_RETRY_S = 5.0
 EVIDENCE_RETRIES = 3
 
 
@@ -286,6 +308,86 @@ def _start_guarded_thread(
     return started, worker
 
 
+# Where Back goes from each step of the journey. ``Wizard.back`` uses this
+# table, and the step bar (#130) numbers the Preparation steps by walking it
+# from Review to the start, so the two can never drift apart. Advanced
+# returns to whichever screen opened it (default Method).
+BACK_SCREENS: Mapping[Screen, Screen] = MappingProxyType({
+    Screen.WHAT: Screen.KEYBOARD,
+    Screen.OWNER: Screen.KEYBOARD,
+    Screen.DISK_HELP: Screen.PICK,
+    Screen.PICK: Screen.OWNER,
+    Screen.PICK_EMPTY: Screen.OWNER,
+    Screen.PICK_BLOCKED: Screen.OWNER,
+    Screen.CONFIRM: Screen.PICK,
+    Screen.METHOD: Screen.CONFIRM,
+    Screen.LAST_CHANCE: Screen.METHOD,
+    Screen.ADVANCED: Screen.METHOD,
+    Screen.LIMITS: Screen.METHOD,
+})
+
+
+def _preparation_path() -> tuple[Screen, ...]:
+    path = [Screen.LAST_CHANCE]
+    while path[-1] in BACK_SCREENS:
+        path.append(BACK_SCREENS[path[-1]])
+    return tuple(reversed(path))
+
+
+# The Preparation steps in order: keyboard check through Review (#166).
+PREPARATION_PATH: tuple[Screen, ...] = _preparation_path()
+
+# Screens that stand in for a step rather than leaving it and coming back:
+# the old combined intro, a disk list with nothing or nothing safe to pick,
+# and the final re-check after Erase now. Every other screen off the path is
+# a detour and shows the step it returns to.
+STEP_VARIANTS: Mapping[Screen, Screen] = MappingProxyType({
+    Screen.WHAT: Screen.OWNER,
+    Screen.PICK_EMPTY: Screen.PICK,
+    Screen.PICK_BLOCKED: Screen.PICK,
+    Screen.CHECKING: Screen.LAST_CHANCE,
+})
+
+
+
+def journey_step_for(
+    screen: Screen, origins: Optional[Mapping[Screen, Optional[Screen]]] = None
+) -> Optional[tuple[int, int, Screen]]:
+    """(number, total, step screen) for the step bar (#130), or None.
+
+    Numbers come from ``PREPARATION_PATH``. A variant shows the step it
+    stands in for; a detour (keyboard check, disk help, Advanced, limits,
+    report help) shows the step it returns to: ``origins`` names the screen
+    a detour was opened from (Advanced defaults to Method). Busy, recovery,
+    erase and result screens have no Preparation step.
+    """
+    opened_from = dict(origins or {})
+    opened_from[Screen.ADVANCED] = opened_from.get(Screen.ADVANCED) or Screen.METHOD
+    for _ in range(len(Screen)):
+        origin = opened_from.get(screen)
+        if origin is not None and origin not in (screen, Screen.SPLASH):
+            screen = origin
+        elif screen in PREPARATION_PATH:
+            return PREPARATION_PATH.index(screen) + 1, len(PREPARATION_PATH), screen
+        elif screen in STEP_VARIANTS:
+            screen = STEP_VARIANTS[screen]
+        elif screen in BACK_SCREENS:
+            screen = BACK_SCREENS[screen]
+        else:
+            return None
+    return None
+
+
+# Screens that may open the keyboard screen or report help (no erase
+# requested yet). Shared with the preview's Help & settings rules (#175).
+KEYBOARD_OPEN_SCREENS = frozenset({
+    Screen.KEYBOARD, Screen.WHAT, Screen.OWNER, Screen.PICK, Screen.PICK_EMPTY,
+    Screen.PICK_BLOCKED, Screen.CONFIRM, Screen.METHOD, Screen.LAST_CHANCE,
+    Screen.ADVANCED, Screen.LIMITS, Screen.REPORT_HELP, Screen.DISK_HELP,
+})
+REPORT_HELP_SCREENS = frozenset({Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.ADVANCED})
+
+
 class Wizard:
     @property
     def screen(self) -> Screen:
@@ -308,6 +410,7 @@ class Wizard:
         rediscover: Callable[[], DiscoveryResult] | None = None,
         wall_clock: Callable[[], str] | None = None,
         report_exporter: Optional[Callable[..., object]] = None,
+        report_usb_probe: Optional[Callable[..., object]] = None,
     ) -> None:
         self.discovery = discovery
         self.runner = runner
@@ -319,6 +422,12 @@ class Wizard:
         if dry_run:
             os.environ.setdefault("BEAMO_WIPE_DRY_RUN", "1")
         self.preview = False
+        # #185: read-only PCI snapshot (hidden_storage.read_sysfs on the
+        # Beamo USB) for the empty list's Intel VMD / RST hint. None keeps
+        # the generic empty text. Never consulted for disk selection.
+        self.hidden_storage_probe: Optional[Callable[[], object]] = None
+        self._hidden_storage_for: Optional[DiscoveryResult] = None
+        self._hidden_storage_hint = ""
         self.screen = Screen.SPLASH
         self.report_wanted = False
         self.report_share_redacted = False
@@ -328,6 +437,19 @@ class Wizard:
         self.sound_revision = 0
         self._audio_request = None
         self._sound_played_for: Optional[tuple[str, str]] = None
+        # Finish sound (#133). sounds_enabled stays the one session setting;
+        # each erase turns it on unless the person has chosen for themselves.
+        self._sounds_chosen = False
+        self.audio_available: Optional[bool] = None
+        self.audio_reason = ""
+        self._audio_probe: Optional[tuple[Any, int]] = None
+        self._audio_probe_at: Optional[float] = None
+        self._finish_plays = 0
+        self._finish_last_at: Optional[float] = None
+        self._finish_ack = False
+        # Counts finish alerts that are due (first and repeats), whether or
+        # not audio can play, so the console can ring its bell instead.
+        self.finish_alert_serial = 0
         self._intent_store = None
         self.report_recovery_warning = ""
         self._shutdown_from: Optional[Screen] = None
@@ -336,15 +458,42 @@ class Wizard:
         self._saved_diagnostic_context: Optional[tuple[str, DiscoveryResult]] = None
         self._report_help_from: Optional[Screen] = None
         self._refresh_confirm_from: Optional[Screen] = None
+        # #136: the guarded dialog was opened by the screen-reader switch,
+        # which reopens in the reader once the rescan finishes (Tk only).
+        self.refresh_then_reader = False
         self.owner_ok = False
+        # #187: where the tick came from ("on_screen" / "carried_over"; "" when
+        # unticked), the confirmation offered by the previous erase in this
+        # app run (used once, at the first Owner step), the confirmation this
+        # session can hand to the next one, and why an offer was not used.
+        self.owner_source = ""
+        self._owner_carry_in: Optional[_owner_carry.OwnerCarry] = None
+        self._owner_carry_out: Optional[_owner_carry.OwnerCarry] = None
+        self.owner_carry_note = ""
+        self.erased_history: tuple[_owner_carry.ErasedMark, ...] = ()
+        self._handoff: Optional[tuple[Optional[_owner_carry.OwnerCarry],
+                                      tuple[_owner_carry.ErasedMark, ...]]] = None
         self.selected: Optional[Disk] = None
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
         self.text_size = "standard"
+        # #179: high contrast, for the whole session (carried to the next
+        # session like the text size). The accessible boot path can start
+        # with it on through BEAMO_WIPE_HIGH_CONTRAST=1.
+        self.high_contrast = os.environ.get("BEAMO_WIPE_HIGH_CONTRAST") == "1"
         self.language = "en"
         self.typing_check = ""
+        self.keyboard_check: Optional[_keyboard.KeyCheck] = None
         self.keyboard_message = ""
+        # #131: a layout the person picked is never replaced by a language's
+        # usual layout. ``layout_notice`` says what choosing a language did
+        # to the layout: "auto" (set to match), "kept" (their own choice
+        # kept) or "stays" (kept so progress so far stays valid).
+        self.layout_chosen = False
+        self.layout_notice: Optional[str] = None
         self._keyboard_from: Optional[Screen] = None
+        # #155: a wrong confirmation entry was made on this Confirm visit.
+        self._confirm_mismatch = False
         self._apply_keyboard = apply_layout
         self.method = DEFAULT_METHOD
         self.wants_shutdown = False
@@ -374,6 +523,10 @@ class Wizard:
         self._progress_timing = ProgressTiming(self._clock, time.time)
         self._display_progress: Optional[ProgressView] = None
         self._display_progress_at = 0.0
+        # #167: clock times on Working only with a trusted wall clock. The
+        # live USB has none (evidence records the OS clock as unverified), so
+        # this stays False and Working shows elapsed / time-left wording.
+        self.wall_clock_trusted = False
         self._stage_anchor = None
         self._evidence_argv: Optional[list[str]] = None
         self.evidence: Optional[dict] = None  # type: ignore[type-arg]
@@ -394,6 +547,19 @@ class Wizard:
         self._pending_evidence: Optional[tuple[dict[str, Any], Any, Optional[WipeResult], Optional[str]]] = None
         self._pending_evidence_path: Optional[Path] = None
         self._report_exporter = report_exporter
+        # Live report-USB detection on the result screen (#135): a read-only
+        # lsblk scan through the export's own selector. Off for previews and
+        # dry runs; a test that injects an exporter injects a probe too (or
+        # gets none, and Save then checks the USB itself as before).
+        if report_usb_probe is None and report_exporter is None and not dry_run:
+            from beamo_wipe.support_export import probe_report_usb
+
+            report_usb_probe = probe_report_usb
+        self._report_usb_probe = report_usb_probe
+        self._report_usb: Optional[Any] = None
+        self._report_usb_busy = False
+        self._report_usb_due = 0.0
+        self._report_usb_generation = 0
         self.report_status = "idle"  # idle | saving | saved | error
         self.report_message = ""
         self.report_session = ""
@@ -438,7 +604,7 @@ class Wizard:
         self._recovered = True
         self._startup_blocked = True
         self.report_wanted = True
-        self.owner_ok = False
+        self._clear_owner_locked()
         self.confirm_input = ""
         self._erase_until = None
         self._authorized_operation = None
@@ -569,6 +735,40 @@ class Wizard:
             return ""
         view = self.disk_view(boot)
         return BOOT_USB_LINE.format(line=view.compact_line)
+
+    @property
+    def empty_storage_hint(self) -> str:
+        """"vmd" / "rst" when the empty list is certainly an Intel VMD / RST
+        case (#185), else "" for the generic text. Display only.
+
+        Computed once per discovery from the read-only probe and never
+        consulted by selection, boot exclusion or erase authorization. Any
+        probe or classification error keeps the generic text.
+        """
+        discovery = self.discovery
+        if self._hidden_storage_for is discovery:
+            return self._hidden_storage_hint
+        hint = ""
+        probe = self.hidden_storage_probe
+        if probe is not None and not self.selectable:
+            from beamo_wipe import hidden_storage
+
+            try:
+                result = hidden_storage.classify(probe(), discovery)  # type: ignore[arg-type]
+                hint = result.kind
+                detail = result.log_detail()
+            except Exception as exc:
+                hint = ""
+                detail = f"kind=generic reason=probe_failed {type(exc).__name__}"
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("wizard", "empty_storage_hint", detail)
+            except Exception:
+                pass
+        self._hidden_storage_for = discovery
+        self._hidden_storage_hint = hint
+        return hint
 
     @property
     def selectable(self):
@@ -800,6 +1000,8 @@ class Wizard:
                 mismatch=mismatch,
                 step_percent=step_percent,
                 estimate_state=estimate_state,
+                wall_now=self._progress_timing.wall_clock(),
+                wall_trusted=self.wall_clock_trusted is True,
             )
             self._display_progress = view
             return view
@@ -824,11 +1026,11 @@ class Wizard:
 
     @property
     def elapsed_text(self) -> str:
-        from beamo_wipe.progress import duration
+        from beamo_wipe import progress
         if self._recovered:
             value = (self.evidence or {}).get("timestamps", {}).get("duration_s")
-            return "Elapsed: " + duration(value)
-        return "Elapsed: " + duration(self.progress_view.elapsed)
+            return progress.ELAPSED_LABEL.format(text=progress.duration(value))
+        return progress.ELAPSED_LABEL.format(text=progress.duration(self.progress_view.elapsed))
 
     @staticmethod
     def _result_evidence_key(result: WipeResult) -> str:
@@ -864,6 +1066,8 @@ class Wizard:
     def tick(self) -> None:
         self.power.tick(self.now)
         self._poll_audio()
+        self._tick_finish_sound()
+        self._poll_report_usb()
         with self._lock:
             self._recover_when_quiescent()
         if (
@@ -898,6 +1102,12 @@ class Wizard:
             self._finish(should_finish)
 
     @property
+    def power_badge(self):
+        """Header power badge for every screen (#144), from the cached
+        monitor reading; reading never blocks the UI."""
+        return self.power.status.badge
+
+    @property
     def power_text(self) -> str:
         prefix = PREVIEW_POWER_PREFIX if self.dry_run else ""
         return prefix + self.power.status.text
@@ -914,7 +1124,21 @@ class Wizard:
                 self.screen = Screen.KEYBOARD
             if self.screen == Screen.KEYBOARD:
                 self.typing_check = ""
+                self.keyboard_check = None
                 self.screen = Screen.OWNER
+
+    def set_high_contrast(self, on: bool) -> bool:
+        """#179: colours only; never changes any answer or gate."""
+        if type(on) is not bool:
+            return False
+        with self._lock:
+            self.high_contrast = on
+            return True
+
+    def toggle_high_contrast(self) -> bool:
+        with self._lock:
+            self.high_contrast = not self.high_contrast
+            return self.high_contrast
 
     def set_text_size(self, size: str) -> bool:
         """Session-only type size. Unknown values are refused."""
@@ -951,32 +1175,89 @@ class Wizard:
                 dest = Screen.OWNER
             self._keyboard_from = None
             self.typing_check = ""
+            self.keyboard_check = None
+            if dest == Screen.OWNER and self._owner_carry_in is not None:
+                # #187: the first Owner step after Erase another disk.
+                if self._apply_owner_carry_locked():
+                    return
             self._return_to_screen_locked(dest)
 
     @property
     def can_open_keyboard(self) -> bool:
         return (
-            self.screen
-            in {
-                Screen.KEYBOARD,
-                Screen.WHAT,
-                Screen.OWNER,
-                Screen.PICK,
-                Screen.PICK_EMPTY,
-                Screen.PICK_BLOCKED,
-                Screen.CONFIRM,
-                Screen.METHOD,
-                Screen.LAST_CHANCE,
-                Screen.ADVANCED,
-                Screen.LIMITS,
-                Screen.REPORT_HELP,
-                Screen.DISK_HELP,
-            }
+            self.screen in KEYBOARD_OPEN_SCREENS
             and self._wipe_request is None
             and not self.wants_shutdown
             and not self._startup_blocked
             and not self._diagnostic_busy
         )
+
+    @property
+    def can_open_advanced(self) -> bool:
+        """Advanced opens from the method step only, before an erase is
+        requested. #175 keeps this limit for the Help & settings menu."""
+        return (
+            self.screen == Screen.METHOD
+            and self._wipe_request is None
+            and not self.wants_shutdown
+        )
+
+    def help_menu(self, *, text_size_supported: bool = True):
+        """#175: the Help & settings items for this screen, in fixed order.
+
+        Reading the menu changes nothing. Items that do not apply here are
+        disabled with a reason instead of disappearing.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        with self._lock:
+            return _menu.items(
+                screen=self.screen,
+                text_size=self.text_size,
+                sounds_label=self.sound_toggle_text,
+                can_open_keyboard=self.can_open_keyboard,
+                can_open_report_help=self.can_open_report_help,
+                can_open_advanced=self.can_open_advanced,
+                sound_available=not (
+                    self.screen == Screen.WORKING and self.audio_available is False
+                ),
+                high_contrast=self.high_contrast,
+                after_erase_started=(
+                    self._wipe_request is not None or self.wipe_result is not None
+                ),
+                text_size_supported=text_size_supported,
+            )
+
+    def activate_help_item(self, key: str, *, text_size_supported: bool = True) -> bool:
+        """Run one enabled Help & settings item; True when it acted.
+
+        Only the existing guarded actions are reachable (text size, the
+        keyboard screen, sounds, report help, Advanced); none of them can
+        start, confirm or stop an erase. A disabled or stale item does
+        nothing. Keyboard shortcuts changes no state; High contrast (#179)
+        changes colours only.
+        """
+        from beamo_wipe import help_menu as _menu
+
+        with self._lock:
+            item = _menu.find(self.help_menu(text_size_supported=text_size_supported), key)
+            if item is None or not item.enabled:
+                return False
+            if key == _menu.TEXT_SIZE:
+                self.cycle_text_size()
+            elif key == _menu.LANGUAGE:
+                self.open_keyboard()
+            elif key == _menu.SOUNDS:
+                self.toggle_sounds()
+            elif key == _menu.HIGH_CONTRAST:
+                self.toggle_high_contrast()
+            elif key == _menu.REPORT_HELP:
+                self.open_report_help()
+            elif key == _menu.ADVANCED:
+                self.open_advanced()
+            else:
+                return False
+            return True
 
     def open_keyboard(self) -> None:
         with self._lock:
@@ -985,7 +1266,52 @@ class Wizard:
             self._keyboard_from = self.screen
             self.screen = Screen.KEYBOARD
             self.typing_check = ""
+            self.keyboard_check = None
             self.keyboard_message = ""
+
+    def check_keyboard_key(self, typed: str):
+        """Guided keyboard check (#140): judge the key printed Z.
+
+        Advisory only: it never changes the layout or blocks Continue.
+        Returns the new result, or None when ``typed`` is not an answer.
+        """
+        with self._lock:
+            if self.screen != Screen.KEYBOARD:
+                return None
+            result = _keyboard.check_key(self.keyboard_layout, typed, language=self.language)
+            if result is not None:
+                self.keyboard_check = result
+            return result
+
+    def accept_keyboard_suggestion(self) -> bool:
+        """The one-click switch offered by a mismatch result."""
+        check = self.keyboard_check
+        if self.screen != Screen.KEYBOARD or check is None or check.kind != "other":
+            return False
+        return self.set_keyboard_layout(check.layout_id)
+
+    @property
+    def keyboard_check_text(self) -> str:
+        """The check's result in words, or "" before a key is pressed."""
+        check = self.keyboard_check
+        if check is None:
+            return ""
+        layout = _keyboard.LAYOUTS.get(check.layout_id)
+        title = layout.title if layout is not None else check.layout_id
+        if check.kind == "match":
+            return C.KEYBOARD_CHECK_MATCH.format(layout=title)
+        if check.kind == "other":
+            return C.KEYBOARD_CHECK_OTHER.format(layout=title)
+        return C.KEYBOARD_CHECK_UNCLEAR.format(typed=check.typed)
+
+    @property
+    def keyboard_check_switch(self) -> str:
+        """Button label for the one-click switch, or "" when none is offered."""
+        check = self.keyboard_check
+        if check is None or check.kind != "other":
+            return ""
+        layout = _keyboard.LAYOUTS.get(check.layout_id)
+        return C.KEYBOARD_CHECK_SWITCH.format(layout=layout.title if layout else check.layout_id)
 
     def set_typing_check(self, text: str) -> None:
         with self._lock:
@@ -1012,7 +1338,53 @@ class Wizard:
             except ValueError:
                 return False
             self.language = code
+            # A shown error or keyboard notice is a translated constant; keep
+            # it, and the guidance matched against it, in the new language.
+            if self.error:
+                self.error = ui_lang.current_text(self.error)
+            if self.keyboard_message:
+                self.keyboard_message = ui_lang.current_text(self.keyboard_message)
             return True
+
+    def choose_language(self, code: str) -> bool:
+        """The language picker (#131): apply a language and, on the keyboard
+        screen, its usual layout from ``LANGUAGE_LAYOUTS``.
+
+        The layout follows only while the person has not picked one and
+        nothing would be lost: a layout change clears the ownership tick,
+        the chosen disk and any typed confirmation, so with any of those in
+        place the layout stays and the screen says so. The change itself is
+        the same transition as picking the layout by hand.
+        """
+        with self._lock:
+            if not self.set_language(code):
+                return False
+            if self.screen != Screen.KEYBOARD:
+                return True
+            target = LANGUAGE_LAYOUTS.get(code)
+            if self.layout_chosen:
+                self.layout_notice = "kept"
+                return True
+            if self._authorization_in_progress_locked():
+                self.layout_notice = "stays"
+                return True
+            if target is None or target == self.keyboard_layout:
+                self.layout_notice = "auto"
+                return True
+            if self._apply_layout_locked(target):
+                self.layout_notice = "auto"
+            else:
+                self.layout_notice = None
+            return True
+
+    def _authorization_in_progress_locked(self) -> bool:
+        return bool(
+            self.owner_ok
+            or self.selected is not None
+            or self.confirm_input
+            or self._authorized_operation is not None
+            or self._erase_until is not None
+        )
 
     def set_keyboard_layout(self, layout_id: str) -> bool:
         """Apply an allowlisted layout. Failed applies leave the previous layout."""
@@ -1026,43 +1398,71 @@ class Wizard:
             if layout_id == self.keyboard_layout:
                 self.error = None
                 self.keyboard_message = ""
+                self.layout_chosen = True
+                self.layout_notice = None
                 return True
-            if self.screen in {
-                Screen.WORKING,
-                Screen.CHECKING,
-                Screen.STOPPING,
-                Screen.REFRESHING,
-            }:
-                return False
-            # Applying the OS layout and invalidating authorization are one
-            # transition. Otherwise an erase can claim the old confirmation
-            # while the command runs, then this method moves WORKING to OWNER.
-            result = self._apply_keyboard(layout_id)
-            if not result.ok:
-                self.error = result.message or _keyboard.APPLY_FAILED
-                self.keyboard_message = self.error
-                try:
-                    from beamo_wipe.diagnostics import log_diag
+            if self._apply_layout_locked(layout_id):
+                self.layout_chosen = True
+                self.layout_notice = None
+                return True
+            return False
 
-                    log_diag("keyboard", "apply_failed", layout_id if is_allowed(layout_id) else "rejected")
-                except Exception:
-                    pass
-                return False
-            self.keyboard_layout = layout_id
-            self.typing_check = ""
-            self.keyboard_message = result.message
-            self.error = None
-            self._invalidate_after_layout_change_locked()
-            return True
+    def _apply_layout_locked(self, layout_id: str) -> bool:
+        """Apply an allowed layout and invalidate authorization in one step."""
+        if self.screen in {
+            Screen.WORKING,
+            Screen.CHECKING,
+            Screen.STOPPING,
+            Screen.REFRESHING,
+        }:
+            return False
+        # Applying the OS layout and invalidating authorization are one
+        # transition. Otherwise an erase can claim the old confirmation
+        # while the command runs, then this method moves WORKING to OWNER.
+        result = self._apply_keyboard(layout_id)
+        if not result.ok:
+            self.error = result.message or _keyboard.APPLY_FAILED
+            self.keyboard_message = self.error
+            try:
+                from beamo_wipe.diagnostics import log_diag
+
+                log_diag("keyboard", "apply_failed", layout_id if is_allowed(layout_id) else "rejected")
+            except Exception:
+                pass
+            return False
+        self.keyboard_layout = layout_id
+        self.typing_check = ""
+        self.keyboard_check = None
+        self.keyboard_message = result.message
+        self.error = None
+        self._invalidate_after_layout_change_locked()
+        return True
 
     def _invalidate_after_layout_change_locked(self) -> None:
-        self.owner_ok = False
+        if self._keyboard_from == Screen.CONFIRM and self.selected is not None:
+            # #155: the layout was changed from Confirm (its "Change" link or
+            # the Keyboard layout utility). No authorization exists before
+            # Method, so the owner tick and the chosen disk stay, and the
+            # token (from the disk's identity) is unchanged. Only an entry
+            # that does not match is cleared: it was typed with the old
+            # layout. Esc/Continue return to Confirm, where every later gate
+            # (method, countdown, Erase now) still applies.
+            if not self.token_ok:
+                self.confirm_input = ""
+                self._confirm_mismatch = False
+            self._erase_until = None
+            self._authorized_operation = None
+            self.typing_check = ""
+            self.keyboard_check = None
+            return
+        self._clear_owner_locked()
         self.confirm_input = ""
         self.selected = None
         self._erase_until = None
         self._authorized_operation = None
         self._keyboard_from = None
         self.typing_check = ""
+        self.keyboard_check = None
         if self.screen not in {Screen.KEYBOARD, Screen.SPLASH, Screen.WHAT, Screen.OWNER}:
             self.screen = Screen.OWNER
 
@@ -1083,16 +1483,21 @@ class Wizard:
         self._saved_report_claim = None
         self._saved_diagnostic_context = None
         self._report_help_from = None
-        self.owner_ok = False
+        self._clear_owner_locked()
+        self._owner_carry_in = None
+        self.erased_history = ()
         self.selected = None
         self.confirm_input = ""
         self.keyboard_layout = DEFAULT_LAYOUT
+        self.layout_chosen = False
+        self.layout_notice = None
         self.text_size = "standard"
         try:
             self.set_language("en")
         except Exception:
             self.language = "en"
         self.typing_check = ""
+        self.keyboard_check = None
         self.keyboard_message = ""
         self._keyboard_from = None
         self.method = DEFAULT_METHOD
@@ -1178,6 +1583,172 @@ class Wizard:
         return step
 
     @property
+    def erase_record(self):
+        """Photo record for the result screen, or None while it must not show.
+
+        Shown only on DONE once the outcome is final: never while evidence is
+        still being prepared, while an engine may still run, or after a Stop
+        that could not be confirmed. Every fact is one this session already
+        validated; the Result line is the on-screen outcome text exactly.
+        """
+        from beamo_wipe import NWIPE_PINNED_VERSION, __version__
+        from beamo_wipe import erase_record as R
+        from beamo_wipe.build_identity import STATUSES
+
+        with self._lock:
+            if self.screen != Screen.DONE:
+                return None
+            result = self.result_view
+            if self.preview:
+                try:
+                    return R.build_preview_record(
+                        result.message,
+                        R.software_text(__version__, None, NWIPE_PINNED_VERSION),
+                    )
+                except ValueError:
+                    return None
+            if self.wipe_result is None and not self._recovered:
+                return None
+            if self._evidence_saving or self._finishing:
+                return None
+            if result.code == "stop_unconfirmed":
+                return None
+            evidence = (
+                self.evidence
+                if isinstance(self.evidence, dict) and not self.evidence_error
+                else None
+            )
+            facts = self._record_disk_facts(evidence)
+            method = self._record_method(evidence)
+            claim = self._saved_report_claim
+            exported = self._has_verified_export_locked()
+            evidence_error = bool(self.evidence_error)
+        if self._live_pinned_engine_busy() or self._recovery_busy():
+            return None
+        started = ended = ""
+        if evidence is not None:
+            from beamo_wipe import result_summary as RS
+
+            timestamps = evidence.get("timestamps")
+            if isinstance(timestamps, dict):
+                schema = RS._schema_version(evidence)
+                started = R.wall_text(RS._wall_display(timestamps, "started_at_wall", schema))
+                ended = R.wall_text(RS._wall_display(timestamps, "ended_at_wall", schema))
+            software = R.software_text(
+                evidence.get("beamo_wipe_version"),
+                evidence.get("build_id")
+                if evidence.get("build_status") in STATUSES else None,
+                evidence.get("nwipe_version"),
+            )
+        else:
+            from beamo_wipe.support_code import public_build_id
+
+            software = R.software_text(
+                __version__, public_build_id(), NWIPE_PINNED_VERSION
+            )
+        if evidence_error:
+            report = R.REPORT_NOT_STORED
+        elif exported and claim is not None:
+            checksum = "" if claim.privacy_reduced else R.checksum_text(claim.evidence_sha256)
+            report = (
+                R.REPORT_SAVED_CHECKSUM.format(checksum=checksum)
+                if checksum else R.REPORT_SAVED
+            )
+        else:
+            report = R.REPORT_NOT_SAVED
+        try:
+            return R.build_record(
+                result=result.message,
+                disk=facts[0],
+                capacity=facts[1],
+                id_label=facts[2],
+                id_value=facts[3],
+                method=method,
+                started=started,
+                ended=ended,
+                elapsed_line=self.elapsed_text,
+                report=report,
+                software=software,
+            )
+        except ValueError:
+            # A result that cannot be repeated exactly is not shown at all.
+            return None
+
+    def _record_disk_facts(self, evidence) -> tuple[str, str, str, str]:
+        """Title, capacity and identifier exactly as the result card shows them."""
+        from beamo_wipe import lang
+
+        if self.selected is not None:
+            try:
+                view = self.disk_view(self.selected)
+                return view.title, view.capacity, view.id_label, view.id_value
+            except (SafetyError, ValueError, TypeError, AttributeError):
+                pass
+        shown = evidence.get("device_presentation") if evidence is not None else None
+        if not isinstance(shown, dict):
+            return "", "", "", ""
+
+        def text(key: str) -> str:
+            value = shown.get(key)
+            return lang.current_text(value) if isinstance(value, str) else ""
+
+        return text("title"), text("capacity"), text("id_label"), text("id_value")
+
+    @property
+    def result_card(self):
+        """#171: the result summary card, from the photo record's facts.
+
+        None off the result screen. The card and the QR summary read the
+        same record, so they cannot disagree; without a final record (still
+        saving, preview) it uses the same disk and method facts, no times.
+        """
+        from beamo_wipe import erase_record as R
+
+        with self._lock:
+            if self.screen != Screen.DONE:
+                return None
+            code = self.result_view.code
+            preview = self.preview
+            evidence = (
+                self.evidence
+                if isinstance(self.evidence, dict) and not self.evidence_error
+                else None
+            )
+            facts = self._record_disk_facts(evidence)
+            method = self._record_method(evidence)
+            quick_zero = self._record_method_id(evidence) == MethodId.QUICK_ZERO
+        record = None if preview else self.erase_record
+        check = R.check_text(code, quick_zero=quick_zero, method=method, preview=preview)
+        return R.build_card(record, facts, method, check)
+
+    def _record_method_id(self, evidence):
+        """The method this erase used: evidence first, then the request."""
+        method_id = None
+        if evidence is not None and isinstance(evidence.get("method"), dict):
+            try:
+                method_id = MethodId(evidence["method"].get("id"))
+            except (ValueError, TypeError):
+                method_id = None
+        if method_id is None:
+            request = self._wipe_request
+            method_id = request.method if request is not None else self.method
+        return method_id
+
+    def _record_method(self, evidence) -> str:
+        """Pinned method title in the current language."""
+        method_id = None
+        if evidence is not None and isinstance(evidence.get("method"), dict):
+            try:
+                method_id = MethodId(evidence["method"].get("id"))
+            except (ValueError, TypeError):
+                method_id = None
+        if method_id is None:
+            request = self._wipe_request
+            method_id = request.method if request is not None else self.method
+        spec = METHODS.get(method_id)
+        return spec.title if spec is not None else ""
+
+    @property
     def support_identity(self):
         """Non-sensitive code plus build id when a report cannot be saved."""
         from beamo_wipe.support_code import identity_for_wizard, record_identity
@@ -1206,7 +1777,18 @@ class Wizard:
             self._request_new_session_locked()
 
     def _request_new_session_locked(self) -> None:
+        # #187: only Erase another disk hands anything to the next session:
+        # the disks this tick covered (when it is still in force) and the
+        # list of disks erased in this app run. Read once by the app loop.
+        carry = self._owner_carry_out if self.owner_ok and self.owner_source in _owner_carry.SOURCES else None
+        try:
+            code = self.result_view.code
+        except Exception:  # noqa: BLE001 — an unreadable result marks nothing
+            code = ""
+        self._handoff = (carry, _owner_carry.add_mark(self.erased_history, self.selected, code))
         self.owner_ok = False
+        self.owner_source = ""
+        self._owner_carry_out = None
         self.confirm_input = ""
         self._authorized_operation = None
         self._erase_until = None
@@ -1259,6 +1841,7 @@ class Wizard:
     def _arm_running_wipe(self, request: WipeRequest) -> None:
         """Publish a run that start() has already handed to the engine."""
         with self._lock:
+            self._begin_finish_sound_locked()
             self.error = None
             self.startup_error_code = ""
             self._wipe_request = request
@@ -1423,12 +2006,136 @@ class Wizard:
             if self.screen not in {Screen.WHAT, Screen.OWNER}:
                 return
             self.owner_ok = checked is True
+            # #187: a tick given here is an on-screen confirmation; what it
+            # covers is recorded when the owner continues to the disk list.
+            self.owner_source = _owner_carry.SOURCE_ON_SCREEN if self.owner_ok else ""
+            self._owner_carry_out = None
 
     def continue_owner(self) -> None:
         with self._lock:
             if self.screen not in {Screen.WHAT, Screen.OWNER} or not self.owner_ok:
                 return
+            if self.owner_source != _owner_carry.SOURCE_CARRIED:
+                # The box vouches for "these disks": the erasable disks this
+                # discovery lists now. None (no stable identity) never carries.
+                self.owner_source = _owner_carry.SOURCE_ON_SCREEN
+                self._owner_carry_out = _owner_carry.capture(self.selectable)
+            self.owner_carry_note = ""
             self._enter_pick()
+
+    def _clear_owner_locked(self) -> None:
+        """Untick the owner box and drop any confirmation that could carry (#187)."""
+        self.owner_ok = False
+        self.owner_source = ""
+        self._owner_carry_out = None
+
+    def offer_owner_carry(self, carry: Optional[_owner_carry.OwnerCarry],
+                          history: tuple[_owner_carry.ErasedMark, ...] = ()) -> None:
+        """App loop only: what the previous erase in this app run handed over.
+
+        Used once, at the first Owner step of this session, and only if this
+        session's own discovery lists no erasable disk outside what the tick
+        covered. Never sets owner_ok by itself.
+        """
+        with self._lock:
+            if self.screen not in {Screen.SPLASH, Screen.KEYBOARD} or self.wipe_result is not None:
+                return
+            self._owner_carry_in = carry if isinstance(carry, _owner_carry.OwnerCarry) else None
+            self.erased_history = tuple(
+                m for m in history
+                if isinstance(m, _owner_carry.ErasedMark) and m.state in _owner_carry.ERASED_STATES
+            )
+
+    def take_handoff(self) -> tuple[Optional[_owner_carry.OwnerCarry], tuple[_owner_carry.ErasedMark, ...]]:
+        """App loop only, after Erase another disk: (confirmation, erased list)."""
+        with self._lock:
+            handoff = self._handoff
+            self._handoff = None
+            if not self.wants_new_session or handoff is None:
+                return None, ()
+            return handoff
+
+    def _apply_owner_carry_locked(self) -> bool:
+        """At the first Owner step: use the carried tick if it still covers.
+
+        Returns True when the Owner screen is skipped. Fails closed: blocked
+        discovery, no erasable disk, an unidentifiable disk or a disk that
+        was not listed when the owner ticked all show the Owner screen
+        unticked.
+        """
+        carry, self._owner_carry_in = self._owner_carry_in, None
+        if carry is None:
+            return False
+        disks = list(self.selectable)
+        if (
+            self._startup_blocked
+            or not self.discovery.boot_identified
+            or self.discovery.error
+            or not disks
+        ):
+            return False
+        if not carry.covers(disks):
+            known = [_owner_carry.disk_key(d) for d in disks]
+            self.owner_carry_note = (
+                C.OWNER_CARRY_NEW_DISK
+                if all(k is not None for k in known) and len(set(known)) == len(known)
+                else C.OWNER_CARRY_UNSURE
+            )
+            return False
+        self.owner_ok = True
+        self.owner_source = _owner_carry.SOURCE_CARRIED
+        self._owner_carry_out = carry  # still bound to what was first confirmed
+        self.owner_carry_note = ""
+        self._enter_pick()
+        return True
+
+    @property
+    def owner_carried(self) -> bool:
+        """Pick shows 'You confirmed… Change' (#187)."""
+        return self.owner_ok and self.owner_source == _owner_carry.SOURCE_CARRIED
+
+    def change_ownership(self) -> None:
+        """'Change' on Pick a disk: back to the Owner screen, box unticked."""
+        with self._lock:
+            if self.screen not in {Screen.PICK, Screen.PICK_EMPTY} or not self.owner_carried:
+                return
+            self._clear_owner_locked()
+            self.selected = None
+            self.confirm_input = ""
+            self._erase_until = None
+            self._authorized_operation = None
+            self.screen = Screen.OWNER
+
+    def erased_tag(self, disk: Optional[Disk]) -> str:
+        """'Erased earlier (…)' for a disk erased earlier in this app run (#187)."""
+        state = _owner_carry.mark_for(self.erased_history, disk)
+        return {
+            _owner_carry.ERASED_CHECKED: C.TAG_ERASED_CHECKED,
+            _owner_carry.ERASED_UNCHECKED: C.TAG_ERASED_UNCHECKED,
+            _owner_carry.ERASED_UNCONFIRMED: C.TAG_ERASED_UNCONFIRMED,
+        }.get(state or "", "")
+
+    def disk_tags(self, disk: Disk) -> tuple[str, ...]:
+        """Tags shown with a disk row: encryption (#154), then an earlier erase (#187)."""
+        from beamo_wipe import inventory
+
+        if disk.is_boot:
+            return ()
+        tags = tuple(inventory.encryption_tags(self.nested_components(disk)))
+        erased = self.erased_tag(disk)
+        return tags + ((erased,) if erased else ())
+
+    def _discovery_error(self) -> Optional[str]:
+        """Discovery's error in the current language.
+
+        Discovery usually runs before the owner picks a language. The blocked
+        heading and recovery guidance match the error against constants in
+        the current language, so a stale English copy would get generic help.
+        """
+        from beamo_wipe import lang as ui_lang
+
+        error = self.discovery.error
+        return ui_lang.current_text(error) if error else error
 
     def _enter_pick(self) -> None:
         if self._startup_blocked:
@@ -1441,7 +2148,7 @@ class Wizard:
             # exception messages may contain device paths or serials.
             diag = getattr(self.discovery, "diagnostic", None)
             if diag:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
                 try:
                     from beamo_wipe.diagnostics import log_diag
                     from beamo_wipe.diagnostic_report import CODES
@@ -1459,7 +2166,7 @@ class Wizard:
                 except Exception:
                     pass
             else:
-                self.error = self.discovery.error
+                self.error = self._discovery_error()
             return
         try:
             assert_boot_excluded(self.discovery)
@@ -1481,22 +2188,56 @@ class Wizard:
             Screen.REFRESH_CONFIRM,
         } and self._wipe_request is None and not self.wants_shutdown and not self._startup_blocked and not self._diagnostic_busy
 
+    def _refresh_guarded_from(self, screen: Optional[Screen]) -> bool:
+        """True when rediscovery from ``screen`` would clear confirmations
+        beyond the ownership tick (#136). Unknown origins fail closed."""
+        if screen in REFRESH_DIRECT_SCREENS:
+            return False
+        if screen == Screen.REPORT_HELP:
+            return self._report_help_from not in (Screen.WHAT, Screen.OWNER)
+        return True
+
+    @property
+    def refresh_offered(self) -> bool:
+        """Show Check disks again (and its F5 key) on this screen (#136).
+
+        Not on What/Owner: no disk list exists yet. Pick and its empty,
+        blocked and help screens offer it as a normal action; Confirm,
+        Method, Review, Advanced and Limits offer it through the guarded
+        dialog.
+        """
+        return self.can_refresh and self.screen in REFRESH_OFFERED_SCREENS
+
+    @property
+    def refresh_guarded(self) -> bool:
+        """The open Check disks again dialog guards confirmations: Cancel
+        is its default and repeat keys cannot accept it (#136)."""
+        with self._lock:
+            if self.screen == Screen.REFRESH_CONFIRM:
+                return self._refresh_guarded_from(self._refresh_confirm_from)
+            return self._refresh_guarded_from(self.screen)
+
     def begin_refresh(self) -> Optional[int]:
         """Claim the checking state; the caller runs I/O elsewhere.
 
         Runs on the UI thread and returns a sequence number, or None when
         refresh is not allowed from the current screen. A second attempt
         while a scan is in flight is refused (None): one scan runs at a
-        time, so results can never pile up or race the UI.
+        time, so results can never pile up or race the UI. From a screen
+        holding confirmations, only the Check disks again dialog may start
+        a scan (#136); a direct call fails closed.
         """
         with self._lock:
             if self.screen == Screen.REFRESHING or not self.can_refresh:
+                return None
+            if self.screen != Screen.REFRESH_CONFIRM and self._refresh_guarded_from(self.screen):
                 return None
             self._refresh_seq += 1
             self.screen = Screen.REFRESHING
             self.discovery = DiscoveryResult(error=CHECKING_AGAIN, boot_identified=False)
             self.selected = None
-            self.owner_ok = False
+            self._clear_owner_locked()  # #187: a carried tick never survives a rescan
+            self._owner_carry_in = None
             self.confirm_input = ""
             self.method = DEFAULT_METHOD
             self._erase_until = None
@@ -1504,6 +2245,7 @@ class Wizard:
             self._advanced_from = None
             self._report_help_from = None
             self._refresh_confirm_from = None
+            self.refresh_then_reader = False
             self._done_keyboard_armed = False
             self.error = None
             return self._refresh_seq
@@ -1581,8 +2323,12 @@ class Wizard:
         self.finish_refresh(seq, outcome)
         return True
 
-    def open_refresh_confirm(self) -> bool:
-        """Show the reset explanation. Does not clear authorization."""
+    def open_refresh_confirm(self, *, then_reader: bool = False) -> bool:
+        """Show the reset explanation. Does not clear authorization.
+
+        Offered screens only (#136). ``then_reader`` is the screen-reader
+        switch on a screen holding confirmations: the same guarded dialog.
+        """
         with self._lock:
             if self.screen == Screen.REFRESHING:
                 return False
@@ -1590,7 +2336,12 @@ class Wizard:
                 return True
             if not self.can_refresh:
                 return False
+            if self.screen not in REFRESH_OFFERED_SCREENS and not (
+                then_reader and self._refresh_guarded_from(self.screen)
+            ):
+                return False
             self._refresh_confirm_from = self.screen
+            self.refresh_then_reader = bool(then_reader)
             self.screen = Screen.REFRESH_CONFIRM
             return True
 
@@ -1607,6 +2358,7 @@ class Wizard:
                 return
             dest = self._refresh_confirm_from or Screen.OWNER
             self._refresh_confirm_from = None
+            self.refresh_then_reader = False
             self._return_to_screen_locked(dest)
 
     def _operation_key(self) -> Optional[tuple[Any, ...]]:
@@ -1671,11 +2423,18 @@ class Wizard:
                     return
 
     def move_selection(self, delta: int) -> None:
-        """Move the pick-list highlight. First Up/Down chooses an edge disk."""
+        """Move the pick-list highlight. First Up/Down chooses an edge disk.
+
+        Steps through the list in its shown order (#151: internal first,
+        then external) from the selected disk's identity, never from a
+        stored position, and selects by path.
+        """
+        from beamo_wipe.disk_order import pick_order
+
         with self._lock:
             if self.screen != Screen.PICK:
                 return
-            selectable = sorted(self.selectable, key=lambda d: d.path)
+            selectable = pick_order(self.selectable)
             if not selectable:
                 return
             paths = [d.path for d in selectable]
@@ -1703,6 +2462,7 @@ class Wizard:
                 return
             self.error = None
             self.confirm_input = ""
+            self._confirm_mismatch = False
             self._authorized_operation = None
             self.screen = Screen.CONFIRM
 
@@ -1711,10 +2471,51 @@ class Wizard:
             if self.screen != Screen.CONFIRM:
                 return
             self.confirm_input = text
+            # #155: a complete entry that does not match is a wrong entry;
+            # from then on Confirm offers the keyboard-layout help.
+            spec = self.confirm
+            typed = (text or "").strip()
+            if spec is not None and typed and len(typed) >= len((spec.token or "").strip()):
+                if not self.token_ok:
+                    self._confirm_mismatch = True
+
+    @property
+    def confirm_layout_hint(self) -> bool:
+        """#155: show "Not matching? Check your keyboard layout" on Confirm.
+
+        Hidden until a wrong entry (a complete one that does not match, or
+        Continue/Enter on a non-matching one) and while the entry matches.
+        Display only: it never changes the token or any gate.
+        """
+        return (
+            self.screen == Screen.CONFIRM
+            and getattr(self, "_confirm_mismatch", False)
+            and not self.token_ok
+        )
+
+    @property
+    def confirm_feedback(self):
+        """#156: which typed characters are wrong, once a wrong entry was made.
+
+        Same timing as confirm_layout_hint. Display only: the gate is
+        token_matches, never this explanation.
+        """
+        if not self.confirm_layout_hint:
+            return None
+        spec = self.confirm
+        if spec is None:
+            return None
+        from beamo_wipe.token_feedback import feedback
+
+        return feedback(self.confirm_input, spec.token)
 
     def continue_confirm(self) -> None:
         with self._lock:
-            if self.screen != Screen.CONFIRM or not self.token_ok:
+            if self.screen != Screen.CONFIRM:
+                return
+            if not self.token_ok:
+                if (self.confirm_input or "").strip():
+                    self._confirm_mismatch = True  # #155: a wrong entry
                 return
             self.screen = Screen.METHOD
 
@@ -2346,6 +3147,9 @@ class Wizard:
                 assessment_log_text=assessment_log_text,
                 wall_provenance=self._evidence_wall_provenance,
                 language=self.language, keyboard_layout=self.keyboard_layout,
+                # #187: whether the owner ticked the box for this erase or it
+                # carried over from an earlier erase in this app run.
+                owner_confirmation=self.owner_source or None,
             )
             with self._lock:
                 if write_seq != self._evidence_write_seq:
@@ -2743,6 +3547,12 @@ class Wizard:
                 return None
             self._active_report_claim = claim
             self._done_keyboard_armed = False
+            if self._report_usb_probe is not None:
+                # Save re-checks the stick itself; afterwards detection
+                # starts fresh, so a stick pulled mid-save is not "found".
+                self._report_usb_generation += 1
+                self._report_usb = None
+                self._report_usb_due = 0.0
             self._set_report_state_locked(
                 status="saving",
                 message=REPORT_SAVING,
@@ -2827,6 +3637,103 @@ class Wizard:
                     message=final_message,
                     session=final_session,
                 )
+
+    # -- Save a report panel (#135) ------------------------------------------
+
+    def _report_target_locked(self) -> str:
+        if self._wipe_request is not None:
+            return self._wipe_request.device
+        return self.selected.path if self.selected is not None else ""
+
+    def _poll_report_usb(self) -> None:
+        """Start one background read-only USB scan when one is due."""
+        if self._report_usb_probe is None:
+            return
+        with self._lock:
+            if (
+                self._report_usb_busy
+                or self.now < self._report_usb_due
+                or not self._can_save_report_locked()
+            ):
+                return
+            self._report_usb_busy = True
+            self._report_usb_due = self.now + REPORT_USB_POLL_S
+            generation = self._report_usb_generation
+            discovery = self.discovery
+            target = self._report_target_locked()
+        started, _ = _start_guarded_thread(
+            lambda: self._run_report_usb_probe(generation, discovery, target),
+            name="beamo-report-usb",
+        )
+        if not started:
+            with self._lock:
+                self._report_usb_busy = False
+
+    def refresh_report_usb(self) -> None:
+        """One synchronous scan now (plain console redraws, tests)."""
+        if self._report_usb_probe is None:
+            return
+        with self._lock:
+            if self._report_usb_busy or not self._can_save_report_locked():
+                return
+            self._report_usb_busy = True
+            generation = self._report_usb_generation
+            discovery = self.discovery
+            target = self._report_target_locked()
+        self._run_report_usb_probe(generation, discovery, target)
+
+    def _run_report_usb_probe(self, generation: int, discovery, target: str) -> None:
+        from beamo_wipe.support_export import PROBE_UNAVAILABLE, ReportUsbProbe
+
+        try:
+            probe = self._report_usb_probe
+            assert probe is not None
+            result = probe(discovery=discovery, target_path=target)
+        except Exception:  # noqa: BLE001 - shown as "could not check"
+            result = ReportUsbProbe(PROBE_UNAVAILABLE)
+        with self._lock:
+            self._report_usb_busy = False
+            if generation != self._report_usb_generation:
+                return
+            if result != self._report_usb:
+                self._report_usb = result
+                self._report_revision += 1
+
+    @property
+    def report_usb(self):
+        """Latest detection result; a "looking" placeholder before the first."""
+        from beamo_wipe.support_export import ReportUsbProbe
+
+        with self._lock:
+            if self._report_usb_probe is None:
+                return None
+            return self._report_usb or ReportUsbProbe("looking")
+
+    @property
+    def report_panel(self):
+        """The Save a report panel for every result-screen surface."""
+        from beamo_wipe.report_panel import build_report_panel
+
+        return build_report_panel(
+            self.report_view, preview=self.preview, usb=self.report_usb,
+            evidence_warning=self.evidence_warning,
+        )
+
+    @property
+    def done_actions_reason(self) -> str:
+        """Why Shut down or Erase another disk is shown greyed, else ""."""
+        if self.screen != Screen.DONE or self.preview:
+            return ""
+        report = self.report_view
+        if report.exporting:
+            return C.DONE_WAIT_SAVING
+        if report.saving_evidence:
+            return C.DONE_WAIT_PREPARING
+        if self.wipe_result is None or self.can_erase_another:
+            return ""
+        if self.result_view.code == "stop_unconfirmed" or self._live_pinned_engine_busy():
+            return C.DONE_ANOTHER_OFF
+        return C.DONE_ANOTHER_BUSY
 
     def save_report_to_usb(self) -> None:
         """Synchronously save a report. Used by console fallbacks and tests."""
@@ -2997,8 +3904,42 @@ class Wizard:
         return view
 
     @property
+    def result_plain(self):
+        """Plain headline, note and What next list for the result (#134).
+
+        ``result_view.message`` stays the technical status line (evidence,
+        report, photo record). When evidence could not be saved the view is
+        indeterminate with a replaced message; the headline then describes
+        that message's outcome rather than "result unknown".
+        """
+        from beamo_wipe.outcomes import plain_result
+
+        view = self.result_view
+        headline_code = ""
+        if view.code == "indeterminate" and not self.preview:
+            headline_code = {
+                ERASE_STOPPED_BY_YOU: "cancelled",
+                ERASE_INTERRUPTED_MSG: "interrupted",
+                ERASE_COMPLETION_UNCONFIRMED: "completion_missing",
+                ERASE_UNFINISHED: "process_failed",
+            }.get(view.message, "")
+        notice = ""
+        if self._recovered:
+            from beamo_wipe.session_recovery import NOTICE
+
+            notice = NOTICE
+        return plain_result(view, headline_code=headline_code, notice=notice)
+
+    @property
+    def result_technical(self) -> str:
+        """The technical status line kept for support (Show more on Tk)."""
+        from beamo_wipe.recovery import technical_status
+
+        return technical_status(self.result_view)
+
+    @property
     def can_open_report_help(self) -> bool:
-        return self.screen in {Screen.WHAT, Screen.OWNER, Screen.METHOD, Screen.ADVANCED} and self._wipe_request is None
+        return self.screen in REPORT_HELP_SCREENS and self._wipe_request is None
 
     def open_report_help(self) -> None:
         with self._lock:
@@ -3018,10 +3959,14 @@ class Wizard:
                 self.sound_output = sink_id
 
     def set_sounds_enabled(self, enabled: bool) -> None:
-        """Outcome sounds on/off. Silent by default; session memory only."""
+        """Outcome sounds on/off. Session memory only; an explicit choice
+        survives the next erase's default-on (#133)."""
         with self._lock:
             if type(enabled) is bool:
                 self.sounds_enabled = enabled
+                self._sounds_chosen = True
+                if not enabled:
+                    self._finish_ack = True
 
     @property
     def sound_toggle_text(self) -> str:
@@ -3034,11 +3979,20 @@ class Wizard:
         )
 
     def toggle_sounds(self) -> None:
-        """Flip outcome sounds and report the state. Session memory only."""
+        """Flip outcome sounds and report the state. Session memory only.
+
+        On Working this is "Play a sound when it's finished" (#133); it is
+        greyed and ignored there while no sound output is available.
+        """
         from beamo_wipe import copy as _copy
 
         with self._lock:
+            if self.screen == Screen.WORKING and self.audio_available is False:
+                return
             self.sounds_enabled = not self.sounds_enabled
+            self._sounds_chosen = True
+            if not self.sounds_enabled:
+                self._finish_ack = True
             self.sound_message = (
                 _copy.SOUND_TOGGLE_ON
                 if self.sounds_enabled
@@ -3067,6 +4021,7 @@ class Wizard:
 
     def _poll_audio(self) -> None:
         with self._lock:
+            self._poll_audio_probe_locked()
             request = self._audio_request
             if request is None:
                 return
@@ -3113,10 +4068,16 @@ class Wizard:
                 self.sound_revision += 1
 
     def cancel_audio(self) -> None:
+        """Interface teardown: cancel queued sound and the Working check."""
         with self._lock:
             if self._audio_request is not None:
                 self._audio_request[0].cancel()
                 self._audio_request = None
+            # The #133 Working availability check is audio work too; a closed
+            # interface must not leave it queued on the shared worker.
+            if self._audio_probe is not None:
+                self._audio_probe[0].cancel()
+                self._audio_probe = None
 
     def request_hear_both_sounds(self):
         from beamo_wipe import sound
@@ -3157,8 +4118,148 @@ class Wizard:
             if key == self._sound_played_for:
                 return None
             self._sound_played_for = key
+            # First finish alert (#133); _tick_finish_sound repeats it.
+            self._finish_plays = 1
+            self._finish_last_at = self.now
+            self.finish_alert_serial += 1
         # A bounded, reaped playback also gives truthful failure feedback.
         return self._queue_audio(lambda: sound.play_test(sound.kind_for_code(code)), auto=True, key=key)
+
+    # -- Finish sound (#133) ------------------------------------------------
+
+    def _begin_finish_sound_locked(self) -> None:
+        """A new erase: sound on by default, fresh availability and repeats."""
+        if not self._sounds_chosen:
+            self.sounds_enabled = True
+        self._finish_plays = 0
+        self._finish_last_at = None
+        self._finish_ack = False
+        self.audio_available = None
+        self.audio_reason = ""
+        self._audio_probe_at = None
+        if self._audio_probe is not None:
+            self._audio_probe[0].cancel()
+            self._audio_probe = None
+        self.sound_revision += 1
+
+    def begin_finish_sound(self) -> None:
+        with self._lock:
+            self._begin_finish_sound_locked()
+
+    def set_audio_availability(self, available: bool, reason: str = "") -> None:
+        """Record a finished availability check (also used by previews/tests)."""
+        with self._lock:
+            reason = "" if available else reason
+            if (self.audio_available, self.audio_reason) != (available, reason):
+                self.audio_available = available
+                self.audio_reason = reason
+                self.sound_revision += 1
+
+    @property
+    def finish_sound_toggle_enabled(self) -> bool:
+        """Greyed only when a check found no usable output."""
+        return self.audio_available is not False
+
+    @property
+    def walk_away_text(self) -> str:
+        """Promise the beep only for a found, unmuted output with sound on."""
+        if self.audio_available is False:
+            return C.WALK_AWAY_NO_SOUND
+        if self.audio_available and self.sounds_enabled:
+            return C.WALK_AWAY_BEEP
+        return C.WALK_AWAY_QUIET
+
+    @property
+    def finish_sound_reason(self) -> str:
+        return self.audio_reason if self.audio_available is False else ""
+
+    def set_finish_sound(self, enabled: bool) -> None:
+        """The Working check box (#133). Same setting as toggle_sounds, but
+        no status message: the box itself shows the state."""
+        with self._lock:
+            if type(enabled) is not bool:
+                return
+            if self.screen == Screen.WORKING and self.audio_available is False:
+                return
+            self.sounds_enabled = enabled
+            self._sounds_chosen = True
+            if not enabled:
+                self._finish_ack = True
+            self.sound_revision += 1
+
+    def acknowledge_finish_sound(self) -> None:
+        """Someone is back: stop repeating the finish sound."""
+        with self._lock:
+            if self.screen == Screen.DONE and self._finish_plays:
+                self._finish_ack = True
+
+    def _tick_finish_sound(self) -> None:
+        """Availability checks on Working; capped repeats on the result.
+
+        Everything audible or slow runs on the audio worker; this only
+        decides and queues, so it never blocks the interface thread.
+        """
+        from beamo_wipe import sound
+        from beamo_wipe.audio_jobs import worker
+
+        replay = None
+        with self._lock:
+            now = self.now
+            if self.screen == Screen.WORKING:
+                wait = AUDIO_PROBE_RETRY_S if self.audio_available is None else AUDIO_PROBE_S
+                if (
+                    self._audio_probe is None
+                    and self._audio_request is None
+                    and (self._audio_probe_at is None or now - self._audio_probe_at >= wait)
+                ):
+                    self._audio_probe_at = now
+                    ticket = worker.submit(sound.output_status, background=True)
+                    self._audio_probe = (ticket, self._screen_epoch)
+            elif (
+                self.screen == Screen.DONE
+                and not self.preview
+                and self.wipe_result is not None
+                and self.sounds_enabled
+                and not self._finish_ack
+                and 1 <= self._finish_plays < FINISH_PLAYS_MAX
+                and self._finish_last_at is not None
+                and now - self._finish_last_at >= FINISH_REPEAT_S
+                and self._audio_request is None
+                and not self._finishing
+                and not self._evidence_saving
+            ):
+                code = self.result_view.code
+                key = (self._result_evidence_key(self.wipe_result), code)
+                if key == self._sound_played_for:
+                    self._finish_plays += 1
+                    self._finish_last_at = now
+                    self.finish_alert_serial += 1
+                    if self.audio_available is not False:
+                        replay = (code, key)
+        if replay is not None:
+            code, key = replay
+            self._queue_audio(
+                lambda: sound.play_test(sound.kind_for_code(code)), auto=True, key=key
+            )
+
+    def _poll_audio_probe_locked(self) -> None:
+        probe = self._audio_probe
+        if probe is None:
+            return
+        ticket, epoch = probe
+        if self.screen != Screen.WORKING or self._screen_epoch != epoch:
+            ticket.cancel()
+            self._audio_probe = None
+            return
+        ready, result = ticket.poll()
+        if not ready:
+            return
+        self._audio_probe = None
+        from beamo_wipe.sound import SoundResult
+
+        if isinstance(result, SoundResult):
+            self.set_audio_availability(result.ok, result.message)
+        # A withdrawn or failed check keeps the last answer; it retries later.
 
     def maybe_play_outcome_sound(self):
         """Auto-play the final outcome's earcon at most once. Silent rules:
@@ -3261,6 +4362,14 @@ class Wizard:
 
         return notice(self.selected.kind if self.selected else DiskKind.UNKNOWN)
 
+    @property
+    def storage_line(self) -> str:
+        """#158: one-line summary of storage_notice for the Method screen."""
+        from beamo_wipe.models import DiskKind
+        from beamo_wipe.storage_limits import line
+
+        return line(self.selected.kind if self.selected else DiskKind.UNKNOWN)
+
     def open_advanced(self) -> None:
         with self._lock:
             if self.screen in (Screen.SPLASH, Screen.KEYBOARD, Screen.CHECKING, Screen.STOPPING, Screen.WORKING, Screen.ADVANCED, Screen.REFRESHING, Screen.REFRESH_CONFIRM, Screen.DIAGNOSTIC, Screen.REPORT_HELP):
@@ -3295,6 +4404,7 @@ class Wizard:
                 dest = self._keyboard_from
                 self._keyboard_from = None
                 self.typing_check = ""
+                self.keyboard_check = None
                 if dest and dest not in {
                     Screen.KEYBOARD,
                     Screen.SPLASH,
@@ -3305,31 +4415,22 @@ class Wizard:
                 }:
                     self._return_to_screen_locked(dest)
                 return
-            mapping = {
-                Screen.WHAT: Screen.KEYBOARD,
-                Screen.OWNER: Screen.KEYBOARD,
-                Screen.DISK_HELP: Screen.PICK,
-                Screen.PICK: Screen.OWNER,
-                Screen.PICK_EMPTY: Screen.OWNER,
-                Screen.PICK_BLOCKED: Screen.OWNER,
-                Screen.CONFIRM: Screen.PICK,
-                Screen.METHOD: Screen.CONFIRM,
-                Screen.LAST_CHANCE: Screen.METHOD,
-                Screen.ADVANCED: self._advanced_from or Screen.METHOD,
-                Screen.LIMITS: Screen.METHOD,
-            }
+            mapping = dict(BACK_SCREENS)
+            mapping[Screen.ADVANCED] = self._advanced_from or Screen.METHOD
             if self.screen in mapping:
                 self._return_to_screen_locked(mapping[self.screen])
                 if self.screen != Screen.LAST_CHANCE:
                     self._erase_until = None
                 self.error = None
 
-    def prepare_text(self) -> str:
-        from beamo_wipe.copy import prepare_selected
-
-        if self.selected is None:
-            return ""
-        return prepare_selected(self.selected)
+    @property
+    def journey_step(self) -> Optional[tuple[int, int, Screen]]:
+        """(number, total, step screen) for the step bar (#130), or None."""
+        return journey_step_for(self.screen, {
+            Screen.KEYBOARD: self._keyboard_from,
+            Screen.ADVANCED: self._advanced_from,
+            Screen.REPORT_HELP: self._report_help_from,
+        })
 
     def warning_text(self) -> str:
         if self.selected is None:
@@ -3343,6 +4444,12 @@ class Wizard:
     @property
     def operation_summary(self) -> str:
         return METHODS[self.method].operation_summary
+
+    @property
+    def review_method_line(self) -> str:
+        """#164: the one method line on Review: name, overwrites, verification."""
+        spec = METHODS[self.method]
+        return C.REVIEW_METHOD_LINE.format(method=spec.title, operation=spec.operation_summary)
 
     @property
     def method_result(self) -> str:

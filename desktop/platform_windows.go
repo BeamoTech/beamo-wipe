@@ -131,10 +131,77 @@ func platformProbe(ctx context.Context) Snapshot {
 		return s
 	}
 	s.MediaID, s.Partitions = media.Media, media.Partitions
+	// Restart to boot options (#183) needs Windows 10 or later: shutdown /o
+	// and WinRE's Use a device. Older builds keep the boot-menu guidance.
+	s.AdvancedStartup = windowsBuild() >= 10240
 	// A successful ExitWindowsEx call does not guarantee a reboot. The user or
 	// another application may cancel it, leaving BootNext armed for a later boot.
 	s.Problem = "windows-manual"
 	return s
+}
+
+// windowsMachine reads the brand that Windows reports (#184). WMI
+// Win32_ComputerSystem and Win32_BaseBoard are readable without elevation.
+// Serial numbers are not requested.
+const windowsMachine = `$ErrorActionPreference='Stop'
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$c=Get-CimInstance -ClassName Win32_ComputerSystem
+$board=''
+$b=@(Get-CimInstance -ClassName Win32_BaseBoard -ErrorAction SilentlyContinue)
+if ($b.Count -gt 0) { $board=[string]$b[0].Manufacturer }
+[ordered]@{manufacturer=[string]$c.Manufacturer;model=[string]$c.Model;board=$board} | ConvertTo-Json -Compress
+`
+
+func platformMachine(ctx context.Context) (machineInfo, error) {
+	win := windowsDirectory()
+	if win == "" {
+		return machineInfo{}, errors.New("Windows directory unavailable")
+	}
+	ps := filepath.Join(win, "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
+	cmd := exec.CommandContext(ctx, ps, "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", windowsMachine)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	data, err := boundedOutput(cmd, 64<<10)
+	if err != nil {
+		return machineInfo{}, err
+	}
+	return parseMachineJSON(data)
+}
+
+// windowsBuild reads the real build number. RtlGetVersion is not subject to
+// the compatibility shims that make GetVersionEx report older versions.
+func windowsBuild() uint32 {
+	var info struct {
+		size, major, minor, build, platform uint32
+		csd                                 [128]uint16
+	}
+	info.size = uint32(unsafe.Sizeof(info))
+	proc := syscall.NewLazyDLL("ntdll.dll").NewProc("RtlGetVersion")
+	if proc.Find() != nil {
+		return 0
+	}
+	if status, _, _ := proc.Call(uintptr(unsafe.Pointer(&info))); status != 0 {
+		return 0
+	}
+	return info.build
+}
+
+// platformAdvancedStartup is the only real runner for Restart to boot
+// options (#183). Only run() wires it, and it refuses inside test binaries
+// before it builds a command. A nonzero exit (for example, no "Shut down the
+// system" right under policy, or another session blocking a restart) is a
+// failure and the page falls back to the boot-menu key.
+func platformAdvancedStartup(ctx context.Context) error {
+	if err := advancedStartupGuard(); err != nil {
+		return err
+	}
+	win := windowsDirectory()
+	if win == "" {
+		return errors.New("Windows directory unavailable")
+	}
+	args := advancedStartupArgs(win)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	return cmd.Run()
 }
 
 var errWindowsManual = errors.New("Windows guided restart is unavailable; use the boot menu")

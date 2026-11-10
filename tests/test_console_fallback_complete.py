@@ -62,7 +62,11 @@ def test_long_ascii_serial_is_complete_across_wrapped_rows(monkeypatch):
     shown, packed, term = _draw(
         monkeypatch, wiz, keys=[console.curses.KEY_DOWN] * 8, h=24, w=80
     )
-    assert serial in packed
+    # Confirm brackets the confirmation characters at the end (#129); the
+    # serial itself is still complete across the wrapped rows.
+    view = wiz.disk_view(wiz.selected)
+    assert view.token_marked_id == serial[:-4] + "[" + serial[-4:] + "]"
+    assert view.token_marked_id in packed
     assert all(console._display_cols(row) < 80 for row in term.frames[-1].values())
     assert "cannot get" in shown.lower() or "will be erased" in shown.lower()
 
@@ -181,6 +185,8 @@ def test_many_disks_paginate_without_hiding_later_serials(monkeypatch):
     all_packed = "".join(
         "".join(frame.get(y, "") for y in sorted(frame)) for frame in term.frames
     )
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    all_packed = all_packed.replace("[", "").replace("]", "")
     assert many[0].serial in all_packed
     assert any(disk.serial in all_packed for disk in many[6:])
     assert C.CON_MORE_DISKS_BELOW in all_packed or many[-1].serial in all_packed

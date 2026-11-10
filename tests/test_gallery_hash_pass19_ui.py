@@ -1,12 +1,12 @@
 """Malformed preview deep links must not strand the click-through."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize(
@@ -26,7 +26,7 @@ def test_preview_hash_never_opens_an_invalid_screen(fragment, expected):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    script, = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     handler = script[script.index("function applyHash() {"):script.index("if (location.hash) applyHash()")]
     program = f"""
 let screen = 'splash', mode = 'happy', selected = null, token = '', owner = false;

@@ -67,6 +67,8 @@ def test_refresh_acceptance_failure_resolves_claim(monkeypatch, request, surface
     provenance = _admit(module, "TK" if surface == "tk" else "GTK")
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     app_class = module.TkWizard if surface == "tk" else module.AccessibleWizard
     app = app_class.__new__(app_class)

@@ -92,60 +92,87 @@ def test_unavailable_aftercare_unchanged():
     assert text == C.REPORT_EXPORT_UNAVAILABLE + " " + C.REPORT_VOLATILE
 
 
+# #135 replaced the five export stages on every result screen with the "Save
+# a report (optional)" panel and its five numbered steps (report_panel.py).
+# The console checks below hold the panel to what the stage block promised:
+# every step reachable by paging, removal marked only once saved, and a
+# failed save offering Save again without claiming any step is done.
+
+
+def _frames_text(term):
+    return " ".join(
+        " ".join(frame[y] for y in sorted(frame)) for frame in term.frames if frame
+    )
+
+
 def test_done_console_pages_full_stage_block(monkeypatch, tmp_path):
     import curses
 
     wiz = _eligible_wizard(lambda **kw: _ok_receipt(**kw), tmp_path)
     assert wiz.report_view.can_save
+    panel = wiz.report_panel
+    assert panel.kind == "ready" and len(panel.steps) == 5
     _, _, term = _draw(
-        monkeypatch, wiz, keys=[curses.KEY_DOWN] * 6, sizes=[(24, 80)] * 8
+        monkeypatch, wiz, keys=[curses.KEY_DOWN] * 10, sizes=[(24, 80)] * 12
     )
-    all_text = " ".join(
-        " ".join(frame[y] for y in sorted(frame)) for frame in term.frames
-    )
-    for stage in C.EXPORT_STAGES:
-        assert stage in all_text
+    first = " ".join(term.frames[0][y] for y in sorted(term.frames[0]))
+    assert C.REPORT_STATUS_TITLE in first
+    all_text = _frames_text(term)
+    for line in panel.step_lines:
+        assert line in all_text, line
+    assert C.REPORT_STEP_INSERT in all_text and C.REPORT_STEP_REMOVE in all_text
+    assert C.CON_PANEL_SAVE in all_text
 
 
 def test_done_console_narrow_pages_full_stage_block(monkeypatch, tmp_path):
     import curses
 
     wiz = _eligible_wizard(lambda **kw: _ok_receipt(**kw), tmp_path)
+    # Page to the end: the per-outcome next steps made this page longer, and
+    # every step and the volatile-report line must stay reachable by paging.
     _, _, term = _draw(
         monkeypatch,
         wiz,
-        keys=[curses.KEY_DOWN] * 10,
-        sizes=[(24, 60)] * 12,
+        keys=[curses.KEY_DOWN] * 24,
+        sizes=[(24, 60)] * 26,
     )
-    all_text = " ".join(
-        " ".join(frame[y] for y in sorted(frame)) for frame in term.frames
-    )
-    for stage in C.EXPORT_STAGES:
-        assert stage in all_text
+    all_text = _frames_text(term)
+    for line in wiz.report_panel.step_lines:
+        assert line in all_text, line
+    assert C.CON_PANEL_SAVE in all_text
     assert C.REPORT_VOLATILE in all_text
     assert all(max(frame) < 24 for frame in term.frames if frame)
+    assert all(
+        console._display_cols(row) < 60 for frame in term.frames for row in frame.values()
+    )
 
 
 def test_done_console_saved_marks_removal_now(monkeypatch, tmp_path):
     import curses
 
+    from beamo_wipe import progress as P
+
     wiz = _eligible_wizard(lambda **kw: _ok_receipt(**kw), tmp_path)
     wiz.save_report_to_usb()
     assert wiz.report_view.status == "saved"
     shown, packed, term = _draw(
-        monkeypatch, wiz, keys=[curses.KEY_DOWN] * 12
+        monkeypatch, wiz, keys=[curses.KEY_DOWN] * 16
     )
-    all_text = " ".join(
-        " ".join(frame[y] for y in sorted(frame)) for frame in term.frames if frame
-    )
-    assert C.EXPORT_STAGE_REMOVE in all_text
+    all_text = _frames_text(term)
+    assert f"5. {C.REPORT_STEP_REMOVE_NOW}{P.STAGE_NOW_MARK}" in all_text
+    for line in wiz.report_panel.step_lines[:3]:
+        assert line.endswith(P.STAGE_DONE_MARK) and line in all_text
     assert "safe to remove" in all_text
+    assert C.CON_PANEL_SAVE not in all_text
     view = wiz.disk_view(wiz.selected) if wiz.selected else None
     if view is not None:
         assert view.id_value in all_text
 
 
 def test_done_console_error_shows_retry_without_stages(monkeypatch, tmp_path):
+    import curses
+
+    from beamo_wipe import progress as P
     from beamo_wipe.safety import SafetyError
 
     def exporter(**kw):
@@ -154,10 +181,19 @@ def test_done_console_error_shows_retry_without_stages(monkeypatch, tmp_path):
     wiz = _eligible_wizard(exporter, tmp_path)
     wiz.save_report_to_usb()
     assert wiz.report_view.status == "error"
-    shown, _, _ = _draw(monkeypatch, wiz)
-    assert "Report USB was removed." in shown
-    assert "Save report to USB again" in shown
-    assert C.EXPORT_STAGE_INSERT not in shown
+    assert wiz.report_panel.kind == "failed"
+    shown, _, term = _draw(
+        monkeypatch, wiz, keys=[curses.KEY_DOWN] * 16, sizes=[(24, 80)] * 18
+    )
+    first = " ".join(term.frames[0][y] for y in sorted(term.frames[0]))
+    assert "Report USB was removed." in first
+    all_text = _frames_text(term)
+    # Save again is offered (step 3 and its key); nothing claims progress.
+    assert f"3. {C.REPORT_STEP_SAVE}" in all_text
+    assert C.CON_PANEL_SAVE in all_text
+    assert P.STAGE_DONE_MARK not in all_text
+    assert "safe to remove" not in all_text
+    assert C.REPORT_STEP_REMOVE_NOW not in all_text
 
 
 def test_done_plain_console_shows_stages(monkeypatch, capsys, tmp_path):
@@ -170,7 +206,10 @@ def test_done_plain_console_shows_stages(monkeypatch, capsys, tmp_path):
     monkeypatch.setattr("builtins.input", fake_input)
     console._plain_loop(wiz)
     visible = capsys.readouterr().out
-    assert C.EXPORT_STAGE_INSERT in visible
+    assert C.REPORT_STATUS_TITLE in visible
+    for line in wiz.report_panel.step_lines:
+        assert line in visible, line
+    assert C.REPORT_VOLATILE in visible
 
 
 def test_export_stages_follow_active_language():
@@ -193,14 +232,18 @@ def test_retry_guidance_matches_save_button_label():
 def test_gallery_done_card_shows_stages():
     from beamo_wipe.gallery import gallery_html
 
+    # #135: the gallery's report help carries the result screen's guided
+    # steps (the preview itself never saves a report).
     html = gallery_html()
-    for stage in C.EXPORT_STAGES:
-        assert stage in html
+    assert "guides you in five steps" in html
+    assert C.REPORT_PREVIEW in html
 
 
 def test_export_stage_keys_translated_in_fr_and_de():
     from beamo_wipe.locales import de as de_locale
+    from beamo_wipe.locales import es as es_locale
     from beamo_wipe.locales import fr as fr_locale
+    from beamo_wipe.locales import it as it_locale
 
     keys = (
         "EXPORT_STAGE_INSERT",
@@ -217,9 +260,11 @@ def test_export_stage_keys_translated_in_fr_and_de():
         assert key in de_locale.STRINGS["copy"]
         assert fr_locale.STRINGS["copy"][key] != getattr(C, key)
         assert de_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert es_locale.STRINGS["copy"][key] != getattr(C, key)
+        assert it_locale.STRINGS["copy"][key] != getattr(C, key)
 
 
-@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html"])
+@pytest.mark.parametrize("name", ["index.html", "fr.html", "de.html", "es.html", "it.html"])
 def test_helper_explains_export_stages(name):
     from beamo_wipe.gallery import project_root
 
@@ -230,6 +275,8 @@ def test_helper_explains_export_stages(name):
         "index.html": ("Insert", "Check", "Save", "Verify", "removal"),
         "fr.html": ("Insérez", "Vérif", "Enregistr", "Contrôl", "retrait"),
         "de.html": ("Stecken", "Prüf", "Speichern", "Verifizier", "Abziehen"),
+        "es.html": ("Conecte", "Compruebe", "Guarde", "Verifique", "Retirada segura"),
+        "it.html": ("Inserisca", "Controlli", "Salvi", "Verifichi", "Rimozione sicura"),
     }[name]
     positions = [card.index(marker) for marker in markers]
     assert positions == sorted(positions)

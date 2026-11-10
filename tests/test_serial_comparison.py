@@ -28,7 +28,9 @@ def disks(*serials):
     (("ABC", "ABXC"), ((0, 0), (2, 3))),
     (("A" * 240 + "X" + "Z" * 80, "A" * 240 + "Y" + "Z" * 80),
      ((240, 241), (240, 241))),
-    (("ABCD", "WXYZ"), ((0, 4), (0, 4))),
+    # Nothing shared at either end: no mark, no note; the card shows the
+    # serial once (#148).
+    (("ABCD", "WXYZ"), ((0, 0), (0, 0))),
     (("aBC1", "AbC2"), ((3, 4), (3, 4))),
 ])
 def test_comparison_preserves_all_differences_and_raw_identity(serials, spans):
@@ -38,11 +40,22 @@ def test_comparison_preserves_all_differences_and_raw_identity(serials, spans):
         view = comparison_view(disk, peers)
         assert (view.comparison_start, view.comparison_end) == (start, end)
         assert view.id_value == disk.serial
+        if serials == ("ABCD", "WXYZ"):
+            assert view.comparison_note == "" and view.marked_id == disk.serial
+            continue
         assert view.comparison_note in view.notes
         assert view.comparison_note in view.announcement
+        # Positions only; the serial is shown once, on the card (#148).
+        assert disk.serial not in view.comparison_note
         if end:
-            assert view.marked_id == disk.serial[:start] + '[' + disk.serial[start:end] + ']' + disk.serial[end:]
+            # #152: every differing run is marked, from the first to the last.
+            assert view.comparison_marks[0][0] == start and view.comparison_marks[-1][1] == end
+            assert view.marked_id.replace("[", "").replace("]", "") == disk.serial
+            if len(view.comparison_marks) == 1:
+                assert view.marked_id == disk.serial[:start] + '[' + disk.serial[start:end] + ']' + disk.serial[end:]
             assert f"character{'s' if end-start > 1 else ''} {start+1}" in view.comparison_note
+            if end - start >= 3:
+                assert disk.serial[start:end] not in view.comparison_note
         else:
             assert view.marked_id == disk.serial
             assert f"Serial number has {len(disk.serial)} character" in view.comparison_note
@@ -112,9 +125,14 @@ def test_gallery_and_console_share_comparison(monkeypatch):
         assert item['serial'] == disk.serial
         assert item['markedSerial'] == view.marked_id
         assert item['comparisonNote'] == view.comparison_note
-        assert "Compare serial number character 6:" in lines
+        assert "Differs from the other 500 GB disk at character 6." in lines
+        assert f"Serial number: {view.marked_id}" in lines
     html = gallery.gallery_html()
-    assert 'esc(screen === "pick" && !d.isBoot ? d.markedSerial || d.serial : d.serial)' in html
+    # #152: the differing characters are bold and underlined in the preview.
+    assert 'out += esc(d.serial.slice(at, a)) + \'<b class="diff">\' + esc(d.serial.slice(a, b)) + "</b>";' in html
+    for disk in peers:
+        item = next(d for d in payload if d['path'] == disk.path)
+        assert item['serialMarks'] == [list(run) for run in comparison_view(disk, peers).comparison_marks]
     assert 'd.comparisonNote' in html
 
 
@@ -174,13 +192,17 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
     monkeypatch.setattr(gallery, "discovery_for_scenario", lambda _: wizard.discovery)
     check = '''<script>
     window.addEventListener('load', () => {
-      const rows = [...document.querySelectorAll('.pickable')].map(card => {
+      // #149: on Pick only the selected disk expands to show its serial;
+      // compact rows carry none. Measure every card that shows one.
+      const cards = [...document.querySelectorAll('.pickable')].filter(card => card.querySelector('.ser'));
+      const rows = cards.map(card => {
         const label = card.querySelector('.serial-label');
         const serial = card.querySelector('.ser');
         const range = document.createRange(); range.selectNodeContents(label);
-        return {labelLines: range.getClientRects().length,
+        return {path: card.dataset.path, labelLines: range.getClientRects().length,
                 injected: !!window.injected || !!card.querySelector('img'),
                 serial: serial.textContent,
+                marked: [...serial.querySelectorAll('b.diff')].map(b => b.textContent),
                 fits: serial.getBoundingClientRect().right <= card.getBoundingClientRect().right};
       });
       document.documentElement.setAttribute('data-serial-check', JSON.stringify(rows));
@@ -194,16 +216,24 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
             executable_path=chrome, args=["--no-sandbox", "--disable-dev-shm-usage"]
         )
         try:
-            rendered = browser.new_page(viewport={"width": 1024, "height": 1160})
-            rendered.goto(page.as_uri() + '#s=pick')
-            raw = rendered.locator("html").get_attribute("data-serial-check")
-            assert raw is not None
-            rows = json.loads(raw)
-            picker = rendered.evaluate("screen") == "pick"
+            found = {}
+            for index in range(len(wizard.selectable)):
+                rendered = browser.new_page(viewport={"width": 1024, "height": 1160})
+                rendered.goto(page.as_uri() + f'#s=pick&disk={index}')
+                raw = rendered.locator("html").get_attribute("data-serial-check")
+                assert raw is not None
+                rows = json.loads(raw)
+                picker = rendered.evaluate("screen") == "pick"
+                # The picker expands exactly the selected disk (#149).
+                assert len(rows) == (1 if picker else len(wizard.selectable))
+                for row in rows:
+                    found[row["path"]] = row
+                rendered.close()
         finally:
             browser.close()
-    assert len(rows) == 2
-    for row, disk in zip(rows, wizard.selectable):
+    assert set(found) == {disk.path for disk in wizard.selectable}
+    for disk in wizard.selectable:
+        row = found[disk.path]
         assert not row['injected']
         assert row['labelLines'] == 1
         assert row['fits']
@@ -212,7 +242,11 @@ def test_browser_comparison_wraps_and_escapes_metadata(monkeypatch, tmp_path, se
         # comparison marks are intentionally exclusive to the picker.
         if not view.confirmable:
             assert not picker
-        assert row['serial'] == (view.marked_id if picker else view.id_value)
+        # #152: the browser shows the differing characters in bold (a shape,
+        # not brackets); text consoles use marked_id's [brackets].
+        assert row['serial'] == view.id_value
+        expected_marks = [text for text, marked in view.comparison_segments if marked]
+        assert row['marked'] == (expected_marks if picker else [])
 
 
 def test_comparison_is_only_shown_while_choosing():

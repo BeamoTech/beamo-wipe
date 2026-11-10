@@ -78,8 +78,23 @@ NEXT_BLOCKED_REFRESH = (
 )
 NEXT_EMPTY = (
     "Review the reasons below. Keep the Beamo USB connected. "
-    "Shut down before checking drive connections. "
-    "If a disk remains unavailable or its identity is uncertain, contact support."
+    "Shut down before checking disk connections. "
+    "If a disk stays unavailable or you are unsure which it is, contact support."
+)
+# #185: the empty list when an Intel VMD / RST RAID controller is detected
+# (hidden_storage.py). Owner-approved wording, 2026-11-07, with "PC's" made
+# "computer's" as docs/glossary.md requires (tests/test_glossary_180.py).
+# Shown only when detection is certain; otherwise the generic text stays.
+HIDDEN_STORAGE_HAPPENED = "This computer's disk may be hidden by Intel VMD (RST)."
+HIDDEN_STORAGE_STEPS = (
+    "1. Restart and open the BIOS/UEFI setup.",
+    "2. Find the storage setting (often called SATA mode, RST or VMD). "
+    "Change it to AHCI, or turn VMD off.",
+    "3. Save, then start from the Beamo USB again.",
+)
+HIDDEN_STORAGE_WARNING = (
+    "Windows may not start until you change this setting back. "
+    "If BitLocker is on, Windows may ask for its recovery key."
 )
 NEXT_EVIDENCE = (
     "Keep this session open. Try saving again if the button is offered. "
@@ -171,6 +186,15 @@ def recovery_for_view(view: ResultView) -> Optional[RecoverySections]:
     )
 
 
+def technical_status(view: ResultView) -> str:
+    """The exact status message and result code, for support (#134).
+
+    Screens show it under Technical details (Tk Show more, a GTK expander,
+    the curses and plain console tail).
+    """
+    return f"{view.message}. " + TECHNICAL_RESULT_CODE.format(code=view.code)
+
+
 def recovery_for_outcome(code: str) -> Optional[RecoverySections]:
     from beamo_wipe import outcomes as O
 
@@ -238,9 +262,19 @@ def recovery_for_blocked(error: object, *, recovered: bool = False) -> RecoveryS
     return RecoverySections(body, MEANING_BLOCKED, next_step, "")
 
 
-def recovery_for_empty() -> RecoverySections:
-    from beamo_wipe import copy as C
+def recovery_for_empty(hint: str = "") -> RecoverySections:
+    """The empty list's sections. ``hint`` is Wizard.empty_storage_hint.
 
+    Only a certain Intel VMD / RST detection (#185) replaces the generic
+    text; any other value keeps it. Display only: nothing here changes
+    which disks are listed or selectable.
+    """
+    from beamo_wipe import copy as C
+    from beamo_wipe import hidden_storage
+
+    if hint in (hidden_storage.HINT_VMD, hidden_storage.HINT_RST):
+        steps = "\n".join((*HIDDEN_STORAGE_STEPS, HIDDEN_STORAGE_WARNING))
+        return RecoverySections(HIDDEN_STORAGE_HAPPENED, MEANING_EMPTY, steps, "")
     return RecoverySections(C.EMPTY_DISKS, MEANING_EMPTY, NEXT_EMPTY, "")
 
 

@@ -30,7 +30,7 @@ def test_cli_marks_test_flags_ignored_on_live():
     text = " ".join(_parser().format_help().split())
     for flag in ("--dry-run", "--lsblk-json", "--boot-device"):
         assert flag in text
-    assert text.count("ignored on the live USB") >= 3
+    assert text.count("ignored on the Beamo USB") >= 3
 
 
 def test_live_overrides_still_clear_and_log(monkeypatch, tmp_path):

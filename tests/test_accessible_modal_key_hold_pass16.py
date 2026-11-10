@@ -233,7 +233,7 @@ def test_modal_owns_guarded_press_and_repeat_without_dispatching_parent(ui, key,
     assert key not in app.held
     _key_event(app.window, key, True, 1200)
     expected = (Screen.KEYBOARD if key == Gdk.KEY_Escape else
-                Screen.REFRESH_CONFIRM if key == Gdk.KEY_F5 else Screen.OWNER)
+                Screen.OWNER)  # #136: F5 is not offered on Owner
     assert app.w.screen is expected
     assert not app.w.runner.started and not app.w.runner.cancelled
     _key_event(app.window, key, False, 1300)

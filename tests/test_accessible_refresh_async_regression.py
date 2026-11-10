@@ -62,6 +62,8 @@ def test_accessible_scan_returns_to_event_loop_before_fake_discovery_finishes(
     wizard = make_demo_wizard()
     wizard._rediscover = slow_discovery
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     app = _headless_app(module, wizard, calls)
 
@@ -88,6 +90,8 @@ def test_accessible_scan_failure_blocks_and_allows_retry(monkeypatch):
     module = _headless_accessible_module(monkeypatch)
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
 
     def failed_discovery():
@@ -119,6 +123,8 @@ def test_accessible_scan_refuses_duplicate_while_worker_runs(monkeypatch):
     wizard = make_demo_wizard()
     wizard._rediscover = slow_discovery
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     app = _headless_app(module, wizard, [])
     try:
@@ -140,6 +146,8 @@ def test_accessible_scan_worker_start_failure_resolves_claim(monkeypatch):
     module = _headless_accessible_module(monkeypatch)
     wizard = make_demo_wizard()
     wizard.skip_intro()
+    wizard.set_owner(True)
+    wizard.continue_owner()  # #136: rescans start from Pick, not Owner
     assert wizard.open_refresh_confirm()
     calls = []
     wizard._rediscover = lambda: calls.append("scan") or discovery_for_scenario("happy")

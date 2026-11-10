@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Preview deep links must honor prerequisites of their destination screens."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize(
@@ -25,7 +25,7 @@ def test_preview_hash_respects_disk_and_inventory_prerequisites(fragment, expect
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     handler = script[script.index("function applyHash() {"):script.index("if (location.hash) applyHash()")]
     program = f"""
 let screen = 'splash', mode = 'happy', selected = null, token = '', owner = false;
@@ -50,7 +50,7 @@ def test_preview_hash_does_not_preselect_a_disk_before_picker(screen):
     node = shutil.which("node")
     if node is None:
         pytest.skip("Node.js unavailable")
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     handler = script[script.index("function applyHash() {"):script.index("if (location.hash) applyHash()")]
     program = f"""
 let screen = 'splash', mode = 'happy', selected = null, token = '', owner = false;

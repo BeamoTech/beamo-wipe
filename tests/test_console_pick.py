@@ -180,6 +180,12 @@ def test_plain_loop_ctrl_c_while_working_cancels(monkeypatch):
             if _Time.calls == 1:
                 raise KeyboardInterrupt
 
+        @staticmethod
+        def monotonic():
+            # The Working loop paces spoken progress with time.monotonic()
+            # (#132); a fixed clock keeps this test about Ctrl-C only.
+            return 0.0
+
     monkeypatch.setattr(C, "time", _Time)
     monkeypatch.setattr(
         "builtins.input", lambda _prompt="": (wiz.shutdown(), "x")[1]
@@ -233,7 +239,7 @@ def test_curses_pick_shows_serial_and_same_size_hint():
     assert "SAME_SIZE_HINT" in text
     assert "_identity_field_lines" in text
     assert "listed_disks" in text
-    assert "wizard.progress_view.status_text" in text
+    assert "_working_glance_lines(wizard.progress_view)" in text
     assert "AMBIGUOUS_IDENTITY" not in text or "too similar" in text or "compact_line" in text
 
 
@@ -285,6 +291,8 @@ def test_plain_working_sounds_command_toggles(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr(sound_module, "_run", _boom)
     monkeypatch.setattr(sound_module, "_popen", _boom)
+    # An output was found (#133), so the finish-sound toggle is available.
+    monkeypatch.setattr(sound_module, "output_status", lambda: sound_module.SoundResult(True, ""))
     monkeypatch.setattr(
         "beamo_wipe.safety.default_log_dir", lambda: tmp_path
     )
@@ -310,10 +318,11 @@ def test_plain_working_sounds_command_toggles(monkeypatch, tmp_path, capsys):
         select_module, "select", lambda r, w, x, t=0: (r, [], [])
     )
     assert _plain_loop(wiz) == 0
-    assert wiz.sounds_enabled is True
+    # The erase turned the finish sound on (#133); SOUNDS turned it off.
+    assert wiz.sounds_enabled is False
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     out = capsys.readouterr().out
-    assert C.SOUND_TOGGLE_ON in out
+    assert C.FINISH_SOUND_STATE_ON in out and C.SOUND_TOGGLE_OFF in out
     assert "SOUNDS" in out
 
 
@@ -355,9 +364,11 @@ def test_plain_done_sounds_words_and_auto_play(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr("builtins.input", fake_input)
     assert _plain_loop(wiz) == 0
-    assert wiz.sounds_enabled is True
+    # On from the erase (#133): the result plays automatically, SOUNDS
+    # then turns it off, and HEAR still replays on demand.
+    assert wiz.sounds_enabled is False
     assert calls == [sound_module.KIND_ATTENTION, sound_module.KIND_ATTENTION]
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     out = capsys.readouterr().out
-    assert C.SOUND_TOGGLE_ON in out
+    assert C.SOUND_TOGGLE_OFF in out
     assert "HEAR" in out

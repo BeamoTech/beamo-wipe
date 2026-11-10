@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """A preview deep link to review must actually advance its countdown."""
 
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 @pytest.mark.parametrize("ready", (False, True))
@@ -16,7 +16,7 @@ def test_last_chance_deep_link_starts_countdown_unless_already_ready(ready):
     if node is None:
         pytest.skip("Node.js unavailable")
 
-    (script,) = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    script = inline_script(gallery_html())
     countdown = script[script.index("function startCount() {"):script.index("function currentProgress()")]
     deep_link = script[script.index("function applyHash() {"):script.index("if (location.hash) applyHash()")]
     fragment = "#s=last&disk=0" + ("&ready=1" if ready else "")

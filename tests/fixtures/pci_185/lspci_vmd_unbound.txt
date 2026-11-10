@@ -1,0 +1,4 @@
+00:00.0 Host bridge [0600]: Intel Corporation Device [8086:b001] (rev 04)
+00:0e.0 RAID bus controller [0104]: Intel Corporation Device [8086:b06f]
+00:14.0 USB controller [0c03]: Intel Corporation Device [8086:7f6e] (prog-if 30 [XHCI])
+	Kernel driver in use: xhci_hcd

@@ -154,11 +154,27 @@ def test_accessible_results_use_canonical_announcement(ui, case):
     wizard, _, _ = case_evidence(case)
     app = ui(wizard)
     expected = VIEWS[case[0]]
+    assert wizard.result_view == expected
     shown = text(app)
     names = [w.get_accessible().get_name() for w in widgets(app.window)]
     if expected.success:
-        assert expected.announcement in shown
-        assert expected.announcement in names
+        # #134: a finished erase says its outcome as the plain headline,
+        # note and What next list; the canonical status line stays readable
+        # under Technical details. The headline must match the outcome.
+        from beamo_wipe import outcomes as O
+
+        plain = wizard.result_plain
+        assert plain.headline == {
+            "verified": O.HEADLINE_VERIFIED,
+            "unverified": O.HEADLINE_UNVERIFIED,
+        }[expected.code]
+        assert plain.headline in shown
+        assert plain.headline in names
+        assert plain.note in shown
+        for item in plain.numbered:
+            assert item in shown
+        assert wizard.result_technical in shown
+        assert expected.message in wizard.result_technical
     else:
         assert expected.message in shown
         assert expected.next_step in shown
@@ -220,7 +236,9 @@ def test_accessible_refresh_requires_full_confirmation(ui, tmp_path, monkeypatch
     app.actions["Check disks again (F5)"].clicked()
     assert wizard.screen == Screen.REFRESH_CONFIRM
     assert wizard.selected is not None and wizard.owner_ok
-    assert C.REFRESH_LEAD in text(app)
+    # #136: from Review the dialog is guarded; Cancel is offered first.
+    assert C.REFRESH_GUARD_LEAD in text(app)
+    assert C.BTN_REFRESH_CANCEL in app.actions
     app.actions[C.BTN_REFRESH].clicked()
     wait_refresh(app)
     assert wizard.selected is None and not wizard.owner_ok and not wizard.confirm_input
@@ -389,7 +407,7 @@ print(json.dumps(names))
     names = json.loads(output)
     if not names:
         pytest.skip("AT-SPI desktop is empty (registry cannot open this display)")
-    assert wizard.result_view.announcement in names
+    assert wizard.result_plain.headline in names  # #134 plain headline
     assert "Shut down" in names
     assert app.w.result_view.code == "unverified"
 
@@ -400,12 +418,9 @@ def test_result_focus_does_not_create_a_text_selection(ui, case):
     app = ui(wizard)
     heading = app.window.get_focus()
     assert isinstance(heading, Gtk.Label)
-    expected = (
-        wizard.result_view.announcement
-        if wizard.result_view.success
-        else wizard.result_view.message
-    )
-    assert heading.get_text() == expected
+    # #134: the plain headline; the exact status follows (What happened or
+    # Technical details).
+    assert heading.get_text() == wizard.result_plain.headline
     assert heading.get_can_focus()
     assert heading.get_selectable()
     has_selection, start, end = heading.get_selection_bounds()
@@ -505,6 +520,13 @@ def test_accessible_method_radio_name_stays_summary(ui):
         assert spec.plain_lead in shown
         assert spec.plain_lead not in heading_names
     assert C.EVERYDAY_LIMITS in shown
+    # #160: the Everyday caveat sits in a collapsed Show more expander.
+    (note,) = [w for w in widgets(app.body)
+               if isinstance(w, Gtk.Label) and w.get_text() == C.EVERYDAY_LIMITS]
+    expander = note.get_parent()
+    assert isinstance(expander, Gtk.Expander) and not expander.get_expanded()
+    assert expander.get_label() == C.BTN_MORE
+    assert expander.get_accessible().get_name() == f"{C.BTN_MORE}: Everyday"
     assert C.TITLE_METHOD in shown
 
 
@@ -535,13 +557,45 @@ def test_accessible_long_identity_and_warning_remain_readable(ui, screen):
     assert wizard.selected.serial in text(app)
     assert wizard.selected.path not in text(app)
     assert "You cannot get" in text(app)
-    assert wizard.prepare_text() in text(app)
+    # #128: the warning is said once; no second preparation line repeats it.
+    assert text(app).count(C.ERASE_CANNOT_UNDO) == 1
     assert (C.TITLE_CONFIRM if screen == Screen.CONFIRM else C.TITLE_LAST) in text(app)
     arrival = app.window.get_focus()
     warning = wizard.warning_text() if screen == Screen.CONFIRM else wizard.erase_label()
     assert arrival.get_text() == f"{C.SEVERITY_WARNING}: {warning}"
     has_selection, start, end = arrival.get_selection_bounds()
     assert not has_selection and start == end
+    assert not wizard.runner.started
+
+
+@pytest.mark.parametrize("contents", ["windows", "data"])
+@pytest.mark.parametrize("screen", [Screen.OWNER, Screen.CONFIRM, Screen.LAST_CHANCE])
+def test_accessible_screen_reads_one_erase_warning_before_the_action(ui, screen, contents):
+    """#128: one warning per screen, read before the action it guards."""
+    from gi.repository import Atk
+
+    from beamo_wipe import copy as C
+    from test_single_erase_warning_128 import EXPECTED, _wizard_at, warning_counts
+
+    wizard = _wizard_at(screen, contents)
+    app = ui(wizard)
+    assert warning_counts(text(app)) == EXPECTED[screen]
+    order = list(widgets(app.window))
+    if screen == Screen.OWNER:
+        bullets = next(w for w in order if isinstance(w, Gtk.Label)
+                       and w.get_text() == "\n".join(C.owner_bullets()))
+        action = next(w for w in order if isinstance(w, Gtk.CheckButton))
+    else:
+        warning = wizard.warning_text() if screen == Screen.CONFIRM else wizard.erase_label()
+        alert = next(w for w in order if isinstance(w, Gtk.Label)
+                     and w.get_text() == f"{C.SEVERITY_WARNING}: {warning}")
+        # Orca hears the warning on arrival, as an alert, before the action.
+        assert app.window.get_focus() is alert
+        assert alert.get_accessible().get_role() == Atk.Role.ALERT
+        bullets = alert
+        label = C.BTN_ERASE if screen == Screen.LAST_CHANCE else C.primary_action(Screen.CONFIRM)
+        action = next(w for w in order if isinstance(w, Gtk.Button) and w.get_label() == label)
+    assert order.index(bullets) < order.index(action)
     assert not wizard.runner.started
 
 
@@ -793,17 +847,17 @@ sys.exit(entry['main']())
         checkpoint = log_size()
         app = ui(first)
         app_box.append(app)
-        wait_for(first.result_view.message, since=checkpoint)
+        wait_for(first.result_plain.headline, since=checkpoint)
         for case in CASES[1:]:
             wizard, _, _ = case_evidence(case)
             app.w = wizard
             checkpoint = log_size()
             app.render()
-            wait_for(wizard.result_view.message, since=checkpoint)
+            wait_for(wizard.result_plain.headline, since=checkpoint)
         wizard.evidence = None
         checkpoint = log_size()
         app.render()
-        wait_for(VIEWS["indeterminate"].message, since=checkpoint)
+        wait_for(wizard.result_plain.headline, since=checkpoint)
         # Short visual headings must not suppress the full warning on arrival.
         # An overridden accessible name alone is insufficient: Orca reads the
         # label's text interface instead. Exercise the actual speech output.
@@ -934,6 +988,45 @@ def test_accessible_done_fail_shows_focusable_support(ui):
     assert labels[0].get_can_focus()
 
 
+@pytest.mark.parametrize("code", ["verified", "unverified", "cancelled", "engine_failed"])
+def test_accessible_done_reads_the_erase_record_as_text(ui, code):
+    """#127: the screen-reader view carries the photo record as focusable text."""
+    from gi.repository import Atk
+
+    from beamo_wipe import copy as C
+
+    wizard, _, _ = case_evidence(next(c for c in CASES if c[0] == code))
+    record = wizard.erase_record
+    assert record is not None
+    app = ui(wizard)
+    app.render()
+    drain()
+    shown = list(widgets(app.window))
+    headings = [
+        w.get_accessible().get_name() for w in shown
+        if w.get_accessible().get_role() == Atk.Role.HEADING
+    ]
+    assert C.RECORD_TITLE in headings
+    # The outcome stays the first heading; the record follows the report.
+    assert headings[0] == wizard.result_plain.headline
+    assert headings.index(C.REPORT_STATUS_TITLE) < headings.index(C.RECORD_TITLE)
+    summary = [
+        w for w in shown
+        if isinstance(w, Gtk.Label) and w.get_text() == "\n".join(record.lines)
+    ]
+    assert len(summary) == 1 and summary[0].get_can_focus()
+    assert summary[0].get_accessible().get_name() == record.text
+    images = [
+        w for w in shown
+        if isinstance(w, Gtk.Image) and w.get_accessible().get_name() == C.RECORD_CODE_NAME
+    ]
+    assert len(images) == 1 and not images[0].get_can_focus()
+    pixbuf = images[0].get_pixbuf()
+    from beamo_wipe.erase_record import qr_matrix
+
+    assert pixbuf.get_width() == pixbuf.get_height() == len(qr_matrix(record.text)) * 4
+
+
 def test_accessible_blocked_leads_with_specific_heading(ui):
     from beamo_wipe import copy as C
 
@@ -956,8 +1049,14 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     w = make_demo_wizard()
     w.skip_intro()
     app = ui(w)
-    app.actions[C.REPORT_HELP_TITLE].clicked()
+    # #145/#175: report help opens from the Owner notice's Learn more (the
+    # footer "Need a report?" button moved into Help & settings).
+    learn = app.actions[C.LEARN_MORE]
+    assert learn.get_accessible().get_name() == C.LEARN_MORE_REPORT_NAME
+    learn.clicked()
     drain()
+    assert w.screen == Screen.REPORT_HELP
+    assert C.REPORT_HELP_TITLE in text(app)
     reader = next(
         item for item in widgets(app.window) if isinstance(item, Gtk.TextView)
     )
@@ -970,6 +1069,16 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     assert w.report_wanted is wanted
     fresh = w.discovery
     w._rediscover = lambda: fresh
+    # #136: Check disks again is not offered on Owner or its help; rescan
+    # from Pick instead.
+    assert "Check disks again (F5)" not in app.actions
+    app.actions[C.BTN_BACK].clicked()
+    drain()
+    assert w.screen == Screen.OWNER and "Check disks again (F5)" not in app.actions
+    w.set_owner(True)
+    w.continue_owner()
+    app.render()
+    drain()
     app.actions["Check disks again (F5)"].clicked()
     drain()
     assert w.screen == Screen.REFRESH_CONFIRM
@@ -977,8 +1086,9 @@ def test_accessible_report_help_intent_refresh_and_scroll(ui, wanted):
     wait_refresh(app)
     assert w.report_wanted is wanted and w.screen == Screen.OWNER
     assert w.selected is None and not w.owner_ok and not w.confirm_input
-    app.actions[C.REPORT_HELP_TITLE].clicked()
+    app.actions[C.LEARN_MORE].clicked()
     drain()
+    assert w.screen == Screen.REPORT_HELP
     choice = next(
         item for item in widgets(app.window) if isinstance(item, Gtk.CheckButton)
     )
@@ -1080,7 +1190,9 @@ def test_accessible_evidence_failure_retry(ui, tmp_path, monkeypatch):
     retry = app.actions['Retry evidence save']
     assert retry.get_sensitive() and retry.get_can_focus()
     assert retry.get_accessible().get_name() == 'Retry evidence save'
-    assert not app.actions['Save report to USB'].get_sensitive()
+    # #135/#153: while evidence is unsaved the panel offers Retry only;
+    # Save report to USB is not offered at all.
+    assert 'Save report to USB' not in app.actions
     monkeypatch.setattr(evidence, 'write_evidence_atomic', writer)
     retry.clicked()
     deadline = time.monotonic() + 3
@@ -1090,6 +1202,8 @@ def test_accessible_evidence_failure_retry(ui, tmp_path, monkeypatch):
     app.tick()
     assert not w.evidence_error and w.can_save_report
     assert 'Retry evidence save' not in app.actions
+    app.render()
+    assert 'Save report to USB' in app.actions
 
 
 def wait_transition(app):
@@ -1181,9 +1295,72 @@ def test_accessible_progress_has_shared_text_without_duplicate_announcements(ui)
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        assert label.get_text() == view.status_text
-        assert label.get_accessible().get_name() == view.status_text
-        assert "Estimated time remaining: about 2 hours" in text(app)
+        # Glance (#132): the big line first, then the time line (no stage
+        # list here, so no step line), then the phase note; the paced
+        # summary is its name.
+        assert label.get_text().splitlines() == [*view.glance_lines, *view.glance_notes]
+        assert len(view.glance_lines) == 2 and view.glance_notes
+        assert label.get_accessible().get_name() == view.spoken_summary
+        # #167: when it started and about how long is left, on one line.
+        assert "about 2 hours left" in view.glance_lines[1]
+        assert view.glance_lines[1] in text(app)
+
+
+def test_accessible_working_finish_sound_toggle_and_walk_away(ui):
+    """#133: a real check box, on by default, updated in place (no re-render
+    focus jump); greyed with its reason when no output was found."""
+    wizard = make_demo_wizard()
+    wizard.preview = False
+    wizard.screen = Screen.WORKING
+    wizard.begin_finish_sound()
+    wizard.set_audio_availability(True)
+    wizard._audio_probe_at = wizard.now + 3600
+    app = ui(wizard)
+    toggle = app.finish_toggle
+    assert isinstance(toggle, Gtk.CheckButton)
+    assert toggle.get_label() == C.FINISH_SOUND_TOGGLE
+    assert toggle.get_active() and toggle.get_sensitive()
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_BEEP
+    generation = app.generation
+    toggle.set_active(False)
+    app.tick()
+    assert wizard.sounds_enabled is False
+    assert app.generation == generation  # updated in place, not re-rendered
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_QUIET
+    wizard.set_audio_availability(False, C.FINISH_SOUND_REASON_NO_OUTPUT)
+    app.tick()
+    assert not toggle.get_sensitive()
+    assert app.walk_away_label.get_text() == C.WALK_AWAY_NO_SOUND
+    assert app.finish_reason_label.get_visible()
+    assert toggle.get_accessible().get_description() == C.FINISH_SOUND_REASON_NO_OUTPUT
+
+
+@pytest.mark.parametrize("code", ["verified", "unverified", "cancelled"])
+def test_accessible_result_plain_headline_and_what_next(ui, code):
+    """#134: the plain headline is the heading; finished outcomes read their
+    note and numbered What next list; the exact status stays in Technical
+    details (an expander) or What happened."""
+    from beamo_wipe import outcomes as O
+    from beamo_wipe import recovery as Rec
+    from test_result_presentations import CASES, case_evidence
+
+    wizard, _evidence, _ = case_evidence(next(c for c in CASES if c[0] == code))
+    app = ui(wizard)
+    plain = wizard.result_plain
+    shown = text(app)
+    assert app.window.get_focus().get_text() == plain.headline
+    assert O.HEADLINE_VERIFIED not in shown or code == "verified"
+    if plain.checklist:
+        assert plain.note in shown and O.WHAT_NEXT in shown
+        for item in plain.numbered:
+            assert item in shown
+        assert C.POST_ERASE_BOOT not in shown
+        expanders = [w for w in widgets(app.window) if isinstance(w, Gtk.Expander)]
+        assert any(e.get_label() == Rec.RECOVERY_TECHNICAL for e in expanders)
+        assert wizard.result_technical in shown
+    else:
+        assert O.WHAT_NEXT not in shown.splitlines()
+        assert Rec.RECOVERY_HAPPENED in shown and wizard.result_view.message in shown
 
 
 def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
@@ -1204,8 +1381,11 @@ def test_accessible_stale_progress_announces_meaning_and_next_steps_once(ui):
         for _ in range(20):
             app.update_status()
         assert len(changes) == baseline
-        assert label.get_text() == view.status_text
-        assert label.get_accessible().get_name() == view.status_text
+        # The glance lines first, then the quiet-progress block.
+        assert label.get_text().splitlines() == [
+            *view.glance_lines, *view.glance_stale.splitlines(), *view.glance_notes
+        ]
+        assert label.get_accessible().get_name() == view.spoken_summary
         assert STALE_MEANING in text(app)
         assert STALE_NEXT in text(app)
 
@@ -1417,12 +1597,15 @@ def test_separate_erase_and_report_headings(ui, case, status):
     # #95: the specific outcome is the erase heading; the generic label is gone.
     # #107: failures then add What happened / meaning / next as headings.
     assert wizard.result_view == VIEWS[case[0]]
+    # #134: the plain headline is the erase heading.
+    assert wizard.result_plain.headline in headings
     if wizard.result_view.success:
-        assert wizard.result_view.announcement in headings
+        from beamo_wipe import outcomes as O
+
+        assert O.WHAT_NEXT in headings
     else:
         from beamo_wipe import recovery as R
 
-        assert wizard.result_view.message in headings
         assert R.RECOVERY_HAPPENED in headings
         assert R.RECOVERY_MEANING in headings
         assert R.RECOVERY_NEXT in headings
@@ -1694,7 +1877,11 @@ def test_done_announcement_is_first_heading(ui):
         if widget.get_accessible().get_role() == Atk.Role.HEADING
     ]
     view = wizard.result_view
-    expected = view.announcement if view.success else view.message
+    # No evidence was written for this result, so it cannot be confirmed;
+    # #134: the plain headline for that outcome is the first heading.
+    assert view.code == "indeterminate" and not view.success
+    expected = wizard.result_plain.headline
+    assert expected == "Not confirmed — the result is unknown"
     assert ordered[0] == expected
     assert "Erase status" not in ordered
     assert C.REPORT_STATUS_TITLE in ordered
@@ -1710,16 +1897,19 @@ def test_done_announcement_is_first_heading(ui):
 
 @pytest.mark.parametrize(
     "code,shown",
-    [("verified", True), ("engine_failed", True), ("cancelled", True), ("open_failed", False)],
+    [("verified", False), ("engine_failed", True), ("cancelled", True), ("open_failed", False)],
 )
 def test_done_post_erase_boot_note_announced(ui, code, shown):
-    """Backlog #97: post-erase note. Needs display."""
+    """Backlog #97: post-erase note. Needs display. #134: finished outcomes
+    say it once, as the What next list's "Keeping this computer?" item."""
     from beamo_wipe import copy as C
+    from beamo_wipe import outcomes as O
 
     case = next(c for c in CASES if c[0] == code)
     wizard, _, _ = case_evidence(case)
     app = ui(wizard)
     assert (C.POST_ERASE_BOOT in text(app)) == shown
+    assert (O.NEXT_ITEM_KEEP in text(app)) == (code == "verified")
 
 
 @pytest.mark.parametrize("code", ["verified", "engine_failed", "cancelled", "interrupted"])
@@ -1788,10 +1978,70 @@ def test_done_export_stages_announced_per_state(ui, tmp_path, status):
         wizard.report_message = "Report USB was removed."
     app = ui(wizard)
     body = text(app)
-    for index, stage in enumerate(C.EXPORT_STAGES, 1):
-        assert (f"{index}. {stage}" in body) == (status != "error")
+    # #135: the Save a report panel reads its numbered steps in every state.
+    assert C.REPORT_STATUS_TITLE in body
+    for line in wizard.report_panel.step_lines:
+        assert line in body
     if status == "error":
-        assert "Save report to USB again" in body
+        assert "Report USB was removed." in body
+
+
+@pytest.mark.parametrize("origin", [Screen.CONFIRM, Screen.LAST_CHANCE])
+def test_guarded_refresh_cancel_is_first_and_keeps_answers(ui, origin):
+    """#136: Cancel first; F5 cannot accept; Cancel keeps answers. Needs display."""
+    from beamo_wipe import copy as C
+
+    wizard = make_demo_wizard()
+    fresh = wizard.discovery
+    wizard._rediscover = lambda: fresh
+    wizard.skip_intro()
+    wizard.accept_what()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+    wizard.continue_pick()
+    wizard.set_confirm_input(wizard.confirm.token)
+    if origin == Screen.LAST_CHANCE:
+        wizard.continue_confirm()
+        wizard.continue_method()
+    assert wizard.screen == origin
+    app = ui(wizard)
+    selected, token = wizard.selected, wizard.confirm_input
+    app.actions["Check disks again (F5)"].clicked()
+    drain()
+    assert wizard.screen == Screen.REFRESH_CONFIRM
+    buttons = [w.get_label() for w in app.navigation.get_children()]
+    assert C.BTN_REFRESH_CANCEL in buttons and C.BTN_REFRESH in buttons
+    assert list(app.actions).index(C.BTN_REFRESH_CANCEL) < list(app.actions).index(C.BTN_REFRESH)
+    app.actions[C.BTN_REFRESH_CANCEL].clicked()
+    drain()
+    assert wizard.screen == origin
+    assert wizard.selected == selected and wizard.confirm_input == token and wizard.owner_ok
+
+
+@pytest.mark.parametrize("found", [True, False])
+def test_done_report_panel_and_two_final_actions(ui, tmp_path, found):
+    """#135: Save sits in the panel with its reason; two final actions. Needs display."""
+    from beamo_wipe import copy as C
+    from beamo_wipe import support_export as X
+    from test_usb_report_workflow import _done_wizard, _success_receipt
+
+    wizard = _done_wizard(_success_receipt, tmp_path)
+    usb = (X.ReportUsbProbe(X.PROBE_FOUND, label="SanDisk Ultra, 16 GB", filesystem="FAT32")
+           if found else X.ReportUsbProbe(X.PROBE_NONE))
+    wizard._report_usb_probe = lambda **_k: usb
+    wizard._report_usb = usb
+    app = ui(wizard)
+    body = text(app)
+    for line in wizard.report_panel.step_lines:
+        assert line in body
+    save = app.actions[C.BTN_SAVE_REPORT]
+    assert save.get_parent() is app.body
+    assert save.get_sensitive() is found
+    assert (C.REPORT_SAVE_WAIT in body) is (not found)
+    navigation = sorted(widget.get_label() for widget in app.navigation.get_children())
+    assert navigation == sorted([C.BTN_ERASE_ANOTHER, C.BTN_SHUTDOWN])
+    assert C.RETRY_SAVE not in app.actions
 
 
 def test_diagnostic_rejection_announces_next_step(ui):
@@ -1804,3 +2054,113 @@ def test_diagnostic_rejection_announces_next_step(ui):
     app = ui(wizard)
     assert E.USB_VOLUME_WRITABLE in text(app)
     assert E.NEXT_REPLUG in text(app)
+
+
+@pytest.mark.parametrize("serial", ["S4EVNX0N123456", "ABCD12-3"])
+def test_accessible_confirm_names_the_field_and_marks_the_characters(ui, serial):
+    """#129: Orca hears the instruction; the serial is readable by character."""
+    from beamo_wipe import copy as C
+
+    wizard = make_demo_wizard()
+    wizard.skip_intro()
+    wizard.accept_what()
+    wizard.set_owner(True)
+    wizard.continue_owner()
+    wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+    wizard.selected = replace(wizard.selected, serial=serial)
+    wizard.continue_pick()
+    spec = wizard.confirm
+    view = wizard.disk_view(wizard.selected)
+    app = ui(wizard)
+    labels = [w for w in widgets(app.window) if isinstance(w, Gtk.Label)]
+    identity = next(w for w in labels if w.get_text() == view.announcement)
+    prompt = C.confirm_prompt(spec)
+    assert any(w.get_text() == prompt for w in labels)
+    entry = next(w for w in widgets(app.window) if isinstance(w, Gtk.Entry))
+    assert entry.get_accessible().get_name() == prompt
+    assert entry.get_text() == ""  # never auto-filled
+    if spec.in_card:
+        # The plain text Orca reads is the whole identifier; markup only marks it.
+        assert identity.get_can_focus() and identity.get_selectable()
+        assert identity.get_use_markup()
+        assert 'underline="double"' in identity.get_label()
+        assert f">{spec.token}</span>" in identity.get_label()
+        assert spec.token not in prompt
+        assert C.CONFIRM_MARKED in prompt
+    else:
+        # Older fallback: the prompt prints the token; nothing is marked.
+        # #177: the identifier is still set in monospace (markup), but no
+        # characters are underlined or bolded.
+        markup = identity.get_label()
+        assert 'underline=' not in markup and 'weight="bold"' not in markup
+        assert spec.token in prompt
+    assert not wizard.runner.started
+
+
+@pytest.mark.parametrize("stop", ["keyboard", "owner", "pick", "confirm", "method", "last_chance"])
+def test_accessible_heading_describes_the_preparation_step(ui, stop):
+    """#130: Orca hears "Preparation, step N of 6: <name>." on each step."""
+    from beamo_wipe import copy as C
+    from beamo_wipe.wizard import PREPARATION_PATH
+
+    wizard = make_demo_wizard()
+    wizard.skip_splash()
+    order = ["keyboard", "owner", "pick", "confirm", "method", "last_chance"]
+    steps = order[: order.index(stop) + 1]
+    if "owner" in steps:
+        wizard.accept_keyboard()
+    if "pick" in steps:
+        wizard.set_owner(True)
+        wizard.continue_owner()
+    if "confirm" in steps:
+        wizard.select_disk(sorted(wizard.selectable, key=lambda d: d.path)[0].path)
+        wizard.continue_pick()
+    if "method" in steps:
+        wizard.set_confirm_input(wizard.confirm.token)
+        wizard.continue_confirm()
+    if "last_chance" in steps:
+        wizard.continue_method()
+    assert wizard.screen.value == stop
+    app = ui(wizard)
+    heading = next(
+        widget for widget in widgets(app.window)
+        if isinstance(widget, Gtk.Label)
+        and widget.get_style_context().has_class("screen-heading")
+    )
+    number = PREPARATION_PATH.index(wizard.screen) + 1
+    description = heading.get_accessible().get_description()
+    assert description == C.journey_step_announcement(wizard)
+    assert description == f"Preparation, step {number} of 6: {C.step_name(wizard.screen)}."
+    # The step is the description; the heading name stays the page title.
+    assert "step" not in heading.get_accessible().get_name().lower()
+
+
+def test_accessible_keyboard_screen_puts_language_first_and_follows_with_layout(ui):
+    """#131: the first control is the language, each in its own name; Orca
+    arrives on the chosen language, and choosing one sets its layout."""
+    from beamo_wipe import copy as C
+    from beamo_wipe import lang
+    from beamo_wipe.keyboard import ApplyResult
+
+    wizard = make_demo_wizard()
+    calls = []
+    wizard._apply_keyboard = lambda layout_id, **_: (calls.append(layout_id), ApplyResult(True, "", layout_id))[1]
+    wizard.skip_splash()
+    app = ui(wizard)
+    buttons = [w for w in widgets(app.window) if isinstance(w, Gtk.Button)]
+    names = [b.get_label() for b in buttons]
+    first_language = next(i for i, n in enumerate(names) if n.startswith("English ("))
+    first_layout = next(i for i, n in enumerate(names) if "QWERTY (US)" in n)
+    assert first_language < first_layout
+    assert all(any(n.startswith(f"{lang.LANGUAGE_NAMES[c]} (") for n in names) for c in lang.LANGUAGE_ORDER)
+    assert app.arrival is buttons[first_language]
+    labels = [w.get_text() for w in widgets(app.window) if isinstance(w, Gtk.Label)]
+    assert lang.LANGUAGE_PICKER_LABEL in labels
+    try:
+        french = next(b for b in buttons if b.get_label().startswith("Français ("))
+        french.clicked()
+        app.render() if hasattr(app, "render") else None
+        assert wizard.language == "fr" and wizard.keyboard_layout == "fr" and calls == ["fr"]
+        assert C.keyboard_layout_notice(wizard)
+    finally:
+        lang.set_language("en")

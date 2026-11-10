@@ -15,7 +15,7 @@ from typing import Any, Iterable, Optional
 
 from beamo_wipe import NWIPE_PINNED_COMMIT, NWIPE_PINNED_VERSION
 from beamo_wipe.models import Disk, DiskKind
-from beamo_wipe.storage_limits import notice
+from beamo_wipe.storage_limits import report_notice
 
 STATUSES = frozenset({"pass", "warning", "fail", "unavailable", "not_applicable"})
 CHECK_IDS = ("hidden_capacity", "io_media", "coverage")
@@ -467,7 +467,7 @@ def _error_summary_row(
 
 def _parse_coverage(disk: Optional[Disk]) -> CheckResult:
     kind = disk.kind if disk is not None else DiskKind.UNKNOWN
-    text = notice(kind)
+    text = report_notice(kind)
     return _check(
         "coverage",
         "warning",

@@ -25,10 +25,12 @@ OPERATION_N = "{count} overwrites"
 OPERATION_VERIFIED = "{overwrites}, followed by verification."
 OPERATION_UNVERIFIED = "{overwrites}. Verification is not performed."
 MARK_NO_CHECK = "No check"
-MARK_MORE_OVERWRITES = "More overwrites"
+# #161: Three overwrites is rarely needed; its Show more says why.
+MARK_RARELY_NEEDED = "Rarely needed"
 EXTRA_WORK_DOD = (
-    "Three times the overwrites of {everyday}. "
-    "Extra passes do not reach hidden storage."
+    "Three times the overwrites of {everyday}, so it takes longer. "
+    "Extra passes do not reach hidden storage. {everyday} is the usual "
+    "choice. This is not a DoD certificate."
 )
 PLAIN_LEAD_PRNG = "Overwrite the disk, then check the result."
 PLAIN_LEAD_DODSHORT = "Overwrite the disk three times, then check the result."
@@ -96,7 +98,7 @@ class NwipeMethodSpec:
         if self.verify == "off":
             return MARK_NO_CHECK
         if self.overwrite_passes > 1:
-            return MARK_MORE_OVERWRITES
+            return MARK_RARELY_NEEDED
         return ""
 
     @property
@@ -158,5 +160,8 @@ METHODS = {
 DEFAULT_METHOD = MethodId.EVERYDAY
 
 ALLOWED_NWIPE_METHODS = frozenset({"prng", "dodshort", "zero"})
+# nwipe 0.42 method.c: random overwrites everything; dodshort's third pass is a
+# random stream. Zero fill never reads the generator.
+RANDOM_DATA_NWIPE_METHODS = frozenset({"prng", "dodshort"})
 ALLOWED_VERIFY = frozenset({"last", "off", "all"})
 ALLOWED_ROUNDS = frozenset({1})

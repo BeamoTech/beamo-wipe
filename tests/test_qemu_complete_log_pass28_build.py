@@ -57,7 +57,7 @@ def _bundle(tmp_path):
     evidence.update(source_commit="a" * 40, build_id="fixture")
     evidence["device"].update(
         path="/dev/vda", realpath="/dev/vda", name="vda",
-        serial="0001", size_bytes=67108864, size_gb_label="0",
+        serial="7001", size_bytes=67108864, size_gb_label="0",
     )
     evidence["logfile"] = "/tmp/beamo-wipe/nwipe.log"
     evidence["nwipe"]["argv_redacted"] = [

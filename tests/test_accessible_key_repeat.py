@@ -78,7 +78,9 @@ def test_gtk_x11_repeat_cannot_erase_when_countdown_expires(enter_key):
 def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
     key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
     scans = []
-    wizard = SimpleNamespace(screen=Screen.OWNER, can_refresh=True)
+    # #136: from Pick (Owner no longer offers it); unguarded dialog.
+    wizard = SimpleNamespace(screen=Screen.PICK, can_refresh=True,
+                             refresh_offered=True, refresh_guarded=False)
     wizard.open_refresh_confirm = lambda: setattr(
         wizard, "screen", Screen.REFRESH_CONFIRM
     )
@@ -103,6 +105,32 @@ def test_gtk_x11_repeat_cannot_skip_refresh_confirmation():
     app._key_release(None, SimpleNamespace(keyval=gdk.KEY_F5, time=1100))
     assert app._key_press(None, SimpleNamespace(keyval=gdk.KEY_F5, time=1200))
     assert scans == [1]
+
+
+def test_gtk_f5_never_accepts_the_guarded_dialog():
+    """#136: from Review, even a separate second F5 does not scan."""
+    key_press, key_release, remember_key_press, gdk, _ = _key_handlers()
+    scans = []
+    wizard = SimpleNamespace(screen=Screen.LAST_CHANCE, can_refresh=True,
+                             refresh_offered=True, refresh_guarded=True)
+    wizard.open_refresh_confirm = lambda: setattr(
+        wizard, "screen", Screen.REFRESH_CONFIRM
+    )
+    app = SimpleNamespace(
+        w=wizard,
+        held=set(),
+        _release_times={},
+        render=lambda: None,
+        _begin_refresh_scan=lambda: scans.append(1),
+    )
+    app._remember_key_press = MethodType(remember_key_press, app)
+    app._key_press = MethodType(key_press, app)
+    app._key_release = MethodType(key_release, app)
+    assert app._key_press(None, SimpleNamespace(keyval=gdk.KEY_F5, time=1000))
+    assert wizard.screen == Screen.REFRESH_CONFIRM
+    app._key_release(None, SimpleNamespace(keyval=gdk.KEY_F5, time=1100))
+    assert app._key_press(None, SimpleNamespace(keyval=gdk.KEY_F5, time=1200))
+    assert scans == []
 
 
 def test_gtk_held_escape_keeps_stop_confirmation_open():

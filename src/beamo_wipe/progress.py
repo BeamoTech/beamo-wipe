@@ -79,10 +79,10 @@ PHASE_NOTE_RETRYING = "Retrying a step that did not finish. The erase continues.
 PHASE_NOTE_FINALIZING = "The erase run ended. Determining the result."
 ESTIMATE_EARLY = "Estimating after more progress."
 ESTIMATE_LAST_STEP = "Estimate unavailable until the last step."
-ESTIMATE_RETRYING = "Estimate unavailable while the drive is retrying."
-ESTIMATE_SYNCING = "Estimate unavailable while the drive is syncing."
+ESTIMATE_RETRYING = "Estimate unavailable while the disk is retrying."
+ESTIMATE_SYNCING = "Estimate unavailable while the disk is syncing."
 ESTIMATE_PAUSED = "No estimate until progress resumes."
-ESTIMATE_NO_ETA = "Estimate unavailable: no time information from the drive."
+ESTIMATE_NO_ETA = "Estimate unavailable: no time information from the disk."
 ESTIMATE_DISAGREE = "Estimate unavailable: progress reports disagree."
 ESTIMATE_STEP_DONE = "Last step finished. Waiting for the result."
 
@@ -99,12 +99,41 @@ NO_UPDATE = "No new progress update for {text}."
 STALE_MEANING = "A quiet screen does not mean the erase stopped."
 STALE_NEXT = (
     "Keep the USB in and wall power connected. "
-    'Do not turn off the computer. You can choose "Stop erase" at any time.'
+    'Keep the computer on. You can choose "Stop erase" at any time.'
 )
 ELAPSED_LINE = " · Elapsed: {text}"
+ELAPSED_LABEL = "Elapsed: {text}"
 REMAINING_LINE = "\nEstimated time remaining: {text}"
 PROGRESS_UNKNOWN = "Progress not reported"
 LAST_REPORTED = "Last reported: {text} (old)"
+# Short form beside the bar, where "Last reported" is shown elsewhere.
+OLD_PERCENT = "{percent} (old)"
+# Working-screen glance (#132): big percentage, a cautious time line, and the
+# current step. Placeholders for missing data are never shown; until the
+# first percentage the screen says one calm word instead.
+GLANCE_STARTING = "Starting…"
+GLANCE_STOPPING = "Stopping…"
+GLANCE_FINISHING = "Finishing…"
+GLANCE_TIME_LEFT = "About {text} left"
+GLANCE_TIME_LEFT_SHORT = "Less than 1 minute left"
+GLANCE_OVERWRITE = "Overwriting"
+GLANCE_OVERWRITE_ROUND = "Overwriting (pass {i} of {n})"
+GLANCE_VERIFY = "Checking (verification)"
+GLANCE_TIME_LATER = "Time left appears during the last step."
+# #167: when it started and when to come back, in large text. The session
+# clock is not trusted on the live USB (evidence records it as unverified),
+# so the line normally uses elapsed time and the cautious estimate; clock
+# times appear only when ProgressView.wall_trusted is set.
+GLANCE_STARTED_AGO = "Started {text} ago"
+GLANCE_STARTED_AT = "Started {time}"
+GLANCE_ABOUT_LEFT = "about {text} left"
+GLANCE_LESS_LEFT = "less than 1 minute left"
+GLANCE_EXPECTED_AT = "expected around {time}"
+# Time of day: "12" gives 2:02 PM, "24" gives 14:02 (per language).
+CLOCK_STYLE = "12"
+CLOCK_AM = "AM"
+CLOCK_PM = "PM"
+_GLANCE_JOIN = " · "  # not translated: a separator
 # Measured nwipe 0.42: the runner requests SIGUSR1 every 2.0s after the
 # handler exists. Five missed pulses mark telemetry stale, matching the
 # existing estimate-history expiry. The PRNG auto-bench is 8×1.0s before
@@ -336,12 +365,135 @@ def duration(seconds: float | None) -> str:
     return " ".join(parts)
 
 
-def estimate(seconds: float) -> str:
+def _estimate_rounded(seconds: float) -> float:
     # Round UP, using minutes, five-minute buckets, or whole hours. No seconds.
+    unit = 60 if seconds < 600 else 300 if seconds < 3600 else 3600
+    return math.ceil(seconds / unit) * unit
+
+
+def estimate(seconds: float) -> str:
     if seconds < 60:
         return LESS_THAN_MINUTE
-    unit = 60 if seconds < 600 else 300 if seconds < 3600 else 3600
-    return ABOUT_DURATION.format(text=duration(math.ceil(seconds / unit) * unit))
+    return ABOUT_DURATION.format(text=duration(_estimate_rounded(seconds)))
+
+
+def _round_up_minutes(epoch: float, step: int) -> float:
+    """Round a wall time up to the next ``step`` minutes (a cautious finish)."""
+    block = step * 60
+    return math.ceil(epoch / block) * block
+
+
+def clock_time(epoch: float) -> str:
+    """Local time of day in the active language's style (#167)."""
+    moment = datetime.datetime.fromtimestamp(epoch)
+    if CLOCK_STYLE == "24":
+        return f"{moment.hour:02d}:{moment.minute:02d}"
+    hour = moment.hour % 12 or 12
+    meridiem = CLOCK_AM if moment.hour < 12 else CLOCK_PM
+    return f"{hour}:{moment.minute:02d} {meridiem}"
+
+
+def time_left(seconds: float) -> str:
+    """Glance form of a validated estimate: "About 40 minutes left".
+
+    Same upward rounding as estimate(); callers pass only an estimate that
+    already passed every ProgressTiming gate.
+    """
+    if seconds < 60:
+        return GLANCE_TIME_LEFT_SHORT
+    return GLANCE_TIME_LEFT.format(text=duration(_estimate_rounded(seconds)))
+
+
+# Method-screen time guide, shown before anything starts. Conservative
+# sustained-throughput bounds in bytes per second for each disk kind, not a
+# measurement of this disk. The guide never feeds the live estimate above,
+# never reaches evidence or reports, and is hidden when the size is unknown.
+GUIDE_RATES_BPS = {
+    "HDD": (60_000_000, 200_000_000),
+    "SSD": (100_000_000, 500_000_000),
+    "NVMe": (150_000_000, 1_500_000_000),
+}
+# Rotational state unknown: slowest hard-disk bound to fastest SATA SSD bound.
+GUIDE_RATES_UNKNOWN_BPS = (60_000_000, 500_000_000)
+# USB bridges and USB 2 ports can halve sustained speed. Only the slow bound
+# moves; a fast USB 3 enclosure can still reach the disk's own speed.
+GUIDE_USB_SLOW_FACTOR = 0.5
+GUIDE_MINUTES_BELOW_S = 5400  # under 1.5 hours: minutes
+GUIDE_HOURS_BELOW_S = 172800  # under 48 hours: hours; otherwise days
+GUIDE_LONG_S = 36000  # a slow bound over 10 hours suggests overnight
+_GUIDE_UNIT_S = {"minutes": 60, "hours": 3600, "days": 86400}
+
+
+@dataclass(frozen=True)
+class TimeGuide:
+    """Rounded range: low rounded down, high rounded up, units per end."""
+
+    low: int
+    low_unit: str
+    high: int
+    high_unit: str
+    long: bool
+
+
+def guide_seconds(
+    size_bytes: object, kind: object, usb: bool, passes: object
+) -> tuple[float, float] | None:
+    """(fast, slow) seconds for ``passes`` full-disk passes, or None.
+
+    Every overwrite and every verification read touches the whole disk once.
+    """
+    if (
+        not isinstance(size_bytes, int)
+        or isinstance(size_bytes, bool)
+        or size_bytes <= 0
+        or not isinstance(passes, int)
+        or isinstance(passes, bool)
+        or passes < 1
+    ):
+        return None
+    slow_rate, fast_rate = GUIDE_RATES_BPS.get(
+        str(getattr(kind, "value", kind)), GUIDE_RATES_UNKNOWN_BPS
+    )
+    slow = slow_rate * (GUIDE_USB_SLOW_FACTOR if usb else 1.0)
+    fast = float(fast_rate)
+    work = float(size_bytes) * passes
+    return work / fast, work / slow
+
+
+def _guide_unit(seconds: float) -> str:
+    if seconds < GUIDE_MINUTES_BELOW_S:
+        return "minutes"
+    if seconds < GUIDE_HOURS_BELOW_S:
+        return "hours"
+    return "days"
+
+
+def _guide_value(seconds: float, unit: str, *, up: bool) -> int:
+    value = seconds / _GUIDE_UNIT_S[unit]
+    step = 5 if unit == "minutes" and value >= 10 else 1
+    rounded = math.ceil(value / step) if up else math.floor(value / step)
+    return max(1, int(rounded) * step)
+
+
+def guide_range(fast_s: float, slow_s: float) -> TimeGuide | None:
+    """Friendly units: minutes under 1.5 h, hours under 48 h, else days."""
+    if not (
+        math.isfinite(fast_s) and math.isfinite(slow_s) and 0 < fast_s <= slow_s
+    ):
+        return None
+    low_unit, high_unit = _guide_unit(fast_s), _guide_unit(slow_s)
+    low = _guide_value(fast_s, low_unit, up=False)
+    high = _guide_value(slow_s, high_unit, up=True)
+    if low_unit == high_unit and high <= low:
+        high = low + (5 if low_unit == "minutes" and low >= 10 else 1)
+    return TimeGuide(low, low_unit, high, high_unit, slow_s > GUIDE_LONG_S)
+
+
+def time_guide(
+    size_bytes: object, kind: object, usb: bool, passes: object
+) -> TimeGuide | None:
+    bounds = guide_seconds(size_bytes, kind, usb, passes)
+    return guide_range(*bounds) if bounds else None
 
 
 def silence_text(stale_for: float | None) -> str:
@@ -374,6 +526,10 @@ class ProgressView:
     mismatch: bool = False
     step_percent: float | None = None  # Legacy name: job-wide percent beside the step.
     estimate_state: str = ""
+    # #167: wall time when the view was made, and whether that clock is
+    # trusted. Untrusted (the default) means elapsed/remaining wording only.
+    wall_now: float | None = None
+    wall_trusted: bool = False
 
     @property
     def known_quiet(self) -> bool:
@@ -419,6 +575,185 @@ class ProgressView:
         else:
             pct = format_progress_percent(self.percent)
         return f"{pct}. {self.timing_text}"
+
+    # -- Working-screen glance (#132) ---------------------------------------
+    # timing_text/status_text above keep the full honest detail for tests and
+    # the preview payload. The glance below is what every interface puts on
+    # the Working screen: real data only, never a "not reported" placeholder.
+
+    @property
+    def glance_percent(self) -> str:
+        """Large percentage, or "" before the engine reports one.
+
+        The runner already caps live progress below 100 until its completion
+        checks pass. The Working screen never says 100% either way: the
+        result screen, not this number, reports completion.
+        """
+        if self.percent is None:
+            return ""
+        from beamo_wipe.wizard import format_progress_percent
+
+        text = format_progress_percent(min(self.percent, 99.9))
+        return OLD_PERCENT.format(percent=text) if self.percent_is_old else text
+
+    @property
+    def glance_headline(self) -> str:
+        """The large line: the percentage, else one calm word."""
+        if self.glance_percent:
+            return self.glance_percent
+        if self.phase == PHASE_STOPPING:
+            return GLANCE_STOPPING
+        if self.phase == PHASE_FINALIZING:
+            return GLANCE_FINISHING
+        return GLANCE_STARTING
+
+    @property
+    def glance_time(self) -> str:
+        """When it started and when to come back (#167); "" if unknown.
+
+        Trusted clock: "Started 2:02 PM · expected around 3:00 PM". Otherwise
+        "Started 12 minutes ago · about 50 minutes left". The second part is
+        the validated, cautious estimate and is left out when there is none.
+        """
+        trusted = (
+            self.wall_trusted
+            and self.wall_now is not None
+            and math.isfinite(self.wall_now)
+        )
+        parts = []
+        if self.elapsed is not None:
+            if trusted:
+                started = clock_time(self.wall_now - self.elapsed)  # type: ignore[operator]
+                parts.append(GLANCE_STARTED_AT.format(time=started))
+            else:
+                parts.append(GLANCE_STARTED_AGO.format(text=duration(self.elapsed)))
+        if self.remaining is not None:
+            if trusted:
+                finish = _round_up_minutes(self.wall_now + self.remaining, 5)  # type: ignore[operator]
+                parts.append(GLANCE_EXPECTED_AT.format(time=clock_time(finish)))
+            elif not parts:
+                parts.append(time_left(self.remaining))
+            elif self.remaining < 60:
+                parts.append(GLANCE_LESS_LEFT)
+            else:
+                parts.append(GLANCE_ABOUT_LEFT.format(
+                    text=duration(_estimate_rounded(self.remaining))))
+        return _GLANCE_JOIN.join(parts)
+
+    @property
+    def glance_step(self) -> str:
+        """"Step 1 of 2: Overwriting", a disagreement warning, or ""."""
+        if self.mismatch:
+            return STAGE_MISMATCH
+        if self.position is None or not 0 <= self.position < len(self.stages):
+            return ""
+        stage = self.stages[self.position]
+        if stage.kind == "verify":
+            name = GLANCE_VERIFY
+        elif stage.total > 1:
+            name = GLANCE_OVERWRITE_ROUND.format(i=stage.index, n=stage.total)
+        else:
+            name = GLANCE_OVERWRITE
+        return STAGE_STEP.format(k=self.position + 1, total=len(self.stages), stage=name)
+
+    @property
+    def glance_stale(self) -> str:
+        """How long progress has been quiet, what it means, what to do."""
+        return stale_block(self.stale_for)
+
+    @property
+    def glance_notes(self) -> tuple[str, ...]:
+        """Small supporting lines under the glance. Real states only."""
+        notes = []
+        note = phase_note(self.phase, self.mismatch)
+        if note:
+            notes.append(note)
+        if (
+            self.remaining is None
+            and self.stale_for is None
+            and self.estimate_state == ESTIMATE_LAST_STEP
+        ):
+            notes.append(GLANCE_TIME_LATER)
+        # #167: the time line already says when it started; no Elapsed note.
+        return tuple(notes)
+
+    @property
+    def glance_lines(self) -> tuple[str, ...]:
+        """Headline, time and step: the three lines, empty ones dropped."""
+        return tuple(
+            line for line in (self.glance_headline, self.glance_time, self.glance_step) if line
+        )
+
+    @property
+    def stopping_text(self) -> str:
+        """Stopping screen: the last known step and elapsed time only."""
+        lines = [self.glance_step]
+        if self.elapsed is not None:
+            lines.append(ELAPSED_LABEL.format(text=duration(self.elapsed)))
+        return "\n".join(line for line in lines if line)
+
+    @property
+    def spoken_summary(self) -> str:
+        """One sentence run for a screen reader or a plain console."""
+        parts = [_sentence(line) for line in self.glance_lines]
+        if self.stale_for is not None:
+            parts.append(self.glance_stale.replace("\n", " "))
+        return " ".join(parts)
+
+
+def _sentence(text: str) -> str:
+    return text if text.endswith((".", "…", "!", "?")) else text + "."
+
+
+# Screen readers hear progress when something meaningful changes (a new
+# step, progress going quiet or resuming, stopping, finishing) and otherwise
+# at most once a minute. Milestones still wait a few seconds after the last
+# announcement so a flickering report cannot become a stream of speech.
+ANNOUNCE_INTERVAL_S = 60.0
+ANNOUNCE_MIN_GAP_S = 5.0
+
+
+class ProgressAnnouncer:
+    """Decide when the spoken progress summary should change.
+
+    Pure and clock-injected: callers pass the monotonic time. update()
+    returns the summary to present now, or None to stay quiet.
+    """
+
+    def __init__(
+        self,
+        interval: float = ANNOUNCE_INTERVAL_S,
+        min_gap: float = ANNOUNCE_MIN_GAP_S,
+    ) -> None:
+        self.interval = interval
+        self.min_gap = min_gap
+        self._milestone: tuple[object, ...] | None = None
+        self._text: str | None = None
+        self._at: float | None = None
+
+    @staticmethod
+    def milestone(view: ProgressView) -> tuple[object, ...]:
+        return (
+            view.glance_step,
+            view.percent is None,
+            view.stale_for is not None,
+            view.phase in {PHASE_STOPPING, PHASE_FINALIZING},
+        )
+
+    def update(self, view: ProgressView, now: float) -> str | None:
+        text = view.spoken_summary
+        milestone = self.milestone(view)
+        if self._at is not None and math.isfinite(now) and now >= self._at:
+            waited = now - self._at
+            if milestone != self._milestone:
+                if waited < self.min_gap:
+                    return None
+            elif text == self._text or waited < self.interval:
+                return None
+        elif self._at is not None and milestone == self._milestone and text == self._text:
+            return None
+        self._milestone, self._text, self._at = milestone, text, now
+        return text
 
 
 class ProgressTiming:

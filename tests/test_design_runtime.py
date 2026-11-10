@@ -22,7 +22,10 @@ def test_full_device_identity_wraps_in_rows_and_summaries(ui, size):  # noqa: F8
     _drive_to(wiz, app, Screen.PICK)
     disk = replace(wiz.selectable[0], model='Long model ' * 11, serial='ABCDEFGH12345678' * 8)
     parent = app._column(app._body, fill_height=True)
-    row = app._disk_row(parent, disk, False)
+    # #149: the full identity is on the selected (expanded) row; an
+    # unselected row is one line whose long model still wraps, never clips.
+    row = app._disk_row(parent, disk, True)
+    compact = app._disk_row(parent, disk, False)
     summary = app._disk_summary(parent, disk)
     summary.pack(fill='x')
     for _ in range(5):
@@ -38,6 +41,12 @@ def test_full_device_identity_wraps_in_rows_and_summaries(ui, size):  # noqa: F8
             assert label.winfo_reqwidth() <= label.winfo_width() + 2
             assert label.winfo_reqheight() <= label.winfo_height() + 2
             assert int(label.cget('wraplength')) > 0
+    models = [w for w in descendants(compact) if w.winfo_class() == 'Label'
+              and " ".join(str(w.cget('text')).split()) == " ".join(disk.display_name.split())]
+    assert len(models) == 1 and models[0].winfo_ismapped()
+    assert models[0].winfo_reqwidth() <= models[0].winfo_width() + 2
+    assert disk.serial not in "".join(str(w.cget('text')) for w in descendants(compact)
+                                      if w.winfo_class() == 'Label').replace('\n', '')
 
 
 def test_more_details_is_keyboard_control_and_keeps_focus(ui):  # noqa: F811
@@ -129,12 +138,15 @@ def test_countdown_ready_still_explains_nothing_started(ui):  # noqa: F811
         widget.winfo_class() == 'Label' and widget.cget('text') == C.LAST_LEAD
         for widget in descendants(app.root)
     )
-    assert 'never starts erasure' in C.LAST_LEAD
+    assert 'Erasing starts only when you press Erase now.' in C.LAST_LEAD  # #162
     assert app._countdown_label.cget('text') == C.COUNTDOWN_CAPTION
     wiz._erase_until = 0
     app._refresh_last_chance()
     assert 'Nothing has started' in app._countdown_label.cget('text')
-    assert app._countdown_num.cget('text') == '0'
+    # #163: a check mark and the word Ready, not "0".
+    assert app._countdown_num.cget('text') == ''
+    assert app._countdown_ring.find_withtag('check')
+    assert app._countdown_ready.cget('text') == C.COUNTDOWN_READY_WORD
     assert app.root.focus_get() is _button_named(app, C.BTN_BACK)
     assert not wiz.runner.started
 

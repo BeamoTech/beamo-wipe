@@ -56,10 +56,16 @@ def test_curses_done_leads_with_outcome(monkeypatch):
         with patch.object(Wizard, "result_view", new_callable=PropertyMock) as view:
             view.return_value = VIEWS[code]
             shown, packed, term = _draw(monkeypatch, wiz)
-        message = VIEWS[code].message
+        # #134: the plain headline leads; the status message stays on the
+        # first page for failures and in the paged tail for finished ones.
+        from beamo_wipe.outcomes import plain_result
+
+        message = plain_result(VIEWS[code]).headline
         assert message in shown, code
         assert "Erase status" not in shown, code
         assert shown.index(message) < shown.index(C.REPORT_STATUS_TITLE)
+        if code in ("cancelled", "engine_failed"):
+            assert VIEWS[code].message in shown, code
         last = term.frames[-1]
         assert max(last) < 24
         assert all(len(line) < 80 for line in last.values())

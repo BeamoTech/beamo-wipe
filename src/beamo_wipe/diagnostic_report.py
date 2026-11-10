@@ -45,7 +45,7 @@ CODES = frozenset(
         "unexpected_startup_failure",
     }
 )
-TITLE = "Diagnostic report — wipe could not start"
+TITLE = "Diagnostic report — erase could not start"
 TITLE_RECOVERY = "Diagnostic report — previous result unavailable"
 INVALID_CLASSIFICATION = "Invalid diagnostic classification."
 INVALID_REPORT = "Invalid or unsanitized diagnostic report."
@@ -55,7 +55,8 @@ NOTICE = (
 )
 PREPARE = (
     "Leave all existing disks connected. Remove the report USB, then choose "
-    "Prepare. After the baseline is checked, insert one separate removable FAT32 USB."
+    "Prepare. After the baseline is checked, insert one separate USB stick. It must be "
+    "removable and formatted FAT32 or exFAT."
 )
 
 

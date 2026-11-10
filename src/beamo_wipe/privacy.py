@@ -256,6 +256,13 @@ def make_sharing_copy(evidence: Mapping[str, Any]) -> dict[str, Any]:
         section = evidence.get(key)
         if isinstance(section, dict):
             root[key] = _scalar_fields(_pick(section, allowed))
+    # #187: one closed value, never free text from the record.
+    from beamo_wipe.owner_carry import SOURCES as OWNER_SOURCES
+
+    root.pop("authorization", None)
+    owner = _object_mapping(evidence.get("authorization")).get("owner_confirmation")
+    if isinstance(owner, str) and owner in OWNER_SOURCES:
+        root["authorization"] = {"owner_confirmation": owner}
     root.pop("warnings", None)
     warnings = evidence.get("warnings")
     if isinstance(warnings, list):

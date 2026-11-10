@@ -99,7 +99,7 @@ install_qemu_deps() {
     qemu-system-x86 \
     qemu-utils \
     ovmf \
-    genisoimage xorriso mtools syslinux syslinux-common \
+    genisoimage xorriso mtools syslinux syslinux-common isolinux exfatprogs sbsigntool \
     debsecan \
     sudo \
     python3 \

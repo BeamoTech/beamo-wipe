@@ -32,12 +32,19 @@ def test_report_state_never_changes_erase_or_receipt(case, status, monkeypatch, 
     output = capsys.readouterr().out
     # #95: the specific outcome heads the erase area; the generic label is
     # gone, but erase content still precedes report content.
-    assert output.index(expected.message) < output.index("Report status")
+    assert output.index(expected.message) < output.index(C.REPORT_STATUS_TITLE)
     assert w.report_view.tone == (
         "warn" if status == "error" else "ok" if status == "saved" else "info"
     )
     assert w.report_view.headline in output
-    assert C.REPORT_STATUS_NOTICE in output
+    # #170: the reassurance shows only after a failed save (or its failure
+    # text already says it); otherwise it is not in the default view.
+    from beamo_wipe.recovery import MEANING_REPORT_ONLY
+
+    if status == "error":
+        assert C.REPORT_STATUS_NOTICE in output or MEANING_REPORT_ONLY in output
+    else:
+        assert C.REPORT_STATUS_NOTICE not in output
     assert expected.message in output
     files = _bundle_files(json.dumps(ev).encode(), log.encode(), "complete")
     assert expected.announcement in files["README.txt"].decode()

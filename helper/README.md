@@ -17,7 +17,7 @@ for someone already in the application; kiosk recovery and the Intel Mac
 Option key stay on this USB page because the launcher does not run on
 macOS and kiosk recovery is post-boot.
 
-The printed card can say “open START-HERE.html on that Windows PC.”
-Do not promise every computer: Intel/AMD PCs that boot from USB only —
+The printed card can say “open START-HERE.html on that Windows computer.”
+Do not promise every computer: Intel/AMD computers that start from USB only —
 not Apple Silicon Macs, not Chromebooks (see `index.html`). The helper
 describes this USB, not older sticks.

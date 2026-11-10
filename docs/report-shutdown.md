@@ -34,10 +34,11 @@ the supervisor without authorizing poweroff; Ctrl-C cannot confirm discard.
 | Exact current report verified after read-only remount and final unmount | Normal shutdown, including after safe removal of that USB |
 | Old receipt for a different report | Explicit loss decision |
 | Local JSON/checksum, recovered evidence, manual copy or privacy-reduced sharing copy | Does not count as a verified constrained USB export |
+| Result-screen photo record (#127) photographed or read aloud | Not an export: does not count as saved and does not change this decision |
 | Startup diagnostic exported and verified for the current startup/discovery status | Normal shutdown; diagnostics remain separate from erase evidence |
 | Later erase starts or startup status changes | Earlier diagnostic receipt cannot satisfy the new report |
 
-Only the constrained FAT32 exporter can acknowledge saved status: exact report
+Only the constrained FAT32/exFAT exporter can acknowledge saved status: exact report
 hash, valid session directory, successful checksum/readback verification, and
 final unmount. A screenshot, button history, COMPLETE file alone, or a modified
 sharing copy is insufficient. The legacy manual-copy API does not acknowledge

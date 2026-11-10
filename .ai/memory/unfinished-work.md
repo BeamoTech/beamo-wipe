@@ -1716,3 +1716,4526 @@
   repository browser regressions passed, which is distinct evidence.
 - Publication state: **NOT TESTED / NOT DEPLOYED** for ISO/QEMU/native Windows/
   physical acceptance. No hosted dispatch or publication performed.
+
+## BW-READINESS-WORK-20261026 — LOCAL COMMITS VERIFIED / RELEASE GATES OPEN
+
+- 2026-10-26 / Claude (Opus 5.5) for the owner's request to save everything
+  that cannot be done here and complete the rest. Follows the readiness review
+  BW-READINESS-REVIEW-20261026. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026` from main `58c677f` (product bytes = tag
+  v0.2.14 `9764d93`). Owned shared-object sparse clone (docs/evidence omitted)
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
+  in the main checkout and PR93 untouched. State: committed locally; pushed only
+  as a branch if noted below. No PR, no hosted CI, no tag, no release.
+- Test environment: existing WSL distro (no /mnt/c by design) with owned copies
+  `/home/beamo-qual/beamo-wipe-readiness-20261026` (work), `-red` (original
+  runner), `-base` (pristine main archive), helpers
+  `/home/beamo-qual/bwrt-readiness-20261026.sh` (private userns + tmpfs /tmp)
+  and `bwrtx-...sh` (adds private 72 DPI Xvfb + D-Bus). Pre-existing environment
+  failures reproduced identically on `-base`: tests needing `.git`
+  (git rev-parse), tests reading docs/evidence, test_compat_story helper copy,
+  ci_evidence gate runner, GTK sound-dialog layout under WSLg.
+
+### Completed and verified locally (commit: evidence)
+
+- `8872929` safety: runner holds a read-only, non-exclusive, CLOEXEC handle to
+  the confirmed disk from before the final rediscovery until nwipe exits, so the
+  kernel cannot hand its name to a swapped disk (nwipe 0.42 opens by name after
+  scan/PRNG benchmark; verified its open flags have no O_EXCL). 15 new tests
+  PASS; end-to-end case FAILS on the original runner (no handle at launch).
+  176 runner-related modules rerun; only environment failures remain.
+- `3ee29ed` image: troubleshoot entry = nomodeset safe video without
+  memtest/noapic/nolapic/nosmp; GRUB Utilities submenu --unrestricted;
+  ctrl-alt-del.target masked + CtrlAltDelBurstAction=none; kernel.sysrq=0;
+  QEMU squashfs checks + new bios/uefi-troubleshoot-usb boot probes
+  (BEAMO_WIPE_SAFE_VIDEO=1) + publisher inventory. Source tests PASS; ruff 0.9.2,
+  mypy 2.1.0 (52 modules), shellcheck PASS. NEW QEMU PROBES/CHECKS UNRUN until
+  the hosted KVM gate.
+- `eaed93d` GPL: SOURCE.txt is a written offer (3 years, cost-only, via support
+  URL); scripts/corresponding_source.py plans/fetches exact Debian sources from
+  snapshot.debian.org + nwipe/Beamo tarballs with hash checks; THIRD_PARTY.md
+  procedure + trademark/non-affiliation. Tests PASS (in-memory opener only).
+- `6e149d8` docs: Secure Boot wording, boot card (helper order, Lenovo/Acer/
+  Secured-core, SmartScreen, real screen order), SECURITY.md (private advisory,
+  supported versions, no numeric SLA), boot-exclusion-signals refresh, claims
+  (FAT32 second stick, SSD overwrite-only, no competitor comparison), version-
+  neutral ci/release docs, BeamoTech URLs incl. helper EN/FR/DE.
+- `ddf9b92` scripts/rescan_release_packages.py (published-release Debian
+  security rescan). Ran 2026-10-26 on public v0.2.13 manifest sha256
+  0f2796dc0cedd3e34c4a81e233b12c4662a6eb91a6b5aca7b54370d4afe85640 (matches
+  sidecar; signature not checked in this informational run): 11 fixed issues
+  missing in openssl 3.0.22-1~deb12u1, expat 2.5.0-1+deb12u4, brotli 1.0.9-2.
+  Output in WSL `/home/beamo-qual/beamo-wipe-readiness-20261026-rescan/`.
+- Further commits for copy changes and the manufacturing SOP/readback tool are
+  listed in the checkpoint at the end of this entry.
+
+### Cannot be done here — open items (ID, acceptance, next action, blocker)
+
+- BW-RR-PHYS — BLOCKED (hardware; remote-only host). Run the Tier 3 matrix in
+  docs/evidence/physical-acceptance-111 on dedicated hardware with the exact
+  release image: BIOS, UEFI SB off/on with inspected db/dbx, vendor boot keys,
+  troubleshoot (nomodeset) entry on real AMD/Intel/NVIDIA graphics, speech on
+  real audio, USB2/3/C ports, lid/power, real erase of DISPOSABLE SATA and NVMe
+  disks, boot-USB exclusion with a writable stick. Also a novice usability test
+  with non-technical participants. Next: owner provides lab hardware/people.
+- BW-RR-LEGAL — OWNER/COUNSEL. Review SOURCE.txt offer wording and 3-year
+  retention; NOTICE "no warranty" for a paid consumer product (US/EU/UK) and
+  whether an in-app terms/disclaimer screen is required before erasing; privacy
+  policy for support/report data; "not a Blancco replacement" in README/NOTICE
+  and the claims.md competitor rule; Debian trademark statement. No in-app
+  legal screen was added without approved text.
+- BW-RR-RELEASE — BLOCKED on PR93 + authority. v0.2.13 (latest) lacks the
+  0.2.14 safety fixes and the 11 Debian fixes above; v0.2.14 cannot publish
+  because check-release-ready.sh needs tag == main HEAD (now 58c677f). Next:
+  resolve PR93's GTK segfault (peer-owned, run 40433850969), open a PR for this
+  branch (triggers the hosted CI gate — owner authorization), merge, bump to
+  0.2.15, tag at main HEAD, wait for exact-main push CI, dispatch release.yml,
+  verify public bytes. Retain every gate; no bypass.
+- BW-RR-GPL-ARCHIVE — OPEN. Produce and privately retain (with readback) the
+  corresponding-source archive for v0.2.13 and every later release using
+  scripts/corresponding_source.py. Blocked: several GB free space (C: ~1 GB)
+  and an authorized private destination. Deciding whether release.yml should
+  run it is an automation change needing owner authority.
+- BW-RR-FIRMWARE — OWNER DECISION + ISO QUALIFICATION. Image ships no firmware
+  (--firmware-* false, main only): amdgpu, Intel SOF audio, microcode absent.
+  Decide on non-free-firmware packages (license review, size, THIRD_PARTY),
+  then hosted ISO/QEMU and physical display/audio tests.
+- BW-RR-TRIXIE — PLAN. Bookworm regular security support ended 2026-06; LTS to
+  ~2028-06. Migrate to Debian 13 (kernel 6.12, Python 3.13, Tk/GTK requal) on an
+  isolated build worker with full gates; new base digest pin.
+- BW-RR-SHIM — MONITOR. Shipped shim 16.1 is signed only by Microsoft UEFI CA
+  2011; firmware trusting only the 2023 CA (or a future revocation) will refuse
+  it. Adopt a 2023-CA-signed Debian shim when available; repeat the Q12
+  component inspection for the next release image (none exists for 0.2.14).
+- BW-RR-SIGNING / BW-RR-ENV — OWNER. Move the Ed25519 release key from
+  exportable Secret Manager to non-exportable KMS/HSM or offline custody with a
+  backup; publish its fingerprint on an independent channel (support site).
+  `production` environment has no required reviewer and admins can bypass;
+  sole-maintainer policy decision. Authenticode-sign the Windows launcher
+  (certificate purchase). Numeric SECURITY.md response targets. Dependabot
+  security updates. None changed here.
+- BW-RR-RESCAN-SCHEDULE — OWNER/SPEND. A scheduled hosted rescan is new spend;
+  until authorized, run scripts/rescan_release_packages.py on the latest
+  manifest at least weekly and before every stick production lot.
+- BW-RR-LIVEMEDIA — NEEDS QEMU + HARDWARE. live-boot is not bound to the
+  medium; if a stick reports non-removable, internal partitions may be probed
+  (ro mount can replay an ext4 journal). Evaluate live-media=/UUID binding with
+  a QEMU case (usb-storage removable=off + dirty ext4 internal disk) and
+  hardware; boot-critical, not changed blind.
+- BW-RR-QEMU-COVERAGE — HOSTED ITERATION. Add NVMe and AHCI erase targets and an
+  end-to-end writable-boot-stick exclusion probe (snapshot=on, assert BEAMOBOOT
+  absent from the pick list); current probes attach the stick readonly=on.
+- BW-RR-UX — PRODUCT DECISIONS. Report export on exFAT or clearer upfront
+  guidance; HiDPI auto-scaling; high-contrast theme; ES/IT locales; per-outcome
+  failure next steps; plain "computer's main drive" hint; localized typed
+  console words; record selected nwipe PRNG in reports.
+- BW-RR-HOST-DISK — OWNER URGENT. C: had ~1.0–1.4 GB free; iCloud Drive
+  `iCloudDrive.db-wal` is ~7.7 GB and Google DriveFS WAL ~0.66 GB. Not stopped
+  or deleted (owner apps). Other agents also report low space.
+
+### Final checkpoint — 2026-10-27 UTC
+
+- Additional commits: `40a522a` customer guidance (method screen "large hard
+  disks can take many hours", restart after interruption, Intel RST/VMD/RAID
+  hint on the empty list; FR/DE translated; layout modules at 72 DPI Xvfb show
+  no new failures; guidance tests PASS). `7174651` scripts/verify-usb-stick.py
+  + docs/manufacturing.md (99 readback tests PASS on regular-file fixtures; 149
+  PASS with adjacent download/signing tests; seven tool mutations caught; no
+  real device opened; procedure never executed with a duplicator or stick).
+- Final local checks on the branch: ruff 0.9.2 (src+tests+new scripts) PASS,
+  mypy 2.1.0 52 modules PASS, shellcheck PASS, `git diff --check` PASS. Not run:
+  full pytest suite in one session, ISO build, hosted CI/QEMU, native Windows,
+  browser/Orca live checks, anything physical.
+- Next exact action: owner decides whether to open a PR for
+  `fix/release-readiness-20261026` (starts the hosted CI gate) after or with
+  PR93's fix; then follow BW-RR-RELEASE. Translation wording (FR/DE) for the
+  three new sentences should get a native-speaker review.
+
+### BW-RR-UX-POLISH-20261027 — LOCAL, UNCOMMITTED (subagent, Claude Opus 5.5)
+
+- Same clone/branch, working tree only (not staged/committed). Done locally:
+  HiDPI readable mode in `usr/local/bin/beamo-wipe` (xrandr, fake-fixture
+  tests `tests/test_launcher_readable_mode.py`); method-screen rough time guide
+  (`progress.time_guide`, `copy.method_time_guide`, Tk/GTK/console, FR/DE; ES
+  added by the locale agent; `tests/test_method_time_guide.py`,
+  `tests/test_time_guide_other_views.py`); Tk polish pinned by
+  `tests/test_ui_polish_20261027.py`; docs progress-timing + DISP-12 row.
+- OPEN: BW-RR-HIDPI-QEMU/PHYS — run the readable-mode launcher in QEMU (e.g.
+  virtio-vga xres=3840) and on real 4K/2560x1600 panels incl. Orca view; NOT
+  TESTED. Native-speaker review of the FR/DE/ES guide strings.
+- OPEN (outside this task's files): wizard.py `elapsed_text` hardcodes English
+  "Elapsed:" on FR/DE/ES result screens; build identity "unavailable" is not
+  translated; initial focus reveal slices the Owner/Confirm title on 1280x720
+  (EN) and 800x600 (DE); GTK view at 800x600 leaves the third method radio
+  below the footer for the 1 TB demo HDD and in German (identical on base).
+
+## BW-COMPAT-UX-20261027 — LOCAL VERIFIED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-27 / Claude (Opus 5.5) for the owner's request: more devices, smoother
+  and better-looking experience without breaking anything. Branch
+  `fix/release-readiness-20261026`, commits `261cf58`, `2fb1176`, `5fb9d90`,
+  `2d1c434`, `f42acd0` after `317914d`. Clone and WSL copies as in
+  BW-READINESS-WORK-20261026. No PR, hosted CI, release or device operation.
+- Done locally: console-data (console layouts actually load); non-free
+  graphics/audio/USB firmware + microcode; Debian-signed 6.12 kernel and
+  firmware 20250410 from bookworm-backports via a chroot-only apt pin (apt
+  resolution simulated against the live archive, no unmet deps); quiet normal
+  boot; usbcore.autosuspend=-1 and NVMe APST off on every entry; QEMU gate
+  checks for kernel >= 6.12, firmware packages/dirs, no radio firmware, and an
+  X layout + console keymap for every offered layout; GPL plan adds linux/grub2/
+  shim sources behind signed wrappers; HiDPI xrandr mode switch; Spanish UI and
+  helper; UK/ES/LatAm/IT layouts; per-disk time guide; eight visual fixes;
+  curses Left/Right layout choice; localized Elapsed label.
+- Verification: full suite in three fresh sessions (private 72 DPI Xvfb,
+  RAM /tmp): 96 failures, every one also failing on pristine main (no .git /
+  no docs/evidence in the copy); 71 re-run on base gave the identical set.
+  Note tests/test_usb_image_readback.py alone needs ~1.5 GB of /tmp (builds a
+  2 GiB image) — size test temp space accordingly. ruff, security lint, mypy
+  53 modules, shellcheck, git diff --check PASS.
+
+### Open items
+
+- BW-CU-HOSTED — NEXT CANDIDATE GATE. None of the image changes has been built:
+  backports pin, archive areas, firmware/microcode/console-data, boot params,
+  troubleshoot probes, squashfs/keymap/firmware checks, keyboard-layouts.txt
+  evidence. The first hosted ISO/QEMU run may need iteration; ISO size grows
+  (~+80–100 MB est.). Needs owner authorization for the PR/hosted gate.
+- BW-CU-SB — REQUIRED BEFORE RELEASE. New image boots linux-image-6.12.95+deb12
+  (backports, Debian-signed): repeat the Secure Boot component inspection
+  (docs/secure-boot-acceptance.md) for the exact new image.
+- BW-CU-PHYS — BLOCKED (hardware). Firmware effect on AMD/Intel/NVIDIA panels
+  (incl. nouveau GSP on RTX), SOF/Cirrus audio and speech, Renesas USB 3, the
+  6.12 kernel on 2023–2025 laptops, HiDPI xrandr switch on real 4K/2560x1600
+  panels and docks, autosuspend/APST effect, console keymaps and all seven
+  layouts typed on physical keyboards.
+- BW-CU-L10N-REVIEW — NATIVE REVIEW. Spanish (choices: memoria USB, equipo,
+  cuenta regresiva vs cuenta atrás, ratón, presione, Habitual, Compilación,
+  omitido; SOUND_SELECTED phrasing) and every new FR/DE string (time guide,
+  RST/VMD hint, power restart, keyboard limits/footer, Elapsed).
+- BW-CU-VOICE — FEATURE. No language→voice mapping: Spanish (and FR/DE) text
+  is spoken by Orca/espeak-ng with the default English voice; boot menu and
+  kiosk recovery screens stay English.
+- BW-CU-UI-LEFTOVERS — OPEN. Focus scroll clips the title (Owner 1280x720 EN,
+  Confirm 800x600 DE); GTK view at 800x600 puts the third method below the
+  footer (also on base); Working screen empty block before first percent;
+  800x600 method cards/pick list start below the fold; Last-chance ring half
+  visible at 800x600; body-scroll stale offset race when content grows then
+  shrinks; preview-only banner does not re-translate; support build ID token
+  "unavailable" stays English by design (support readback).
+- BW-CU-QEMU-COVERAGE — unchanged from BW-RR-QEMU-COVERAGE (NVMe/AHCI targets,
+  writable boot stick); a QEMU 4K VGA probe for the xrandr path is also open.
+
+## BW-FINISH-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to finish all open
+  work from BW-READINESS-WORK-20261026, BW-RR-UX-POLISH-20261027 and
+  BW-COMPAT-UX-20261027. Repo BeamoTech/beamo-wipe, branch
+  `fix/release-readiness-20261026`, clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
+  the pushed `40ccf8b`: 26 commits `0a02a03`..`872d38c` plus the commit adding this entry. State: pushed as branch `fix/release-readiness-20261026` (head = the commit adding this entry; ci.yml runs only for PRs/pushes to main or dispatch, so no workflow ran). No PR, no hosted
+  CI, no tag, no release, no device operation.
+- Agent clones (owned, safe to delete after merge): `beamo-wipe-{ui,results,
+  l10n,export,it}-20261027`, `beamo-wipe-helper-20261028`,
+  `beamo-wipe-pr93trial-20261028` under `C:/Users/Jack/dev/BeamoTech/`; WSL
+  copies `/home/beamo-qual/bw-*-2026102[78]`.
+
+### Done (commit: what, evidence)
+
+- `0a02a03`…`b723156`: native-quality review fixes for FR/DE/ES UI and
+  helper pages; placeholder/cited-label/safety-wording consistency test;
+  `docs/translations.md` translator guide + native review checklist.
+- `d842818` safety: exFAT 1.0 report USBs accepted beside FAT32 (still one
+  partition, same mount/readback rules); QEMU gate requires `exfat.ko`.
+- `d2f8035`: QEMU gate refuses a `shim-signed` older than `1.51~1+deb12u1`
+  (Debian 12's shim 16.1-2 dual-signed by the Microsoft UEFI CA 2011 and
+  2023, NX-capable per its changelog); secure-boot doc marks the next image
+  UNKNOWN until Q12. German stale-progress label no longer needs a dative.
+- `121697c`, `c5d125d` (UI agent): titles never sliced by focus reveal;
+  stale/negative body scroll clamped; Working shows "Progress not reported"
+  in a fixed slot; short windows put method cards / disk rows first;
+  last-chance ring visible at 800x600 and 1024x600; preview stripe and Tk
+  title re-translate; GTK limits notice after the radios; pick rows say
+  "Windows / Operating system / No operating system found on this disk".
+  New tests fail on the reference (143+16+13+…), pass on the branch.
+- `274c80c`, `951a485`, `98c97cd` (results agent): every failed or uncertain
+  outcome has its own next steps (all languages); report Limitations no
+  longer truncates canonical copy; nwipe's logged PRNG shown as "Random data
+  generator" for random/three-pass results (display only; parser accepts one
+  exact manifest record; argv/launch/outcome unchanged, runner diff additive).
+- `3599614`: countdown caption and Tk hint cite "Erase now"; EN helper says
+  "Stop erase" / "Restart computer"; report-saving status reworded (EN/FR/IT).
+- `4a8117e`, `4c9725a`: discovery snapshots made before the language choice
+  now read in the chosen language (reasons, nested kind labels, identity
+  labels, translated "Cannot erase:"); the silent nested "unsupported device"
+  reason stays silent in every language; " (old)" percent mark, GTK
+  "Select <disk>" name and GTK window title translated.
+- `4a90eeb`: blocked-screen error (copy.IDENTIFY_ERROR, stored in English by
+  discovery) is shown in the chosen language and keeps its specific heading
+  and recovery guidance (`lang.current_text`); blocking logic unchanged.
+- `f017eaa`, `71c2855`, `ea39f90`, `9ee7a5d`: Italian as fifth language (UI,
+  helper/it.html, staging/manifest, preview `--lang it`), all later keys
+  translated; key sets/order identical across fr/de/es/it.
+- `ca3d813`, `e885447`: FR/DE helper troubleshooting panels rebuilt to
+  English parity (illustrations, five steps, Windows menu paths, Technical
+  detail with the BitLocker recovery-key warning, stylesheet); new
+  section-parity test across all five helper pages. `60cdffb`, `0bba5b1`,
+  `872d38c`: narrow console result test pages to the end; FR/DE
+  forbidden-claims lists; the curses result page no longer repeats the
+  outcome, so Report status and safe removal stay on the first 80x24 page.
+- Verification: full suite on exact `872d38c` in six fresh sessions (private 72 DPI
+  Xvfb, 3 GB RAM /tmp; WSL copy byte-identical to the clone; no `.git`;
+  docs/evidence only secure-boot-119 and physical-acceptance-111): 12,840
+  passed, 63 failed, 2 errors, 86 skipped. Reference `d842818`, same method:
+  12,086 passed, 64 failed, 2 errors, 86 skipped. Every final failure and
+  both errors also occur on the reference (CI/receipt/evidence tests needing
+  `.git` or the omitted docs/evidence; tmp_path collisions in
+  test_corresponding_source); the reference's extra failure is the GTK 60 ms
+  sound-dialog timing test. ruff 0.9.2 (src+tests), security subsets,
+  compileall, mypy 2.1.0 (54 files), shellcheck, `git diff --check
+  40ccf8b..HEAD`: PASS. Logs: WSL `~/bw-full-872d38c-20261028/`,
+  `~/bw-full-ref-d842818-20261028/` (chunk05 re-run in `rerun05/` after a
+  1.5 GB tmpfs filled). Not run: ISO build, hosted CI/QEMU, native
+  Windows, Chrome pixel checks (4 skips), Orca, anything physical.
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-FIN-HOSTED — OWNER AUTHORIZATION (spend). The lab coverage says
+  "no new spend authorized" for WIPE-ISO-QEMU. None of the image changes
+  since 0.2.14 has been built (firmware/backports/console-data/boot params,
+  exfat.ko, shim floor, troubleshoot probes). Next: owner authorizes the
+  hosted gate; open a PR for this branch (PR/main triggers ci.yml on
+  Blacksmith) or dispatch ci.yml on a verification ref; fix every failure.
+- BW-FIN-PR93 — AFTER PR93 MERGES. Trial merge of PR93 head `bf2b490` into
+  `4c9725a` (scratch clone `beamo-wipe-pr93trial-20261028`, aborted): one
+  textual conflict, `nwipe_runner.py` duplicate-run check in start(); keep
+  this branch's `or self._target_fd is not None` with PR93's
+  `error = SafetyError(...)`/_close_pinned_engine pattern. PR93's new error
+  paths call `_release_wipe_lock()`, which on this branch also closes the
+  target reservation, so no extra cleanup is needed. Re-run the full suite
+  after the real rebase/merge; PR93 may change before merge.
+- BW-FIN-SB-Q12 — REQUIRED BEFORE RELEASE. Inspect the next built image
+  (shim 16.1-2 dual-signed, kernel 6.12 backports): signer list, SBAT,
+  2023-only firmware behaviour, per docs/secure-boot-acceptance.md.
+- BW-FIN-SHIM-BUILD — WATCH FIRST HOSTED BUILD. shim-signed's preinst
+  refuses to install when mokutil reports Secure Boot enabled without a
+  matching db entry, or prints unexpected output. The live-build chroot runs
+  in Docker on the build worker; confirm in the first hosted build log that
+  the preinst passes, and that the QEMU gate's new shim floor holds.
+- BW-FIN-EXFAT-QEMU — HOSTED. Add/run a QEMU report-export probe onto an
+  exFAT image (only the module presence is gated today); physical exFAT
+  sticks from several vendors under BW-RR-PHYS.
+- BW-FIN-VOICE — FEATURE/DESIGN. Orca 43 takes its language from the
+  process locale; the image runs LANG=C.UTF-8 without the `locales`
+  package, so FR/DE/ES/IT text is spoken with the default English voice.
+  Needs locales + espeak-ng voices in the image, a per-language Orca restart
+  or settings change, and real-audio testing. Not started.
+- BW-FIN-CONSOLE-WORDS — BY DESIGN. Typed confirmation words and key names
+  stay English in every language (safety tokens; documented in locale
+  headers and docs/translations.md). Revisit only with a safety review.
+- BW-FIN-L10N-REVIEW — NATIVE REVIEW. FR/DE/ES/IT native speakers review the
+  checklist in docs/translations.md (Italian entirely machine-made, incl.
+  Windows names in helper/it.html; new FR/DE helper troubleshooting text).
+- BW-FIN-PICK-ROW — PARTIAL. At 800x600 the first pick row starts at
+  ~108 px but a full row (up to 217 px) does not fit the 192–273 px body;
+  name, capacity and serial are visible. Needs a compact row design.
+- BW-FIN-BUILD-TOKEN — BY DESIGN. Support "Build" value "unavailable" (no
+  injected build ID: previews/dev builds only) stays an English token.
+- BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE, BW-RR-GPL-ARCHIVE, BW-RR-TRIXIE,
+  BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE, BW-RR-LIVEMEDIA,
+  BW-RR-QEMU-COVERAGE, BW-RR-HOST-DISK, BW-RR-HIDPI-QEMU/PHYS, BW-CU-HOSTED,
+  BW-CU-SB, BW-CU-PHYS — unchanged (see their entries); BW-RR-SHIM is now
+  BW-FIN-SB-Q12 + BW-FIN-SHIM-BUILD.
+- Closed by this entry: BW-RR-UX (exFAT, ES/IT, per-outcome steps, contents
+  hint, PRNG; console words by design), BW-CU-UI-LEFTOVERS (all except
+  BW-FIN-PICK-ROW), BW-RR-UX-POLISH leftovers (Elapsed, focus slicing, GTK
+  third radio; build token by design).
+
+## BW-PASS2-20261028 — LOCAL VERIFIED, BRANCH PUSHED / HOSTED, NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28 / Claude (Opus 5.5) for the owner's request to run another very
+  thorough pass. Branch `fix/release-readiness-20261026` (clone
+  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
+  from `465274d`. Four independent read-only reviewers covered
+  `58c677f..465274d` (runtime safety; UI and locales; image, build and release
+  scripts; docs, helper pages and claims). Every finding was re-checked against
+  the code or primary sources (Debian package lists, live-build 1:20230502,
+  amd64-/intel-microcode hooks, madison, security tracker) before fixing.
+  No PR, hosted CI, tag, release, device or host-setting change.
+- Lab: current lab revision `6fd49c5` in owned clone
+  `C:/Users/Jack/dev/beamo-remote-lab-claude-20261028` (peer checkout at
+  `d3d0959` left untouched); run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass2-claude-20261028`:
+  self-test PASS (61 tests, framework), doctor/sync/plan PASS (preparation).
+  Plan still lists WIPE-ISO-QEMU "no new spend authorized".
+
+### Done (commit: what, evidence)
+
+- `89373fe` safety: the pick row never says "No operating system found"; it
+  names only a recognised system. Contents check now recognises EFI+APFS/HFS+
+  (Intel Mac), Linux with swap or a GPT BIOS boot partition, and a Linux
+  vendor "Recovery" partition (no longer "Windows"). Selection, tokens, nwipe
+  unchanged. 766 related tests PASS.
+- `78dafdd`: START-HERE.html linked to fr/de/es/it.html that were never on the
+  stick root; they are now staged there as START-HERE-<code>.html with links
+  rewritten (live-system copies unchanged), README.txt lists them, and
+  THIRD_PARTY.md is on the root as SOURCE.txt/NOTICE say.
+- `6ab504f`: NOTICE/README no longer name a competitor or promise
+  "sanitization"; support guidance carries the BitLocker key warning;
+  "outside what the overwrite reaches" (EN/FR/DE); ADVANCED.md lists --quiet;
+  THIRD_PARTY/compat matrix: misc-nonfree's legacy radio files, no PC Renesas
+  USB 3 firmware, SOF 2.2.4 predates Meteor Lake.
+- `9bbd3e6`: FR/DE/ES/IT helper pages say speech uses the English voice.
+- `1796b6a`: verify-usb-stick.py keeps exit 1 for a FAIL whose receipt cannot
+  be written; manufacturing.md: boot-QA units never ship without a fresh
+  readback.
+- `5437259`: corresponding_source.py `plan` no longer fails on every real
+  image (shim version from the binary version; shim-helpers mapped); `fetch`
+  validates nwipe/Beamo identities before writing and binds GitHub tarballs to
+  the commit via the git-archive header. Real v0.2.13 manifest: plan lists
+  319 sources incl. linux 6.1.190-1, grub2 2.06-13+deb12u2, shim
+  16.1-2~deb12u1. rescan_release_packages.py checks linux/grub2/shim and
+  ~bpo12 backports against trixie. Weekly rescan of v0.2.13 (manifest sha256
+  0f2796dc…5640) 2026-10-28: same 11 fixed issues missing (openssl, expat,
+  brotli); its boot packages are current. Output WSL
+  `~/beamo-wipe-readiness-20261026-rescan/rescan-20261028.txt`.
+- `945313e`: /etc/default/amd64-microcode forces "early" (the default "auto"
+  depends on the build CPU); QEMU gate parses every live initramfs early cpio
+  and requires AuthenticAMD.bin and GenuineIntel.bin (parser tested on
+  synthetic archives; image not built).
+- `ff6b737`: Tk keyboard screen: Up/Down choose layouts even from the
+  focused check box (1–7 typed digits there; the hint now names Up/Down in
+  all languages; browser preview matches); over-wide footer hints wrap;
+  a long sub-page caption no longer overlaps the third stage name at
+  1000-1100 px (100-case test); console keyboard screen pages its lead on
+  short consoles (80x14-80x20, all languages).
+- `a496b73`: FR/ES "new report USB" no longer reads "brand-new".
+- `ad7fe73`: a two-part keyboard notice follows a language switch.
+- `8d5e445`: the held-reservation and curses time-guide tests now check what
+  their names claim.
+- Verification: see "Final verification" below.
+
+### Open items from this pass (ID — acceptance, next action, blocker)
+
+- BW-P2-KERNEL-LAG — OWNER DECISION before the next release. Debian 12
+  backports' newest kernel is linux-signed-amd64 6.12.95+1~bpo12+1; Debian 13
+  has 6.12.107+1 and the tracker lists fixes up to 6.12.113-1. The corrected
+  rescan counts 3,504 tracker issues fixed in trixie 6.12.96–6.12.113 that a
+  6.12.95 image would lack (all urgency "not yet assigned"); the shipped
+  v0.2.13 6.1.190 kernel lacks none. The build-time `debsecan --suite
+  bookworm` gate cannot see backports. Options: accept the lag (offline kiosk,
+  no network software), go back to the bookworm 6.1 kernel (loses newer
+  hardware support), or move the base to Debian 13 (BW-RR-TRIXIE). Whatever
+  is chosen, run scripts/rescan_release_packages.py on the candidate
+  manifest before publication.
+- BW-P2-GRUB-UTILITIES — OWNER DECISION. live-build 1:20230502 never fills
+  `@ENABLE_VERIFY_CHECKSUMS@`, so "Verify integrity of the boot medium" never
+  appears (the `3ee29ed` message claimed otherwise); the unlocked Utilities
+  submenu exposes only "UEFI Firmware Settings" (fwsetup) on UEFI.
+  tests/test_boot_menus.py::test_uefi_recovery_and_utility_blocks_preserved
+  deliberately keeps both, so nothing was removed. Decide keep / lock again /
+  remove (then update that test). Verify works after a live-build upgrade.
+- BW-P2-GPL-SYSLINUX — OPEN, needs hosted build data. The source plan reads the
+  squashfs dpkg inventory only. ISO isolinux files (Debian isolinux/
+  syslinux-common, installed by live-build only during binary_syslinux) and
+  the USB image's ldlinux/mbr.bin (CI host's Ubuntu syslinux) are not listed.
+  Next: record those package versions in the release manifest and add them to
+  corresponding_source.py (Debian via snapshot, Ubuntu via Launchpad), or
+  install the USB image's syslinux from the pinned Debian container.
+- BW-P2-PRNG-LONG — KNOWN LIMIT. "Random data generator" in the report comes
+  from the 1 MiB log snapshot whose digest the evidence carries; after about
+  5.5 h of 2-second progress lines the options header leaves that window and
+  the line is omitted (never wrong). A fix needs an evidence-schema change
+  (head snapshot plus digest); not done blind.
+- BW-P2-RADIO-FILES — DOCUMENTED. firmware-misc-nonfree (bpo) carries Agere/
+  VT6656/WF200/CW1200 Wi-Fi, Broadcom/NXP Bluetooth and Multi-Tech modem
+  files; no radio package or connection software is installed. If file-level
+  removal is required, it needs a reviewed hook (stage_wrapper_sources
+  approves exactly one) and a squashfs file gate.
+- BW-P2-SOF-MTL — DOCUMENTED. Debian 12 SOF 2.2.4 predates Meteor Lake; no
+  backport exists (Debian 13 has 2025.01). 2024+ Intel laptops may be silent.
+- BW-P2-HOSTED-NEW — HOSTED. Unrun until the hosted gate: the initramfs
+  microcode check, START-HERE-<code>.html and THIRD_PARTY.md on a real ISO
+  root and USB image, README.txt lines.
+- Unchanged and still open: BW-FIN-HOSTED (spend authorization), BW-FIN-PR93,
+  BW-FIN-SB-Q12, BW-FIN-SHIM-BUILD, BW-FIN-EXFAT-QEMU, BW-FIN-VOICE,
+  BW-FIN-L10N-REVIEW (now also the FR/ES "new USB" and Up/Down hint lines),
+  BW-FIN-PICK-ROW, BW-RR-* and BW-CU-* items listed in BW-FINISH-20261028.
+
+### Final verification — 2026-10-28 (pass 2)
+
+- Full suite on exact `8d5e445` (product tree of this entry's commit), WSL
+  `BeamoComboQualification-20261001` as beamo-qual, pristine `git archive`
+  copy `/home/beamo-qual/bw-pass2-8d5e445-20261028` (full docs/evidence, no
+  `.git`), six fresh sessions with private 72 DPI Xvfb and 3 GB RAM /tmp:
+  13,038 passed, 60 failed, 0 errors, 86 skipped. Every failure is in the
+  known environment set of the `d842818` and `872d38c` runs (CI/receipt
+  gates needing `.git`: test_ci_log_snapshot 36, ci_evidence_directory 6,
+  blacksmith_ci 4, ci_evidence_pipeline 3, release_manifest 2 and 8 single
+  modules; plus the GTK 60 ms sound-dialog timing test). No new failure; four
+  formerly evidence-dependent tests now pass. Logs
+  `~/bw-full-pass2-8d5e445-20261028/`.
+- Targeted runs during the pass: contents/UI-fit/locales 766, staging and
+  helper 162, docs/claims/readback 534, docs/image-config 648, source plan and
+  rescan 53, microcode/boot 100, Tk layout suites 907, later UI fixes 681 —
+  failures only from the same no-`.git` set.
+- Static: ruff 0.9.2 (src, tests, scripts) PASS; mypy 2.1.0
+  `--ignore-missing-imports` (CI form) 54 files PASS; shellcheck 0.9.0 on
+  qemu-verify, build-usb-image, inside-docker, launcher, kiosk PASS;
+  compileall PASS; `git diff --check` PASS.
+- Lab receipts (lab `6fd49c5`, owned clone): self-test
+  20261028T185439Z-786c42caac55, doctor 20261028T195848Z-25f63c5da8df, sync
+  20261028T195937Z-7d9b8901b313, plan 20261028T195950Z-1186c8d08a71 — all
+  `verify` VALID / PASS at framework or preparation level only.
+- Not run: ISO build, hosted CI/QEMU, native Windows, Chrome pixel checks,
+  Orca/speech, anything physical.
+
+## BW-PASS3-20261028 — LOCAL TARGETED VERIFIED / HOSTED GATE PENDING; WSL DOWN; NATIVE-REVIEW AND PHYSICAL GATES OPEN
+
+- 2026-10-28/29 / Claude (Opus 5.5) for the owner's request to "fully take
+  care of all of the rest of the stuff ... do what's best for the mass
+  majority of customers". The open owner decisions from BW-PASS2-20261028
+  were decided on that basis (below). Branch `fix/release-readiness-20261026`,
+  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
+  `22fa70c`. Lab `6fd49c5` (owned clone), run root
+  `C:/Users/Jack/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
+  20261028T230010Z-b9c571b692a3, sync 20261028T230035Z-07fe5d9eb357, plan
+  20261028T230038Z-e303374f8e43 PASS (preparation only).
+- The owner's message is taken as the go-ahead for the paid hosted gate
+  (BW-FIN-HOSTED). Three helper agents (Italian review, 800x600 row, PR93
+  crash) were stopped by the owner mid-run; their uncommitted Italian and
+  row work was reviewed, corrected and verified here before committing.
+
+### Done (commit: what, evidence)
+
+- `3dd48d8` BW-P2-KERNEL-LAG: the image installs Debian 12's LTS-maintained
+  `linux-image-6.12-amd64` from bookworm-security (Debian-signed,
+  6.12.113-1~deb12u1; DLA-4745/4788/4817) via `--linux-packages
+  linux-image-6.12` (flavour stays amd64: GRUB looks for vmlinuz-*amd64);
+  backports pin now firmware only. apt resolution simulated against the live
+  archive (469 packages, kernel from bookworm-security, firmware 20250410
+  from backports, no unmet dependency). Source plan/rescan map
+  linux-signed-6.12-amd64 to `linux-6.12` (tracker files 2,886 bookworm
+  issues there). Build-time debsecan can now see kernel fixes.
+- `c3e37fd` BW-P2-GRUB-UTILITIES: kept "UEFI Firmware Settings", removed the
+  never-filled verify-checksums block; template markers limited to those
+  live-build fills; QEMU gate rejects any unfilled marker.
+- `32725c8` BW-P2-PRNG-LONG: completion projection keeps nwipe's exact
+  options header/prng/auto records; evidence falls back to it only when the
+  digested tail cannot answer (display only; outcome/check equality tested;
+  red on the old code).
+- `2020bb8` BW-P2-GPL-SYSLINUX: plan always lists Debian 12 syslinux
+  3:6.04~git20190206.bf6db5b4+dfsg1-3 (on snapshot); QEMU gate binds ISO
+  isolinux/*.c32 and isolinux.bin (outside the boot info table) and the
+  worker's syslinux packages to it.
+- `b03b5a5`, `e3f35ad` BW-RR-QEMU-COVERAGE / BW-FIN-EXFAT-QEMU: QEMU erase-
+  and-report journeys on an AHCI SATA disk (BIOS, FAT32 report) and an NVMe
+  disk (UEFI, exFAT report, user-space fsck + guest readback markers), both
+  booted from the USB image attached writable (snapshot=on).
+- `5f02e2f` BW-RR-LIVEMEDIA decision: boot line unchanged (boot-critical);
+  manufacturing prefers RM=1 sticks, RM=0 parts need boot evidence on a PC
+  with an internal ext4 disk.
+- `e48d629`: Italian grammar/wording pass (UI and helper/it.html), FR/ES
+  "test box" and "only one newly plugged-in report USB", DE sentence fix.
+  1,091 locale/helper/claims/keyboard/UI-fit tests PASS.
+- `d430f98` BW-FIN-PICK-ROW: dense Pick row and Compare after the disks on
+  short windows; first row whole at 800x600/1024x600 in all languages.
+- `a00168f`: QEMU gate extracted only three ISO files, so the pass-2
+  initramfs microcode check and the new syslinux check would have failed
+  every hosted run; it now extracts /live, /isolinux, /EFI/boot (regular
+  files only). BW-FIN-SB-Q12 aid: gate records sbverify signers and PE .sbat
+  of shim, GRUB and kernel in secure-boot-signers.txt.
+- `d3ba776`: the one-kernel check counted the linux-image-6.12-amd64
+  meta-package too (would have failed every image); fake-dpkg test, red on
+  the old script.
+
+### Decisions recorded (no change)
+
+- BW-P2-RADIO-FILES — keep documented (no connection software, no customer
+  effect).
+- BW-P2-SOF-MTL, BW-FIN-VOICE — keep as documented limits. Sound and speech
+  on 2024+ Intel laptops and non-English voices need Debian 13 firmware/UCM
+  or locale work plus real-audio tests; the screen works without them.
+- BW-RR-TRIXIE — still a planned migration; the LTS kernel removes its
+  urgency (bookworm LTS runs to ~2028-06).
+- BW-FIN-PR93 — not taken over (Codex's open PR, native GTK crash; its
+  handoff needs a native backtrace on an admitted Linux worker). The
+  investigation agent was stopped by the owner with no result. Whichever PR
+  lands second rebases (conflict notes in BW-FIN-PR93 still apply).
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-P3-WSL-DOWN — OWNER ACTION. At ~03:10 UTC 2026-10-29 the shared WSL
+  distro `BeamoComboQualification-20261001` began failing every process start
+  with EIO (getpwnam/getpwuid failed 5, /etc unreadable, also as root). Its
+  dynamic VHDX (182.6 GB) is on C:, which had 3.3 GB free; most likely the
+  VHDX could not grow. Not stopped or repaired (shared instance). Next: owner
+  frees C: space and approves `wsl --terminate BeamoComboQualification-20261001`
+  plus a filesystem check. Note `coordination/wsl-io-errors-claude-20261029.md`.
+- BW-P3-FULL-LOCAL — NOT RUN. The full local suite on the final candidate
+  could not start (WSL down). Every changed area passed its targeted tests
+  (counts above and in the commit messages); the hosted gate's full suite is
+  the full-suite evidence for this candidate.
+- BW-P3-HOSTED — PENDING. First hosted run of every image change since
+  0.2.14 (BW-FIN-HOSTED, BW-P2-HOSTED-NEW, BW-CU-HOSTED). Expect iteration:
+  first SATA/NVMe/exFAT journeys, writable-stick boots, syslinux byte check,
+  signer record, LTS kernel. Fix every failure; never weaken a check.
+- BW-FIN-SB-Q12 — after a green hosted run, a person reviews
+  secure-boot-signers.txt from that run's evidence against
+  docs/secure-boot-acceptance.md and writes the Q12 receipt.
+- Unchanged: BW-FIN-SHIM-BUILD (watch the first build log), BW-FIN-L10N-REVIEW
+  (now incl. the Italian pass), BW-RR-PHYS, BW-RR-LEGAL, BW-RR-RELEASE,
+  BW-RR-GPL-ARCHIVE, BW-RR-SIGNING/ENV, BW-RR-RESCAN-SCHEDULE,
+  BW-RR-HIDPI-QEMU/PHYS, BW-RR-HOST-DISK (now urgent: it took WSL down),
+  BW-CU-PHYS.
+
+### Verification — 2026-10-28 (pass 3), targeted only
+
+- WSL `BeamoComboQualification-20261001` as beamo-qual, private 72 DPI Xvfb,
+  RAM /tmp: kernel/boot/hardware/docs 377+45; boot menus 31; PRNG and
+  projection 721 (new test red 4/7 on old code); source plan 41; QEMU gate,
+  publisher and inventory suites 974 then 61 and 13; locale/UI 1,091; pick
+  row, ISO inspection, Secure Boot record and layout 832; kernel gate 12.
+  All failures seen were in the known no-`.git` environment set.
+- ruff 0.9.2 (src, tests, scripts), mypy 2.1.0 (54 files), shellcheck 0.9.0
+  (qemu-verify, ci-hosted, inside-docker) PASS on `d3ba776`'s tree.
+- Not run: full local suite (WSL down), ISO build, hosted CI/QEMU, native
+  Windows, Orca/speech, anything physical.
+
+## BW-PASS3-CI-UI-20261031 — HOSTED GATE ITERATING; UI REDESIGN COMMITTED; GREPTILE UNAVAILABLE; WSL STILL DOWN
+
+- 2026-10-29..31 / Claude (Opus 5.5). Branch `fix/release-readiness-20261026`,
+  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
+  Continues BW-PASS3-20261028 (its open items stand unless updated here).
+
+### Done (commit: what, evidence)
+
+- Hosted CI iterations (Blacksmith `ci.yml`, paid gate authorised by the
+  owner in pass 3): run 40811225589 → `6f638b5` (CodeQL tag regex),
+  `ab8bfbd` (Greptile P1: SATA report identity, test), `33ea16e` (Tk callback
+  traceback hook, Italian pin); run 40814724934 → `9aad14a` (Tk distances
+  as Tcl objects on Debian 12 Python 3.11 / Tk 8.6.13, 284 failures);
+  `6f21bed` (gitignore generated USB-root pages); run 40820524524 first
+  reached QEMU, BIOS safe video failed → `05e52bb` (GRAPHICAL_FAILED marker,
+  guest screendump); run 40824797788 → `e793841` (drop vga=788, gate rejects
+  vga=); run 41232620234 BIOS safe video PASS, UEFI safe video FAIL →
+  `27a4fce` (X failure classification); run 41237147966: fb0=1, no DRI,
+  vesa error → `8697d65` (kiosk writes a one-session fbdev Device for
+  nomodeset + fb0 + no DRM only; 7 tests PASS locally via Git sh).
+- `383e6b7` UI redesign (owner request "modernize ... cleaner and
+  simpler"): gray page #EEF2F6 with white surfaces, white header/footer
+  bars, quiet footer tools, owner check above its notes (in view at all
+  four sizes, five languages), Pick leads with disks, roomy review card;
+  gallery and helper mirror it. Local (Windows harness, scratch
+  `C:/Users/Jack/dev/beamo-wipe-pass3-scratch-20261028/per`):
+  modern_layout+ui_polish 81 PASS, pick_row_fit 24, header_caption 98
+  (+1 Tk-load flake), ui_fit 262, adaptive 91 (one test hangs on Windows
+  on the frozen base too), gallery/helper/UI-system 215, ruff 0.9.2 and
+  mypy 2.1.0 (--platform linux) PASS. Every other local failure also failed
+  on the frozen base copy or is a Windows-only environment error (Tk
+  library reads under concurrency, symlinks, POSIX paths, no desktop focus,
+  DryRunRunner cannot reach WORKING, curses stub).
+
+### Open items (ID — acceptance, next action, blocker)
+
+- BW-P3-HOSTED — ITERATING. Next: hosted run on the pushed head with
+  `8697d65` + `383e6b7`; expect UEFI safe video to pass, then the
+  remaining QEMU stages (Secure Boot record, SATA/NVMe/exFAT journeys).
+  Fix every failure; never weaken a check; push only after a run finishes
+  (cancel-in-progress).
+- BW-P3-GREPTILE — BLOCKED. Greptile reviewed only `f6719f3` (finding fixed
+  in `ab8bfbd`); no review on later heads. Owner reports this month's credit
+  is used up; not confirmable from repo/API evidence (cause: unknown, owner-
+  reported credit exhaustion likely). No credits bought. An author-agent
+  review of `f6719f3..HEAD` is recorded on PR #94 and is NOT independent.
+  Acceptance: an independent review (a person, or Greptile when available)
+  of the final diff against main, recorded on the PR per AGENTS.md.
+- BW-P3-UI-VISUAL — owner looks at the after screenshots; native-speaker
+  review (BW-FIN-L10N-REVIEW) should include the reordered owner screen.
+- BW-P3-WSL-DOWN, BW-P3-FULL-LOCAL, BW-FIN-SB-Q12, BW-RR-PHYS and the rest
+  of BW-PASS3-20261028's open list — unchanged.
+
+### BW-PASS3-CI-UI-20261031 update — 2026-11-01 / Claude (Opus 5.5)
+
+- BW-P3-HOSTED — DONE for head `a76ee5c` (pushed). Run 41275044269: CI gate,
+  Linux image gate and Windows launcher tests success; QEMU summary every
+  case pass (methods x2, bios/uefi/usb, secureboot_usb, speech BIOS/UEFI,
+  troubleshoot BIOS/UEFI, sata_bios_usb, nvme_uefi_usb, exfat_report,
+  writable_boot_usb, report_export). ISO 160f1c8d…5740d, USB image
+  47391793…09220, nwipe 7303abba…71c0e. Evidence artifact
+  ci-evidence-…-41275044269-1 includes secure-boot-signers.txt.
+  Evidence binds to that exact SHA only; any later push needs a new run.
+- UEFI safe-video root causes fixed: `0b8cfdd` (ProtectSystem=full blocked
+  a runtime /etc write; shipped -config file), `f2b993a` (Linux 6.9+ PCI
+  parent vs Xorg 21.1.7 fbdevhw; private-namespace class link; fixed
+  upstream in Xorg 21.1.16 / Debian 13 — drop the workaround on the trixie
+  move, BW-RR-TRIXIE), `a76ee5c` (GRUB gfxmode 800x600x32 first; X cannot
+  use a 24bpp packed framebuffer). Gate: UEFI safe video runs last
+  (`3ff10b7`, `63ad9fe`); fixed X/fbdev classes plus a QEMU-only (DMI
+  vendor QEMU) geometry detail in private serial evidence (`5a17f01`,
+  `c5fe630`).
+- BW-P3-GREPTILE — still BLOCKED: no Greptile review after `f6719f3`;
+  author-agent reviews (not independent) recorded on PR #94 for
+  `f6719f3..0b5bf48` and `0b5bf48..a76ee5c`. Next: a person (or Greptile
+  when available) reviews the final diff against main and records it on
+  the PR per AGENTS.md.
+- BW-P3-SB-Q12 next action: a person reviews secure-boot-signers.txt from
+  run 41275044269 against docs/secure-boot-acceptance.md.
+- Known limit: a firmware offering no 32-bit 800x600 mode still gets the
+  keyboard text guide in safe video (24bpp fbdev unsupported by Xorg).
+- This update is a LOCAL commit in the readiness clone, not pushed: a push
+  would rerun the paid gate and move the PR head off the green SHA. Land
+  it with the next necessary push or the merge.
+- Unchanged: BW-P3-WSL-DOWN (owner action), BW-P3-FULL-LOCAL (hosted full
+  suite passed on a76ee5c: covers it for this head), BW-FIN-L10N-REVIEW,
+  BW-RR-PHYS, BW-RR-RELEASE, PR #93 ordering, owner merge decision.
+
+### BW-PASS3-UI2-20261101 — second UI modernisation pass — 2026-11-01 / Claude (Opus 5.5)
+
+Owner request: "It still needs a bit of modernization. Go ahead and run
+another very thorough and comprehensive pass of this." Repo
+`beamo-wipe`, branch `fix/release-readiness-20261026`, readiness clone
+`C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`.
+
+- DONE locally (commit after this note on the same branch):
+  - lighter secondary button edge (`BUTTON_EDGE`);
+  - sound and "Erase another disk" actions are links;
+  - no rule inside the footer;
+  - soft selected-disk summary edge (`SUMMARY_EDGE`), with Show more in
+    its caption row on Confirm, Method, Working and Done;
+  - Pick help link and Show more on the inventory row;
+  - storage-limits link inside the limits notice on roomy Method;
+  - segmented text-size control;
+  - one-column review screen: red erase callout (same words), countdown
+    ring beside its caption, compact on 800x600 and 1024x600;
+  - evidence warning on Working is a warn panel;
+  - sans monospace fallback for Windows/macOS previews;
+  - gallery mirrors tokens, review layout, segmented control and links.
+  - Tests: `tests/test_modern_polish_20261101.py`; pass-1 review test
+    updated; the gallery Node test pipes its program on stdin.
+- Local evidence (Windows harness, not Linux):
+  - new file plus pass-1 layout tests: 48 passed (one Tk file-read error);
+  - review/countdown fit in every language at 800x600 and 1024x600,
+    kiosk and preview: 51 passed. A first version overflowed by up to
+    22 px in preview; fixed before commit;
+  - `test_ui_fit_20261027` + `test_tk_runtime`: failure set identical to
+    HEAD `1ba496c` (16 environmental each);
+  - gallery files: only difference was the Node argv-length limit, now
+    fixed (6 passed).
+  - Not run here: Playwright browser tests; Linux/DejaVu 72 DPI fits;
+    `test_reflow_large_text` last_chance, which hangs on this host for
+    both trees.
+- Host note: C: had about 0.95 GB free, and Tk library reads failed
+  intermittently (BW-P3-WSL-DOWN owner action).
+- NEXT: the hosted gate must pass on the new head before merge (any push
+  reruns the paid full gate). Independent review (BW-P3-GREPTILE) must
+  cover this diff too. Owner looks at the screenshots in the scratch
+  `compare2/`.
+- 2026-11-01 update (BW-PASS3-UI2-20261101): hosted gate GREEN on pushed
+  head `9c16e13` (run 41300394923; merge ref `e4cb941` = main `58c677f` +
+  `9c16e13`). CI gate, Linux image gate and Windows launcher tests
+  succeeded; pytest 13997 passed / 0 failed / 15 skipped; every QEMU case
+  passed. ISO 1008de9f…a81b, USB image 141fde94…5d1a, nwipe 1dbe27e2…2447.
+  Still open: independent review of the final diff (BW-P3-GREPTILE), owner
+  merge decision, BW-FIN-SB-Q12 (signers from this run), native-speaker
+  review, PR #93 ordering, BW-RR-PHYS. This note is a LOCAL commit only.
+
+## BW-UX-AUDIT-20261101 — UX improvement audit (proposals, nothing implemented)
+
+- Status: OPEN, awaiting owner choice of which items to build. 2026-11-01,
+  Claude. Repo `beamo-wipe`, branch `fix/release-readiness-20261026`, read
+  at `0f8f5e0` (local). Source: screenshots in scratch
+  `beamo-wipe-pass3-scratch-20261028/p2after{,-s}/` plus copy.py,
+  outcomes.py, methods.py, progress.py, inventory.py, tk_wizard.py.
+- Top items (full list was given in chat on 2026-11-01):
+  1. Report without a second USB (e.g. on-screen QR summary); current
+     route needs a separate FAT32/exFAT USB, plugged in only at the end.
+  2. One strong erase warning per screen; the same consequence text repeats
+     on Owner, Confirm (twice in one panel), Review (gray line + red callout).
+  3. Confirm token is printed in the prompt; ask for the serial's last
+     characters shown in the card instead (safety: commit + tests).
+  4. Header stays on "1 Preparation" for 6+ screens; show sub-steps.
+  5. Language comes after layout on the keyboard screen; put it first and
+     suggest a layout from the language.
+  6. Working: five unlabeled lines incl. "not reported" placeholders;
+     show %, time left, step N of M; offer the finish sound up front.
+  7. Result title "Erase completed; verification passed" -> plain words
+     plus a what-next checklist; declutter the 6-control Done footer.
+  8. Pick: show partition labels/filesystems (discovery has `label`),
+     drop the duplicated serial "characters 1 to 14" line, compact rows,
+     double-click to review, sort internal first.
+  9. "Check disks again" (clears owner tick + confirmations) is a casual
+     footer link on Confirm/Review; inconsistent utility sets per screen.
+  10. Pre-boot: unsigned Windows launcher (SmartScreen), one-click
+     "restart to boot options", detect Intel VMD/RST for the empty state.
+- Constraints: any confirm-token, disk-selection or nwipe-flag change is a
+  `safety:` commit with tests; claims per docs/claims.md; SSD
+  sanitize/secure-erase is outside the current safety boundary (owner).
+- NEXT: owner picks items; implement locally, then final hosted gate.
+
+## BW-127-QR — Photo record (QR erase summary) on the result screen (IMPLEMENTED; HOSTED GATE, PHONE SCANS, MERGE PENDING)
+
+- Status: implemented and committed as `adaaef1` on branch
+  `feat/qr-erase-summary-127` (worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
+  head `9c16e13` plus local docs commits `0f8f5e0`, `fdaaa44`, `13322c1`.
+  2026-11-02, Claude. NOT Done: the Linux/hosted gate, phone-camera scans
+  and native-speaker review are open, and nothing is on main. It depends on
+  PR #94, which is unmerged (owner decision).
+- Owner decision (2026-11-01, in chat): "Go with all of the best options that
+  optimize for user experience and convenience while also factoring in safety
+  and ease of use. I approve all of that." Applied:
+  - Fields: header "Beamo Wipe erase summary. Not a certificate."
+    - Result: the exact on-screen outcome.
+    - Disk, Capacity, and the identifier the disk card shows: the full Serial
+      number, or Hardware ID when the disk reports no usable serial. Including
+      Hardware ID is a judgment call so serial-less disks stay identifiable.
+    - Method.
+    - Started/Ended (clock not verified), when validated.
+    - Elapsed, when known.
+    - Report: saved to USB with the first 12 hex of the result.json checksum,
+      saved (sharing copy), not saved, or could not be stored.
+    - Software: Beamo Wipe version, 8-char build id, nwipe version.
+    - Not included: URL, support code, path, warnings, logs.
+  - Changed from the proposal:
+    - No separate Verification line; Result already states it.
+    - 4 px modules at every size, so no "Keep a record" button is needed.
+    - The record is placed after the next steps and any check warnings, so it
+      never pushes a "not a pass" warning down.
+  - Encoding: plain UTF-8 text in the session language with RESULT.txt
+    labels. QR uses ECC M, a 4-module quiet zone and a UTF-8 ECI (26) header.
+  - Wording:
+    - "Keep a record without a USB"
+    - "Photograph this code to keep a record of this erase. It is a summary,
+      not a certificate."
+    - "Your phone's camera shows it as text. No app or internet is needed.
+      The photo shows the disk's serial number."
+  - Report help: 7 sections become 4, with "No second USB? Photograph the
+    code" first. USB export is unchanged. The `REPORT_MEDIA_WHAT` Owner note,
+    claims.md and the 5 helper pages now mention the photo option.
+- Gating (never shown):
+  - screen != DONE;
+  - evidence still saving or finishing;
+  - `stop_unconfirmed`;
+  - a pinned nwipe may still run, or recovery is busy;
+  - the result cannot be repeated exactly.
+
+  Preview shows a sample with no disk identity. Nothing is written anywhere.
+- Files:
+  - `src/beamo_wipe/erase_record.py` (new);
+  - `wizard.py`, `ui/tk_wizard.py`, `ui/accessible_wizard.py`,
+    `ui/console_wizard.py`, `gallery.py`, `copy.py`, `lang.py`,
+    `locales/{fr,de,es,it}.py`;
+  - `helper/*.html`;
+  - docs: `claims.md`, `screens.md`, `screen-reader.md`,
+    `report-shutdown.md`, `development.md`;
+  - `THIRD_PARTY.md` (python3-qrcode 7.4.2-2, BSD-3-Clause, already in the
+    image; no new package);
+  - package-list comment;
+  - tests: `tests/test_erase_record_127.py` (new, 86 cases),
+    `tests/test_accessible_runtime.py` (GTK record test, 4 cases),
+    `tests/test_screen_hierarchy.py` (new headings).
+- Checks run. Windows host only: WSL fails with I/O errors and may not be
+  restarted. Used a scratch fcntl/realpath shim; see memory
+  `windows-native-test-route`.
+  - `test_erase_record_127.py`: 85 passed, 1 skipped (Windows Tk start-up
+    flake). Decodes every outcome in all 5 languages (zxing-cpp), and covers
+    evidence-save failure, gating, no truncation, the Tab cycle and 800x600
+    clipping at 3 text sizes.
+  - qrcode 7.4.2 and 8.2: 55/55 (5 languages × 11 outcomes) decode exactly,
+    with ECI 26 present.
+  - 12 rendered Tk screenshots: 12/12 decoded by zxing-cpp and by OpenCV
+    Aruco. Sizes 800x600, 1280x820 and 1600x1000; large and extra text; fr
+    and de; evidence error; preview.
+  - ruff (full plus both S-selections): pass. mypy `--platform linux`: pass.
+  - Baseline-diff of 106 UI, copy and wizard test files: only regressions
+    found were Italian 800x600 clipping and a lost FAT32/exFAT sentence; both
+    fixed. The 12 focused report, language and helper files now show the same
+    failure set as baseline (Windows-only failures).
+  - 5 Tk layout files time out on Windows in both trees: adaptive_layout,
+    ui_fit, tk_runtime, reflow_large_text, header_caption_fit. NOT verified
+    locally.
+- Not run / open:
+  - full Linux pytest at Xvfb 72 DPI, including the 5 files above;
+  - GTK/Orca tests (no gi on Windows), including
+    `test_accessible_done_reads_the_erase_record_as_text`;
+  - `test_result_tab_order_reaches_report_without_shutdown` (Linux fixture);
+  - CI decodes with pyzbar/zbar; its handling of ECI is unverified until it
+    runs;
+  - ISO build and QEMU on Blacksmith `ci.yml`. Not dispatched: the paid gate
+    needs the owner's choice of route (below);
+  - phone-camera scans with two apps against the screen and against a photo
+    of it (needs a person with a phone);
+  - native-speaker review of the new fr/de/es/it strings;
+  - browser-preview screenshot (Windows demo disks are not eligible); its
+    content is covered by `test_gallery_preview_shows_the_sample_record`.
+- Screenshots (scratch, not committed):
+  `C:\Users\Jack\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
+  `shots-after\`.
+- NEXT (owner chooses):
+  1. Fold this commit into PR #94, or open it as a PR after #94 merges. The
+     PR's hosted `ci.yml` run is the final gate.
+  2. Or dispatch `ci.yml` on `feat/qr-erase-summary-127`.
+
+  Then scan the result screen with two phone camera apps (iOS Camera and
+  Android Camera / Google Lens) on a monitor and from a photo. Fix any
+  failure and rerun. Merge to main only after all of these pass.
+
+## BW-128-WARN — One erase warning per screen (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- Status: implemented on branch `feat/single-erase-warning-128` (stacked on
+  `feat/qr-erase-summary-127` at `2a79067`, which sits on PR #94 head `9c16e13`),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  2026-11-02, Claude. NOT Done: the Linux 72 DPI suite, GTK/Orca runtime and
+  ISO/QEMU gate have not run, the translations need native review, and
+  nothing is on main (it depends on unmerged PR #94 and #127).
+- Problem (UI review item 2): Owner said "Everything on that disk will be
+  erased. You cannot get the files back." and then "erasing it also
+  removes…"; Confirm's yellow box said "Every file … will be erased. You
+  cannot get them back." and then "Erasing it also removes…"; Review showed
+  a gray "This selected disk shows Windows partitions. Erasing it also
+  removes…" line above the red "This will erase … You cannot get the files
+  back." callout.
+- Change (copy only; no disk-selection, token, countdown, method or nwipe
+  change, so not a `safety:` commit):
+  - `copy.py`: new shared `ERASE_EVERYTHING`, `ERASE_EVERYTHING_WINDOWS`,
+    `ERASE_EVERYTHING_SYSTEM`, `ERASE_CANNOT_UNDO` and `erase_warning(disk,
+    identity)`. Confirm = "Everything on <model>, <size> will be erased[,
+    including Windows | including its operating system]. You cannot get it
+    back." Review red callout = the same sentence with the serial/hardware
+    ID. The system is named only when partitions show one (models.CONTENTS_*).
+  - Owner `WHAT_BULLETS`: "Beamo Wipe erases everything on the disk you
+    choose, including any Windows or Linux on it." / "Make sure you have
+    copies of anything you want to keep." / platforms line (unchanged).
+  - Removed: `PREPARE_WINDOWS/SYSTEM/DATA/UNKNOWN`, `CONFIRM_WARNING_TEXT`,
+    `ERASE_NOW_TEXT`, `copy.prepare_selected`, `Wizard.prepare_text`, the
+    gallery `prepare` field, and the Review gray line in Tk, GTK, curses and
+    plain console. fr/de/es/it tables updated in the same key positions.
+  - Helper pages (5 languages): "What this USB does" first paragraph now
+    uses the Owner sentence, "You cannot get it back." and the backup line;
+    the second paragraph no longer repeats the erase consequence.
+  - Docs: `docs/screens.md` Owner/Confirm/Review rows; new strings added to
+    the `docs/translations.md` native review checklist. `docs/claims.md`
+    unchanged (no new claim).
+- Warning inventory before the change (all surfaces, file:line at
+  `2a79067`): copy.py:153-157 WHAT_BULLETS[0..1]; copy.py:184-199 PREPARE_*;
+  copy.py:851 CONFIRM_WARNING_TEXT; copy.py:852 ERASE_NOW_TEXT; Owner
+  tk_wizard.py:3347, accessible_wizard.py:433, console_wizard.py:836 and
+  1358, gallery.py:561 (+ JS owner bullets); Confirm tk_wizard.py:4265,
+  accessible_wizard.py:510, console_wizard.py:945 and 1510, gallery.py:164
+  (+ JS `panel("warn", d.warning)`); Review gray line tk_wizard.py:4704,
+  accessible_wizard.py:639, console_wizard.py:1028 and 1668, gallery.py:165
+  (`prepare`, not rendered by the JS); Review red callout tk_wizard.py:4729,
+  accessible_wizard.py:644, console_wizard.py:1030 and 1670, gallery JS
+  `selected.eraseLabel`; helper/*.html:574-575.
+- Tests: new `tests/test_single_erase_warning_128.py` (per-screen counts for
+  Tk at 800x600 and 1280x820 x 3 text sizes, curses, plain console and the
+  gallery; Review callout above the fold, bold red, the only red text, before
+  the countdown, in all 5 languages x 3 text sizes; shared-sentence and
+  retired-string checks in all languages). New GTK test
+  `test_accessible_screen_reads_one_erase_warning_before_the_action` in
+  `tests/test_accessible_runtime.py` (count, ALERT role, arrival focus,
+  warning before the action). Updated: test_copy, test_prepare_aftercare,
+  test_contents_efi_token_pass13, test_contents_os_layouts_20261028,
+  test_accessibility_lowres, test_accessible_runtime, test_adaptive_layout,
+  test_console_parity, test_console_enter_interleaved_pass25_ui,
+  test_tk_runtime, and test_curses_review_page_pass18_ui (terminal 16 -> 14
+  rows so the paged-warning safety scenario still starts below page one).
+- Checks (Windows-native route; WSL still fails with I/O errors):
+  - On the baseline tree the new file fails 51 cases (every rendered count,
+    including all 12 Tk per-screen cases); on the change all non-extra cases
+    pass.
+  - ruff (all CI selections), compileall and `mypy --platform linux`: pass.
+  - Per-file comparison of 213 related files (scratch
+    `warn128-scratch-20261102/pf-{base,new}.txt`): new-only failures were
+    test_curses_review_page_pass18_ui (fixed above), test_laptop_power_ui
+    [size1-what] (passes on two reruns; flake) and test_usb_report_workflow
+    (disk filled while both trees wrote its ~537 MB fake image at once; not
+    rerun because C: has ~220 MB free; untouched code).
+  - Final focused run of the 7 most affected files: exit 0.
+  - Screenshots: `warn128-scratch-20261102/shots-{before,after}/` (Owner,
+    Confirm, Review at 800x600/1280x820, large text, fr/de/es/it);
+    console renders `console-{before,after}.txt`.
+- Not run / blocked:
+  - Tk at the Extra-large text size on Review: on this Windows host Tk's
+    idle layout never settles (baseline and change alike; also with 72 DPI
+    scaling). Linux CI covers it, including the new above-the-fold test.
+  - GTK/Orca runtime tests (need Linux GTK), full `python3 -m pytest`,
+    ISO build and QEMU: hosted `ci.yml` gate only.
+  - Intermittent Windows Tcl start-up failures ("couldn't read file …
+    No error") plus WSL I/O errors and a full C: suggest a host storage
+    problem; owner should check the disk.
+  - #180 and #181: not found in the repo, the backlog or GitHub issues (the
+    full UX list was given only in chat); nothing changed for them.
+- NEXT: owner chooses the hosted-gate route for #94 + #127 + #128 (fold into
+  PR #94 or dispatch `ci.yml` on this branch); after a green gate and native
+  review, merge in order #94 -> #127 -> #128. Do not push to main before that.
+
+## BW-129-TOKEN — Confirm asks for marked serial characters (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- Status: implemented on branch `feat/serial-suffix-token-129`, stacked on
+  `feat/single-erase-warning-128` (`39316c9`) -> #127 -> PR #94 `9c16e13`;
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  2026-11-02, Claude. SAFETY change (confirmation token): `safety:` commit.
+  NOT Done: Linux 72 DPI suite, GTK/Orca runtime, ISO build and the QEMU
+  gate (whose guest helper derives the token) have not run; translations
+  need native review; nothing is on main.
+- Problem (UI review item 3): the prompt printed the answer ("Type these 4
+  characters so we know it is the right disk: 3456"; most disks "…: 256"),
+  so owners could copy it without reading the disk card.
+- Rule (safety.confirm_spec, documented in docs/screens.md "Confirmation
+  characters"): the last 4 characters of the identifier the card shows
+  (serial; hardware ID/WWN as printed when no serial), more characters while
+  another listed disk (incl. the protected Beamo USB) ends the same way or
+  the ending equals another disk's size label, full ID or a kernel name;
+  "whole serial/hardware ID" when every character is needed. ASCII letters
+  and digits only. Missing, shorter than 4, or an ending with a space,
+  punctuation or non-ASCII keeps the older rule (prompt prints size label /
+  same-size suffix / full ID), else AMBIGUOUS_IDENTITY as before. The
+  prompt names field and count, never the characters ("Type the last 4
+  characters of the serial number shown above."); duplicates add "Another
+  listed disk ends with the same last 4 characters, so more are needed."
+- Comparison (#156 decision): unchanged `token_matches` — outer whitespace
+  ignored, case-insensitive, nothing else (no inner spaces, no partial, no
+  auto-fill). Launch still recomputes the token from the rediscovered list
+  (assert_ready_to_wipe) after the identity check, so serial/size/WWN/path
+  changes are rejected and a new lookalike disk makes the typed characters
+  too short (TOKEN_MISMATCH). The token is never logged or exported.
+- Marking: Tk keeps the whole serial in one label and places a boxed
+  (1 px INK) and underlined (2 px bar) copy of the ending exactly over those
+  characters (`_mark_token`, `CONFIRM_MARK_BG` fill); GTK identity text gets
+  Pango double underline + bold + tint and is focusable/selectable on
+  Confirm so Orca reads it by character, entry accessible name = full
+  instruction; curses, plain console use `[brackets]`; web preview uses a
+  `<mark>` with outline + underline. `DiskIdentityView.token_start/end`,
+  `token_marked_id`; `copy.confirm_prompt(spec, console=)`.
+- Files: safety.py, models.py (ConfirmSpec.in_card), identity.py, copy.py,
+  locales fr/de/es/it (7 keys), ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, gallery.py; docs/screens.md, runbook.md,
+  accessibility-lowres-matrix.md, translations.md.
+- Tests: new `tests/test_card_token_129.py` (normal serial, punctuation /
+  space / non-ASCII endings, missing/short serial, WWN fallback, 4-char
+  serial, duplicate endings incl. boot USB and size collisions, duplicate
+  serials, pairwise "no disk accepts another's token" over mixed fleets,
+  partial/padded input, #156 whitespace/case, no auto-fill, rediscovery:
+  serial change keeping the ending, size/WWN/path change, new lookalike disk;
+  curses, plain console, gallery, all languages, Tk mark position at 2 sizes
+  x 2 text sizes). New GTK test in test_accessible_runtime.py. Updated
+  old-rule expectations: test_confirm_token, test_compatibility_matrix,
+  test_capacity_and_unknown_type (size-label fallback kept with no serial),
+  test_contents_efi_token_pass13, test_identity,
+  test_console_confirm_utility_tokens_pass34_ui (peer forces whole word),
+  test_console_fallback_complete, test_security_hardening_new and
+  test_serial_comparison (escaping of every serial slice),
+  test_usb_report_workflow (QEMU guest token = numeric serial 0001; helper
+  computation reproduced for serials 0001-0005 x 3 boot sizes).
+- Checks (Windows-native route; WSL still broken): behaviour probe on the
+  baseline fails 6/8, passes 8/8 on the change (scratch
+  `token129-scratch-20261102/probe-results.txt`); ruff (all CI selections),
+  compileall, mypy --platform linux pass; per-file comparison of 102
+  token-related files (pf-base/pf-new1): every new-only failure was an
+  old-rule expectation, now updated; Confirm-related Tk tests in
+  tk_runtime/ui_fit/reflow/adaptive (6 sizes) pass. Screenshots
+  `token129-scratch-20261102/shots-{before,after}/`, console diff
+  `console-{before,after}.txt`.
+- Not run here: test_usb_report_workflow (fixtures need ~2.6 GB; C: has
+  ~150 MB), GTK/Orca tests, full pytest, ISO/QEMU. Related #148/#152/#156:
+  not found in repo/backlog/issues; #156 comparison decision recorded above.
+- NEXT: hosted gate with #94/#127/#128 (owner chooses route); native review;
+  merge in order #94 -> #127 -> #128 -> #129.
+- 2026-11-02 / Claude (Opus 5.5), hosted gate. Owner asked to use free CI
+  allowances. Findings: repo is public, so GitHub standard runners are free
+  (Oct runner minutes $0 net; Actions storage was billed $0.51 org-wide);
+  ci.yml uses Blacksmith labels (switching would be a workflow change).
+  Blacksmith free tier 3,000 2-vCPU min/month per org, overage billed;
+  org estimate from GitHub job timings (dashboard not accessible): Oct
+  ~36,700 (mostly beamo-flasher), Nov 1-2 ~1,100. GCP not used (legacy per
+  this guide). One `workflow_dispatch` of ci.yml on
+  `feat/serial-suffix-token-129` @ c313878: run 41493625767 FAILED (Linux
+  image gate 201 failed / 14,025 passed; Windows launcher tests passed; ISO
+  and QEMU not reached). Causes: (1) #129 `_mark_token` did float() on
+  `cget("bd")`, a Tcl_Obj on Debian 12 Tk 8.6.13; the TypeError retired the
+  wizard on every Confirm screen (as 9aad14a); (2) #127
+  `test_erase_record_127._decode` imported numpy, absent in the CI image.
+  Plus the intended negative-test failure. Fixed: distances via
+  winfo_fpixels(str()), TypeError caught and the mark hidden; new test
+  `test_tk_mark_survives_distances_returned_as_tcl_objects` (fails on the
+  old code with TypeError, passes now); Pillow-only zbar canvas
+  (pixel-identical to the numpy canvas, zxing decodes it). zbar decode with
+  ECI UTF-8 still unverified locally (pyzbar DLL needs a missing VC++
+  runtime). Local: test_card_token_129 and test_erase_record_127 pass; CI
+  ruff selections and mypy pass. X11-only Tk files skip on Windows by
+  design. Two #128 Tk cases at 800x600 extra text
+  (LAST_CHANCE; review callout extra-en) hang locally on #128, #129 and the
+  fix alike; they passed in the hosted run. If #127 merges alone it needs
+  the numpy fix too.
+- Run 41518189715 on 71f06f6 (5fa1633 numpy-free decode + 71f06f6 Tcl_Obj
+  mark fix): source tests, ISO and most QEMU passed; FAILED at
+  bios-quick_zero: "never emitted a new exact marker
+  BEAMO_WIPE_CONFIRM_MATCHED". Cause (harness, not product): the BIOS
+  method boots attach the ISO with -cdrom, QEMU's default IDE serial is
+  QM00003, and the quick_zero target serial 0003 shared its last 4. The
+  guest rightly listed both and fell back to the older rule; the host helper
+  models the boot media with no serial and typed 0003. Fix: CD-ROM-booted
+  targets now use 7001/7002/7003 (UEFI default 7001); USB journeys keep
+  0004/0005 (boot media serial BEAMOBOOT). New test
+  `test_cdrom_booted_targets_keep_their_own_confirm_characters` checks each
+  target against QM00001..QM00012. Local QEMU-related test failures are
+  identical to the baseline's 19 Windows-environment failures.
+- Run 41528619370 on 4fa4c15: source tests, ISO, all six BIOS method
+  journeys (every Confirm matched, erase, report export), bios/uefi-usb,
+  troubleshoot, speech and Secure Boot boots passed. FAILED at
+  bios-sata-usb after Erase now: "never emitted a new exact marker
+  BEAMO_WIPE_KEY_RETURN_RELEASED" (qemu-verify.sh send_key_for_marker
+  release wait, 20 s, key-up retried at 5 and 10). Guest serial evidence
+  (artifact ci-evidence-4fa4c15...-41528619370-1): the SATA erase reached
+  WORKING and DONE before any Return release was acknowledged, and none
+  followed on DONE. In the green PR #94 run (41300394923) and in all six
+  method journeys here, the release was acknowledged during WORKING,
+  before DONE. Not a Confirm/#129 step; the stack did not change key
+  bindings (root <KeyRelease-Return> -> after_idle _release_return ->
+  arm_done_keyboard). Unproven whether this is a timing race (fast 64 MB
+  AHCI erase) or a DONE-screen effect of #127's record drawing; if the
+  release is lost, Done stays unarmed until the next Return press/release.
+- NEXT (owner decision): either one more ci.yml run on 4fa4c15+ to test
+  the race hypothesis, or first investigate DONE-screen release handling
+  (#127) in a Linux X11 guest. Then native review and the merge order.
+
+## BW-130-STEPS — Preparation sub-steps in the step bar (IMPLEMENTED LOCALLY; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/step-progress-130` (stacked on
+  `feat/serial-suffix-token-129` @ 946c622), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
+  (UI review item 4) with #138 (one set of names) and #166 (Review last
+  before Erase); #138/#166 are not recorded in this repo.
+- Owner decision (2026-11-02, in chat): sub-steps, keeping the three stages
+  Preparation -> Erase -> Result; step names reuse the start-screen roadmap.
+- What changed: `wizard.BACK_SCREENS` (Back now uses it), `PREPARATION_PATH`
+  (Back chain from Review: keyboard, owner, pick, confirm, method, review),
+  `STEP_VARIANTS` (WHAT->owner, PICK_EMPTY/PICK_BLOCKED->pick,
+  CHECKING->review), `journey_step_for()` and `Wizard.journey_step`
+  (detours keyboard/Advanced/report help follow where they were opened;
+  disk help, limits follow Back). `copy`: STEP_NAME_* (Check keyboard,
+  Confirm ownership, Choose a disk, Confirm its identity, Choose a method,
+  Review and erase), STEP_CAPTION "Step {n} of {total} · {name}",
+  STEP_SPOKEN, `journey_step_caption/short/announcement`, `splash_roadmap()`
+  (replaces SPLASH_ROADMAP; now adds Choose a method). Tk header shows the
+  caption right of the brand (stepper narrows to leave room, hides if the
+  stage names would not fit; caption falls back to "Step N of 6", never
+  cut); strip fills the Preparation segment by step. GTK heading ATK
+  description "Preparation, step N of 6: <name>."; curses/plain console
+  header carries the same text (80 cols full, narrower "Step N of 6", very
+  narrow dropped as before to protect the 16-row pick view). Web preview
+  gets per-screen captions/strip fill from the same Python tables. fr/de/
+  es/it strings added (native review pending, docs/translations.md).
+- Files: wizard.py, copy.py, gallery.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, ui/accessible_wizard.py, ui/console_wizard.py,
+  docs/screens.md, docs/translations.md; tests: new
+  tests/test_step_progress_130.py (path = Back chain, every screen classed
+  once, distinct labels, variants/detours on the real wizard, empty/blocked
+  scenarios, erase/result fallback, roadmap = step names in 5 languages,
+  console, web preview, rendered Tk header at 800x600/1280x820 x 3 text
+  sizes, 4 languages at 800x600 standard/extra, strip fill), GTK test in
+  test_accessible_runtime.py; updated test_journey_stages.py,
+  test_ui_polish_20261027.py, test_ui_system.py (old "Preparation only"
+  header expectations; still no "of 8", no percent).
+- Checks (Windows-native; WSL broken): new tests pass (non-Tk 32/32; all 15
+  Tk cases individually; one full-file run had a local Tcl flake that
+  passes alone). Per-file comparison of 155 related files vs the
+  untouched branch head: new-only failures were the 4 old-header
+  expectations (updated) and ROADMAP_ARROW in the translation sweep (made
+  private); the rest pass alone or fail identically on the baseline
+  (export worker st_rdev, canvas progress). ruff (CI selections), mypy
+  --platform linux, compileall pass. Screenshots
+  `C:\Users\Jack\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
+  console/GTK text `console-{before,after}.txt`.
+- Not run here: GTK/Orca runtime test (no gi), full pytest on Linux at
+  72 DPI, ISO/QEMU, web preview in a browser (payload checked by test).
+  Review at 800x600 extra text is skipped on Windows only (pre-existing Tk
+  idle-layout loop); Linux CI runs it.
+- NEXT: hosted ci.yml on the stack (#94/#127/#128/#129/#130; also tests the
+  open SATA release-ack question in BW-129-TOKEN); native translation
+  review; merge in order #94 -> #127 -> #128 -> #129 -> #130.
+
+## BW-131-LANG — Language first; its usual layout follows (IMPLEMENTED LOCALLY; HOSTED GATE, ORCA VOICE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/language-first-131` (stacked
+  on `feat/step-progress-130` @ 979b5ff), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
+  (UI review item 5); #139/#140/#155 are not recorded in this repo.
+- What changed: `keyboard.LANGUAGE_LAYOUTS` (en->us, fr->fr, de->de,
+  es->es, it->it; shipped layouts only) and `LANGUAGE_ALTERNATIVE_LAYOUTS`
+  (en->gb, es->latam, named as the obvious alternative; nothing else
+  guessed). `Wizard.choose_language()` (used by every language picker):
+  applies the language; on the keyboard screen it also applies the mapped
+  layout through `_apply_layout_locked` (the same OS-apply + authorization
+  invalidation as a manual pick) unless the person picked a layout
+  (`layout_chosen`, notice "kept") or owner tick / disk / typed confirmation
+  / authorization exists (notice "stays", layout untouched). Failed apply:
+  old layout kept, existing failure message. `set_language()` unchanged
+  (never touches the layout). Notice text `copy.keyboard_layout_notice`
+  ("Keyboard set to AZERTY (French) to match Français. Keys do not match?
+  Choose your keyboard below."). `lang.LANGUAGE_PICKER_LABEL` ("Language ·
+  Langue · Sprache · Idioma · Lingua", untranslated). Tk: picker above the
+  title, first in focus (initial focus on the chosen language), Left/Right
+  and Space choose, Enter continues (radio-group keys; QEMU's Return still
+  reaches Owner), focus remembered across redraws (layout card / check
+  box), notice above the layout cards, HINT_KEYBOARD now starts
+  "Left/Right" (key caps added in Tk and web). GTK: picker right after the
+  heading, arrival on the chosen language, notice before layouts. Curses:
+  language line + notice under the header, always on screen (F2 cycles);
+  plain console lists L1..L5 first. Web preview: language first, page
+  starts on its language's layout with the notice; Confirm's keyboard line
+  follows the layout.
+- Files: keyboard.py, lang.py, wizard.py, copy.py, gallery.py,
+  locales/{fr,de,es,it}.py, ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, docs/screens.md, docs/translations.md; tests: new
+  tests/test_language_first_131.py (mapping, own names, auto-pick per
+  language, back to English + UK alternative, Spanish + Latin American,
+  manual override sticks, progress keeps layout and answers, off-screen and
+  programmatic changes never touch layout, failed apply, preview reset,
+  token comparison after each auto layout incl. partial/inner-space/other
+  disk rejected, later manual change still clears confirmation, curses,
+  plain console, web preview x5 languages, Tk first on screen/focus at
+  800x600/1280x820 x 3 text sizes, French re-render incl. header/footer/
+  primary, arrows+Enter, layout focus kept, Tk confirm box token per
+  layout); GTK test in test_accessible_runtime.py; updated
+  test_keyboard_layout.py, test_tk_keyboard_option_pass23_ui.py,
+  test_ui_system.py, test_language_selection.py (old order/focus/regex).
+- Checks (Windows-native): #131 tests 26 non-Tk + 14 Tk pass. Per-file
+  comparison of 123 related files vs 979b5ff: new-only failures were the 4
+  intended expectation changes (updated, pass); others were Tcl start-up
+  flakes (pass alone), Windows cp1252 source reads (pass with UTF-8, as on
+  Linux) or the sparse checkout without docs/evidence (environment). ruff
+  (CI selections), mypy --platform linux, compileall pass. Screenshots
+  `C:\Users\Jack\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
+  console `console-before.txt`.
+- NOT DONE: Orca speaking in the chosen language. Bookworm's Orca 43 speaks
+  with its configured voice; the live image has no locale data, and
+  switching would need restarting/reconfiguring Orca mid-session, which
+  cannot be verified here (needs a Linux X11 + Orca + espeak-ng run). GTK
+  labels and names do switch immediately. Owner decision needed.
+- Not run here: GTK/Orca runtime tests (no gi), full Linux pytest, ISO/QEMU,
+  real setxkbmap/loadkeys on the live image, browser check of the web view.
+- NEXT: hosted ci.yml on the stack; Orca-voice decision; native review;
+  merge #94 -> #127 -> #128 -> #129 -> #130 -> #131.
+
+## BW-132-WORKING — Working screen reads at a glance (IMPLEMENTED LOCALLY; HOSTED GATE, ORCA SPEECH, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-02, Claude (Opus 5.5). Branch `feat/working-screen-132` (stacked
+  on `feat/language-first-131` @ e319a6c), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
+  (UI review item 6). Ref #133/#167/#168 are not recorded in this repo; not
+  implemented here (the sound toggle already sits on Working).
+- What changed: shared `ProgressView` glance in progress.py
+  (`glance_percent` clamped to 99% on Working, `glance_headline`
+  Starting…/Stopping…/Finishing…, `glance_time` "About N left" only from the
+  existing gated estimate via `time_left()` (same upward rounding) else
+  "Running for N", `glance_step` "Step k of n: Overwriting / Overwriting
+  (pass i of n) / Checking (verification)" or the mismatch warning,
+  `glance_stale`, `glance_notes`, `stopping_text`, `spoken_summary`) and
+  `ProgressAnnouncer` (milestones >=5 s apart, else <=1 per 60 s). No parser,
+  estimate-gate, runner or completion change; timing_text/status_text kept.
+  Tk: big percent / Starting… slot, time line, step line, stale warning band,
+  small notes; hidden lines collapse; tighter card on short windows; bar
+  capped below full. Stopping screen: step + elapsed. GTK: one focusable
+  label (large first line) + Gtk.ProgressBar named "Erase progress", both
+  changed only when the announcer fires. Curses: same lines first. Plain
+  console: paced summary. Web preview: same glance. Locales fr/de/es/it.
+- Files: progress.py, gallery.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, ui/accessible_wizard.py, ui/console_wizard.py,
+  docs/screens.md, docs/progress-timing.md, docs/translations.md,
+  docs/accessibility-lowres-matrix.md. Tests: new
+  tests/test_working_glance_132.py (38 non-Tk: starting/unknown/overwriting/
+  verifying/stale/stopping/quick zero/three overwrites/mismatch, never 100%,
+  time-left rounding, no-estimate, live wizard model, announcer pacing incl.
+  a 10-hour bound, 4 locales, curses lines, plain console pacing; 18
+  rendered Tk: 5 states x 3 text sizes at 800x600 on the live window, Stop
+  present, Stopping text, lines hide/collapse); GTK expectations in
+  test_accessible_runtime.py; updated expectations in test_tk_runtime,
+  test_ui_fit_20261027, test_slow_unusual_interactions, test_preview_parity,
+  test_console_pick, test_hidden_failures_visible, test_wizard_flow,
+  test_console_escape_repeat_20260924, test_accountable_audit_2026_09_03,
+  test_progress_timing (plain console prints the glance),
+  test_accessibility_lowres, test_gallery_working_focus_pass35_ui (stub).
+  Constant named GLANCE_OVERWRITE_ROUND (CI ruff S105 flags "*_PASS").
+- Checks (Windows-native, 2026-11-02/03): new file 38 + 18 pass; it fails
+  on e319a6c (collection error: no glance API). Per-file comparison of 267
+  related files vs e319a6c: every new-only failure was an intended
+  expectation change (updated, pass); the remaining failures are identical
+  on the baseline (native launch, environment). Both trees time out on
+  test_adaptive_layout / test_reflow_large_text /
+  test_single_erase_warning_128; run per test, only Windows Tk idle-loop
+  hangs remain (Review extra 800x600; reflow[working-size0] hangs on the
+  baseline too). ruff (CI selections incl. S rules), mypy
+  --ignore-missing-imports (Linux platform), compileall and node --check of
+  the web preview JS pass. Lab: doctor + plan --project wipe PASS
+  (preparation level only; no adapter covers this branch). Screenshots in
+  scratch work132-scratch-20261102 shots-before / shots-final (27 each,
+  visible.txt; console.txt has curses frames).
+- NOT VERIFIED: Orca actually speaking the paced summary or progress bar
+  (no GTK/Orca here); GTK tests; full Linux pytest, including the Working
+  tests that need a real fake-erase launch (test_canvas_layout progress
+  card, test_slow_unusual delayed progress, test_operation_sequence,
+  test_write_vs_completion); ISO/QEMU; 72-DPI Xvfb fit.
+- Deferred by scope: Ref #133 (walk away + sound up front), #167
+  (start/expected times), #168 (screen stays lit); not in this repo's
+  backlog.
+- NEXT: hosted ci.yml on the stack head (owner approval); Orca check on the
+  image; native translation review of progress.GLANCE_*; merge order
+  #94 -> #127 -> #128 -> #129 -> #130 -> #131 -> #132.
+
+## BW-133-SOUND — Walk away; a sound when the result is ready (IMPLEMENTED LOCALLY; HOSTED GATE, REAL AUDIO/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/finish-sound-133` (stacked on
+  `feat/working-screen-132` @ d1ec2a3), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
+  (UI review item 7). Ref #168 (screen stays lit) not in this repo; not done.
+- Design: the existing design ties one session setting (`sounds_enabled`)
+  to the outcome sound, so the Working toggle "Play a sound when it's
+  finished" IS that setting (the result screen's Sounds on/off). Each erase
+  (`_arm_running_wipe` -> `_begin_finish_sound_locked`) turns it on unless
+  the person explicitly chose on/off earlier this session; the state carries
+  to the result. Availability: `sound.output_status()` (live + unmuted
+  output) runs on the audio worker as a new `background=True` submission
+  that is skipped when the worker is busy and never cancels the sound
+  dialog's or a person's request; checked when Working opens (retry 5 s
+  while unknown) and every 60 s. Copy: beep promised only when available
+  and on; otherwise "You can leave the computer and check back later." or
+  "Sound isn't available on this computer — check back later." + reason;
+  toggle greyed (Tk greyed _CheckRow, GTK insensitive + ATK description,
+  curses no O key) and ignored by the model. Laptop advice POWER_KEEP
+  follows the walk-away line once (Tk Working now shows it; GTK/curses
+  already did). Sounds per outcome unchanged: finished only for
+  "verified", attention for everything else incl. Quick zero. Repeats:
+  every 60 s, max 5 plays, stop on any key/click/control (Tk _nav/_on_key/
+  root ButtonPress, GTK button/key, curses key, plain typed answer), sounds
+  off, or leaving the result. Bell fallback: curses `curses.beep()`, plain
+  `\a` once (it blocks on input), only when no output was found.
+- Files: audio_jobs.py, sound.py, copy.py, wizard.py, gallery.py,
+  locales/{fr,de,es,it}.py, ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, docs/screens.md, docs/screen-reader.md,
+  docs/translations.md. Tests: new tests/test_finish_sound_133.py (36
+  non-Tk + 6 Tk); GTK test in test_accessible_runtime.py; updated
+  test_console_parity, test_console_pick (x2), test_tk_runtime (x2),
+  test_gallery_working_focus_pass35_ui (intended: default on, new label,
+  one redraw on first availability answer, switch button in web preview).
+- Checks (Windows-native, 2026-11-03): new 42 pass; all fail on d1ec2a3.
+  Per-file comparison of 290 related files vs d1ec2a3: new-only failures
+  were intended expectation changes (updated, pass) or test doubles without
+  the new API (UI calls now getattr-guarded; pass); two Tk results that
+  flipped pass 3/3 on both trees (Windows Tk flakes). Timed-out files run
+  per test: remaining failures identical on baseline (native launch, tmp
+  permissions, KP_Enter keysym) or the known Windows Review-extra hangs.
+  ruff (CI selections incl. S rules), mypy, compileall, node --check pass.
+  Screenshots: scratch work133-scratch-20261103 shots-before /
+  shots-final-{yes,no} / shots-after-checking (visible.txt, console.txt).
+- NOT VERIFIED: real PulseAudio output/mute detection and playback on the
+  image, Orca hearing the check box, GTK tests, terminal bell on real
+  hardware, full Linux pytest, ISO/QEMU. Bell is best-effort, never promised.
+- NEXT: hosted ci.yml on the stack head (owner approval); live audio check
+  on the image; native review of the new strings; merge order #94 -> #127 ->
+  #128 -> #129 -> #130 -> #131 -> #132 -> #133.
+
+## BW-134-RESULT — Plain result headline and a short "What next" list (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/plain-result-134` (stacked on
+  `feat/finish-sound-133` @ 572d35d), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
+  (UI review item 8). Refs #170/#171/#172 are coordination only (not in this
+  repo's backlog record; not done). Proposal recorded first (9ea6d68).
+- OWNER APPROVAL (2026-11-03, in chat): "I approve it all, just do whatever is
+  best for the overall user experience and convenience while also
+  maintaining security and safety overall." Choices made under that: item 4
+  verified = option A (the note above already carries the SSD limit);
+  failure headlines = F2; Quick zero item 4 as proposed; item 1 reworded
+  surface-neutral ("Shut down when you have finished." — the console has no
+  button; Enter shuts down).
+- APPROVED ENGLISH WORDING (as shipped, `outcomes.py`):
+  - verified (Everyday, Three overwrites): "Done — this disk was erased and
+    checked". Note: "The check read the disk back after the last overwrite.
+    It covers the storage the disk shows; on an SSD, the drive's controller
+    decides what remains. Other disks were not erased."
+  - unverified (Quick zero only): "Done — this disk was overwritten with
+    zeros (not checked)". Note: "Quick zero does not read the disk back, so
+    nothing confirms the overwrite reached every part. On an SSD, the
+    drive's controller decides what remains. Other disks were not erased."
+  - What next: 1 "Shut down when you have finished." 2 "When the computer
+    is off, remove the Beamo USB." 3 "Keeping this computer? If this was its
+    main disk, install an operating system before you use it again." 4
+    verified "Giving it away or selling it? This disk is ready to pass on." /
+    Quick zero "Giving it away or selling it? Erase it again with Everyday
+    first — it checks its work."
+  - Failures: verification_failed "Not confirmed — the check after the erase
+    failed"; engine_failed "Not finished — the disk reported an error";
+    process_failed "Not finished — the erase ended with an error";
+    completion_missing "Not confirmed — the erase may not have finished";
+    indeterminate "Not confirmed — the result is unknown"; interrupted "Not
+    finished — the erase was interrupted"; cancelled "Stopped — you stopped
+    the erase before it finished"; occupied "Not finished — the disk was in
+    use"; open_failed "Nothing erased — the disk could not be opened";
+    geometry_unusable "Nothing erased — the disk could not be used safely";
+    start_failed "Nothing erased — the erase could not start";
+    stop_unconfirmed "Not confirmed — the erase may still be running".
+    Preview unchanged.
+- Design: `ResultView` (and `message`) unchanged, so evidence, sharing-copy
+  validation, the saved report/README, RESULT.txt (QEMU check), the photo
+  record and support codes are untouched. New `outcomes.PlainResult` /
+  `plain_result()`, `Wizard.result_plain` (unsaved-evidence replaced
+  messages map to their outcome's headline; a recovered session's notice
+  leads the note) and `Wizard.result_technical`
+  (`recovery.technical_status`: "<message>. Result code: <code>").
+  Surfaces: Tk heading + note + What next above the support identity, the
+  technical line behind Show more; GTK heading, focusable note/list (What
+  next is an ATK heading), Technical details expander; curses title + list
+  on the first 80x24 page, technical line in the tail; plain console
+  headline, list, technical line; web preview stop screens use the
+  headline. Finished outcomes no longer show the separate POST_ERASE_BOOT
+  note or the AFTERCARE_SUCCESS paragraph (item 3 and the note say it once).
+- Files: outcomes.py, wizard.py, recovery.py, gallery.py, locales/{fr,de,es,
+  it}.py (22 strings each, drafts), ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py; docs screens.md, screen-reader.md, translations.md,
+  runbook.md, storage-and-controller-limits.md, README.md. Tests: new
+  tests/test_plain_result_134.py (42 non-Tk + 10 Tk); a GTK test added and
+  5 GTK expectations updated in test_accessible_runtime.py; updated
+  test_separate_footer_actions, test_console_parity, test_outcome_heading,
+  test_post_erase_boot (x3), test_prepare_aftercare (x2),
+  test_rendered_visible_behavior (x3), test_result_presentations (x2) —
+  all intended wording changes (headline/list instead of message/next step).
+- Checks (Windows-native, 2026-11-03): new tests 52 pass; all fail on 572d35d
+  except the ResultView-fields guard (passes on both by design). Per-file
+  comparison of 91 related + 14 doc-test files vs 572d35d: new-only failures
+  were the intended expectations above (updated; pass), Tk Tcl/init
+  glitches (pass individually), the sparse worktree's missing
+  docs/evidence/ (physical_acceptance_111, secure_boot_expectations,
+  usb_verification_docs; the archive baseline has it), and tmp
+  PermissionError / symlink-privilege failures identical on the baseline.
+  ruff (CI selections incl. S rules), mypy --platform linux, compileall,
+  node --check of the gallery script and git diff --check pass.
+  Screenshots: scratch work134-scratch-20261103 shots-before / shots-after /
+  shots-after-de (visible.txt, console.txt).
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK on this host), full Linux
+  pytest at 72 DPI, ISO/QEMU, native review of the FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval); native review;
+  merge order #94 -> #127 -> ... -> #133 -> #134.
+
+## BW-135-REPORT — Guided Save a report panel; two-action result footer (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, QEMU, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/report-panel-135` (stacked on
+  `feat/plain-result-134` @ 1d69a67), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
+  (UI review item 9). Refs #127/#145/#153/#175 coordination only.
+- WHAT CHANGED: the result footer keeps two actions (Erase another disk,
+  Shut down; preview: Close preview, Run again). Report saving is a
+  "Save a report (optional)" panel (heading = `REPORT_STATUS_TITLE`, was
+  "Report status") with five numbered steps: 1 insert a separate FAT32/exFAT
+  stick; 2 live line ("Looking for a USB…", "Found: SanDisk Ultra, 16 GB
+  (FAT32)", "More than one new USB stick…", "This USB is formatted NTFS — use
+  a FAT32 or exFAT stick.", or the precise refusal + next step); 3 Save report
+  to USB; 4 where it was saved + file names (existing receipt, Ref #35); 5
+  remove the report USB. Save is greyed with "Save is available when one
+  suitable USB is found." until exactly one eligible stick is found. Retry
+  evidence save lives in the panel; on evidence failure the panel moves under
+  the disk summary (Tk: Retry right after the warning headline) so it stays
+  in the first 800x600 view (Ref #153). Greyed footer actions show a reason
+  ("…come back when saving finishes" etc.) in the footer note.
+- SOUNDS (Ref #175 not decided in this repo): Tk/gallery put Sounds: on/off
+  and Hear again with the other settings utilities in the footer assist
+  strip (Tab-reachable; focus kept on the toggle after pressing); curses
+  keeps "O: Sounds … H: Hear again" as the settings line under the two-action
+  line; plain console prints them after the report; GTK keeps the Sound check
+  utility (it had no Done sound buttons). Relocate when #175 decides.
+- SAFETY / DETECTION: `support_export.probe_report_usb` = one read-only
+  `lsblk` scan through the export's own baseline (boot USB + erased target
+  required) and `select_export_volume`; returns state + model/size label +
+  filesystem name only (no path/serial). Never mounts, opens, writes or runs
+  anything else (test patches subprocess/os.open/mkdir to fail). Wizard polls
+  it on a background thread every 1.5 s only while a save is possible (Done,
+  not preview, evidence gate ok, not exporting, not saved); redraw only on
+  change; detection resets at each export claim (stick pulled mid-save is
+  looked for again). Live probe only in the kiosk (dry_run=False, no injected
+  exporter). Save still runs the unchanged export with its two scans; the
+  evidence gate, exactly-one-new-USB rule, boot/target exclusion and
+  FAT32/exFAT 1.0 support (confirmed in code: vfat FAT32 + exfat 1.0) are
+  unchanged. No erase discovery, boot exclusion, nwipe argv, token, countdown
+  or method change; commit uses `safety:` because report-USB discovery gained
+  a new read-only caller.
+- FILES: new `src/beamo_wipe/report_panel.py`; `support_export.py` (probe),
+  `wizard.py` (probe wiring/polling, `report_panel`, `done_actions_reason`),
+  `copy.py` (+27 strings; `REPORT_STATUS_TITLE`, `REPORT_HELP_STAGES` changed;
+  `CON_DONE_SAVE`/`CON_DONE_RETRY` replaced by `CON_PANEL_*`), locales
+  fr/de/es/it (drafts), `ui/tk_wizard.py`, `ui/accessible_wizard.py`,
+  `ui/console_wizard.py`, `gallery.py`; docs screens.md, screen-reader.md,
+  runbook.md, ADVANCED.md, README.md, translations.md.
+- TESTS: new `tests/test_report_panel_135.py` (probe states incl. no USB, two
+  USBs, NTFS/FAT16/ext4/HFS+/unknown, mounted/read-only/two partitions,
+  protected disks, scan failure, read-only guarantee; every panel state incl.
+  saving/saved/failed/removed mid-save/evidence/preview; wizard polling;
+  Tk footer two actions in 9 states + preview, greyed-has-reason, two-Tab
+  QEMU path, evidence Retry in first view, sounds by Tab + focus kept, live
+  redraw keeps focus, text sizes; curses and plain console). GTK: one new
+  test + export-stages test updated in test_accessible_runtime.py (not run
+  here). Updated: test_rendered_visible_behavior, test_separate_report_status
+  (+ the files listed under CHECKS).
+- CHECKS: Windows-native (WSL down), 2026-11-03. New test file: 77 pass
+  (53 non-Tk, 24 Tk run one by one); all fail on 1d69a67 (no report_panel
+  module). Per-file comparison vs 1d69a67 of 294 related files plus 34
+  doc/QEMU-script files: new-only failures were intended pins of the old
+  footer/"Report status"/export-stage wording (updated: test_rendered_visible_
+  behavior, test_separate_report_status, test_export_stages,
+  test_erase_record_127, test_warning_success_differentiation,
+  test_language_selection EXCLUDED probe states; ES "use" -> "utilice"), the
+  #134 first-view and German 800x600 fits (fixed by putting the footer note
+  beside the sound links), and environmental ones identical to the baseline
+  or explained: tmp PermissionError (_done_wizard/write_evidence_atomic),
+  Tcl init glitches (pass alone), WSL/gh 401, the sparse worktree's missing
+  docs/evidence/. ruff (CI selections incl. S rules), mypy --platform linux,
+  compileall, node --check of the gallery script (en, de), bash -n
+  qemu-verify.sh and git diff --check pass. QEMU: qemu-verify.sh now waits
+  for BEAMO_WIPE_REPORT_USB_FOUND (fixed state-name marker emitted by Tk)
+  instead of a fixed 5 s sleep before Tab, Tab, Space.
+- KNOWN DEBT: copy.report_aftercare / export_stage_lines / EXPORT_STAGE_*
+  are no longer used by any surface (kept with their tests; remove and port
+  those tests to report_panel in a follow-up).
+- SCREENSHOTS: scratch `work135-scratch-20261103` shots-before (1d69a67),
+  shots-after, shots-after-de (visible.txt), console.txt.
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK here), full Linux pytest at
+  72 DPI (WSL down), ISO/QEMU (the qemu-verify Tab-Tab-Space save path now
+  needs the live probe to find the hotplugged stick within its 5 s sleep;
+  covered locally only by the Tk two-Tab test), real USB sticks, native
+  review of FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval) incl. QEMU report
+  save; native review; #175 decides the final sound-settings place; merge
+  order #94 -> #127 -> ... -> #134 -> #135.
+
+## BW-136-REFRESH — Check disks again cannot silently clear confirmations (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/refresh-guard-136` (stacked on
+  `feat/report-panel-135` @ 05161a5), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
+  (UI review item 10). Safety-adjacent: `safety:` commit.
+- BASELINE (05161a5): the utility showed on What/Owner (no disk list); the
+  Check disks again screen from Review/Confirm focused "Check disks again",
+  so Enter or a second F5 cleared every confirmation; the Tk screen-reader
+  switch (F8 / utility) rescanned directly from any screen, including
+  Confirm/Review, with no question at all.
+- CHOICE: guarded dialog, not hiding, on Confirm and Review (also Method,
+  Advanced, Limits). Why: a person who replugs a disk at Review needs the
+  rescan where they are; hiding would send them back through several
+  screens to Pick, where the same reset happens anyway with less
+  explanation. The guard keeps it reachable but deliberate: Cancel is the
+  default and emphasised button, Enter/Esc keep the answers, a second F5
+  does nothing, and only the outlined Check disks again button (curses C,
+  plain console the typed words) clears them.
+- WHAT CHANGED: wizard `REFRESH_DIRECT_SCREENS` (What, Owner, Pick,
+  empty, blocked, disk help) and `REFRESH_OFFERED_SCREENS` (Pick family +
+  Confirm, Method, Review, Advanced, Limits); `refresh_offered`,
+  `refresh_guarded` (unknown origin fails closed), `open_refresh_confirm(
+  then_reader=)` only on offered screens; `begin_refresh` refuses a direct
+  scan from any non-direct screen (incl. report help opened after Owner), so
+  no surface can skip the dialog. Accepting runs the unchanged
+  begin/finish_refresh reset (same fields cleared, lands on Owner). Pick's
+  dialog is unchanged (normal action). Tk, GTK, curses, plain console and the
+  web preview follow; the Tk F8 reader switch opens the same guarded dialog
+  on those screens and opens the reader after acceptance. Pre-launch
+  rediscovery/identity comparison (`confirm_erase`) untouched.
+- COPY: "Check disks again?" + "This clears your confirmations and you will
+  start again from choosing a disk: you tick the ownership box again, then
+  choose the disk." (the requested sentence, extended because a rescan
+  lands on the ownership question before Pick); Cancel; hints; curses/plain
+  keys. FR/DE/ES/IT drafts.
+- FILES: wizard.py, copy.py, locales fr/de/es/it, ui/tk_wizard.py,
+  ui/accessible_wizard.py, ui/console_wizard.py, gallery.py; docs
+  screens.md, screen-reader.md, README.md, translations.md. Tests: new
+  tests/test_refresh_guard_136.py; test_accessible_runtime.py (2 updated,
+  1 added; GTK not run here).
+- CHECKS: Windows-native (WSL down), 2026-11-03. New test file: 52 pass
+  (41 non-Tk, 11 Tk run one by one); on 05161a5 all fail except the Pick-
+  unchanged guard (passes on both by design). ruff (CI selections), mypy
+  --platform linux, node --check of the gallery script and git diff --check
+  pass. Per-file comparison of 264 related test files vs 05161a5 (finished):
+  34 files had new failures; triaged one by one, none a product bug. Almost
+  all exercised exactly what #136 changed (direct `refresh_disks()` from
+  Review/Confirm, now refused; rescans from Owner, now not offered; a second
+  F5 or Enter accepting from Review). Those tests were moved to the dialog or
+  to Pick so each still checks its original property, and several now prove
+  the guard (direct rescan from Review returns False and changes nothing; F5
+  never accepts the guarded dialog in Tk, GTK fakes and the web preview; a
+  fresh Enter in the curses guarded dialog cancels). Fakes gained
+  refresh_offered/refresh_guarded. Web preview: REFRESH_OFFERED moved inside
+  the sliced script region and inlined in draw(). Also fixed: ES/FR/DE/IT
+  "clears" used the erase verb (c856f2b). After the fixes the remaining
+  failures in those files match 05161a5 (Windows tmp PermissionError,
+  sparse docs/evidence), and the Tk/Tcl ones pass one by one.
+- SCREENSHOTS: scratch `work136-scratch-20261103` shots-before (05161a5) and
+  shots-after (owner/pick/confirm/review/dialog-from-pick/dialog-from-
+  review at 800x600 and 1280x820, visible.txt with focus).
+- NOT VERIFIED: GTK/Orca tests and speech (no GTK here), full Linux pytest
+  at 72 DPI (WSL down), ISO/QEMU, native review of FR/DE/ES/IT strings.
+- NEXT: hosted ci.yml on the stack head (owner approval); native review;
+  merge order #94 -> #127 -> ... -> #135 -> #136.
+
+## BW-137-START — Start screen opening line (IMPLEMENTED, BRANCH PUSHED; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/start-line-137` (stacked on
+  `feat/refresh-guard-136` @ c856f2b), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
+  review item 11); Refs #138/#181 coordination.
+- WHAT CHANGED: `copy.SPLASH_TAGLINE` "You already started from this USB.
+  Next you will pick a disk to erase." -> "Erase a disk in a few steps.
+  Nothing is erased until you choose Erase now." Tighter than the suggested
+  "until you confirm": the ownership tick and typed check are confirmations
+  that erase nothing; only the separate Erase now (`BTN_ERASE`) starts it,
+  so the line names that control. FR/DE/ES/IT drafts name the translated
+  button. Tk, GTK (splash heading), curses, plain console and the web
+  preview read the same string. Docs: screens.md Splash row,
+  translations.md.
+- TESTS: tests/test_copy.py — exact English line + names BTN_ERASE; every
+  language names its BTN_ERASE; reading-level guard (2 sentences, <=10
+  words each, words <=7 letters; Ref #181). The first five fail on c856f2b;
+  the reading-level guard passes on both (the old line was short too).
+- CHECKS: copy/intro/language/translation-consistency files 237 pass;
+  ruff, diff --check. Screens: scratch work137-scratch-20261103
+  shots-before/shots-after (en 800x600 standard/large/extra, 1280x820; de).
+  Per-file comparison of 109 splash/gallery test files vs c856f2b
+  (finished): no new failures from #137; the two new-only lines were
+  environmental (docs/evidence absent in this worktree; a Tcl flake that
+  passes alone).
+- NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: finish comparison, push branch; hosted gate on the stack head
+  (owner approval); merge after #136.
+
+## BW-138-STAGES — One stage vocabulary for the start roadmap and header (IMPLEMENTED, BRANCH PUSHED; HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/stage-names-138` (stacked on
+  `feat/start-line-137` @ 57bac5a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
+  review item 12); decided with #130 (step bar) and #166 (Review last before
+  Erase); #180 coordination only.
+- BASELINE: header = stages Preparation/Erase/Result (stepper >=1000 px,
+  progress strip) + "Step n of 6 · <step>"; start roadmap = 4 of the 6 step
+  names ("Choose a disk → Confirm its identity → Choose a method → Review and
+  erase"), no Erase/Result; last step "Review and erase" blurred into the
+  Erase stage; GTK, curses and plain console showed no roadmap; offline
+  helper still had the pre-#130 roadmap.
+- DECISION (one vocabulary): stages Preparation → Erase → Result everywhere
+  (stepper, strip, spoken stage, roadmap, helper); steps inside Preparation
+  keep the #130 names except `STEP_NAME_REVIEW` "Review and erase" ->
+  "Review" (FR Vérifier, DE Prüfen, ES Revisar, IT Controllare): Review is
+  the step before the Erase stage (#166) and must not say erase.
+- WHAT CHANGED: `copy.roadmap_parts(path)` = ("Preparation (6 steps)",
+  "Erase", "Result") from `JOURNEY_LABELS` + `len(PREPARATION_PATH)` (the
+  header's "Step n of N" total); `splash_roadmap` joins them; new
+  `ROADMAP_STAGE_STEPS` "{stage} ({count} steps)" (4 drafts). Roadmap added
+  to the GTK splash (focusable label), curses and plain console splash.
+  helper/index.html card now "Preparation (6 steps) → Erase → Result.
+  Nothing is erased until you choose Erase now." Docs screens.md,
+  translations.md.
+- TESTS: new tests/test_stage_names_138.py (roadmap = header stages; one
+  source: patching JOURNEY_LABELS moves roadmap, header caption and spoken
+  stage together, step count follows the path; Review has no erase verb in
+  5 languages; web preview + helper; consoles + GTK source; Tk splash
+  roadmap vs header stepper canvas text). Updated test_step_progress_130.py
+  (3 pins) and test_journey_stages.py (comment). New tests fail on 57bac5a.
+- CHECKS: stage/step/journey/language/translation files 258 pass non-Tk;
+  Tk cases 22 pass one by one; ruff, mypy --platform linux. Screens:
+  scratch work138-scratch-20261103 shots-before (57bac5a) / shots-after (en
+  800x600 all sizes, 1280x820; de). Per-file comparison of 180 related
+  files vs 57bac5a (finished): no new failures from #138; the two new-only
+  lines were environmental (docs/evidence absent in this worktree; a Tcl
+  flake that passes alone).
+- NOT VERIFIED: GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: run the comparison, push; hosted gate on the stack head (owner
+  approval); merge after #137.
+
+## BW-139-SETUP — Setup screen order: language, text size, keyboard (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/setup-order-139` (stacked on
+  `feat/stage-names-138` @ 126bd2a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
+  review item 13); #131/#140/#141/#142 coordination only (not changed).
+- BASELINE (126bd2a): Tk showed language picker, then the "Check your
+  keyboard" heading, lead and limits, then text size, then layouts and the
+  check. Tab order was already language -> size -> layouts -> check, but
+  visually text size sat inside the keyboard part. 800x600 body 585 px in a
+  457 px view (standard), 830/437 (extra): the screen scrolls.
+- CHOICE: reorder in one screen, not split. A split adds a seventh
+  Preparation step and an extra Continue for everyone, renumbers the #130
+  step bar and #138 roadmap, and reworks the Keyboard-layout detour; the
+  reorder gives each job its own labelled section with matching Tab order.
+- WHAT CHANGED: Tk `_text_size_section` (bold "Text size", segmented
+  choices, hint) between the language picker and the keyboard title;
+  KEYBOARD_LIMITS moved under the layout cards it describes. GTK: Text size
+  and keyboard lead become focusable ATK headings in that order; limits
+  after the layouts. Curses/plain: text-size note (graphical only) before
+  the keyboard part; the console no longer prints "Choose a size... You can
+  change it later." (it cannot). Web preview: same three sections. No copy
+  added or translated. Docs screens.md.
+- TESTS: new tests/test_setup_order_139.py (plain, curses, web preview, GTK
+  source order; Tk section positions, Tab order, 800x600 fit at all three
+  sizes). On 126bd2a all fail except Tab order (already correct there).
+- CHECKS: new tests 10 pass (4 non-Tk + 6 one by one); ruff, mypy
+  --platform linux. Screens: scratch work139-scratch-20261103 shots-before /
+  shots-after (800x600 standard/large/extra incl. -bottom, 1280x820;
+  report.txt with body height and Tab order: after 613/457 standard,
+  extra scrolls as before, footer intact). Per-file comparison of 52
+  related files vs 126bd2a: PENDING (queued after #136-#138).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
+- NEXT: comparison, push; hosted gate on the stack head (owner approval).
+
+## BW-140-KEYCHECK — Guided keyboard check (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, REAL X/CONSOLE KEYMAPS, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-check-140` (stacked on
+  `feat/setup-order-139` @ 9d93be5), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
+  review item 14); #131/#139/#155 coordination only.
+- DESIGN: "Optional check: press the key labelled Z here." The active
+  layout turns that physical key into a character; Z sits in a different
+  place on QWERTY (bottom row), QWERTZ (top row 6th) and AZERTY (top row
+  2nd), so one key separates the shipped families (`keyboard.check_key`,
+  table `_FAMILY_LETTERS` by US-key position). Within QWERTY (us, gb, es,
+  latam, it) letters and unshifted digits are identical — what the typed
+  confirmation needs — so the match line promises only "letters and
+  numbers". Results: match; other (suggest de / fr / the language's usual
+  QWERTY else us) with one-click switch; unclear (another letter). Not one
+  letter (Shift, dead keys, digits) is not an answer. Advisory: never
+  switches by itself, never blocks Continue; a failed switch keeps the
+  layout and shows the existing failure message.
+- SURFACES: Tk reads the X keysym on <KeyPress> in the check box, shows the
+  result (green/amber) and a Switch button, focus stays in the box. GTK
+  reads Gdk.keyval_name, names the box with the prompt, shows the result as
+  an ALERT label that takes focus (Orca speaks it), then the Switch button.
+  Curses compares the produced character (keymap from loadkeys); result in
+  the footer, F3 switches. Plain console: a single letter is checked, SWITCH
+  switches. Web preview: same rule table from Python, aria-live result.
+  KEYBOARD_LEAD now says "Then press one key below to check it."
+- FILES: keyboard.py, wizard.py, copy.py, locales fr/de/es/it (8 strings +
+  2 changed + lead; drafts), ui/tk_wizard.py, ui/accessible_wizard.py,
+  ui/console_wizard.py, gallery.py; docs screens.md, screen-reader.md,
+  translations.md. Tests: new tests/test_keyboard_check_140.py.
+- CHECKS: new tests 69 pass (55 non-Tk incl. 7 layouts x 3 families, 14 one
+  by one incl. simulated Tk key events for us/fr/de/gb/it and mismatches,
+  800x600 at all sizes); on 9d93be5: 66 fail, 2 general guards pass, 1
+  skipped. translation/language/keyboard_layout files pass; ruff, mypy
+  --platform linux, node --check (en, de). Screens: scratch
+  work140-scratch-20261103/shots-after (Z match, Y mismatch; 800x600 all
+  sizes, 1280x820). Related-file comparison vs 9d93be5: PENDING (queued).
+- NOT VERIFIED: real X keysyms under setxkbmap and real console keymaps on
+  the live ISO (simulated events only here), GTK/Orca speech, Linux pytest
+  at 72 DPI, ISO/QEMU, native review.
+- NEXT: comparison, push; live-ISO keyboard check per layout in the QEMU
+  worker (owner approval for hosted gate).
+
+## BW-141-FINEPRINT — Keyboard-layout fine print behind Show more (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-fineprint-141`
+  (stacked on `feat/keyboard-check-140` @ 7865ea1), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
+  review item 15); Ref #50 (shared Show more).
+- WHAT CHANGED: `copy.KEYBOARD_LIMITS` (wording unchanged) is no longer in
+  the keyboard screen's main view. Tk: behind the shared `_more_link` Show
+  more control under the chosen layout's note (Tab: layouts -> Show more ->
+  check box; focus stays on it when toggled). GTK: collapsed Gtk.Expander
+  "Show more" with a focusable, selectable label (Orca: "Show more,
+  collapsed"). Web preview: the same `moreLink` disclosure. Curses/plain
+  console (no disclosure control): printed after the layout list instead of
+  before it; curses first 80x24 page no longer shows it, Up/Down reaches it.
+  Docs screens.md, screen-reader.md.
+- MEASURED (800x600 body height, before -> after): standard 613 -> 623
+  (+10: the Show more control is taller than the one-line text it hides),
+  large 815 -> 809, extra 864 -> 855. Less text either way; nothing clipped.
+- TESTS: new tests/test_keyboard_fineprint_141.py (wording unchanged; plain
+  and curses order/paging; GTK expander source; web preview disclosure; Tk
+  hidden, Show more reveals and keeps focus, Tab order, 800x600 open and
+  closed at all sizes). On 7865ea1 all fail except the unchanged-wording
+  guard.
+- CHECKS: 10 pass (4 non-Tk + 6 one by one); ruff, mypy --platform linux,
+  node --check. Screens: scratch work141-scratch-20261103 shots-before
+  (7865ea1) / shots-after (+report.txt). Related-file comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU.
+- NEXT: comparison, push after #140.
+
+## BW-142-BADGES — Layout number badges only with keyboard focus (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/layout-badges-142` (stacked on
+  `feat/keyboard-fineprint-141` @ a27ea6f), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
+  review item 16); Ref #174 (keyboard-shortcuts help) not built in this repo,
+  so the shortcut is documented in the screen's key hint and docs.
+- WHAT CHANGED: Tk builds a 1-7 key-cap per layout card but packs it only
+  while a layout card has keyboard focus (FocusIn shows; FocusOut re-checks
+  where focus went), or once Up/Down or a digit chose a layout on this
+  visit; reset on the next visit. Toggled in place (no redraw); card height
+  unchanged. Fixed in passing: the card's existing FocusOut binding lacked
+  add="+", which would have replaced the new one. HINT_KEYBOARD: "Up/Down or
+  1–7 chooses a layout" (4 language drafts; "1–7" renders as a key-cap).
+  Shortcuts unchanged and always active (digits outside the check box).
+  GTK button names keep "1 QWERTY (US) (selected)". Web preview: CSS hides
+  `.kbd` until `.layout-cards:focus-within`. Consoles unchanged (their
+  numbers are the typed commands). Docs screens.md.
+- TESTS: new tests/test_layout_badges_142.py (hint in 5 languages; GTK name
+  source; preview CSS; Tk hidden by default, shown on card focus and hidden
+  when focus moves to the check box, no height jump, each digit 1-7 still
+  selects and reveals, Up/Down reveals, reset next visit, 800x600 fit with
+  and without at all sizes). On a27ea6f: 19 fail, 1 guard passes (GTK
+  names), 2 skipped.
+- CHECKS: 22 pass (6 non-Tk + 16 one by one); ruff, mypy --platform linux.
+  Screens: scratch work142-scratch-20261103 shots-before / shots-after
+  (default and focused; report.txt counts mapped badges). Related-file
+  comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run, Linux pytest at 72 DPI, ISO/QEMU, native
+  review of the hint.
+- NEXT: comparison, push after #141.
+
+## BW-143-OWNERREASON — Explain the greyed Choose a disk on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/owner-reason-143` (stacked on
+  `feat/layout-badges-142`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
+  review item 17). Ref #178 (improved disabled-button style) is not in this
+  repo: the existing DISABLED_BG/FG style is kept; adopt #178 when it lands.
+- WHAT CHANGED: new `copy.OWNER_CONTINUE_REASON` "Tick the box above to
+  continue." (4 drafts). Tk: label in the footer's right cluster, left of
+  the greyed Choose a disk, wraps at ~1/3 of the column; ticking redraws
+  without it. GTK: focusable label after the box (hidden once ticked) and
+  the button's ATK description, both synced in the toggle handler (no
+  redraw). Curses: the line above the Owner footer keys while unticked. Web
+  preview: span beside the button + aria-describedby. Gate unchanged.
+  Docs screens.md.
+- TESTS: new tests/test_owner_reason_143.py (copy, 4 languages, gate
+  unchanged, curses footer, GTK source sync, web preview, Tk beside/left of
+  the button, gone when ticked and back when cleared, 800x600 fit at all
+  sizes). On 70ffcdc: 11 fail, 3 general guards pass.
+- CHECKS: 15 pass (9 non-Tk + 6 one by one); ruff, mypy --platform linux.
+  Screens: scratch work143-scratch-20261103 shots-before / shots-after
+  (unticked/ticked; en all sizes + 1280x820; de).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native review.
+- NEXT: related-file comparison, push after #142.
+
+## BW-144-POWERBADGE — Power status as a header badge (IMPLEMENTED LOCALLY; EXISTING-TEST RUN, COMPARISON, HOSTED GATE, GTK/ORCA, REAL HARDWARE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/power-badge-144` (stacked on
+  `feat/owner-reason-143`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
+  review item 18); Ref #165/#183 (erase-time power warnings) unchanged;
+  Ref #175 coordination only.
+- WHAT CHANGED: `power.PowerStatus.badge` -> PowerBadge(kind, text) with
+  display (✓ only when plugged in) and spoken ("Power: …"): ac True ->
+  ok "Plugged in"; ac False with a battery -> warn "On battery — plug in";
+  ac None, no battery, complete -> neutral "Mains power"; anything else ->
+  neutral "Power: unknown" (never plugged in when unknown). 5 strings, 4
+  language drafts. `Wizard.power_badge` reads the cached monitor status
+  (existing worker; never blocks). Tk: rounded badge after the brand in the
+  header canvas; step caption/stepper start after it; header redrawn only
+  when the badge changes. GTK: focusable label above the page on every
+  screen, ATK name "Power: …", CSS class per state, updated in
+  update_status. Curses: "[text]" appended to the header line when it fits
+  (falls back to the short step form, never a second row). Plain console
+  Owner prints the spoken badge. Web preview: header badge from the fake
+  power scenarios. Owner (Tk, GTK, curses, plain, web preview) no longer
+  shows the long power sentence; Review/Checking/Working/Stopping keep
+  POWER_KEEP + the sentence. Splash: no header, no badge.
+- TESTS: new tests/test_power_badge_144.py (9 power states, never plugged
+  when unknown, text/spoken, 4 languages, monitor transition plugged ->
+  battery with a slow driver not blocking, stale -> unknown, wizard
+  follows monitor, curses header 80 cols, curses/plain Owner, GTK source,
+  web preview payload, Tk badge per state, on Pick/Confirm/Method/Review,
+  live unplug, Owner drops sentence while Review keeps its warning, header
+  fits 800x600 at all sizes).
+- CHECKS: 39 pass (25 non-Tk + 14 one by one); ruff, mypy --platform linux,
+  node --check. Screens: scratch work144-scratch-20261103 shots-before /
+  shots-after (owner per state at 800x600 and 1280x820; battery at
+  large/extra). Existing power-related test files: RUNNING at commit time.
+- KNOWN (from #140): keyboard.CHECK_KEY trips test_language_selection's
+  swept-surface check; fix on #140 (EXCLUDED) and restack.
+- NOT VERIFIED: real /sys power_supply on laptops and desktops (fake
+  readings only), GTK/Orca speech, Linux pytest at 72 DPI, ISO/QEMU, native
+  review.
+- NEXT: triage the existing-test run, comparison, push after #143.
+- 2026-11-03 EXISTING-TEST RUN: the single run of 21 power-related files
+  died part-way (no summary); redone per file, e6ff9c4 vs 159dbe4.
+  One real difference: test_laptop_power_ui expected the long power
+  sentence on WHAT/OWNER (Tk label, curses "12%"/"Low battery"); those
+  screens now carry the header badge -> the WHAT/OWNER cases check the badge
+  (Tk header text, header-only redraw keeps focus and draw generation;
+  curses "[On battery — plug in]"); the lid/power reminder is still checked.
+  30 native cases one by one + console cases pass. finish_sound Tk case:
+  flaky on the base only.
+
+## BW-145-TEASER — One-line report notice on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/report-teaser-145` (stacked on
+  `feat/power-badge-144` @ e6ff9c4), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
+  review item 19); Ref #127 shipped (photo option leads), #135 panel;
+  #25 confirm-before-discarding unchanged.
+- WHAT CHANGED: `copy.REPORT_MEDIA_WHAT` (same key, new text): "Want a
+  report? You can photograph a summary at the end, or save it to a second
+  USB when asked." ("when asked" keeps the stick unplugged until the result
+  screen; the full media rules stay in Need a report?). New LEARN_MORE,
+  LEARN_MORE_REPORT_NAME, CON_REPORT_LEARN (4 drafts). Tk: one muted line in
+  its own frame (no clipping at larger text) + ghost "Learn more" button
+  opening the report help (Tab after the ownership box). GTK: label + body
+  button "Learn more" named "Learn more about saving a report". Curses: the
+  line + "R: learn more" (R already opens help on Owner). Web preview: line
+  + link. Docs screens.md, translations.md.
+- TESTS: new tests/test_report_teaser_145.py (exact copy, 4 languages,
+  wanted report still confirms at shutdown, curses line and R, GTK source,
+  web preview, Tk one line at 800x600 and 1280x820, Learn more by Tab +
+  key opens help, fit at all sizes). Updated test_report_media_notice.py
+  and test_report_usb_exfat_20261027.py: media rules now asserted in the
+  report help, the Owner line asserts photo + "when asked". On e6ff9c4: 10
+  fail; 4 general guards pass (#25 confirm, R opens help, fit large/extra).
+- CHECKS: 15 pass (8 non-Tk + 7 one by one); ruff, mypy --platform linux,
+  node --check. exFAT mount tests fail identically on e6ff9c4 (Windows:
+  os.makedev, tmp perms). Screens: scratch work145-scratch-20261103
+  shots-before / shots-after (en all sizes + 1280x820; de). Related-file
+  comparison: PENDING.
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native review.
+- 2026-11-03 FOLLOW-UP: tests/test_translation_consistency_20261027.py
+  paired REPORT_MEDIA_WHAT with REPORT_HELP_TITLE ("Need a report?"). The
+  one-line text no longer cites that title (its Learn more link opens it,
+  covered by test_report_teaser_145), so the pair is removed; 4 cases had
+  failed on 7c0a793 (found by the #147 checks).
+
+## BW-146-PLATFORMS — Platform bullet under Show more on Owner (IMPLEMENTED LOCALLY; COMPARISON, HOSTED GATE, GTK/ORCA, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/compat-showmore-146` (stacked
+  on `feat/report-teaser-145` @ 7c0a793), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
+- WHY: in the live wizard the PC has already started from this USB, so
+  "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. Not
+  Apple Silicon Macs. Not Chromebooks." is pre-boot guidance. docs/claims.md
+  checked: it is Amazon/pack listing copy (title + allowed bullet still say
+  "Not Apple Silicon. Not Chromebooks."), with no rule placing it on any
+  wizard screen; unchanged.
+- WHAT CHANGED: copy.WHAT_BULLETS unchanged (still 3 items, still equals
+  compat_story.PLATFORMS last, so translations/sweeps/helper injection are
+  untouched). New render-time helpers copy.owner_bullets() (first two) and
+  copy.owner_platforms_line() (the last), read at render time so a language
+  switch follows. Tk: main box shows two bullets; the line leads the Show
+  more panel's detail text. GTK: two-bullet label + a collapsed "Show more"
+  Gtk.Expander with a focusable, selectable label (same pattern as #141).
+  Curses/plain (no disclosure control): the line follows the supporting
+  notes, just before "Check the box, then continue."; no longer a bullet.
+  Web preview: payload `what` is two bullets, `platforms` leads Show more.
+  Kept up front: helper/*.html (5 languages), desktop/web/index.html,
+  desktop/main.go, desktop/readiness.go, docs/boot-card.md, README,
+  docs/claims.md. Docs: screens.md row + Owner row; compatibility-matrix.md
+  "every screen subtitle" corrected.
+- TESTS: new tests/test_owner_platforms_146.py (split keeps all bullets and
+  follows 4 languages; pre-boot pages/launchers/docs keep it; claims has no
+  screen rule; curses + plain order; GTK expander source; web payload and
+  Show more; Tk main view hides it at 800x600 and 1280x820, Show more by
+  keyboard reveals it and keeps focus on the control, no clipping at all 3
+  text sizes with Show more closed and open). Updated test_tk_runtime
+  (min-size Owner: two bullets shown, platform line not) and
+  test_accessible_runtime (bullet label text). On 7c0a793 the new file has
+  9 failures (copy split, languages, consoles, web); pre-boot guards pass.
+- CHECKS: new file 28 pass (18 non-Tk + 10 Tk one by one); ruff clean; mypy
+  --platform linux: same 6 env-only errors as 7c0a793 (qrcode stubs, gi).
+  Screens: scratch work146-scratch-20261103 shots-base / shots-new (en,
+  800x600 standard/large/extra + 1280x820, main view and Show more scrolled).
+  Related-file comparison (150 files vs 7c0a793): RUNNING
+  (work146-scratch-20261103 pf-new-0x / pf-base-0x).
+- NOT VERIFIED: GTK/Orca run and speech, Linux pytest at 72 DPI, ISO/QEMU,
+  native translation review (no new strings).
+- 2026-11-03 COMPARISON (150 files, aabf550 vs 7c0a793 archive): one real
+  case, test_prepare_aftercare::test_console_what_wraps_prepare_bullets_at_
+  80x24 (expected every WHAT_BULLETS word on curses page 1; the platform
+  line now follows the notes) -> test now checks owner_bullets(). Reruns:
+  modern_layout, ui_polish, language_first, owner_reason, last_chance pass
+  on both (single-run Tk flakes). laptop_power_ui native redraw fails on
+  both trees (inherited; see BW-144). physical_acceptance_111,
+  secure_boot_expectations, evidence_tiers: worktree lacks docs/evidence
+  files (environment, same as earlier tasks).
+
+## BW-147-PARTNAMES — Partition names and file systems on Pick a disk (IMPLEMENTED LOCALLY, safety: commit; COMPARISON, HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-03, Claude (Opus 5.5). Branch `feat/partition-names-147` (stacked
+  on `feat/compat-showmore-146` @ aabf550), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
+  review item 21); coordinates with #149 (one-line rows: the summary is one
+  line) and #154 (BitLocker/LUKS named "BitLocker encrypted"/"LUKS
+  encrypted"; nothing else of #154 implemented).
+- WHY: cards said "Partition · 1 GB; Partition · 256 GB". lsblk already
+  returns LABEL, PARTLABEL, FSTYPE, FSVER, PARTTYPE, PARTTYPENAME
+  (LSBLK_COLUMNS unchanged), but only LABEL reached the screen.
+- WHAT CHANGED (display only): models.VolumeFacts + ExcludedDevice.volume.
+  discover.py: one kwarg, `node=node`, passed to inventory.excluded_device in
+  the exclusion loop after selectable/eligible_paths are fixed (safety:
+  commit). inventory: clean_volume_text (NFKC, drop C* incl. bidi/zero-width,
+  whitespace -> space, quote marks -> ', <=2 stacked marks, 24-char cap with
+  …), volume_facts, format_name, roles from PARTTYPE/PARTTYPENAME only (EFI
+  system, Microsoft reserved, Recovery; PARTLABEL never a role; default GPT
+  names ignored), "Windows" for the single unnamed NTFS/BitLocker partition
+  beside MSR/WinRE, contents_summary (largest first, 2 shown + "+N more",
+  3 shown when only one would hide, components with reasons never folded).
+  card_nesting_text = intro + one summary line; Tk dense line likewise; GTK
+  adds the summary to the disk button's accessible name (plain-text label
+  kept, focusable); curses/plain via card_nesting_text; web preview payload
+  key `contentsSummary` (escaped with esc(); payload "<" escaped). 8 new
+  inventory strings, FR/DE/ES/IT drafts. Demo fixture demo_lsblk.json gains
+  fstype/fsver/labels ("Work"/"Photos" NTFS, FAT32, ext4) that classify only
+  as `data` (no visible contents hint or warning change). Docs: screens.md
+  row, translations.md.
+- TESTS: new tests/test_partition_names_147.py: fixtures with Windows
+  (EFI/MSR/NTFS/WinRE) -> "Windows (NTFS) 237 GB · Recovery 1 GB · +2 more",
+  BitLocker + LUKS, ext4/swap/EFI, unlabeled no-FS -> "Unknown format 32 GB",
+  boot USB; every role/format; Windows only with evidence and one candidate;
+  reasons never folded; FR/DE strings; 13 clean_volume_text cases; 8 hostile
+  labels quoted and still a normal target; control/bidi labels still drop
+  the disk as before; preview escaping; GTK plain text; display-only proofs
+  (volume_facts blanked -> identical error/boot/selectable/disks/excluded
+  reasons; labels/formats removed -> same targets; safety/identity/runner/
+  wizard never read the facts; nested components never selectable);
+  rendering runs no command and inventory has no mount/blkid/subprocess;
+  curses (<=80 cols), plain console, GTK accessible name, preview payload,
+  Tk at 800x600 + 1280x820 and fit at all 3 sizes. Updated
+  test_group_partitions.py, test_pick_row_fit_20261028.py (pinned a line per
+  partition). On aabf550 the new file errors at collection (VolumeFacts).
+- CHECKS: new file 52 pass (45 non-Tk + 7 Tk one by one); group/pick-row/
+  contents-hint/snapshot-language files pass; ruff clean; mypy --platform
+  linux same 6 env-only errors as baseline; node --check on preview script.
+  Eligibility probe (4 lsblk fields x 13 hostile/edge labels incl. bidi,
+  zero-width, newline, imitation, 60-char, HTML) on aabf550 vs new with the
+  same fixture: byte-identical (error, boot, selectable, disks, excluded
+  reasons). Screens: scratch work147-scratch-20261103 shots-before (demo) /
+  shots-after (demo + rich fixture with hostile label, 800x600 all sizes,
+  1280x820, scrolled); curses-after.txt. Related-file comparison (370 files
+  vs aabf550): QUEUED. test_language_selection CHECK_KEY failure is the
+  known BW-140 item (same on aabf550). test_translation_consistency
+  REPORT_MEDIA_WHAT/REPORT_HELP_TITLE fails on aabf550 too: a #145
+  regression, fix pending on the #145 branch (see BW-145).
+- NOT VERIFIED: GTK/Orca run and speech (no gi on this host), Linux pytest at
+  72 DPI / DISPLAY=:99, ./preview --web in a browser, ISO/QEMU, real lsblk
+  on hardware (root FSTYPE availability), native translation review.
+- FOLLOW-UP (not done): a whole-disk file system with no partition table
+  shows no line; the full partition list behind "+N more" is not offered
+  elsewhere (coordinate with #149).
+- 2026-11-04 COMPARISON (370 files, 1b17458 vs aabf550 archive): one real
+  case, test_prepare_aftercare::test_demo_disks_without_fstype_stay_unknown
+  (demo disks now carry file systems) -> now asserts demo disks are `data`
+  with the plain warning, and the same disks with FSTYPE/labels stripped
+  stay `unknown`. Reruns: compare_disks, finish_sound, language_first,
+  tk_callback_ownership pass (single-run Tk/tmp flakes);
+  release_asset hard-link test flips between runs on every tree (release
+  code untouched); release_manifest strict fails on both. Worktrees are
+  sparse checkouts without docs/evidence (core.sparseCheckout `!/docs/
+  evidence/`), which explains physical_acceptance_111,
+  usb_verification_docs and live_session_power receipt failures. The
+  laptop_power_ui owner case is the #144 test fix (8693532), not yet in this
+  tree until the restack.
+
+## BW-139..147-STACK — Restack after comparisons; branches pushed (HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Per-file comparisons (#139-#143 340
+  files, #144 power 21, #145 report 35, #146 150, #147 370) found five
+  stale tests, each fixed on the branch that caused it, then the stack was
+  rebased (record conflicts resolved by keeping both entries):
+  #139 95131db (test_text_size follows _text_size_section), #140 192be9f
+  (CHECK_KEY excluded from the language sweep), #141 6498ec7, #142 7324be0,
+  #143 8365e4e, #144 89ef7d7 (laptop_power_ui checks the badge on
+  WHAT/OWNER), #145 14e57db (stale REPORT_MEDIA_WHAT/REPORT_HELP_TITLE pair
+  dropped), #146 448b13a (80x24 check uses owner_bullets), #147 = this
+  commit's parent 7059361 + this note (demo disks are data; bare stay
+  unknown). Remaining comparison differences are environmental: worktrees
+  are sparse checkouts without docs/evidence; Windows tmp PermissionError,
+  os.makedev, Tcl init, fork limits; single-run Tk flakes pass on rerun.
+- On the restacked head: the five fixed files, the nine task test files and
+  group/pick-row files pass non-Tk; every Tk case of the task files,
+  laptop_power_ui (30) and test_text_size run one by one pass; ruff clean.
+- Branches feat/setup-order-139, feat/keyboard-check-140,
+  feat/keyboard-fineprint-141, feat/layout-badges-142,
+  feat/owner-reason-143, feat/power-badge-144, feat/report-teaser-145,
+  feat/compat-showmore-146, feat/partition-names-147 pushed (feature
+  branches; ci.yml runs only on PR/push to main, so no hosted job).
+- PENDING (owner): hosted ci.yml on the stack head before merge; GTK/Orca
+  and Linux 72 DPI runs (not available on this Windows host); native review
+  of FR/DE/ES/IT drafts; merge order #94 -> ... -> #147; nothing released.
+- HOST: C: had 0 MB free during this work; only my scratch baselines were
+  removed (about 2.5 GB free after). The rest of the 487 GB volume is not
+  mine to touch; the owner may want to review it.
+
+## BW-148-SERIALONCE — Show the serial once on Pick a disk (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-once-148` (stacked on
+  `feat/partition-names-147` @ 1a2dc42), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
+  review item 22). Ref #129 (token marks on Confirm) unchanged; #152 and
+  #177 are not in the repo or backlog: the existing [bracket] comparison
+  mark is kept as the distinguishing-characters highlight.
+- WHY: the card showed the serial (the whole serial in [brackets] when the
+  same-size serials shared nothing) and the note repeated the characters:
+  "Compare serial number characters 1 to 14: S4EVNX0N123456. Check the full
+  ID before choosing." (the demo's two 256 GB disks).
+- WHAT CHANGED (display only): inventory.serial_comparison: the note names
+  positions only, COMPARE_SERIAL = "Compare {position} with other disks of
+  this size. {reminder}" (no {span}); when nothing is shared at either end
+  there is nothing to mark: no brackets, no note (the same-size warning
+  stays). curses/plain console cards show marked_id ([brackets]) like Tk and
+  the web preview. The plain console no longer prints the whole Compare
+  disks list (which repeats every serial) before the cards: it prints
+  "Compare disks (C): read only." and shows the list on C, like curses, Tk
+  and GTK. GTK/Orca: the disk button name has the plain serial once; the
+  character-by-character reader stays in the Compare disks expander.
+  FR/DE/ES/IT COMPARE_SERIAL drafts without {span}. Docs: screens.md row,
+  translations.md.
+- TESTS: new tests/test_serial_once_148.py (22): fixture with shared-prefix
+  pair, nothing-shared pair (review case), 55-char serials differing in the
+  middle; note never prints the characters; no brackets/note when nothing
+  is shared; announcement reads the serial once; every language's template
+  has only {position}/{reminder}; display-only proofs (identity fields,
+  confirm token, targets identical with/without comparison; only identity/
+  inventory call serial_comparison; marked text never accepted as the
+  token; countdown 5); curses at 40/80 cols, plain console once + C on
+  request, preview payload, GTK source check; Tk at 800x600 x 3 text sizes
+  and 1280x820 (serial once, wraps, no clipping). 13 fail on 1a2dc42.
+  Updated test_serial_comparison.py (whole-span case), test_console_
+  fallback_complete.py, test_console_parity.py (2) and
+  test_slow_unusual_interactions.py (1) (curses search ignores the marks).
+- CHECKS (Windows-native route): new file 22/22 (Tk one by one); ruff clean;
+  mypy --platform linux same 6 env-only errors; related-file comparison 419
+  files vs 1a2dc42 (scratch work148-scratch-20261104 pf-new/pf-base,
+  cmp.txt, rerun.txt): the only real differences were the three console
+  tests above (fixed, pass); every other new-only failure passed on rerun
+  (Tk/Tcl flakes) or fails on 1a2dc42 too (sparse docs/evidence, Windows
+  tmp permissions, release_manifest). Screens: shots-before/shots-after
+  (demo + lookalike fixture with a 55-char serial, 800x600 x 3 sizes,
+  1280x820), text-before/text-after.txt (console, GTK names, Tk text, EN/FR),
+  console-after.txt (curses 80/40 cols, plain console with C).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi here), Linux 72 DPI on
+  DISPLAY=:99, ISO/QEMU, hosted ci.yml, native FR/DE/ES/IT review.
+- FOLLOW-UP (not done, for #152): the span is computed over the whole
+  same-size group, so one unrelated same-size serial removes the mark for a
+  lookalike pair (e.g. S4EVNX0N123456 / S4EVNX0N123999 / WXYZ12 at 500 GB).
+  A pairwise distinguishing span is #152's scope.
+
+## BW-149-COMPACTROWS — One-line disk rows that expand when selected (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/compact-rows-149` (stacked on
+  `feat/serial-once-148` @ 0b54fa4), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
+  review item 23). Coordinates with #147 (summary on the collapsed row),
+  #148 (serial once, on the expanded card); #150/#151 not implemented.
+- WHY: at 800x600 only about 1.5 disk cards were visible (six-disk fake
+  fixture: 1 of 6 whole at every text size; 2 at 1280x820).
+- WHAT CHANGED: Tk `_compact_disk_row`: an unselected eligible disk is one
+  line (radio, model, "kind · connection · contents hint · contents summary",
+  capacity), labels wrap to their grid cell and never clip (no label
+  border/padding; long tokens soft-broken). `_disk_row` keeps the full card
+  for the selected disk and the protected Beamo USB (banner unchanged,
+  Ref #61). The selected card gains a Compare disks link on its heading line
+  when another eligible disk has the same displayed size; it opens the
+  existing read-only comparison (`_comparison_opener`) and focuses its first
+  reader. `_disk_heading` returns (row, model column). Selection logic is
+  unchanged (wizard.select_disk / move_selection by path; rows in path
+  order). Web preview: `compactDiskRow` for unselected disks and Up/Down on
+  Pick moving the selection by path (its hint already showed the arrows).
+  Status tags: the protected USB keeps its banner; not-selectable devices
+  stay in Other detected devices with their reasons (no new strings).
+  GTK/Orca and curses/plain consoles unchanged: every disk keeps its full
+  identity (Orca reads one button at a time; the console pages), same
+  path-based selection. Docs: screens.md #149 row (visible-row numbers),
+  #148 row now says the serial is on the selected card.
+- VISIBLE WHOLE ROWS (six eligible + same-size warning, nothing selected):
+  800x600 Standard 6, Large 5, Extra large 4 (FR 6/4/2); 1280x820 6 at every
+  size (FR Extra large 5). Selected at 800x600 Standard: 4-5; the fullest
+  card (same-size note, hint, partitions, link) still leaves 3 while the
+  warning is in view.
+- TESTS: new tests/test_compact_rows_149.py (16): collapsed rows without
+  serial; expanded card with serial/notes/partitions; protected USB full
+  card; Down/Up select and expand; selection follows the disk after the
+  discovery order is reversed, Down goes to the next path; click selects;
+  boot USB never chosen; Compare link only with a same-size peer and opens
+  the reader by keyboard; 6 rows visible / >=4 with a typical selection;
+  long model wraps without clipping at 800x600 x 3 sizes and 1280x820;
+  web preview source checks. 7 fail on 717322e (the other 9 are guards that
+  also hold before). Updated: test_serial_once_148 (Tk), test_pick_row_fit
+  (arrival = compact facts, roomy row = selected), test_ui_fit (first disk,
+  contents hint), test_tk_runtime (serial marks/label on the selected card),
+  test_design_runtime (identity on the expanded row; compact model wraps),
+  test_group_partitions (partitions on the selected card),
+  test_adaptive_layout helper (links inside the scrolling Pick list are
+  exempt like the scrolling body; footer actions still checked).
+- CHECKS (Windows-native route): new file 16/16 one by one; every changed
+  Tk case one by one (ui_fit 50, pick_row_fit 24, serial_once 4, tk_runtime
+  7, canvas_layout 1, group_partitions 1, design_runtime 2); per-case Pick
+  subsets of adaptive_layout (42 pass), reflow (2 hangs on Last chance/
+  Working, the known local hang), ui_fit, tk_runtime; 20 focused Pick files
+  and 30 further Pick-touching files compared with #148: no difference
+  (tk_input_scroll_pass13, warning_success, ui_polish also identical but
+  one Tcl init glitch on a Method case);
+  preview files: failures identical on #148/#147 (symlink, macOS, tmp
+  permissions, hosted JS gate path); node --check on the preview script;
+  ruff clean. CORRECTION (2026-11-04, found during #150): c3117cb added
+  28 mypy arg-type errors (untyped **flat options to tk.Label in
+  _compact_disk_row); the earlier "mypy same 6" was wrong. Fixed by the
+  typing-only follow-up commit on this branch (flat: dict[str, Any]);
+  mypy --platform linux is back to the same 6 env-only errors (gi,
+  qrcode stubs). Environmental, fail on #148 too:
+  tk_runtime pick_list_keeps_scroll_position_on_click (restore window
+  closes before the canvas has a height on this loaded host),
+  canvas_layout progress/modern_polish links (flow stops at Last chance),
+  design_runtime result tab order (tmp PermissionError), ui_rework review,
+  accessibility_lowres (2). Screens: scratch work149-scratch-20261104
+  shots-before / shots-before-sel / shots-after (demo + six-disk fixture,
+  nothing selected and nvme0n1/sda/sdc selected, 800x600 x 3 sizes,
+  1280x820, FR) with visible.txt counts; web/ (headless Chrome 900x1100,
+  before/after, nothing selected and first disk selected).
+- NOT VERIFIED: Linux 72 DPI on DISPLAY=:99, GTK/Orca runtime, ISO/QEMU,
+  hosted ci.yml, a browser keyboard run of the preview's Up/Down.
+- FOLLOW-UP (not done): curses could use the same collapsed rows at 80x24;
+  the preview's "ConnectionNVMe" (missing gap between label and value) is
+  pre-existing (same on #148); with the selected card in view, Tk's
+  ensure-visible can scroll earlier rows out (by design).
+
+## BW-150-REVIEWACTIVATE — Double-click or Enter on a disk opens Review this disk (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/review-on-activate-150`
+  (stacked on `feat/compact-rows-149` @ 54f8c81), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
+  review item 24). Ref #149 (compact rows: the row a double-click starts on
+  expands, so the second press is matched by disk, not by position).
+- BASELINE: Tk Enter with a disk selected already ran continue_pick
+  (focus lands on Review this disk); Tk double-click only selected (second
+  and third press stayed on Pick); GTK disk buttons already did
+  select_disk + continue_pick on activation (its "row-activated"); curses
+  Enter and the plain console's number already reviewed; web preview Enter
+  on a card only selected. HINT_PICK already says "Enter reviews this
+  disk"; no copy changed (no translation or footer-fit churn).
+- WHAT CHANGED (safety:, 7ade9ee; guard fix fbc4b44):
+  - Tk: rows call `_press_disk(path, event)`. Two presses on the same disk
+    (by path), within DOUBLE_CLICK_MS 500 and 8 px, where the first press
+    selected it, call `_review_disk`, which runs the footer primary's own
+    command (`_nav(wizard.continue_pick)`) only if that button is enabled.
+    A second press on another disk (rows move when one expands) is a plain
+    click on that disk. After the review opens Confirm, `_pointer_quiet`
+    makes `_Button._press` and `_CheckRow._press` ignore presses for 500 ms
+    (event time; monotonic fallback), so the rest of the double-click or a
+    quick third click cannot press Back / Show more / any Confirm control.
+  - GTK: `_select` (disk button activation) unchanged in effect; after a
+    pointer activation that left Pick it sets `_pointer_quiet_until`, and
+    every `button()` click ignores pointer clicks inside that window
+    (Gtk.get_current_event type/time). Key and AT-SPI activations are never
+    ignored.
+  - Web preview: `reviewDisk(pointer)` is the footer action; Enter on a
+    card reviews (repeat ignored), Space only selects, a click pair on the
+    same card path within 500 ms / 8 px reviews; capture-phase listeners
+    swallow mousedown/mouseup/click/dblclick for 500 ms after.
+  - Unchanged gates: continue_pick clears the token and authorization;
+    unconfirmable identity stays on Pick with AMBIGUOUS_IDENTITY; boot USB
+    card and Other detected devices never chosen; Enter in that reader is
+    swallowed.
+  - Docs: screens.md #150 row; accessibility-lowres-matrix Pick row.
+- ALSO (#149 defect found here, 54f8c81 on feat/compact-rows-149): c3117cb's
+  untyped `**flat` Label options caused 28 mypy arg-type errors; typed as
+  dict[str, Any]; BW-149's "mypy same 6" corrected in its entry.
+- TESTS: new tests/test_review_on_activate_150.py (22): Tk double-click at
+  800x600 and 1280x820 opens Confirm only (empty token, no authorization,
+  no erase, Confirm continue still refused); typed token never carried
+  over after Back; second press on another disk only selects; slow / moved
+  presses are two clicks; double-click is the footer action (disabled
+  button = nothing); tail of the double-click cannot press Back or Show
+  more, both work after 500 ms; unconfirmable disk shows the reason; boot
+  card never chosen; Enter reviews once, X11 repeat pair cannot act again;
+  Enter on unconfirmable shows reason; Enter in Other detected devices does
+  nothing. GTK via fake gi (real button()/_select): pointer click reviews,
+  sets the window, tail click ignored, key/AT-SPI never ignored, later
+  clicks work, token reset, unconfirmable stays with reason. curses: Down +
+  Enter reviews, held Enter cannot act again; unconfirmable shows reason.
+  Plain console: number = review. Preview: source checks and a Playwright
+  run (Enter, Space, double-click; skips without Playwright/Chrome).
+  8 fail on 02f2e74 (5 Tk, 2 GTK, 1 preview); the other 14 guard
+  behaviour that already held.
+- CHECKS (Windows-native route): new file 22/22 one by one (Playwright 2
+  skipped: not installed here; hosted ci-hosted.sh installs it); ruff
+  clean; mypy --platform linux 6 env-only errors (gi, qrcode stubs);
+  node --check on the preview script; headless Chrome probe of the real
+  preview page (web-probe-after.txt): Space selects, repeated Enter
+  ignored, Enter -> confirm with empty token, double-click by path ->
+  confirm, tail click on Back swallowed, click pair on two disks / moved
+  8+ px / 700 ms apart only selects, Back works after the window.
+  RELATED-FILE COMPARISON: 210 related files (scratch related-files.txt)
+  run per file on 7ade9ee and 54f8c81 (pf-new.txt / pf-base.txt,
+  cmp.txt): 13 failures only on #150, each rerun on both trees
+  (rerun.txt). 3 were real: test_audit_20260908_wizard click tests built
+  a fake _Button with no Tk, and the new guard caught only TclError
+  (AttributeError). Fixed in fbc4b44 (safety:): the guard returns False
+  unless a live wizard answers exactly True; the audit file and the #150
+  Tk tests pass again. The other 10 fail the same way on #149 (Windows
+  tmp PermissionError, Last chance timing on this loaded host) or pass on
+  rerun (canvas_layout, modern_layout).
+- SCREENS: scratch work150-scratch-20261104 before/ and after/ (demo, Tk
+  800x600 and 1280x820 x Standard/Large/Extra large: pick-*, dblclick-*
+  (before: still Pick; after: Confirm, empty token, button disabled),
+  enter-*; probe.txt per state).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi here; fake-gi test
+  only), Linux 72 DPI on DISPLAY=:99 with a real X server double-click,
+  ISO/QEMU, hosted ci.yml (Playwright cases), a real-mouse double-click in a
+  browser (synthetic events only).
+- FOLLOW-UP (not done; separate safety item, needs owner decision): a fast
+  double-click on a footer button can also press the next screen's button
+  under the pointer. Verified on Tk at 800x600 (scratch footer_dbl.py, same
+  on 54f8c81): Confirm (token typed) "Choose erase method" double-click went
+  CONFIRM -> METHOD -> LAST_CHANCE, skipping the Method screen; the 5 s
+  countdown still held (Erase now disabled). Pre-existing, every screen;
+  GTK likely similar (not run). The #150 pointer guard could be applied to
+  every screen-changing pointer activation; not done here because it
+  changes all footer buttons and many existing flow tests.
+
+## BW-151-DISKORDER — Disks listed internal first, then external, stable order (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/disk-order-151` (stacked on
+  `feat/review-on-activate-150`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
+  review item 25). Ref #149 (compact rows; Up/Down by disk identity).
+- BASELINE: every view sorted eligible disks by device path (Tk rows,
+  GTK buttons, curses blocks, plain console numbers, Compare disks "Disk
+  N", wizard Up/Down, web preview JS). Mixed fixture (scratch
+  fixture-mixed.json): NVMe SK hynix, USB WD Elements (/dev/sda), SATA
+  Samsung, hot-plug SATA Toshiba, USB SanDisk: the USB backup drive was
+  second, ahead of the internal SATA SSD.
+- WHAT CHANGED (safety:, 1b14bdd; test follow-ups b370508, a4f9db0): new src/beamo_wipe/disk_order.py
+  pick_order/pick_sort_key/location_group. Groups: 0 NVMe/SATA/SAS/virtio
+  not removable/hot-plug; 1 the same transports hot-plug (dock, enclosure,
+  hot-swap bay; location not guessed); 2 other eligible transports; 3 USB.
+  Within: bus rank, model (casefold), serial, WWN, capacity, path. Used by
+  Wizard.move_selection, Tk _pick, GTK pick buttons, curses _pick_blocks,
+  plain console numbering, inventory.comparison_entries numbering, and the
+  web preview (payload "order"; JS sorts by it). Selection, token and
+  authorization unchanged: select_disk by path; _operation_key uses sorted
+  identities (order-independent). Protected Beamo USB keeps its place.
+  #149/#150 tests that assumed path order now use pick_order.
+  Docs: screens.md #151 row; #149 row "device order" -> shown order.
+  After (mixed fixture): NVMe SK hynix, SATA Samsung, hot-plug SATA
+  Toshiba, USB SanDisk, USB WD Elements, identical in Tk (all sizes),
+  curses, plain console, Compare numbers and Up/Down; same with lsblk
+  order reversed. Demo: nvme0n1, sdd, sda (was nvme0n1, sda, sdd).
+- TESTS: new tests/test_disk_order_151.py (28): mixed fixture order;
+  location groups (12 cases); within-group key incl. ties to path; all 720
+  permutations of the lsblk order give the same list; never adds/drops a
+  disk; Check disks again with the same disks in reverse order keeps the
+  order (and returns to Owner with no selection); re-sorting the list
+  cannot change the chosen disk, its token or Confirm target; Up/Down step
+  from the chosen disk in the shown order; a rescan in another order keeps
+  the target and authorization key, countdown still governs Erase now;
+  Compare "Disk N", curses (protected first), plain console numbers and
+  number 5 choosing that disk; GTK loop and source checks; preview payload
+  order and JS sort; Tk rows top-down at 800x600 and 1280x820, Down and
+  click select by disk, protected card still after the list. With only the
+  new module copied to 7ade9ee, 10 fail (all view/wizard order tests);
+  without it all 28 fail at import.
+- CHECKS (Windows-native route): new file 28/28 one by one; updated
+  test_compact_rows_149 / test_review_on_activate_150 one by one: 16/16 and 22/22;
+  ruff clean; mypy --platform linux 6 env-only errors (a loop variable in
+  the plain console was renamed: the typed pick_order made mypy see a
+  reused name); node --check; headless Chrome preview: cards, disks() and
+  ArrowDown all nvme0n1, sdd, sda (web-order-after.txt).
+  RELATED-FILE COMPARISON: 185 related files (related-151.txt) on #151
+  against #150 (124 shared with the #150 run; 22 more run on #150 for a
+  baseline, pf-base-extra.txt). Real: seven older tests assumed path order
+  (test_zero_serial_identity_pass5, test_wizard_flow, test_compare_disks,
+  test_slow_unusual_interactions x3, test_tk_runtime); they now take the
+  order from pick_order (b370508, a4f9db0) and pass. Not caused by #151:
+  test_audio_responsiveness timing limits (fails on #150 too / passes on
+  one of three reruns on this loaded host), install-cloud-triggers bash
+  10 s timeout, release_manifest (no ISO here), the #150 GTK fake-gi test
+  (passes on rerun).
+- SCREENS: scratch work151-scratch-20261104 before/ and after/ (mixed
+  fixture, Tk 800x600 and 1280x820 x Standard/Large/Extra large) with
+  order.txt (every view's order, reversed-lsblk check).
+- NOT VERIFIED: GTK/Orca runtime and speech order (no gi here; source and
+  fake-gi checks only), Linux 72 DPI on DISPLAY=:99, ISO/QEMU, hosted
+  ci.yml, real hardware transports (eMMC/MMC, Thunderbolt, SAS) beyond
+  fake lsblk.
+- RISKS / NOTES: grouping trusts lsblk TRAN and RM/HOTPLUG (untrusted
+  metadata); it only affects order, never eligibility, identity or
+  authorization. A hot-plug SATA/NVMe bay inside the PC is listed after
+  fixed internal disks (location is not guessed). eMMC (TRAN "mmc", bus
+  "MMC") is group 2, after hot-plug internal transports and before USB.
+
+## BW-152-SERIALDIFF — Bold and underline the serial characters that tell look-alike disks apart (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-diff-152` (stacked on
+  `feat/disk-order-151`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
+  review item 26). Ref #66 (distinguishing logic), #129 (Confirm token marks,
+  unchanged), #148 (serial once; this closes its pairwise follow-up).
+- BASELINE (scratch work152-scratch-20261104/before, fixture-lookalike.json):
+  one contiguous [bracket] span from the group's common prefix/suffix:
+  512 GB pair MX500A1B2C3/MX500A7B2C9 marked "1B2C3" (7-11) though only 7
+  and 11 differ; 2 TB look-alikes ZFL0ABCD/ZFL0ABXD lost every mark because
+  an unrelated Y7Q9KLMN had the same size; Tk drew brackets in an all-bold
+  serial; note "Compare characters 11 to 14 with other disks of this size."
+- WHAT CHANGED (safety:, 963c95c; test follow-up df97b81): inventory.serial_differences (replaces
+  serial_comparison): pairwise against every same-size disk; strip shared
+  prefix/suffix (per-character casefold, offsets preserved); same remaining
+  length -> only differing characters, else the whole remainder; a peer
+  sharing nothing is not a look-alike and adds no mark; union over
+  look-alikes; shorter contained serial keeps SERIAL_LONGER; duplicates/
+  missing/case-only unchanged (no marks). DiskIdentityView.comparison_marks
+  (runs) with derived comparison_start/end, comparison_segments, marked_id
+  ([brackets] per run). Tk: regular mono serial + bold copies with a 2 px
+  underline placed over each run (wrap-aware; any text/height mismatch hides
+  all marks). Web preview: <b class="diff"> (bold + underline) on a regular
+  serial; payload serialMarks. GTK: Pango <b><u> on the disk button label;
+  accessible name stays plain and includes the note. curses/plain console:
+  [brackets] per run (terminal bold/underline can render as colour only).
+  Note (visible + Orca): "Differs from the other 512 GB disk at characters
+  7 and 11. Check the full ID before choosing." / "the similar 256 GB
+  disk(s)". New keys COMPARE_SERIAL_OTHER, _SIMILAR_ONE, _SIMILAR_MANY,
+  POSITION_MANY, POSITION_ITEM_RANGE, POSITION_AND; FR/DE/ES/IT drafts.
+  Docs: screens.md #152 row (+ #148 row pointer), translations.md.
+- TESTS: new tests/test_serial_diff_152.py (47): marks for 2, 3 and 4
+  similar disks, two separate characters, different lengths (longer marks
+  what the shorter lacks; inserted/longer middle), case-only, nothing
+  shared; unrelated same-size serial no longer hides look-alike marks;
+  exact notes (other / similar one / similar many, positions with runs);
+  duplicates/missing/boot/other sizes unmarked; display only (id, token,
+  confirmable unchanged; Confirm has token marks, no compare marks); every
+  language's templates and placeholders; curses + plain console brackets;
+  preview payload/CSS/markup; GTK markup via fake gi (escaped, bold+underline
+  runs, plain text identical, note in the spoken text); Tk at 800x600 x 3
+  text sizes and 1280x820 for a 2-run, 1-run and wrapped 55-character
+  serial: marks sit on the right characters, label is the plain serial in
+  regular weight, a changed label text hides all marks; unmarked serial
+  stays bold. 45 fail on d53f40f (2 guards pass). Updated:
+  test_serial_comparison (multi-run, wording, preview), test_serial_once_148
+  (wording, templates, function name), test_security_hardening_new (escaped
+  pieces, span class).
+- CHECKS (Windows-native route): new file 47/47 (GTK/Tk cases one by one);
+  updated files pass except test_as_int_logs_on_malformed (Windows tmp
+  PermissionError, environmental); ruff clean; mypy 6 env-only errors;
+  node --check; headless Chrome DOM probe (web-probe-after.txt): marks
+  ["1","3"] / ["3456"] / ["C"] / ["7"], weight 700, underline, base 400;
+  unmarked serial stays 700.
+  RELATED-FILE COMPARISON: 92 related files (related-152b.txt) on #152
+  against #151 (81 shared with the #151 run; 11 more run on #151,
+  pf-base-extra.txt). Real: test_canvas_layout's overlap check flagged the
+  drawn mark copies (pick, 5 sizes) and test_serial_once_148 expected the
+  bracketed serial in the Tk label (3 sizes); both updated in df97b81 and
+  pass one by one. test_zero_serial_identity_pass5 was the #151 order
+  test (fixed on #151). Flakes that pass on rerun: pick_row_fit
+  en-800x600-selected, owner_reason_143 fit, power_badge_144 Confirm/
+  Method/Last chance header.
+- SCREENS: scratch before/ and after/ (Tk: nvme0n1 at 800x600 x 3 sizes and
+  1280x820; sda, sdc, sdd, sde at 800x600), zoom-serial.png (before/after
+  crops), web-after-sda.png, text.txt per run (EN/FR notes, curses lines).
+- NOT VERIFIED: GTK/Orca runtime and speech (no gi; fake-gi markup test
+  only), Linux 72 DPI with DejaVu Sans Mono (bold/regular advance assumed
+  equal, as for the #129 mark), ISO/QEMU, hosted ci.yml, native review of
+  the FR/DE/ES/IT drafts.
+- NOTES: when two look-alikes' remaining parts differ in length the whole
+  remainder is marked (e.g. A9B2C3D8 vs A1B2C3D4X marks 2-8); the
+  same-size warning text ("Two disks are the same size") is pre-existing
+  and unchanged with several same-size groups.
+
+## BW-153-KEYHINTS — Arrow key-caps in ink, no stray period in hints (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `fix/key-hints-153` (stacked on
+  `feat/serial-diff-152`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
+  review item 27). Ref #174 (not implemented here).
+- BASELINE (scratch work153-scratch-20261104/before, web-before-*.png,
+  web-hint-before-zoom.png): Tk (roomy windows) and the web preview render
+  hint key names as caps. The ↑ ↓ caps used a font glyph: the UI font lacks
+  it and the fallback came out thin and tinted orange (CSS colour was ink;
+  Tk fg INK), unlike the bold ink Enter/Esc caps. HINT_PICK "Click a disk,
+  or use Up/Down.  Enter ..." left a period 4 px after the ↓ cap in Tk ("use
+  ↑ ↓ ."); HINT_CONFIRM "... then Enter." had the same. The scan of every
+  HINT_* plus the other Tk footer texts in all five languages found only
+  these two.
+- WHAT CHANGED (696af15, not safety: copy/styling only): Tk _kbd draws
+  arrow caps (↑ ↓ ← →) on a canvas in INK, height matched to a letter cap's
+  label; _hint_bar packs a cap followed by punctuation with 1 px instead of
+  4 px. Web preview renderHint draws arrow caps as currentColor SVG (role
+  img, aria-label = the arrow) and marks a cap followed by punctuation
+  kbd-hug (no margin). Copy: HINT_PICK "Click a disk, or use Up/Down to
+  choose one.  Enter reviews this disk.  Esc goes back.", HINT_CONFIRM
+  "Type exactly what we ask for, then press Enter to continue."; FR/DE/ES/IT
+  drafts with no sentence ending on a key. GTK and consoles show key names
+  as text (unchanged). Docs: screens.md #153 row; translations.md note.
+- TESTS: new tests/test_key_hints_153.py (13): every language's hints and
+  footer texts never put punctuation right after a key name; exact EN copy;
+  Tk arrow caps are drawn canvases filled INK, letter caps INK, no typed
+  arrow, equal cap heights; Keyboard hint draws left/right/up/down; Pick
+  hint has no piece starting with "."; punctuation after a cap sits within
+  1 px, a word keeps its gap; preview source (paths, currentColor, aria,
+  hug, CSS); Playwright run (skips here). 11 fail on 33a324f (the 2
+  Playwright cases skip).
+- CHECKS (Windows-native route): new file 13/13 one by one (2 skipped);
+  ruff clean; mypy 6 env-only errors; node --check; headless Chrome DOM
+  probe: after, ↑ ↓ are SVG caps, same computed colour as Enter/Esc, no
+  text node starting with "." after a cap.
+  RELATED-FILE COMPARISON: 13 hint/footer/keyboard test files
+  (related-153c.txt) per file on #153 and #152: identical results (no
+  failure only on #153); failures common to both are environmental (see
+  pf-new.txt / pf-base.txt). test_ui_fit_20261027 and test_adaptive_layout
+  timed out as whole files on both trees, so they were run case by case on
+  #153 (each-fit.txt): ui_fit 262/262; adaptive_layout 93/94, the one case
+  (test_extra_large_text_keeps_actions_at_800x600) hangs on #152 too (the
+  known local Last chance/Working hang), not from #153.
+- SCREENS: before/ and after/ (Tk 1280x820 EN/FR Owner, Pick, Confirm,
+  Method + zoomed hint crops, hints.txt piece lists for all languages),
+  web-before/after-pick|confirm|keyboard.png, web-hint-before-zoom.png.
+- NOT VERIFIED: Linux 72 DPI with DejaVu (the Tk arrows no longer depend on
+  the font), hosted ci.yml (Playwright), native review of the FR/DE/ES/IT
+  hint drafts, keyboard hint at 800x600 (plain text there, by design).
+- PRE-EXISTING (not from #153): test_keyboard_layout::test_keyboard_hints_
+  name_every_layout_shortcut fails on #149 54f8c81, #152, #153, #154 and
+  #155 alike ("1–" in HINT_KEYBOARD, the language-neutral 1–7 cap). Needs
+  its own item: either the test or the hint is out of date.
+
+## BW-154-ENCTAG — Tag disks 'BitLocker (Windows encryption)' / 'Encrypted (LUKS)' (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/encrypted-tag-154` (stacked on
+  `fix/key-hints-153`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
+  review item 28). Ref #147 (contents line, FORMAT_BITLOCKER/FORMAT_LUKS).
+- BASELINE (scratch work154-scratch-20261104/before, fixture154.py): no
+  view tagged encryption; only the #147 summary said "Windows (BitLocker
+  encrypted) 510 GB" / "LUKS encrypted 998 GB". Observed, unchanged: a USB
+  stick with only a BitLocker To Go partition is classified "Windows found
+  on this disk" (discovery treats BitLocker as a Windows mark; pre-existing).
+- WHAT CHANGED (ea575f5, test follow-up 65d77ac; feat: display only; no discovery, selection or
+  identity change): inventory.encryption_tags(children) from the
+  VolumeFacts.fstype lsblk already gave for partitions and opened volumes
+  (any depth): "bitlocker" -> TAG_BITLOCKER "BitLocker (Windows
+  encryption)", "crypto_luks" -> TAG_LUKS "Encrypted (LUKS)", both when
+  both. Tk: in the compact row details after the connection; on the
+  expanded card an outlined (1 px border, ink bold) tag row above the
+  contents hint. GTK: label under the disk button and in its spoken name.
+  curses + plain console: own line under the serial. Web preview: payload
+  encryptionTags; compact details and .enc-tag pills on the card. FR/DE/ES/
+  IT drafts. Docs: screens.md #154 row; translations.md note.
+- DESIGN NOTE: a whole-disk file system (LUKS on the raw disk, no
+  partition table) has no nested component and is not tagged. Tagging it
+  needs the disk's own FSTYPE on Disk, which session_recovery serialises
+  with an exact field set; left as a follow-up rather than widen this
+  display item into discovery/recovery.
+- TESTS: new tests/test_encrypted_tag_154.py (14): fixture with BitLocker
+  (Windows), LUKS (Linux), plain NTFS, ext4, whole-disk LUKS, BitLocker To
+  Go USB, and a disk with an opened LUKS volume plus BitLocker: exact tags;
+  display only (same eligible set and tokens with FSTYPE stripped; only
+  presentation modules read the tags); copy in every language keeps the
+  product name and has no unlock/key/password/recovery words; curses +
+  plain console lines; GTK source; preview payload/markup/CSS; Tk rows and
+  card tags at 800x600 Standard/Extra large (EN, FR) and 1280x820, not
+  clipped, no tag on an untagged card. All 14 fail on 5958278.
+- CHECKS (Windows-native route): 14/14 (Tk cases one by one); ruff clean;
+  mypy 6 env-only errors; node --check; headless Chrome DOM probe (web-probe-after.txt): rows for nvme0n1/sdd carry the BitLocker tag, nvme1n1 the LUKS tag, sda/sdb/sdc none; the selected card shows one enc-tag; web-after-pick.png shows both.
+  RELATED-FILE COMPARISON: 20 related files (related-154.txt) per file on
+  #154 and #153: test_partition_names_147's GTK source check expected the
+  spoken-name line without the tag (updated in 65d77ac); its Tk summary
+  case passes on rerun; test_design_runtime timed out as a whole file and
+  per case is 56/57 with the known Windows tmp-permission result-tab case.
+  The Confirm-related 109-file run (#156 vs #154) adds nothing new.
+- SCREENS: before/ and after/ (Tk: nothing selected 800x600 Standard/Extra
+  large and 1280x820; nvme0n1 selected 800x600 x 3 sizes and 1280x820;
+  nvme1n1 selected), text.txt (tags, summaries, curses blocks EN/FR),
+  web-after-pick.png.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, real lsblk
+  output for BitLocker/LUKS on hardware (fake lsblk only), ISO/QEMU, hosted
+  ci.yml, native review of the drafts.
+
+## BW-155-LAYOUTHINT — Confirm shows keyboard help only after a wrong entry (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/confirm-layout-hint-155`
+  (stacked on `feat/encrypted-tag-154`), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
+  review item 29). Ref #140 (keyboard check), #156 (token comparison, not
+  changed here).
+- BASELINE (scratch work155-scratch-20261104/before): Confirm always showed
+  "Keyboard: QWERTY (US) · Language: English" (every view, every state). A
+  layout change from Confirm cleared the owner tick, the chosen disk and the
+  entry and sent the owner back to Owner (_invalidate_after_layout_change_
+  locked), which #155 asks not to do unless required. Curses Confirm had no
+  way to open the layouts (K is typed into the token).
+- WHAT CHANGED (safety:, 9ca6e1a):
+  - Wizard: _confirm_mismatch, set by a complete non-matching entry
+    (set_confirm_input) or continue_confirm on a non-matching non-empty
+    entry; reset on each continue_pick. confirm_layout_hint = on Confirm,
+    seen, and not matching. Display only.
+  - Layout change opened from Confirm (_keyboard_from == CONFIRM): owner
+    tick and selected disk kept, token unchanged (from the disk), a
+    non-matching entry cleared, no authorization (none exists before
+    Method), Esc/Continue return to Confirm. From any other screen: the
+    previous full reset (Method/Last chance included; the apply/erase-claim
+    race test still holds).
+  - Tk: line removed; hint row (wrapping sentence + ghost "Change" button
+    under it) packed only while confirm_layout_hint, synced on each
+    keystroke and on Enter; Enter on Confirm now calls continue_confirm in
+    every case (it moves only on a match); new _reveal_in_body scrolls the
+    hint into view on short windows/large text (refactored the focus reveal
+    into _apply_body_reveal; focus reveal behaviour unchanged).
+  - GTK: hint label (focusable) + Change button, hidden (no_show_all) until
+    a wrong entry; Enter in the entry records a wrong entry (never moves).
+  - curses: hint + "F2: Change" after a wrong entry; F2 opens the layouts;
+    Enter on a wrong entry records it. Plain console: hint after a wrong
+    answer; K (already printed) opens the layouts.
+  - Web preview: hint + Change (returns to Confirm), same keep/clear rule
+    via layoutChanged(); the suggestion switch now resets like the wizard.
+  - Copy: CONFIRM_KEYBOARD_LINE removed; CONFIRM_LAYOUT_HINT,
+    CONFIRM_LAYOUT_CHANGE, CON_CONFIRM_LAYOUT_KEY + FR/DE/ES/IT drafts.
+    Docs: screens.md #155 row; translations.md.
+- TESTS: new tests/test_confirm_layout_hint_155.py (21): hidden while
+  typing the right characters, shown after a complete wrong entry, stays
+  while editing, hidden on a match; Enter/Continue on a short wrong entry
+  counts and never advances; a new visit starts hidden; copy and every
+  language; layout change from Confirm keeps owner/disk/token, clears a
+  wrong entry, returns to Confirm and every later gate still applies
+  (token, method, countdown, no erase); Esc returns to Confirm; a failed
+  apply changes nothing; changes from Method/Last chance still start over;
+  plain console and curses (hint, F2 opens layouts); GTK and preview source;
+  Tk hidden/shown/hidden at 800x600 Standard/Extra large and 1280x820,
+  Change opens the layouts, Enter on a short wrong entry shows it. 19 fail
+  on 008ef12 (2 guards pass). Updated: test_language_first_131 (from
+  Confirm keeps; new test: from Method still clears), test_language_
+  selection (hint in every view).
+- CHECKS (Windows-native route): new file 21/21 (Tk one by one); related
+  keyboard files per case on #155 and #154: test_keyboard_check_140 69/69
+  on both (an earlier fr-z-match failure was a flake); test_keyboard_layout
+  88/89 on both, the same failure (test_keyboard_hints_name_every_layout_
+  shortcut: "1–" found in HINT_KEYBOARD) which also fails on #149 54f8c81,
+  i.e. pre-existing and not from #150-#156; ruff clean; mypy 6 env-only errors; node
+  --check.
+  RELATED-FILE COMPARISON: 109 Confirm-related files (work156-scratch
+  related-156.txt) per file on #156 (which contains #155) and #154: the
+  only failure only on #156 is a #152 Tk mark case that passes on rerun.
+  Six files timed out as whole files on both trees; their Confirm cases
+  run one by one on #156: ui_fit 42/42, reflow_large_text 2/2,
+  single_erase_warning_128 33/33, adaptive_layout has none, tk_runtime
+  18/19 with test_graphical_refresh_restarts_full_authorization[confirm]
+  failing identically on #154 and #149 (refresh from Confirm now opens the
+  guarded dialog first; pre-existing, not from #150-#156).
+- SCREENS: before/ and after/ (Tk Confirm empty / complete wrong / short
+  wrong + Enter at 800x600 Standard, Large, Extra large and 1280x820; FR
+  Extra large) with text.txt.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, a real X
+  keyboard-layout switch (fake applier only), ISO/QEMU, hosted ci.yml,
+  native review of the drafts.
+
+## BW-156-TOKENFEEDBACK — Show which typed confirmation character is wrong (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-04, Claude (Opus 5.5). Branch `feat/token-feedback-156` (stacked
+  on `feat/confirm-layout-hint-155` @ 9e94fc7), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
+  review item 30). Ref #129 (card token), #155 (timing of the help).
+- RULE (documented in docs/screens.md "Comparison (#156)", decided with
+  #129 and unchanged here): safety.token_matches strips leading/trailing
+  whitespace and compares case-insensitively; inner spaces count; no
+  partial match; another disk's token never matches.
+- BASELINE: after a wrong entry Confirm showed only the #155 keyboard hint
+  (work155-scratch-20261104/after); no per-character feedback anywhere.
+- WHAT CHANGED (safety:, 10e06dc; written as 8d0e09f on the pre-rebase stack): new src/beamo_wipe/token_feedback.py
+  (display only): marks typed characters that differ from the token at the
+  same position (spaces set aside and marked on their own), counts
+  missing/extra, never prints an expected character. Wizard.confirm_feedback
+  (#155 timing). Tk: typed value (mono, [brackets]) and problem line above
+  the keyboard sentence, refreshed per keystroke. GTK: focusable label,
+  spoken name without brackets. curses/plain console: two lines. Web
+  preview: JS port (parity 72/72 with Python, parity.txt). Copy TOKEN_*
+  + FR/DE/ES/IT drafts. Docs: screens.md, translations.md.
+- TESTS: new tests/test_token_feedback_156.py (40): gate re-asserted (outer
+  spaces accepted x5, inner spaces rejected x4, case rule, wrong/missing/
+  extra rejected, another disk's token rejected); each of 4 wrong
+  positions reported; several/missing/extra; stray space; match/empty ->
+  none; never reveals expected characters (6 inputs); every language's
+  placeholders; wizard timing; Enter on a short wrong entry explains and
+  never advances; countdown 5 and separate Erase now unchanged; only the
+  wizard imports the module and token_ok never consults it; plain console,
+  curses, GTK source, preview source; Tk at 800x600 Standard/Extra large
+  and 1280x820. The file fails at import on #155 (9ca6e1a; 05aba30 before the rebase), the module being new.
+- CHECKS (Windows-native route): 40/40 one by one; test_card_token_129,
+  test_confirm_layout_hint_155, test_console_confirm_repeat pass;
+  test_wizard_flow happy_path fails on #150 too (Windows tmp
+  PermissionError); its path-order test was a #151 leftover, fixed on
+  feat/disk-order-151 (b370508); ruff clean; mypy 6 env-only; node --check;
+  Python/JS parity 72/72.
+  RELATED-FILE COMPARISON: 109 Confirm-related files (related-156.txt)
+  per file on #156 and #154 (cmp.txt): the only failure only on #156 is
+  test_serial_diff_152 Tk mark [sda, Large], which passes on rerun. Six
+  files timed out as whole files on both trees; their Confirm cases one by
+  one on #156 (each-confirm.txt): ui_fit 42/42, reflow 2/2,
+  single_erase_warning_128 33/33, tk_runtime 18/19 with the pre-existing
+  refresh-from-Confirm case (fails on #154 and #149 too);
+  test_keyboard_layout per case 88/89 on #155 and #154 (pre-existing
+  hint-shortcut case, fails on #149 too).
+- SCREENS: work156-scratch-20261104/after (Tk Confirm empty / wrong /
+  short + Enter at 800x600 x 3 sizes and 1280x820; FR Extra large).
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts.
+
+## BW-157-CONFIRMSPACE — Balance Confirm and keep its card and warning in view (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/confirm-spacing-157` (stacked
+  on `feat/token-feedback-156` @ 5680c3e), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
+  review item 31). Ref #128 (warning), #155 (help after a wrong entry),
+  #156 (feedback).
+- BASELINE (work157-scratch-20261104/before, metrics.txt): on roomy windows
+  Confirm's block sat at the top with a large empty area under the entry
+  (gap under the status 190 px at 1280x820, 391 px at 1920x1080, 16 px above
+  the title); at 800x600 Extra large a wrong entry scrolled the #155 help
+  into view and the #128 warning out of it.
+- WHAT CHANGED (Tk only; no token, countdown, gate or copy change):
+  Confirm centres its block on roomy windows with a spacer measured as if
+  the wrong-entry help were showing, so nothing moves when it appears; short
+  windows and larger text use tighter gaps (the warning keeps its full-size
+  text); the #156 feedback moved into the status line right under the entry
+  (a "!" mark and warning outline, not colour alone); the #155 reveal never
+  scrolls the disk card or the warning out of view (`_reveal_in_body(keep=)`).
+  Commit d55220e. FOLLOW-UP COMMIT (a123294): the status line kept a wrap
+  length at the zone's full width although its pill shrinks to the text;
+  test_reflow_large_text's card-wrap check failed on both Confirm sizes
+  (passes on #156). It now wraps only when the text is wider than the room
+  beside the icon.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, tests/test_confirm_spacing_157.py
+  (new, 15 cases; 12 fail on 5680c3e), tests/test_token_feedback_156.py (Tk
+  case reads the status line), docs/screens.md.
+- CHECKS (Windows-native route): test_confirm_spacing_157 15/15;
+  test_token_feedback_156, test_confirm_layout_hint_155 pass; ruff clean;
+  mypy --platform linux clean. RELATED-FILE COMPARISON (#157 vs #156, 32
+  files whole plus the Confirm cases of 6 big files, work157-scratch-20261104
+  pf-*.txt / each-*.txt): only-on-#157 failures were
+  test_card_token_129 Tcl-mark and test_refresh_guard_136 pick dialog (both
+  pass alone), test_ui_rework review safe default (also fails alone on #156:
+  the 5 s countdown ends during the slow test under load) and
+  test_reflow_large_text Confirm x2 (real; fixed by the follow-up, which
+  passes the reflow case plus #155/#156/#157 files; with the fix, Confirm
+  cases one by one: ui_fit 42/42, reflow 2/2, single_erase_warning_128
+  33/33, card_token_129 2/2, tk_runtime 18/19 with the pre-existing
+  refresh-from-Confirm case; work159-scratch-20261105/fix157-each.txt).
+  Pre-existing on both: tk_runtime refresh-from-Confirm.
+- KNOWN, NOT CAUSED HERE: on this Windows host Review before erasing at
+  800x600 Extra large never settles in Tk's idle loop (draws in 0.4 s, then
+  root.update() does not return) on #156 and #157 alike — the recorded
+  "Windows Tk idle-loop hangs (Review extra 800x600)". Linux 72 DPI not
+  checked here.
+- SCREENS: work157-scratch-20261104/before and after (Confirm empty / wrong
+  at 800x600 x3 text sizes, 1024x600, 1024x768, 1280x720, 1280x820 x3,
+  1280x1024, 1920x1080), metrics.txt.
+- NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
+  Not pushed to main; merge order #94 -> ... -> #156 -> #157.
+
+## BW-158-LIMITSLINE — One-line SSD limits under the method cards (OWNER CHOSE OPTION B 2026-11-07; IMPLEMENTATION IN PROGRESS)
+
+- 2026-11-05, Claude (Opus 5.5). Backlog #158 (UI review item 32). Branch
+  `feat/method-limits-line-158` (no commits; @ d55220e), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
+  measurement prototype was reverted). Scratch:
+  `work158-scratch-20261105` (shots158.py; before/, opt-base/, opt-A/,
+  opt-B/, opt-C/ with metrics.txt and screenshots).
+- STATUS: the task requires explicit owner approval before implementing or
+  merging anything that depends on the decision. No approval was available
+  in the session, so it stopped at the proposal. Coordinate with #159
+  (implemented after, below), #160, #161, #186.
+- FINDING: the two acceptance criteria conflict on today's cards. At 800x600
+  the title block and disk card take ~190 px and each method card was
+  140–180 px, so no placement of the limits text alone puts all three cards
+  above the fold. Baseline: the limits panel is already below the fold on
+  every short window (800x600, 1024x600, 1280x720) and Quick zero was never
+  fully visible at any measured size.
+- OPTIONS MEASURED (SSD, Tk, before #159):
+  A. As worded: one line directly under the cards. The line is never visible
+     without scrolling at any size (fails Ref #18).
+  B. One line between the disk card and the cards. Always visible at every
+     size and text size; cards no better than today at 800x600.
+  C. B plus compact unselected cards (title and sentence only). Line always
+     visible; all three cards fully visible at 1280x720 and 1280x820, still
+     not at 800x600 or 1024x768.
+  D. Keep today's panel.
+  #159 (title, sentence, time line) now shrinks the cards to 102–125 px,
+  which is the prerequisite for any "all three cards above the fold" goal;
+  B or C must be re-measured on top of #159 once chosen.
+- RECOMMENDATION: B (line above the cards, full text under its Show more
+  and "Storage limits (L)"), re-measured after #159; it is the only option
+  that keeps the limits visible without scrolling at 800x600 and largest
+  text (Ref #18).
+- CLAIMS CHECK (for owner sign-off): the line "On SSDs, overwriting may not
+  reach every hidden area." stays within docs/claims.md ("SSD results depend
+  on the drive's controller"; "overwrites the storage the drive exposes"; no
+  sanitize/secure-erase claim). The full storage.OVERWRITE_LIMITS text stays
+  one action away. Open owner questions: is a one-line summary prominent
+  enough for docs/method-and-storage-wording-validation.md's "prominent SSD
+  limits"; HDD and unknown disks show a notice today too — keep a line for
+  them ("Hidden or remapped sectors may remain.") or SSD/NVMe only.
+- NEXT ACTION: owner picks A/B/C/D and confirms the claims wording; then
+  implement on `feat/method-limits-line-158` rebased onto the #159 branch,
+  with a `safety:`-free UI commit, tests and before/after screenshots.
+
+## BW-159-METHODCARDS — Method cards show title, one sentence and a time line (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/method-cards-159` (stacked
+  on `fix/confirm-spacing-157` @ 595224a; commits 741e417 feat, 2a0fa29
+  fix), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
+  review item 33). Ref #158 (above), #160, #161.
+- BASELINE (work159-scratch-20261105/before, metrics.txt): each card had
+  five to seven lines (sentence, overwrite count, check, rough guide, extra
+  note, Everyday limits note): 140–231 px tall. When the size was unknown
+  the time guide was hidden, so cards could not be compared on time.
+- WHAT CHANGED (presentation only; METHODS, argv, verification, gates and
+  copy of existing strings unchanged; not a `safety:` change):
+  * copy.method_time_line(method, disk): the existing cautious guide
+    (progress.time_guide ranges, "not promised"), or the new
+    TIME_GUIDE_UNKNOWN "Time depends on the disk." (FR/DE/ES/IT drafts).
+  * Tk card: title + chip (Recommended / More overwrites / No check), the
+    one sentence (Quick zero's says it does not check the result), and a
+    clock + time line with that card's own Show more on the same row. The
+    counts, check sentence, Three overwrites note and Everyday limits note
+    open under it. Show more never chooses a method (Enter, Space or click;
+    focus stays on it after the rebuild; opened details scroll into view
+    without moving the card's top away). Clicking the card or 1/2/3 still
+    chooses. Last chance still states the exact counts.
+  * Web preview: same card; the choice (role=button) and the toggle are
+    siblings, never nested; per-disk `methodTimes` in the payload.
+  * GTK, curses, plain console: layouts unchanged; every method now has
+    its time line (Orca name and visible line), unknown size included.
+  * Docs: screens.md, progress-timing.md, accessibility-lowres-matrix.md,
+    translations.md.
+- RESULT (Tk 800x600..1280x820, all text sizes): cards 102–125 px (from
+  140–231); at 800x600 Standard Everyday and Three overwrites are fully
+  visible (was Everyday only), at 1280x720 all three.
+- TESTS: new tests/test_method_cards_159.py (23): time line = guide when
+  known; "Time depends on the disk." for 4 unknown-size cases, no disk and
+  no estimate; translated, no digits; method mapping unchanged; Tk cards
+  show only title/sentence/time for HDD, SSD and unknown; cards <= 120 px at
+  800x600; Show more opens only its card, never chooses, keeps focus,
+  closes; Enter and Space on it never advance; details scroll into view
+  (Standard, Extra large); card click still chooses, gates unchanged; no
+  clipping at 3 sizes with details open; plain console and curses show the
+  unknown line; preview payload, sibling toggle, handler never sets the
+  method. OLD-CODE: on d55220e 19 of the 21 cases then in the file failed
+  (pf-base.txt; the mapping check passes by design); the two later cases
+  (keyboard toggle, details scroll) need the new toggle. Updated:
+  test_tk_runtime (method facts and the Everyday limits-note fit open the
+  card's Show more first); test_ui_polish unknown-size case now expects
+  "Time depends on the disk." with a clock on every card (2a0fa29).
+- CHECKS (Windows-native route): test_method_cards_159 23/23 (Tk cases one
+  by one); ruff clean; mypy --platform linux clean. RELATED-FILE
+  COMPARISON (79 files whole, #159 vs #157 base d55220e, pf-new/pf-base
+  .txt; Method cases of 4 big files, each-new.txt): only-on-#159 were
+  test_ui_polish unknown-size (intended, updated), test_slow_unusual
+  refresh loop (REAL: Check disks again called .clear() on the open-details
+  set, which a partially built app lacks; fixed in 2a0fa29 by assignment,
+  failure set of that file now identical to base), power_badge and
+  step_progress header (pass alone), test_time_guide_other_views
+  collection error (passes on rerun). Big files: ui_fit Method 20/20,
+  reflow 2/2, tk_runtime 28/29 with refresh-from-Method failing on base too
+  (with Confirm and Last chance). Post-rebase stack check on the #161 tip:
+  new files of #157/#159/#160/#161 pass, reflow 4/4, ui_polish Method
+  25/25; only the pre-existing test_ui_system selector failure (#144
+  `.powerbadge`, see BW-160).
+- SCREENS: work159-scratch-20261105/before, after (Tk Method for SSD, HDD,
+  unknown size at 800x600 x3 text sizes, 1024x600, 1024x768, 1280x720,
+  1280x820 x3; metrics.txt; cmpshots.py), web-before-*/web-after-*
+  (preview 800x600 and 1280x900, closed and with Quick zero open),
+  web-probe-after.txt, curses-unknown.txt.
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of TIME_GUIDE_UNKNOWN drafts. Not pushed to
+  main; merge order #94 -> ... -> #157 -> #159.
+
+## BW-160-EVERYDAYCAVEAT — Everyday 'checks only exposed storage' caveat off the main card (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/everyday-caveat-160`
+  (stacked on `feat/method-cards-159` @ 0205571; commit 18cfe5a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
+  review item 34). Ref #158 (proposal, owner decision pending), #159.
+- CLAIMS CHECK: docs/claims.md and docs/storage-and-controller-limits.md do
+  not require copy.EVERYDAY_LIMITS ("This checks only storage the disk
+  exposes. It does not promise how long it will take. A saved report is not
+  extra proof of hidden areas.") on the card. The method-selection warning
+  they do require (storage_limits.OVERWRITE_LIMITS via the storage limits
+  notice and "Storage limits (L)") stays on the Method screen, unchanged
+  (#158's subject). A test pins both facts.
+- BASELINE: original code — the caveat was the last paragraph of the
+  Everyday card (work159-scratch-20261105/before/method-*-800x600.png);
+  GTK showed it as a focusable label on the Method screen; the plain
+  console appended it to Everyday's line (work160-scratch-20261105/
+  console-before.txt); curses paged it after the choices. #159 had already
+  moved it under the Everyday card's Show more in Tk and the web preview.
+- WHAT CHANGED (presentation only; wording, METHODS, argv and gates
+  unchanged): GTK puts it in a collapsed Show more expander (pattern of
+  #141/#146) named "Show more: Everyday", label focusable and selectable;
+  plain console prints "Everyday: <caveat>" after the three choices instead
+  of inside Everyday's line. Curses unchanged (already paged after the
+  choices, Up/Down to read more). docs/screens.md row.
+- FILES: src/beamo_wipe/ui/accessible_wizard.py,
+  src/beamo_wipe/ui/console_wizard.py, tests/test_everyday_caveat_160.py
+  (new, 9), tests/test_accessible_runtime.py (expander asserted),
+  docs/screens.md.
+- TESTS: wording and claims facts; storage limits notice still on the
+  Method screen; plain console line order; curses 80x25 first page keeps
+  the choices and the caveat follows them; GTK source expander; preview
+  caveat only in opened details; Tk caveat hidden until Show more at
+  800x600 Standard and 1280x820 Large, method unchanged. OLD-CODE: on the
+  original code (d55220e) the preview and both Tk cases fail; on #159
+  (e270780) the plain console and GTK cases fail
+  (work160-scratch-20261105/oldcode-*.txt).
+- CHECKS (Windows-native route): 9/9 (Tk cases one by one); ruff clean;
+  mypy --platform linux clean; console/copy/ui_system/language/method
+  files pass except pre-existing failures that also fail on the original
+  code: test_method_operation_copy evidence/report cases (Windows temp
+  files) and test_ui_system::test_gallery_identity_selectors_cannot_clip
+  (the #144 `.powerbadge` nowrap rule; FOLLOW-UP, not caused here: the
+  gallery's identity selectors must either avoid nowrap or the test must
+  exempt the header badge — decide with #144's owner).
+- SCREENS: work160-scratch-20261105/after (Tk Method 800x600 Standard and
+  Extra large, 1280x820: closed and Everyday open; metrics.txt says the
+  caveat is hidden closed and shown open), console-before/after.txt.
+- NOT VERIFIED: GTK/Orca runtime (gi unavailable on this host; the
+  expander and its spoken name are untested at runtime), Linux 72 DPI,
+  ISO/QEMU, hosted ci.yml. Not pushed to main; merge order ... #157 ->
+  #159 -> #160.
+
+## BW-161-RARELYNEEDED — Three overwrites tagged 'Rarely needed' with a Show more reason (IMPLEMENTED LOCALLY — COPY APPROVED BY OWNER 2026-11-07; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/rarely-needed-161` (stacked
+  on `feat/everyday-caveat-160` @ cec9ecf; commit a8f2a2c), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
+  review item 35). Ref #159.
+- OWNER SIGN-OFF REQUIRED (task requirement; not yet given): the English
+  copy below. Do not merge #161 until the owner approves it or supplies
+  replacement wording; translations are drafts for native review.
+  * Chip (replaces "More overwrites", which only repeated the title):
+    "Rarely needed".
+  * Show more explanation (methods.EXTRA_WORK_DOD): "Three times the
+    overwrites of Everyday, so it takes longer. Extra passes do not reach
+    hidden storage. Everyday is the usual choice. This is not a DoD
+    certificate."
+- CLAIMS CHECK: within docs/claims.md and docs/storage-and-controller-
+  limits.md — "Extra passes do not reach hidden storage" is the existing
+  approved sentence ("Additional overwrite passes do not fix these
+  limitations"); "takes longer" is factual (4 full-disk passes vs 2);
+  "This is not a DoD certificate." is docs/ADVANCED.md's wording (kept as
+  required); no "DoD certified", certification, guarantee or
+  unrecoverability claim. ES/IT first drafts "No es un certificado DoD" /
+  "Non è un certificato DoD" read as "DoD certified" and failed
+  test_language_selection; reworded to "El patrón DoD no supone ningún
+  certificado." / "Il modello DoD non comporta alcun certificato."
+- BASELINE: work161-scratch-20261105/before (Tk Method closed and with
+  Three overwrites open: EN 800x600 Standard/Extra large, 1280x820, DE
+  800x600, FR 1280x820 Large; metrics.txt), console-before.txt.
+- WHAT CHANGED (copy and placement only; dodshort, rounds=1, verify=last,
+  noblank, argv unchanged): methods.MARK_MORE_OVERWRITES ->
+  MARK_RARELY_NEEDED; EXTRA_WORK_DOD reworded (EN + FR/DE/ES/IT drafts).
+  Tk and preview show the neutral chip (not the warning colour) and the
+  reason under the card's Show more (#159). GTK: the explanation left the
+  radio label for that method's Show more expander ("Show more: Three
+  overwrites", #160 pattern). Plain console: "[Rarely needed]" on the
+  choice, "Three overwrites: <reason>" after the choices; curses: the
+  paged note is prefixed with the method name. Docs: screens.md,
+  translations.md.
+- TESTS: new tests/test_rarely_needed_161.py (10): tag and wording;
+  claims (ADVANCED.md sentence, "DoD" kept, Everyday named, forbidden
+  phrases incl. ES/IT/FR/DE forms, every language); method mapping
+  unchanged; plain console; curses first page and paged reason; GTK source
+  (not in the radio label, in the expander); preview payload; Tk chip
+  visible, neutral colour, reason only after Show more, no clipping (EN
+  Standard/Extra large, DE). OLD-CODE (#160 @ 3910f41): 9/10 fail (the
+  mapping check passes by design). Updated: test_ui_system chip text.
+- CHECKS (Windows-native route): 10/10 (Tk cases one by one); ruff
+  clean; mypy --platform linux clean; console, copy, ui_system,
+  language (incl. ES/IT forbidden-claim checks), translation, gallery and
+  method files pass except pre-existing failures that also fail on #160:
+  test_ui_system selector (#144), test_export_worker_locale and
+  test_language_snapshot (Windows subprocess/environment). Post-rebase
+  stack check (all #157–#161 files) passes.
+- SCREENS: work161-scratch-20261105/after (same states as before),
+  console-after.txt; preview work159-scratch-20261105/web-after161-*.png.
+- NOT VERIFIED: owner copy sign-off, GTK/Orca runtime, Linux 72 DPI,
+  ISO/QEMU, hosted ci.yml, native review of the drafts.
+
+## BW-162-COUNTDOWNCOPY — Review lead: 'Erasing starts only when you press Erase now' (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/countdown-copy-162` (stacked
+  on `feat/rarely-needed-161` @ bae2823; commit beab555 safety:), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
+  review item 36). Ref #163 (not implemented here).
+- BASELINE: copy.LAST_LEAD "Check the selected disk and method. The
+  countdown never starts erasure." (FR/DE/ES/IT equivalents), read by Tk,
+  GTK, curses, the plain console and the web preview payload
+  (work162-scratch-20261105/before: Tk Review before erasing counting and
+  at zero, EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE
+  800x600, FR 1280x820 Large; metrics.txt).
+- WHAT CHANGED (copy only; countdown, Erase now gate, argv unchanged):
+  LAST_LEAD = "Check the selected disk and method. Erasing starts only
+  when you press Erase now."; FR/DE/ES/IT drafts name each language's own
+  Erase now label (Effacer maintenant / Jetzt löschen / Borrar ahora /
+  Cancella ora). The helper page already says "Nothing is erased until you
+  choose Erase now" (unchanged). Docs: screens.md, translations.md.
+- FILES: src/beamo_wipe/copy.py, locales/{fr,de,es,it}.py,
+  tests/test_countdown_copy_162.py (new, 13), tests/test_console_parity.py,
+  tests/test_design_runtime.py, tests/test_tk_runtime.py (pinned the old
+  sentence), docs/screens.md, docs/translations.md.
+- TESTS: exact English lead; every language names its own BTN_ERASE and
+  drops the old sentence; gate unchanged (zero enables Erase now, runner
+  not started, still on Review); plain console; curses; GTK source and
+  preview payload (EN, DE); Tk at 800x600 Standard/Large and 1280x820
+  Extra large: lead shown unclipped, zero enables Erase now, nothing
+  starts. OLD-CODE (#161 @ 5fa619c): 9/10 non-Tk cases fail (the gate check
+  passes by design).
+- CHECKS (Windows-native route): 13/13 (Tk cases one by one);
+  test_design_runtime countdown, tk_runtime review/countdown (6),
+  console_parity Last chance (4) pass one by one; ruff clean; mypy
+  --platform linux clean; copy, ui_system, language, translation, gallery,
+  confirmation-gate and curses erase-gate files pass except the
+  pre-existing test_ui_system selector failure (#144, see BW-160).
+- KNOWN, NOT CAUSED HERE: Review before erasing at 800x600 Extra large
+  never settles in Tk's idle loop on this Windows host (recorded "Windows
+  Tk idle-loop hangs (Review extra 800x600)"; reproduced on #156 and #157
+  with the old copy). That state is left out of the new test and the
+  screenshots; Linux 72 DPI still unchecked.
+- SCREENS: work162-scratch-20261105/before and after (same states).
+- NOT VERIFIED: GTK/Orca runtime and speech, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts. Not pushed to main; merge
+  order ... #157 -> #159 -> #160 -> #161 (after copy sign-off) -> #162.
+
+## BW-163-COUNTDOWNREADY — Review ring shows a check mark and 'Ready', not '0' (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/countdown-ready-163`
+  (stacked on `fix/countdown-copy-162` @ f798714; commit e7d7e06 safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
+  #163 (UI review item 37). Ref #162.
+- BASELINE (work163-scratch-20261105/before, metrics.txt): at zero the Tk
+  ring showed "0" (PRIMARY) with COUNTDOWN_READY beside it; GTK only
+  changed a plain label's text (no announcement); curses footer "Enter to
+  erase."; plain console went straight to its ERASE prompt; preview ring
+  "0".
+- WHAT CHANGED (presentation only; countdown, gate, argv unchanged):
+  copy.COUNTDOWN_READY_WORD "Ready", copy.COUNTDOWN_AVAILABLE "Erase now is
+  available." (+ FR/DE/ES/IT drafts naming each BTN_ERASE). Tk: check mark
+  drawn in the full ring, the number's window item hidden, "Ready" (bold,
+  PRIMARY) packed above the caption only when ready and removed if the
+  countdown restarts. GTK: an ALERT label "Ready. Erase now is available."
+  hidden (no_show_all) until erase_enabled, then shown — no grab_focus, so
+  focus stays on Back. curses footer "Ready. Enter to erase."; plain console
+  prints "Ready. Erase now is available." before "Type ERASE to start".
+  Preview: SVG check, "Ready" word, sr-only role=status line (best effort:
+  the preview redraws each second). translation consistency now also
+  checks COUNTDOWN_AVAILABLE and LAST_LEAD name BTN_ERASE. Docs:
+  screens.md, translations.md.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  tests/test_countdown_ready_163.py (new, 11), tests/test_design_runtime.py
+  (was '0'), tests/test_translation_consistency_20261027.py,
+  docs/screens.md, docs/translations.md.
+- TESTS: copy in every language; gate unchanged; curses footer only when
+  enabled; plain console line; GTK source (alert, no focus move, toggled by
+  erase_enabled); preview payload/markup; rendered Tk ready state at
+  800x600 Standard/Large, 1280x820 Extra large, DE 800x600 (check mark,
+  hidden number, Ready above caption in view, no clipping, nothing
+  started); restarted countdown removes Ready and the check mark.
+  OLD-CODE (#162 @ f798714): 10/11 fail (the gate check passes by design).
+- CHECKS (Windows-native route): 11/11 (Tk one by one); ruff clean; mypy
+  --platform linux clean (a create_line overload error found and fixed
+  before commit); related non-Tk files: failure set identical to #162 (9
+  pre-existing export/cancel/evidence cases in
+  test_accountable_audit_2026_09_03 and the #144 selector case); Tk:
+  design_runtime countdown, ui_fit 40/40, review_visible, #162 Tk cases
+  pass; tk_runtime 23/26 with refresh-from-Last-chance and both KP_Enter
+  cases failing on #162 too; single_erase_warning_128 42/44 with the two
+  800x600 Extra large Review cases hanging (known Windows Tk idle-loop
+  hang, BW-162).
+- SCREENS: work163-scratch-20261105/before and after (counting and ready:
+  EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE 800x600,
+  FR 1280x820 Large).
+- NOT VERIFIED: Orca actually speaking the alert (GTK unavailable here),
+  Linux 72 DPI, ISO/QEMU, hosted ci.yml, native review of the drafts.
+
+## BW-164-REVIEWMETHODONCE — Review describes the method once (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/review-method-once-164`
+  (stacked on `feat/countdown-ready-163` @ 3beb2c2; commit d0415be safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
+  #164 (UI review item 38). Keeps #33's operation summaries intact.
+- BASELINE (work164-scratch-20261105/before, console-before.txt): Review
+  showed "One overwrite, followed by verification." and "Everyday: 1
+  overwrite pass: random data. Then we check the last overwrite." on Tk
+  (bold + muted; below the countdown when stacked), GTK, curses, the plain
+  console and the web preview.
+- WHAT CHANGED (presentation only; METHODS, argv, verification, gates
+  unchanged): copy.REVIEW_METHOD_LINE "{method}: {operation}" (FR
+  "{method} : {operation}"; DE/ES/IT drafts), Wizard.review_method_line =
+  method title + #33's operation summary, e.g. "Everyday: One overwrite,
+  followed by verification." / "Quick zero: One overwrite. Verification is
+  not performed." Review shows only that line on every surface; Working and
+  Done keep their method lines. Preview payload `reviewLine`.
+- FILES: src/beamo_wipe/{copy,wizard,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  tests/test_review_method_once_164.py (new, 18), test_console_parity,
+  test_method_operation_copy, test_tk_runtime (method facts on Review),
+  test_ui_rework, test_console_enter_interleaved_pass25_ui (mock gains
+  review_method_line), docs/screens.md, docs/translations.md.
+- TESTS: line per method incl. verification yes/no and no "verified" for
+  Quick zero; every language keeps name + operation; plain console and
+  curses show it once and no pass detail; GTK source; preview markup; Tk
+  at 800x600, 1280x820, 1280x820 Extra large for Everyday and Quick zero:
+  exactly one method line, no clipping, nothing enabled or started.
+  OLD-CODE (#163 @ 3beb2c2): 18/18 fail.
+- CHECKS (Windows-native route): 18/18 (Tk one by one); ruff clean; mypy
+  --platform linux clean; non-Tk related files vs #163: only new failure
+  was the pass25 mock lacking review_method_line (fixed); remaining
+  failures identical to #163 (Windows /tmp/beamo-wipe permission cases in
+  test_last_chance_operation / test_operation_identity, evidence and
+  export cases). Tk one by one: ui_fit Review 124/124, single_erase_128
+  Review (not Extra 800x600) 37/37, #163 Tk 6/6, ui_rework review 1/1,
+  tk_runtime 27/30 with refresh-from-Last-chance and both KP_Enter cases
+  failing on #163 too.
+- SCREENS: work164-scratch-20261105/before and after (Review counting and
+  ready, EN 800x600 Standard/Large, 1280x820 Standard/Extra large, DE
+  800x600, FR 1280x820 Large), console-before/after.txt.
+- NOT VERIFIED: GTK/Orca runtime, Linux 72 DPI, ISO/QEMU, hosted ci.yml,
+  native review of REVIEW_METHOD_LINE drafts.
+- QUEUE AT THIS POINT (owner prompts received, in order; each gets its own
+  branch stacked on the previous): #165 curses Review focus (edit script
+  ready in work165-scratch-20261105/edit_curses.py), #166 step name "Final
+  check" (work166-scratch-20261105/edit_step.py), #167 Working start/finish
+  times (owner question: the wall clock is never trusted today, so only the
+  relative form would show), #168 keep the screen on during an erase
+  (xset s off around nwipe via the SleepInhibit pattern; QEMU check
+  blocked without an authorized isolated VM).
+
+## BW-165-REVIEWENTERFOCUS — Enter on Review presses only the focused button on every surface (IMPLEMENTED LOCALLY, safety: commit; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, REAL TERMINAL, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `safety/review-enter-focus-165`
+  (stacked on `fix/review-method-once-164` @ dbe5793; commit 1603a08 safety:),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
+  #165 (UI review item 39), SAFETY-SENSITIVE. Ref #49 (Enter activates only
+  the focused control), #162.
+- CURRENT BEHAVIOUR DOCUMENTED (before):
+  * Tk: Enter runs only the focused _Button's command; Review focuses Back;
+    Erase now has takefocus=0 until enabled, then Tab reaches it; Enter on
+    a focused disabled Erase now does nothing; with no button focused Enter
+    does nothing; held/X11-repeat Return is claimed once.
+  * GTK: on Review, Enter clicks only a focused, sensitive registered
+    action; arrival focus is the warning label (no-op); Erase now is
+    insensitive during the countdown; held Return/KP_Enter/Space repeats
+    (same server timestamp) are swallowed.
+  * curses: no focus. Once the ready frame was painted, a single Enter on
+    Review called confirm_erase() (_handle); during the countdown Enter was
+    ignored; held/repeated Enter needed a 1 s quiet gap. Footer "Ready.
+    Enter to erase."
+  * plain console: after the countdown it asks "Type ERASE to start:";
+    anything else goes back.
+- WHAT CHANGED (curses only; the wizard gate is unchanged): Review shows
+  `[> Back <]    [ Erase now ]` (focus marked with > <, not colour only)
+  and Tk's hint "Esc goes back. Tab to Erase now, then Enter after the
+  countdown." Focus starts on Back and returns there on arrival, on leaving
+  and whenever Erase now is not enabled (restarted countdown); Tab,
+  Shift-Tab, Left and Right move it; Erase now takes it only on a painted
+  ready frame. Enter presses the highlighted button: Back goes back (also
+  during the countdown, as Tk/GTK), Erase now calls confirm_erase() only on
+  a painted, enabled frame. _handle no longer erases on a bare Enter (fail
+  closed). copy.CON_LAST_ERASE ("Enter to erase.") removed with its locale
+  entries; the ready line is #163's "Ready. Erase now is available." Docs:
+  screens.md, compatibility-matrix.md KB-07.
+- FILES: src/beamo_wipe/ui/console_wizard.py, src/beamo_wipe/copy.py,
+  locales/{fr,de,es,it}.py, tests/test_review_enter_focus_165.py (new, 16),
+  tests/test_countdown_ready_163.py, tests/test_separate_footer_actions.py,
+  docs/screens.md, docs/compatibility-matrix.md.
+- TESTS: curses scripted loop (fake terminal, fake monotonic clock, erase
+  starts recorded): Enter during the countdown -> back; Enter right after
+  the countdown on default focus -> back; Tab then Enter -> one erase start;
+  Shift-Tab/Left/Right likewise; Tab twice -> back; Tab during the
+  countdown cannot reach Erase now; restarted countdown returns focus to
+  Back; _handle never erases on 10/13/KEY_ENTER; footer text; plain console
+  still needs ERASE. Tk: Enter during and right after the countdown ->
+  back, Erase now not focusable while counting, Tab-focused Erase now +
+  Enter -> erase. GTK (skips without gi): Enter on the warning or an
+  insensitive Erase now does nothing; on a sensitive focused Erase now it
+  starts. OLD-CODE (#164 @ dbe5793): the 8 curses behaviour cases fail
+  (incl. the fail-closed _handle case); BTAB/LEFT/RIGHT, plain console and
+  the Tk cases pass there by design (Tk/plain behaviour was already right).
+- UPDATED EXISTING GATE TESTS (guarantees kept, key sequence adds Tab
+  before the erasing Enter): test_curses_rendered_erase_gate_pass18 (the
+  two launch arrivals; the early/crossing arrivals still launch nothing),
+  test_curses_review_page_pass18_ui, test_curses_review_paint_pass6,
+  test_console_key_origin_pass5 (S-after-start cases), test_preview (Review
+  hint), test_countdown_ready_163 and test_separate_footer_actions
+  (footer). Removed unused copy.HINT_LAST_CHANCE and CON_LAST_ERASE.
+- CHECKS (Windows-native route): 16/16 (Tk/GTK one by one; GTK skips
+  without gi); ruff clean; mypy --platform linux clean; 46 console/review/
+  footer/gate files vs #164: no #165-only failure after the updates above
+  (one test_keyboard_layout DE fit case failed under load and passes 20/20
+  alone); Tk one by one: tk_runtime Review 23/26 with the same three
+  pre-existing cases as #163/#164, separate_footer 3/3, #163 Tk 6/6.
+- SCREENS: console-before.txt / console-after.txt (curses Review frame).
+  The Tk/GTK Review is unchanged.
+- NOT VERIFIED: GTK runtime (gi unavailable here), a real terminal's
+  KEY_BTAB/Left/Right codes, Linux 72 DPI, ISO/QEMU, hosted ci.yml.
+
+## BW-166-FINALCHECKSTEP — Header names Review as the final check (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/final-check-step-166`
+  (stacked on `safety/review-enter-focus-165` @ 2e1c48a; commit ef88356),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
+  #166 (UI review item 40). Ref #130, #138.
+- BASELINE (work164-scratch-20261105/before/last-en-standard-1280x820-*):
+  the header said "Step 6 of 6 · Review" beside the stepper with
+  Preparation highlighted.
+- DECISION: "Final check", not the example "Final check before erasing":
+  #138 decided (and test_stage_names_138 pins) that step names never use
+  the erase verb because Review comes before the Erase stage. "Final check"
+  says it is the last step; the stage stepper keeps Preparation (Review is
+  still preparation per #130/#138). Owner may override the wording.
+- WHAT CHANGED (copy only): copy.STEP_NAME_REVIEW "Final check" (FR
+  "Dernière vérification", DE "Letzte Prüfung", ES "Última comprobación",
+  IT "Controllo finale"; drafts). Header "Step 6 of 6 · Final check",
+  spoken "Preparation, step 6 of 6: Final check.", same in curses, the
+  plain console and the web preview (one source). Long translations still
+  fall back to "Step 6 of 6" when they do not fit (existing rule).
+- FILES: src/beamo_wipe/copy.py, locales/{fr,de,es,it}.py,
+  tests/test_final_check_step_166.py (new, 10), tests/test_stage_names_138,
+  test_step_progress_130, test_journey_stages, docs/screens.md,
+  docs/translations.md.
+- CHECKS (Windows-native route): 10/10 (Tk one by one); stage/journey/step
+  files pass except test_journey_stages curses 80x24 Pick (fails on #160
+  and #165 too); ruff clean; mypy --platform linux clean; language, ui_system,
+  console files pass except the known #144 selector case; Tk step-bar
+  header 9/17 with test_tk_long_translations_fit_at_800x600 x8 failing on
+  #165 too (the #144 power badge's header text is not in that test's
+  allowed list; FOLLOW-UP with #144).
+- SCREENS: work166-scratch-20261105/after (Review header, same states as
+  BW-163/164).
+- NOT VERIFIED: Orca speech, Linux 72 DPI, ISO/QEMU, hosted ci.yml, native
+  review of the drafts.
+
+## BW-167-WORKINGTIMES — Working says when it started and when to come back (IMPLEMENTED LOCALLY; OWNER DECIDED 2026-11-07: RELATIVE TIMES ONLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/working-times-167` (stacked
+  on `fix/final-check-step-166` @ 4c3465b; commit 2d5bde9), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
+  review item 41). Ref #36 (clock confidence), #132 (glance), #133.
+- OWNER QUESTION (asked 2026-11-05, unanswered): may the OS clock ever be
+  treated as trusted for Working's clock times? Existing logic never trusts
+  it (evidence.wall_timestamps records os_utc/injected as "unverified"; no
+  "verified" source exists). So the live USB shows the relative wording;
+  the clock-time wording is implemented and tested behind
+  Wizard.wall_clock_trusted (False; only an explicit True enables it).
+- BASELINE (work167-scratch-20261105/before): the large time line was
+  "About 50 minutes left" (validated estimate) or "Running for 12 minutes";
+  an "Elapsed: …" note appeared with an estimate.
+- WHAT CHANGED (presentation only; estimate gates, completion, evidence
+  unchanged): ProgressView gains wall_now / wall_trusted; glance_time is
+  untrusted: "Started 12 minutes ago · about 50 minutes left" (or just
+  "Started 12 minutes ago" without an estimate, "· less than 1 minute
+  left" under a minute); trusted: "Started 2:02 PM · expected around 3:05
+  PM" (finish rounded up to 5 min; FR/DE/ES/IT 24-hour). Invalid monotonic
+  clock hides the started part; unusable wall time falls back to relative.
+  The Elapsed note is removed. One source for Tk (font_size_big), GTK
+  (glance + paced Orca summary), curses, the plain console and the web
+  preview. progress.GLANCE_RUNNING removed. Docs: progress-timing.md,
+  translations.md.
+- FILES: src/beamo_wipe/{progress,wizard}.py, locales/{fr,de,es,it}.py,
+  tests/test_working_times_167.py (new, 9), test_working_glance_132,
+  test_progress_timing, test_tk_runtime, docs/progress-timing.md,
+  docs/translations.md.
+- TESTS: untrusted with/without estimate and under a minute; trusted
+  times, 5-minute rounding at and past the mark; unknown/broken clocks;
+  no Elapsed note; DE/FR wording and every language complete; the live
+  wizard never claims trust (and only True enables it) next to the
+  evidence confidence logic; preview payload; Tk line in the large font for
+  both. OLD-CODE (#166 @ 4c3465b): 9/9 fail.
+- CHECKS (Windows-native route): 9/9 (Tk one by one); ruff clean; mypy
+  --platform linux clean; glance/progress/language/console files pass
+  except pre-existing failures that also fail on #166:
+  test_progress_timing freeze-evidence and real-runner ETA cases (Windows
+  tmp / SIGUSR1), test_gallery_working_focus_pass35_ui (renderPowerBadge
+  missing from the extracted script, #144), test_ui_system selector (#144),
+  tk_runtime keyboard_only_flow_reaches_working (needs a real start). Tk:
+  working_glance_132 18/18, tk_runtime Working/timing 11/12.
+- SCREENS: work167-scratch-20261105/before, after (untrusted), and
+  after-trusted (flag set): EN 1280x820 with/without estimate, 800x600
+  Standard/Large, DE 800x600, FR 1280x820 Large.
+- NOT VERIFIED: Orca speech of the new line, Linux 72 DPI, ISO/QEMU,
+  hosted ci.yml, native review of the drafts.
+- QUEUE (owner prompts received, in order): #168 keep the screen on during
+  an erase, #169 result-screen key hints, #170 report-status line only on
+  failure, #171 compact result summary card.
+
+## BW-168-SCREENAWAKE — Keep the screen lit while erasing (IMPLEMENTED LOCALLY; QEMU / LIVE X CHECK BLOCKED; HOSTED GATE, ISO BUILD, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/screen-awake-168` (stacked
+  on `feat/working-times-167` @ f3e6b72; commit 33a7278), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
+  review item 42). Ref #39 (SleepInhibit), #132, #133.
+- WHERE BLANKING COMES FROM: packaging/live/.../etc/X11/xorg.conf.d/
+  10-beamo.conf (ServerFlags BlankTime 10, Standby/Suspend/OffTime 0) and
+  the launcher usr/local/bin/beamo-wipe (`xset s 600 s blank s on`, `xset
+  dpms 0 0 0`). DPMS never powers the panel down; the screensaver blanks.
+- WHAT CHANGED: sleep_inhibit.SleepInhibit (the existing power helper the
+  real NwipeRunner starts/stops around nwipe) now also runs `xset s off`
+  when the erase starts and `xset s 600 s blank s on` (the launcher policy)
+  when it stops, only if it turned blanking off. Live USB only, never dry
+  run or preview, never without DISPLAY or /usr/bin/xset; DISPLAY and
+  XAUTHORITY are passed explicitly into the clean subprocess env; timeout
+  5 s; failures logged (power/display_blanking_change_failed) and never
+  block the erase. DPMS, lid, suspend, power-button handling untouched.
+  The "screen may go dark" note left Tk and GTK Owner and the web preview;
+  curses and the plain console keep it (X settings cannot keep a Linux
+  console lit). The offline helper keeps its sentence (blanking still
+  applies outside an erase). OLED burn-in: considered; the Working screen
+  changes over time (percentage, bar), and dimming is not available via
+  xset, so no dim mode was added.
+- FILES: src/beamo_wipe/sleep_inhibit.py, ui/tk_wizard.py,
+  ui/accessible_wizard.py, gallery.py, copy.py (comment),
+  tests/test_screen_awake_168.py (new, 11), tests/test_tk_runtime.py (Owner
+  no longer shows the note), docs/live-session-power.md, docs/screens.md.
+- TESTS: start runs `xset s off` with DISPLAY, stop restores the launcher
+  policy once; argv only touches the screensaver; never runs when not
+  live, in dry run, without DISPLAY or xset; xset OSError/timeout/non-zero
+  never block the erase and nothing is restored; the note only in the
+  console fallbacks and not in the preview; Tk Owner shows the power
+  reminder without the note. OLD-CODE (#167 @ f3e6b72): 7/11 fail (the 4
+  "never runs" cases pass by design).
+- CHECKS (Windows-native route): 11/11 (Tk one by one); ruff clean; mypy
+  --platform linux clean (a log_diag argument type error found and fixed);
+  power/copy/language/console files pass except pre-existing failures also
+  on #167 (test_live_session_power spawn case: Windows tmp; receipts case:
+  docs/evidence excluded from this sparse checkout) and the #144 selector
+  case; tk_runtime Owner 9/9.
+- BLOCKED / NOT VERIFIED: the acceptance check "screen stays on during a
+  long fake erase; blanking restored afterwards" needs a real X session in
+  an isolated x86_64 Linux VM with a disposable target (no host-disk
+  passthrough) and the CI image build; no isolated guest is authorized on
+  this host (AGENTS.md), so it is pending. Hosted ci.yml not run.
+- SCREENS: work168-scratch-20261105/before and after (Owner at 800x600,
+  1280x820, 1280x820 Large; metrics.txt shows the note before/after).
+
+## BW-169-RESULTHINTS — Result-screen key hints say exactly what happens (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/result-hints-169` (stacked on
+  `feat/screen-awake-168` @ eb07f50; commit 58ef52d), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
+  review item 43). Ref #174.
+- BEHAVIOUR DOCUMENTED (before): Tk preview result: Enter runs the preview
+  again (accept_done_keyboard -> reset_for_preview), Esc does nothing
+  (back() is a no-op on DONE), hint "Enter continues. Esc goes back."; Tk
+  live: Enter requests shutdown, Esc nothing, hint "Enter requests
+  shutdown."; web preview result: default hint, Enter did nothing unless a
+  button had focus; curses: "Enter: run again    C: close" (preview) /
+  "Enter: shut down" (live), Esc nothing; GTK shows no key hints.
+- WHAT CHANGED: copy.HINT_DONE_PREVIEW "Enter runs the preview again."
+  (FR/DE/ES/IT drafts); Tk preview result uses it; the web preview result
+  shows it and Enter (not on a focused control) runs the preview again,
+  like its Run again button and the Tk preview; the stopped preview screen
+  keeps its own hint. Live unchanged. No result screen offers Esc or a way
+  back into a completed erase. Docs: screens.md.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/tk_wizard.py, tests/test_result_hints_169.py (new, 8), docs/screens.md.
+- TESTS: copy in every language starts with Enter and never mentions Esc;
+  back() is a no-op on a result (preview and live); preview Enter runs
+  again, live Enter requests shutdown; curses footers; web preview hint and
+  Enter handler (ignores focused controls); Tk preview/live hint rendered.
+  OLD-CODE (#168 @ eb07f50): 3/8 fail (copy, web, Tk preview); the others
+  pin behaviour that was already right.
+- CHECKS (Windows-native route): 8/8 (Tk one by one); ruff clean; mypy
+  --platform linux clean; preview/gallery/translation/language/ui_system/
+  console/result/erase-another files: failure set identical to #168 (36
+  pre-existing Windows/env cases).
+- SCREENS: work169-scratch-20261105/before and after (Tk result screen,
+  preview and live, 1280x820; metrics.txt has the hint text).
+- NOT VERIFIED: Linux 72 DPI, hosted ci.yml, native review of the drafts.
+
+## BW-170-REPORTNOTICE — 'Saving a report does not change the result' only after a failed save (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/report-notice-170` (stacked on
+  `fix/result-hints-169` @ 0db2331; commit 4c6213a), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
+  review item 44). Ref #96 (separation), #135 (report panel).
+- BASELINE (work170-scratch-20261105/before): every report panel state
+  (ready, failed/unavailable, saved) showed "Saving or checking a report
+  does not change the erase result." (plus the unsaved-report warning when
+  not saved); the web preview's report panel showed it too.
+- DECISION: show it only after a failed save (report export or evidence
+  save), where it reassures, rather than under Show more: it is one line
+  and only useful at that moment. Not shown twice when the failure text
+  (recovery.MEANING_REPORT_ONLY) already says it.
+- WHAT CHANGED: report_panel.build_report_panel composes the notice: the
+  reassurance only for failed / evidence / unavailable-after-error panels
+  without that sentence already, the unsaved-report warning whenever not
+  saved. Tk, GTK and curses already render panel.notice, so all follow; the
+  web preview drops the line. Erase result and report panel stay separate.
+- FILES: src/beamo_wipe/{report_panel,gallery}.py,
+  tests/test_report_notice_170.py (new, 9),
+  tests/test_separate_report_status.py (now expects the line only after a
+  failed save).
+- TESTS: absent from ready/saving/saved/unavailable views; the unsaved
+  warning kept except when saved; after a failed report save (with and
+  without Save offered) and an evidence failure it is said exactly once;
+  preview panel has no notice; every surface renders panel.notice. OLD-CODE
+  (#169 @ 0db2331): 7/9 fail.
+- CHECKS (Windows-native route): 9/9; ruff clean; mypy --platform linux
+  clean; test_separate_report_status passes except
+  test_export_failure_then_retry_preserves_erase (Windows tmp
+  PermissionError, pre-existing).
+- SCREENS: work170-scratch-20261105/before and after (verified result,
+  report idle / failed / saved, 800x600 and 1280x820; metrics.txt).
+- NOT VERIFIED: Orca reading of the failure panel, Linux 72 DPI, hosted
+  ci.yml.
+
+## BW-171-RESULTCARD — One compact result card instead of the repeated method line (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/result-card-171` (stacked on
+  `fix/report-notice-170` @ f4b5cfa; commit 937da72), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
+  review item 45). Ref #127 (photo record), #134, #172.
+- BASELINE (work171-scratch-20261105/before): the result screen showed the
+  "This disk" card, then (after the report panel) the method line again
+  ("Everyday: 1 overwrite pass: …"); start/end times only in the photo
+  record; GTK and consoles printed the method line too.
+- WHAT CHANGED (presentation only; outcomes, evidence and reports
+  unchanged): erase_record.ResultCard / build_card / check_text and
+  Wizard.result_card. The card's facts are the photo record's own fields
+  (disk, capacity, serial, method, started/ended with the record's
+  clock-confidence labels "Started (clock not verified)" / "Ended (…)"),
+  plus a Check result row from the on-screen outcome: Verified / Not
+  checked (Quick zero) / Stopped (cancelled, interrupted) / Not confirmed
+  (completion_missing, indeterminate, stop_unconfirmed) / Failed (the
+  rest); preview "Preview: nothing was erased", no times. Elapsed stays
+  the line under the headline. Without a final record the card uses the
+  same disk/method facts and no times. Tk: the "This disk" box becomes the
+  "Summary" card (same identity rendering and Show more) with the fact
+  rows; the repeated method line is gone. GTK: identity, then a "Summary"
+  heading and a LIST of focusable LIST_ITEM labels. curses / plain
+  console: "Label: value" lines in place of the method line. Web preview:
+  Method and Check rows in a list. FR/DE/ES/IT drafts.
+- FILES: src/beamo_wipe/{erase_record,wizard,gallery}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py, tests/test_result_card_171.py (new, 20),
+  tests/test_console_parity.py, tests/test_method_operation_copy.py (Done
+  now expects "Method: <title>" instead of the repeated method line).
+- TESTS: for every outcome in test_result_presentations.CASES the card's
+  disk/method/time values equal the photo record's, RESULT.txt names the
+  same method, the check result maps as above and never says Verified
+  unless verified, Method precedes Check; Quick zero never reads verified;
+  preview card; check_text rules; every language; consoles show the rows
+  and not the method line; GTK source list roles; preview payload; Tk
+  card at 800x600 and 1280x820 (rows equal Wizard.result_card, no
+  clipping, no method line). OLD-CODE (#170 @ f4b5cfa): 20/20 fail.
+- CHECKS (Windows-native route): 20/20 (Tk/GTK-source one by one); ruff
+  clean; mypy --platform linux clean; 13 files that use the method line,
+  record or card vs #170: only the intended expectation changes above
+  (updated); test_ui_rework canvas controls [confirm] fails on #170 and
+  back to #155 (REGRESSION FROM #155: the hidden keyboard-help row's Change
+  button is an unmapped control) — fixed separately as BW-155B.
+- SCREENS: work171-scratch-20261105/before and after (verified result,
+  report idle / failed / saved, 800x600 and 1280x820).
+- NOT VERIFIED: Orca reading the list, Linux 72 DPI, ISO/QEMU, hosted
+  ci.yml, native review of the drafts. #172 (rebalance) builds on this.
+
+## BW-175-HELPMENU — One fixed Help & settings menu on every screen (IMPLEMENTED LOCALLY; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/help-settings-menu-175`
+  (stacked on `feat/result-card-171` @ a39794d; commit 9548946, `safety:`),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
+  #175 (UI review item 49). Ref #135, #144, #174, #179.
+- BASELINE (work175-scratch-20261105/before, metrics.txt): footer tools
+  changed per screen — Owner: Keyboard layout, Text size, Need a report?;
+  Pick/Confirm: Keyboard layout, Text size, Check disks again; Method:
+  Advanced, Keyboard layout, Check disks again, Need a report?; Review:
+  Keyboard layout, Check disks again; Working: none; Done: Sounds: off,
+  Hear again; Splash and Keyboard: none. Curses footer showed "R: Need a
+  report?" and "K: Keyboard layout" on some screens.
+- WHAT CHANGED: new src/beamo_wipe/help_menu.py (pure model: fixed ORDER,
+  MenuItem key/label/enabled/reason, rules) + Wizard.help_menu(),
+  Wizard.activate_help_item() (the one guarded path), can_open_advanced,
+  KEYBOARD_OPEN_SCREENS / REPORT_HELP_SCREENS (named, unchanged sets).
+  Items: Text size, Language and keyboard, Sounds, High contrast (disabled:
+  "Not available in this version", until #179), Report help, Advanced
+  (Method only — existing limit kept), Keyboard shortcuts (the screen's keys).
+  Disabled items stay listed with a reason. Text size: locked on the final
+  check and short status screens; enabled elsewhere (was footer-only on
+  first screens); consoles: disabled with the existing TEXT_SIZE_CONSOLE
+  reason. Tk: "Help & settings" first in the footer tools on every screen
+  (splash and status screens get a minimal footer with just it), F10,
+  popup above it, kept inside the window. GTK: Gtk.MenuButton + popover,
+  unavailable items are focusable labels with "Label — reason" for Orca,
+  F10. Curses: F10 opens a full-screen menu (1–7, Up/Down, Enter, Esc),
+  "F10: Help & settings" first in the optional footer line; the wizard keeps
+  ticking. Plain console: MENU. Web preview: same items and rules from the
+  payload (P.helpMenu), aria-disabled + describedby, F10, height capped to
+  the window. Removed from the footer: Text size, Keyboard layout, Need a
+  report?, Advanced, Sounds on/off. Kept: Check disks again, Screen-reader
+  view, Diagnostic, Hear again. R, K and A keys in curses still work and
+  are listed under Keyboard shortcuts. FR/DE/ES/IT drafts (key names stay
+  English). Docs: docs/screens.md row, docs/screen-reader.md.
+- SAFETY: opening reads only; while open the menu owns the keyboard (Esc
+  closes it — never Back or Stop; Enter presses only a focused menu control
+  — never Erase now; Tab/arrows stay inside); a screen change closes it;
+  focus returns to its button; curses holds the closing Enter/Esc so the
+  same press cannot act on the screen behind. No token, countdown, method,
+  disk selection or nwipe change.
+- FILES: src/beamo_wipe/{help_menu (new),copy,wizard,gallery}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,
+  console_wizard}.py, docs/{screens,screen-reader}.md,
+  tests/test_help_menu_175.py (new, 70), and updated expectations (settings
+  reached through the menu): tests/test_console_parity.py,
+  test_separate_footer_actions.py, test_modern_layout_20261031.py,
+  test_preview.py, test_tk_runtime.py, test_slow_unusual_interactions.py,
+  test_report_panel_135.py, test_gallery_method_focus_pass22_ui.py.
+- TESTS: model (every Screen lists all items in order, disabled ⇒ reason,
+  Advanced only on Method, text-size lock), reading changes nothing,
+  no item starts an erase on a ready Review, settings/keyboard return,
+  every language; Tk (first in footer on 7 screens and no old links, F10 /
+  Esc / focus return, reasons, Tab trapped, Enter+Esc on ready Review never
+  erase, Esc on Working never asks to stop, text size keeps focus, shortcuts
+  page, fits at 800x600 std/extra and 1280x820 large, screen change
+  closes); curses (F10 on every footer, reasons, Advanced from Method, ready
+  Review never erases, Confirm typing untouched); plain console; GTK source
+  (first, owns Esc, F10) + runtime (skipped without gi); preview payload
+  rules, source order, node logic. OLD-CODE (#171 @ a39794d): fails at
+  collection (no help_menu module).
+- CHECKS (Windows-native route): test_help_menu_175 69 passed + 1 skipped
+  (GTK runtime, no gi); Tk cases one by one 20/20; ruff clean; mypy
+  --platform linux clean. 36 related files vs #171 base (base 168
+  pre-existing Windows failures): 44 new at first — all footer-link
+  expectations (updated above), plus three real issues fixed: GTK
+  KEY_F10 read before the menu check (stub Gdk), FR/DE/ES/IT key names
+  must stay English, menu focus reset on redraw (now tracked per item).
+  After fixes every one of them passes alone except baseline failures
+  (gallery keyboard_setup_choices layoutChanged; Windows tmp
+  PermissionError; Windows confirm_erase). 9 base failures passed in this
+  run (timing flakes in progress_timing / slow_unusual / ui_rework review).
+- SCREENS: work175-scratch-20261105/{before,after} (9 screens × 800x600
+  std/extra, 1280x820 std/large; after adds -menu.png; 35/35 menus fit),
+  {before,after}/webd + after/webe (web preview, headless Chrome on a
+  scratch copy), {before,after}/curses.txt (80x24). Footer height: same on
+  Owner/Pick/Confirm/Method/Review/Done; Keyboard 92→122 and Working 84→114
+  (one tool row added); splash gains a 39 px footer.
+- NOT VERIFIED: GTK popover with Orca, Linux 72 DPI, ISO/QEMU, hosted
+  ci.yml, native review of the drafts. Interaction with #174 (collapse key
+  hints): the shortcuts page already lists the screen's keys.
+
+## QUEUE — UI review items received 2026-11-05, not started (Claude)
+
+- Pending, in order, each to be stacked on the previous branch:
+  BW-155B (Confirm keyboard-help row builds its Change button only while
+  shown; test_ui_rework canvas controls [confirm]), #172 (balance result
+  screen), #173 (align footer link row; re-measure after #175), #174
+  (collapse key hints; #175's Keyboard shortcuts page is the natural home),
+  #176 (one selected style), #177 (regular-weight serials, DejaVu Sans
+  Mono), #178 (readable disabled buttons + reasons), #179 (high contrast;
+  enable the #175 menu item), #180 (glossary + banned-synonym lint), #181
+  (reading level check), #183 (Windows "Restart to boot options" — never run
+  shutdown on this host; tests with a fake runner; Windows VM check
+  BLOCKED, no VM authorized), #184 (brand → boot key, one shared table),
+  #185 (Intel VMD/RST empty state; `safety:`; owner to approve warning
+  wording).
+- #182 (code signing): OWNER DECISION REQUIRED — see BW-182-SIGNING.
+
+## BW-182-SIGNING — Code-sign the Windows launcher (OWNER DECIDED 2026-11-07: STAY UNSIGNED FOR NOW; NOTHING PURCHASED OR CREATED; DEFERRED)
+
+- 2026-11-05, Claude (Opus 5.5). Backlog #182 (UI review item 56). No code,
+  workflow, account or purchase change. Research by web sources dated up to
+  2026-10-27; prices marked UNCONFIRMED come from resellers or mirrors and
+  must be checked before buying.
+- TODAY: `Start Beamo Wipe.exe` has no Authenticode signature
+  (docs/desktop-entry-design.md, docs/boot-card.md tell users to expect the
+  SmartScreen "unknown publisher" warning). Releases are signed and
+  published by `release.yml` job `publish` on a Linux Blacksmith runner,
+  which already authenticates to Google Cloud (project beamo-wipe) by
+  GitHub OIDC; no long-lived key is on a developer machine.
+- KEY FACT FOR THE DECISION: no option removes the warning on day one.
+  Since Feb/Aug 2024 Microsoft treats EV and OV the same (Trusted Root
+  Program 3.D.3; EV "no longer bypasses SmartScreen"). Reputation builds
+  per publisher certificate over weeks and hundreds of clean downloads;
+  signing every release with the same identity carries it forward. Signing
+  does replace "Unknown publisher" with the company name immediately.
+- OPTIONS
+  A. Microsoft Artifact Signing (formerly Trusted Signing), Basic:
+     about $9.99/month (5,000 signatures; UNCONFIRMED figure, Microsoft says
+     "starts at $9.99/month"); keys in Microsoft HSMs; 3-day certificates,
+     so timestamps are mandatory (timestamp.acs.microsoft.com). Needs an
+     Azure paid subscription, a new GitHub→Azure OIDC trust, organization in
+     an eligible region, business identifier, domain email, ID check (1–20
+     business days); a 3-year business-history rule is reported (Q&A, not in
+     current docs; UNCONFIRMED). Billing starts at account creation. Signs
+     from Linux with jsign `TRUSTEDSIGNING` (official GitHub action is
+     Windows-only).
+  B. OV certificate with the key in Google Cloud KMS (HSM protection level):
+     certificate about €139–€380/year depending on CA (Certum €209 cloud,
+     Sectigo ~$220 via resellers UNCONFIRMED) plus ~$1–2.50/month for the
+     HSM key; the CA must accept Google's key attestation (some charge an
+     attestation fee, UNCONFIRMED). Validity now max 460 days (CA/B CSC-31,
+     from 2026-03-01), so yearly renewal/re-issue. Reuses the existing
+     GitHub→Google OIDC publisher identity; signs on the Linux runner with
+     jsign `GOOGLECLOUD`, RFC 3161 timestamp, verify with osslsigncode.
+     Validation: business address, phone call, D-U-N-S preferred (free).
+  C. OV via a CA cloud signer (SSL.com eSigner ~$180–240/year for 240
+     signings + certificate; DigiCert KeyLocker ~$700–1,000/year): no own
+     HSM key, but a third-party signing credential to store as a CI secret.
+  D. EV: ~$300–500+/year, stricter validation, no SmartScreen benefit over
+     OV since 2024. Not recommended.
+  E. Stay unsigned: keep the documented warning and boot-card guidance.
+- RECOMMENDATION: B if the company prefers to keep signing inside the
+  existing Google Cloud release identity (no new cloud trust, no secret to
+  store); A if the company meets Artifact Signing eligibility (region, ~3
+  years of business history) and accepts an Azure subscription — cheapest
+  per year. Either way: sign only in `release.yml` `publish` (never on a
+  developer machine), RFC 3161 timestamp, verify the signature and the
+  timestamp in the same job before upload, record the signer and thumbprint
+  in the signed release manifest/inventory, and document user verification
+  (Explorer → Properties → Digital Signatures, or
+  `Get-AuthenticodeSignature`).
+- OWNER DECISIONS NEEDED: (1) option A, B, C or E; (2) budget; (3) the legal
+  entity name/country that should appear as publisher and whether it has
+  ~3 years of history (for A); (4) who completes CA/Microsoft identity
+  validation (cannot be done by an agent).
+- AFTER APPROVAL (not started): release.yml signing step behind the
+  production environment; secrets/identities only in the CI store; tests
+  that the publish script refuses an unsigned or untimestamped exe; docs
+  (release docs, boot-card wording "unknown publisher" → "Beamo… verified
+  publisher" only once signing ships). Go 1.26.8 and launcher behaviour
+  unchanged.
+- SOURCES: learn.microsoft.com/windows/apps/package-and-deploy/smartscreen-reputation;
+  …/code-signing-options; learn.microsoft.com/azure/artifact-signing/{faq,quickstart,how-to-signing-integrations};
+  learn.microsoft.com/security/trusted-root/program-requirements;
+  cabforum.org/2025/11/17/ballot-csc-31-maximum-validity-reduction;
+  docs.cloud.google.com/kms/docs/reference/pkcs11-jsign; ebourg.github.io/jsign;
+  shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
+
+## BW-155B — Confirm layout hint held a hidden Change button (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/layout-hint-build-155`
+  (stacked on `feat/help-settings-menu-175` @ 27f4f0b; commit 25362d9),
+  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155b-20261105`.
+  Regression from #155 found during #171.
+- WHAT CHANGED: tk_wizard._confirm keeps an empty hint frame;
+  _sync_layout_hint builds the sentence + Change (_build_layout_hint) when
+  the hint shows and destroys them when it hides. Same look when shown.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, tests/test_layout_hint_build_155b.py (new, 3).
+- TESTS / CHECKS: new file 3/3 pass, 3/3 fail on #175 @ 27f4f0b;
+  test_ui_rework canvas controls [confirm] now passes (fails on 27f4f0b);
+  test_confirm_layout_hint_155 Tk 5/5, test_confirm_spacing_157 15/15 (one
+  by one); ruff and mypy --platform linux clean.
+- NOT DONE: no new screenshots (rendering of the shown hint is unchanged);
+  Linux 72 DPI, hosted ci.yml not run.
+
+## BW-172-BALANCE — Balance the result screen (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, GTK, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/result-balance-172` (stacked
+  on `fix/layout-hint-build-155` @ 2e5c3e7; commit a00a936), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
+  (UI review item 46). Ref #134, #135, #171.
+- BASELINE (work172-scratch-20261105/before, before-preview): every live
+  result scrolls (content 1,165–1,708 px in a 403–855 px view, 800x600 to
+  1920x1080, every text size); the preview result just fits at 1920x1080.
+  "Empty space below" no longer reproduces; the top-heavy part was the
+  72 px badge + gaps (~180 px) pushing the summary and What next down.
+- WHAT CHANGED (Tk): badge 56 px (48 short), tighter heading/elapsed gaps;
+  a top spacer (_balance_result) centres the result when it fits the view
+  and stays 0 when it scrolls. GTK (native scrolled list), curses and the
+  web preview have no fixed-height hero: unchanged. docs/screens.md.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, docs/screens.md,
+  tests/test_result_balance_172.py (new, 7).
+- TESTS / CHECKS: new 7/7 pass, 7/7 fail on 2e5c3e7 (one by one); ruff,
+  mypy --platform linux clean; related Tk result tests one by one:
+  test_result_card_171 3/3, test_report_panel_135 24/24,
+  test_report_notice_170 9/9, test_ui_rework 6/6; test_tk_runtime "done"
+  83 cases, 69 fail — every one already failing on #175 (recorded
+  after_failed.txt: Windows tmp PermissionError, Windows erase start,
+  older Done expectations), none new.
+- SCREENS: work172-scratch-20261105/{before,after-shots172} (4 outcomes ×
+  800x600 std/large/extra, 1280x820 std/extra, 1920x1080) and
+  {before-preview,after-shots172p}; 800x600 first view now reaches the
+  third What next step.
+- NOT VERIFIED: displays taller than 1080 (Windows screen limit here),
+  Linux 72 DPI, hosted ci.yml.
+
+## BW-173-ALIGN — Footer link row and key-hint row share one left edge (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `fix/footer-align-173` (stacked on
+  `fix/result-balance-172` @ 1a1ef13; commit 9c3e7ba), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
+  (UI review item 47). Ref #174, #175.
+- BASELINE (work173-scratch-20261105/before/metrics.txt): link text vs hint
+  start offset -11 px (text hint) / -14 px (hint starting with a key-cap)
+  on Owner, Pick, Method at 800x600 and 1280x820, every text size; web
+  preview about 16 px.
+- WHAT CHANGED: _Button.text_inset() (pill inset 3 + padding); _text_start()
+  (a hint's first glyph or key-cap); _footer_shell packs the hint and the
+  Done note with that indent (wraplength reduced to match). Web preview
+  .fhint padding-left 17 px. GTK/curses: no pixel layout to align.
+- AFTER (work173-scratch-20261105/after/metrics.txt): offset +1 px (Tk
+  bbox rounding) in all 18 combinations.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, src/beamo_wipe/gallery.py,
+  tests/test_footer_align_173.py (new, 14).
+- TESTS / CHECKS: new 14/14 pass, 14/14 fail on 1a1ef13 (one by one); ruff,
+  mypy --platform linux clean; related Tk one by one:
+  test_separate_footer_actions 10/10, test_modern_layout footer 1/1,
+  test_help_menu_175 tk 20/20, test_report_panel_135 footer 9/9,
+  test_ui_rework 6/6.
+- NOT VERIFIED: Linux 72 DPI fonts (offset is font-independent: padding
+  only), web preview screenshot after (CSS checked by test), hosted ci.yml.
+
+## BW-174-SHORTCUTS — Footer key hints collapse into one Keyboard shortcuts item (IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/shortcuts-collapse-174`
+  (stacked on `fix/footer-align-173` @ 01cb4e6; commit dbf3574), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
+  (UI review item 48). Ref #173, #175, #142.
+- DECISION: collapse (not "hints after the first key press"): one footer
+  height (no row appearing under the pointer), two rows on every screen;
+  keys one step away (visible, Tab-reachable item; F10 → Help & settings →
+  Keyboard shortcuts); GTK/Orca keeps the keys in its popover; curses keeps
+  its key lines (keys are its only input). Trade-off: Review's "Tab to Erase
+  now, then Enter after the countdown" is now on the shortcuts page only;
+  Enter on Review still presses the focused Back by default (#165).
+- BEFORE/AFTER (work174-scratch-20261105/{before,after}/metrics.txt):
+  footer height 122→97 (800x600), 136→107 (800x600 extra), 142→113
+  (1280x820), 148→119 (1280x820 large) on Owner/Pick/Confirm/Method/Review/
+  Done; Working 114→89; Done 800x600 extra 136→107 (note moved into the
+  action row). Shortcuts page shots: after/shortcuts-*.png.
+- WHAT CHANGED: tk_wizard _footer_shell (no hint row; Keyboard shortcuts
+  item; Done note in the action row when the tools line is full),
+  _help_footer (same item), _open_shortcuts, shortcuts page (sentence per
+  line, key-caps via _hint_bar, Close when opened directly, Esc closes,
+  focus back to the item); gallery (hidden .fhint, #shortcuts-button,
+  openShortcuts/closeHelp focus); docs/screens.md.
+- FILES: src/beamo_wipe/ui/tk_wizard.py, src/beamo_wipe/gallery.py,
+  docs/screens.md, tests/test_shortcuts_collapse_174.py (new, 25), and
+  updated (hint now read on the shortcuts page): tests/test_key_hints_153.py,
+  test_keyboard_layout.py, test_result_hints_169.py,
+  test_separate_footer_actions.py, test_footer_align_173.py.
+- TESTS / CHECKS: new 24/24 + 1 skip (known Windows Tk Review 800x600
+  Extra hang) pass; on 01cb4e6 24 fail. 11 hint-related files vs #173:
+  only the intended hint-row expectations changed (updated, then pass one
+  by one); test_ui_system gallery selectors fails on both (pre-existing
+  #144). ruff, mypy --platform linux clean.
+- NOT VERIFIED: web preview screenshots (logic by node test, CSS by test),
+  Linux 72 DPI, hosted ci.yml.
+
+## BW-176-SELECTED — One selected style across controls (IMPLEMENTED LOCALLY; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/selected-style-176` (stacked
+  on `feat/shortcuts-collapse-174` @ 76c8eff; commit a2461f9), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
+  (UI review item 50). Ref #179 (high contrast can swap the token).
+- BASELINE (work176-scratch-20261105/before): radio dot + edge on cards,
+  filled navy pill in the size switch, edge-only language chips; web
+  preview language shown as "> English" text.
+- WHAT CHANGED: Tk token SELECTED_FILL/EDGE/EDGE_W/INK; _draw_selected_mark
+  (brand circle + white check), _icon_radio uses it; layout/disk/method
+  cards and language chips use the token (chips gain the mark); size switch
+  selected segment = "selected" _Button variant (2 px edge, tint, mark).
+  GTK: CSS class selected-choice on the selected language, text size and
+  layout buttons (names keep "(selected)"). Web: .sel .radio check,
+  .choice/.tick chips, size switch "btn choice sel" with aria-pressed.
+  docs/screens.md row.
+- FILES: src/beamo_wipe/ui/{tk_wizard,accessible_wizard}.py,
+  src/beamo_wipe/gallery.py, docs/screens.md,
+  tests/test_selected_style_176.py (new, 6), tests/test_modern_polish_20261101.py
+  (size switch expects the "selected" variant).
+- TESTS / CHECKS: new 6/6 pass, 6/6 fail on 76c8eff; contrast: selected
+  ink 7:1+ on tint, edge 3:1+ on surface/bg/track, white check 4.5:1+;
+  10 related files vs #174: no new failures (test_ui_system gallery
+  selectors pre-existing on both). ruff, mypy --platform linux clean.
+- SCREENS: work176-scratch-20261105/{before,after} (keyboard, pick, method
+  at 800x600 std and 1280x820 large) and {before,after}/web.
+- NOT VERIFIED: GTK CSS rendering (no GTK here), Linux 72 DPI, hosted ci.yml.
+
+## BW-177-SERIAL — Regular-weight serials, highlights bold (IMPLEMENTED LOCALLY; TK LETTER SPACING GAP; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/serial-type-177` (stacked on
+  `feat/selected-style-176` @ 8a7dd36; commit acd2517), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
+  (UI review item 51). Ref #129, #148, #152.
+- FONT: the live image ships fonts-dejavu-core; _mono_family picks DejaVu
+  Sans Mono first. Rendered DejaVu Sans Mono 2.37.3 (jsDelivr npm
+  dejavu-fonts-ttf, sha256 b4a6c3e4…c582 regular) with Pillow:
+  dotted 0 vs O, 1 with flag and foot, l with tail, I with serifs; regular
+  and bold have the same advance (work177-scratch-20261105/zoom.png,
+  glyphs.png). No font change needed.
+- WHAT CHANGED: Tk _meta_line serial font_mono_bold → font_mono (marked
+  _beamo_serial); #129 token overlay and #152 difference marks stay
+  font_mono_bold. GTK identity: SERIAL_SPAN (monospace, weight normal,
+  letter_spacing 768 = 0.75 pt) around the identifier for every identity
+  label, #129 token span (bold, double underline) inside it; label text
+  unchanged for Orca. Web: .mono.ser weight 400, letter-spacing .06em.
+- GAP (requirement "slight letter spacing"): Tk fonts have no tracking.
+  Thin/hair spaces take a full cell in a monospace font and break the
+  #129/#152 character-for-character overlays. Proper Tk spacing needs a
+  per-character canvas renderer for identifiers including both overlays —
+  proposed follow-up, not done here (confirmation display is safety-adjacent).
+- FILES: src/beamo_wipe/ui/{tk_wizard,accessible_wizard}.py,
+  src/beamo_wipe/gallery.py, tests/test_serial_type_177.py (new, 6).
+- TESTS / CHECKS: new 6/6 pass; on 8a7dd36 5 fail (the font-order guard
+  passes on both). Related (#129 card token, canvas layout, Confirm
+  spacing 157, result card 171, ui_rework, #148/#152) vs #176: no new
+  failures. ruff, mypy --platform linux clean.
+- SCREENS: work177-scratch-20261105/{before,after} (pick, confirm, method;
+  800x600 std, 1280x820 extra); no clipping (test at both sizes).
+- NOT VERIFIED: GTK markup rendering (no GTK here), Linux 72 DPI hinting of
+  the dotted zero at 14 px, hosted ci.yml.
+
+## BW-178-DISABLED — Readable disabled buttons with reasons (IMPLEMENTED LOCALLY; HOSTED GATE, GTK RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/disabled-buttons-178` (stacked
+  on `feat/serial-type-177` @ 5ff66a2; commit 17afdf8), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
+  review item 52). Ref #143, #179.
+- BASELINE (work178-scratch-20261105/before/metrics.txt): disabled primary
+  = DISABLED_BG #E8ECF1 / DISABLED_FG #6E7989, no outline — label 3.72:1,
+  pill vs white footer 1.19:1. Reasons beside the button: Owner only
+  (#143); Pick none; Confirm and Review only in the body.
+- WHAT CHANGED: tokens DISABLED_FILL #F0F5FA, DISABLED_EDGE #6A84A1 (dashed
+  4/3), DISABLED_INK #4A6684 in _Button for disabled primary/danger/
+  secondary (ghost/quiet/segment unchanged: 4.4:1 on white); _primary_btn
+  reason= (shown only while disabled; _set_primary_enabled keeps it in
+  step): Owner (OWNER_CONTINUE_REASON, same text), Pick
+  PICK_CONTINUE_REASON, Confirm CONFIRM_CONTINUE_REASON, Review
+  REVIEW_ERASE_REASON, Diagnostic busy DISABLED_BUSY. GTK button:disabled
+  CSS; web button.btn:disabled. FR/DE/ES/IT drafts. Other disabled controls
+  already carry reasons (Done note, report Save/Retry, Working finish
+  toggle, Help & settings items).
+- CONTRAST (measured): label 5.43:1 on fill; edge 3.87:1 on white.
+- FILES: src/beamo_wipe/{copy,gallery}.py, locales/{fr,de,es,it}.py,
+  ui/{tk_wizard,accessible_wizard}.py, tests/test_disabled_buttons_178.py (new, 14).
+- TESTS / CHECKS: new 14/14 pass, 14/14 fail on 5ff66a2 (one by one);
+  related (#143, #157, #162, #163, #165, ui_system, design_runtime,
+  modern_*) vs #177: no new failures except test_confirm_spacing_157
+  roomy [size1], which fails identically on #177 — bisected to #174, fixed
+  below. ruff, mypy --platform linux clean.
+- SCREENS: work178-scratch-20261105/{before,after2} (owner, pick, confirm,
+  review; 800x600 std, 1280x820 large).
+- NOT VERIFIED: GTK CSS rendering, Linux 72 DPI dash rendering, hosted
+  ci.yml, native review of the drafts.
+
+## BW-174B — Confirm help moved the status line by 1 px (REGRESSION FROM #174; FIXED LOCALLY)
+
+- 2026-11-05, Claude (Opus 5.5). Same branch, commit a7b0188.
+  test_confirm_spacing_157 roomy [1280x720] failed from #174 @ 76c8eff on
+  (passes on #173 @ 01cb4e6): the taller body flipped the centring spacer
+  by 1 px when the wrong-entry help appeared. The #174 comparison had not
+  included test_confirm_spacing_157. Fix in _balance_confirm: the status
+  pill's measured one-line height (not an estimated linespace per extra
+  line), and the Change button's height from the font (BW-155B builds the
+  button only while the help shows). test_confirm_spacing_157 15/15,
+  test_layout_hint_build_155b 3/3, test_confirm_layout_hint_155 Tk 5/5.
+
+## BW-179-CONTRAST — High-contrast theme on every screen (IMPLEMENTED LOCALLY; OWNER DECIDED 2026-11-07: BOOT ENTRY UNCHANGED; HOSTED GATE, GTK/ORCA RUNTIME, LINUX 72 DPI, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-05, Claude (Opus 5.5). Branch `feat/high-contrast-179` (stacked
+  on `feat/disabled-buttons-178` @ e60c7fa; commit dfd8786), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
+  review item 53). Enables the #175 Help & settings item.
+- BASELINE: no theme; the Help & settings High contrast item was greyed
+  ("not in this version"). Screens: work179-scratch-20261105/std178
+  (setup screen before), work175/work178 scratch for the other screens.
+- WHAT CHANGED (colours only; no wizard step, guard, token, countdown,
+  method, argv or discovery change):
+  - Model: `Wizard.high_contrast` (start from BEAMO_WIPE_HIGH_CONTRAST=1),
+    `set_high_contrast(bool)`, `toggle_high_contrast()`; app.py carries it
+    into the next session (Erase another disk). help_menu: the item is
+    enabled, labelled "High contrast: on/off", and keeps the menu open.
+  - Tk: `_HIGH_CONTRAST_PALETTE` / `apply_palette(high)` swaps every colour
+    token (white page, black ink and edges, PRIMARY #002A54, DANGER
+    #8A0000, OK #0A4A22, SELECTED edge 3 px black, yellow preview stripe);
+    `_sync_palette` recolours the persistent chrome on each draw; colour
+    parameter defaults resolve at call time (found by AST scan); 3 px
+    black focus ring. Setup screen: "Contrast" segmented choice
+    (Standard contrast / High contrast) after Text size.
+  - GTK/Orca: switches `gtk-theme-name` to HighContrast (restores the
+    starting theme when off) plus a thick-focus CSS block; starts on when
+    the desktop theme already is a contrast theme; setup-screen buttons.
+    Also fixes a #178 bug: an older `button:disabled` rule later in the CSS
+    overrode the #178 disabled colours; removed.
+  - Curses: bold white on black (init_pair + bkgd), F4 on the first
+    screen. Plain console unchanged (terminal colours).
+  - Web preview: `.shell.hc` variables, 4 px focus outline, menu item and
+    setup-screen choice.
+  - Copy: MENU_HIGH_CONTRAST_ON/OFF, CONTRAST_TITLE, CONTRAST_STANDARD
+    ("Standard contrast" — not "Standard", which is a text size),
+    CONTRAST_HIGH, CONTRAST_LEAD, CON_CONTRAST_KEY; FR/DE/ES/IT drafts.
+  - docs/screens.md: High contrast row; Help & settings row updated.
+- CONTRAST (asserted in test_palette_contrast): every text/background pair
+  7:1 or more; white on filled buttons 7:1 or more; edges and focus 3:1 or
+  more; selected edge 3 px. Selection keeps the drawn check (not colour
+  alone).
+- FILES: src/beamo_wipe/{app,copy,gallery,help_menu,wizard}.py,
+  locales/{fr,de,es,it}.py, ui/{tk_wizard,accessible_wizard,console_wizard}.py,
+  docs/screens.md, tests/test_high_contrast_179.py (new, 26),
+  tests/test_help_menu_175.py, tests/test_selected_style_176.py (GTK
+  selected-choice count 3 → 4: contrast uses the #176 token).
+- TESTS / CHECKS: new 26/26 pass; on e60c7fa all fail or error (50
+  FAILED/ERROR lines). Related comparison (19 files: ui_system,
+  design_runtime, modern_*, canvas_layout, card_token_129,
+  confirm_spacing_157, console_parity, help_menu_175, keyboard_layout,
+  language_first_131, result_card_171, review_enter_focus_165,
+  selected_style_176, setup_order_139, shortcuts_collapse_174, ui_rework,
+  disabled_buttons_178) vs #178: no new failures (run_179c vs run_178; two new tmp_path setup ERRORs in test_keyboard_layout came from a concurrent pytest pruning the shared Windows temp folder and pass when rerun alone). The first run found 5 new
+  failures, all from the contrast choice reusing the label "Standard"
+  (size-button counts 4 ≠ 3); fixed by the "Standard contrast" label and a
+  regression assertion that contrast and size labels never share a name.
+  ruff, mypy --platform linux clean.
+- SCREENS: work179-scratch-20261105/high (every screen + menu, high,
+  800x600 standard and 1280x820 large), high2 / std179 / std178 (setup
+  screen after the label fix; before), web3 (web preview high contrast).
+- OWNER DECISION: the accessible boot entry does not turn high contrast
+  on. It needs a live-image (boot parameter / environment) change;
+  BEAMO_WIPE_HIGH_CONTRAST=1 is ready. Not done without approval.
+- NOT VERIFIED: GTK HighContrast theme rendering and Orca on the live
+  image, Linux 72 DPI, curses on a real VT, hosted ci.yml, native review
+  of the FR/DE/ES/IT drafts.
+
+## BW-180-GLOSSARY — One name for each thing, with a banned-synonym check (IMPLEMENTED LOCALLY; SAFETY-MODULE WORDING FOLLOW-UP; HOSTED GATE, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/one-name-180` (stacked on
+  `feat/high-contrast-179` @ 16e45f2; commit e339343), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
+- BASELINE (work180-scratch-20261105/lint_before.txt, scan1/scan2.txt):
+  120 banned-synonym hits on English surfaces — boot/live/original/Beamo
+  boot USB for the Beamo USB, wipe for erase, PC/machine for computer,
+  drive for disk, refresh, second USB, "turn the PC off", offline
+  helper/page; translations split "clé USB de démarrage" vs "clé USB Beamo"
+  (and DE/ES/IT equivalents, 13 each).
+- WHAT CHANGED: docs/glossary.md (Use / For / Not / Notes table plus "Not
+  renamed"); tests/test_glossary_180.py parses it and checks copy.py
+  constants, prose string constants in src/beamo_wipe (no docstrings; not
+  locales/, safety.py, nwipe_runner.py), scripts/stage_live_assets.py,
+  helper/index.html, desktop/web/{index.html,app.js}, desktop/*.go, and
+  README.md / helper/README.md / docs/screen-reader.md (code stripped);
+  ALLOWED exceptions each must still occur. Text edits across copy,
+  inventory, recovery, identity, outcomes, progress, storage_limits (+ the
+  mirrored docs/storage-and-controller-limits.md), diagnostic_report,
+  support_export, wizard, app (CLI help), gallery comments, helper, launcher
+  page/app.js/readiness.go, USB README, README, screen-reader.md; locales:
+  the Beamo USB in every language (44 strings); translations.md row.
+  "Do not turn the PC off" became "Keep the computer on" (the stale block
+  must never say "shut down"; test_stale_progress).
+- FILES: 27 source/doc files + docs/glossary.md, tests/test_glossary_180.py
+  (new, 89 cases), 14 tests updated for the new wording.
+- TESTS / CHECKS: new 89/89 pass; on 16e45f2 the file errors at collection
+  (no glossary) and with the glossary copied in fails 6 (lists the old
+  synonyms). Full suite per file (702 files, 600-900 s cap each) on both
+  trees: after single-file reruns of every difference, no new failure on
+  #180 (three Tk cases — compact_rows_149 selected-disk, last_chance
+  quick_zero, report_panel_135 [found] — fail alone on both trees; the
+  rest flipped both ways only under the parallel run). Not run: four
+  files that hang/time out on Windows Tk on both trees
+  (test_adaptive_layout, test_reflow_large_text,
+  test_single_erase_warning_128, test_tk_runtime). Go 1.26.8 `go test
+  ./...` ok before and after, go vet and gofmt clean; ruff, mypy
+  --platform linux, node --check app.js clean.
+- SCREENS: work180-scratch-20261105/{before,after} (Boot helper top,
+  launcher page via headless Chrome).
+- FOLLOW-UP (needs a safety: review): safety.py guard texts ("Boot USB
+  appeared as a selectable disk…", "target disk"), nwipe_runner.py
+  messages ("A wipe is already running.") and their translations keep the
+  old words; listed under "Not renamed" in docs/glossary.md.
+- NOT VERIFIED: native review of the FR/DE/ES/IT wording, hosted ci.yml,
+  Linux 72 DPI, GTK runtime.
+
+## BW-187-OWNERCARRY — Keep the ownership tick when erasing several disks in a row (OWNER APPROVED OPTION A; IMPLEMENTED LOCALLY; HOSTED GATE, LINUX 72 DPI, GTK/ORCA RUNTIME, FULL DRY-RUN ERASE ON LINUX, NATIVE REVIEW, MERGE PENDING)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187` (stacked
+  on `feat/one-name-180` @ 065a8dd; record only), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
+  review item 61). Safety-sensitive: any change to owner_ok persistence is
+  a gate change (`safety:` commit, focused tests, owner approval).
+- BASELINE (code read on 065a8dd; screens
+  work187-scratch-20261106/before: owner, pick, done at 800x600 standard
+  and 1280x820 large):
+  - Erase another disk (#103) ends the wizard with wants_new_session; the
+    app loop (app._run_session) builds a brand-new Wizard, runner and
+    discovery ("never reset live authority fields in place") and carries
+    only language, keyboard layout, text size and high contrast.
+    _request_new_session_locked clears owner_ok, the typed token, the
+    authorization and the countdown. tests/test_erase_another.py pins this
+    (not owner_ok, new SPLASH, fresh runner/discovery, stale callbacks
+    cannot start the new runner).
+  - Second disk today: Done → Erase another disk → (save-or-continue if no
+    verified report) → Splash → Keyboard → Owner (tick) → Pick → Confirm
+    (token) → Method → Review (5 s) → Erase now.
+  - owner_ok is enforced twice: Owner screen (continue_owner) and
+    safety.assert_ready_to_wipe ("Owner checkbox is required.").
+  - The box reads "I own this computer and these disks, or I have written
+    permission to erase them." — it covers the disks connected when ticked.
+  - No list of earlier erases exists across sessions; each session has its
+    own evidence/report (session_store.begin_new_session).
+- PROPOSAL (options for the owner):
+  - A (recommended): carry the confirmation inside one app run, bound to
+    the disks it covered. On tick, record the identities (serial/WWN/size/
+    model, not paths) of every listed disk. After Erase another disk the
+    next session sets owner_ok only if its fresh discovery shows no
+    erasable disk outside that set and every listed disk has a stable
+    identity; otherwise the Owner screen appears unticked ("A disk was
+    connected since you confirmed. Confirm again."). In memory only: a
+    crash, kiosk restart, recovery or reboot drops it; never written to
+    the session store or USB. The Owner screen is skipped; Pick shows
+    "You confirmed that you own these disks or have written permission to
+    erase them. Change" (Change = back to Owner, box cleared). Per-disk
+    gates unchanged: fresh rediscovery, selection, exact token, 5-second
+    review countdown, separate Erase now, pre-launch rediscovery and
+    identity check, one nwipe, boot USB excluded; assert_ready_to_wipe
+    unchanged.
+  - B: same binding, but the Owner screen still appears with the box
+    pre-ticked and the same sentence (saves the tick, keeps the screen).
+  - C: no carry-over; only mark earlier erases (no gate change).
+  - All options: Pick marks disks erased earlier in this app run ("Erased
+    earlier — checked" / "overwritten with zeros, not checked" / "not
+    finished"), still selectable (a failed erase may be retried); each
+    erase keeps its own evidence and report; parity in Tk, GTK/Orca,
+    curses, plain console and the web preview.
+- OWNER QUESTIONS: (1) A, B or C? (2) keep the binding to the disks
+  present when ticked (recommended) or carry over regardless? (3) any
+  expiry (idle minutes or number of disks)? (4) may each evidence/report
+  record whether ownership was confirmed on screen or carried over (adds
+  one field)? (5) approve the wording above.
+- PLAN AFTER APPROVAL: `safety:` commit; tests — carry-over only within
+  one app run (fresh process starts unticked), a new or unidentifiable
+  disk drops it, Change clears it, token/countdown/Erase now/rediscovery
+  still required (assert_ready_to_wipe refuses without each), boot USB
+  never listed or marked, one nwipe, evidence per erase separate, erased
+  marks correct per outcome; update test_erase_another.py expectations;
+  screenshots at 800x600 and 1280x820, every text size; GTK/curses parity.
+- NEXT ACTION: superseded — see DECISION and IMPLEMENTED below.
+- DECISION (2026-11-06, owner, via the session question): option A; a disk
+  connected after the tick asks again (binding kept); each evidence/report
+  records whether ownership was confirmed on screen or carried over. No
+  expiry asked for (the confirmation lasts for the app run only).
+- IMPLEMENTED: commit 0fc885b (`safety:`), on top of 9454c9b (BW-175B).
+  - New src/beamo_wipe/owner_carry.py: disk_key (serial, WWN, size,
+    model; None without serial and WWN or for the boot disk), capture /
+    OwnerCarry.covers (no carry for unidentifiable or duplicate
+    identities), erased marks (checked / unchecked / unconfirmed; nothing
+    for proven-nothing-erased codes; latest erase of a disk wins).
+  - wizard.py: owner_source ("on_screen" / "carried_over"),
+    _clear_owner_locked at every reset (recovery, layout change, preview
+    reset, Check disks again), continue_owner records what an on-screen
+    tick covered, offer_owner_carry (Splash/Keyboard only, never ticks by
+    itself), _apply_owner_carry_locked at the first accept_keyboard →
+    Owner (skips to Pick only if it covers the fresh discovery; otherwise
+    Owner unticked with OWNER_CARRY_NEW_DISK / OWNER_CARRY_UNSURE),
+    take_handoff (only after Erase another disk; read once),
+    change_ownership, owner_carried, erased_tag, disk_tags (encryption
+    tags #154 + erased tag). Evidence inputs pass owner_confirmation.
+  - app.py: _run_session carries (confirmation, erased list) in local
+    variables only and offers them to the next fresh wizard.
+  - evidence.py: optional authorization.owner_confirmation (closed set);
+    privacy.py: sharing copy keeps only on_screen / carried_over (a test
+    caught that a generic allowlist would pass forged text);
+    result_summary.py: "Ownership" line when present.
+  - UIs: Tk Pick row + Change link, Owner note, tags via disk_tags; GTK
+    focusable line + Change button (accessible name includes the line),
+    note, spoken tags; curses line, W key and footer hint, note, tags;
+    plain console line + OWNER command, note, tags. Web preview unchanged.
+  - Copy (EN + FR/DE/ES/IT drafts): OWNER_CARRY_*, CON_OWNER_CARRY_*,
+    TAG_ERASED_* ("Earlier erase not confirmed" instead of the proposal's
+    "not finished": it also covers a finished erase whose check failed),
+    result_summary H_OWNERSHIP / OWNERSHIP_ON_SCREEN / OWNERSHIP_CARRIED.
+  - docs/screens.md row, docs/screen-reader.md paragraph.
+  - Tests: tests/test_owner_carry_187.py (new, 31): identity binding,
+    one app run only, hand-off only via Erase another disk, new/unmatched
+    disk asks again, blocked/empty discovery never ticks, Change, Check
+    disks again and layout change drop it, every per-disk gate still
+    required (no selection, wrong token, countdown) and
+    assert_ready_to_wipe unchanged, erased marks per outcome (boot never
+    marked, still selectable), evidence/report/sharing field, the wizard's
+    own source reaches evidence, app loop: fresh wizard+runner each
+    session and a new app run starts unticked, curses/plain/GTK parity,
+    Tk Pick line/Change/tag at 800x600 and 1280x820, Tk Owner note, every
+    language. Updated pins: test_encrypted_tag_154 (tags via disk_tags;
+    regex excludes the _encryption_tags method name),
+    test_high_contrast_179 (app loop text), curses stub in
+    test_ui_console_save_prompt_pass9 (owner_carried).
+- CHECKS: new 31/31 pass; on 065a8dd the file errors at import (no
+  owner_carry). ruff, mypy --platform linux clean. Related comparison,
+  202 files one by one, #187 vs #180: after single-file and single-case
+  reruns no new failure caused by #187 (remaining differences flip both
+  ways or fail identically on #180 alone; Windows tmp PermissionError
+  tests identical). 57 further stub-wizard files: no error mentions the
+  new attributes. Full dry-run erase (confirm_erase → Working) cannot run
+  on this Windows host (known baseline), so the positive erase path is
+  covered here only through gate refusals and the _finish evidence path.
+- SCREENS: work187-scratch-20261106/before (owner, pick, done) and after
+  (pick-carried and owner-new-disk at 800x600 standard, 1280x820 large
+  and extra): no clipping.
+- NOT VERIFIED: hosted ci.yml, Linux 72 DPI, GTK/Orca runtime, curses on
+  a real VT, full dry-run and QEMU erase sequence of two disks, native
+  review of the drafts. Do not merge before those pass.
+
+## BW-175B — Tk _draw called the #175/#179 hooks unguarded (REGRESSION FROM #175/#179; FIXED LOCALLY)
+
+- 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187`, commit
+  9454c9b. Found while checking #187: test_qemu_diagnostic_markers and
+  test_tk_review_visible_pass16_ui draw with a partial window; #175 added
+  _help_focused_key / _help_footer / _sync_help_menu and #179
+  _sync_palette calls in TkWizard._draw without the getattr guard the
+  other optional hooks use: 29 failures vs 3 on a39794d (before #175).
+  The #175–#180 comparisons missed it because both sides had it.
+- FIX: guard the four calls; real windows unchanged. Those two files now
+  match a39794d (3 environment failures), and all 12 files that draw
+  with a partial window match a39794d exactly (69 = 69 lines).
+- REMAINING: the same regression exists on the #175–#180 branches until
+  they are rebased onto this fix or merged together with it.
+
+## BW-INT-20261107 — Owner decisions and integration round (IN PROGRESS)
+
+- 2026-11-07, Claude (Opus 5.5). Branch `integrate/ui-review-20261107`
+  (from `feat/owner-carryover-187` @ 699825a, which contains every pushed
+  task branch #127–#187), worktree
+  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-int-20261107`.
+- OWNER DECISIONS (given in chat 2026-11-07, by AskUserQuestion):
+  * #158: option B — one SSD limits line between the disk card and the
+    method cards, full text under Show more; re-measure on top of #159.
+  * #161: chip "Rarely needed" and the Show more text approved as written.
+  * #167: keep relative times; never show clock times from the PC clock.
+    Question closed; Wizard.wall_clock_trusted stays False.
+  * #179: the speech boot entry does not turn high contrast on; it stays
+    one choice away in Help & settings. Question closed.
+  * #182: stay unsigned for now; revisit later. Nothing purchased or
+    created. Not started; kept open in Notion as deferred.
+  * #185: empty-state wording approved: heading "This PC's disk may be
+    hidden by Intel VMD (RST)."; steps "1. Restart and open the BIOS/UEFI
+    setup. 2. Find the storage setting (often called SATA mode, RST or
+    VMD). Change it to AHCI, or turn VMD off. 3. Save, then start from the
+    Beamo USB again."; warning "Windows may not start until you change
+    this setting back. If BitLocker is on, Windows may ask for its
+    recovery key." Shown only when detection is certain.
+  * Hosted CI: after local and Linux checks are clean, dispatch ONE hosted
+    `ci.yml` run on the combined branch and report; do NOT merge to main
+    until the owner says so. No release or publish.
+- NOTION: on 2026-11-07 the 49 built tasks (#127, #129, #130, #135–#157,
+  #159–#180, #187) were set to Done in the Wipe To Do database at the
+  owner's request, each with a comment naming its branch, commit and the
+  checks still outstanding. The workspace automation "Project To Do
+  Cleanup" archives Done tasks. This record stays the source of truth for
+  what is still pending on each (hosted gate, merge, native review).
+- LINUX: WSL works again (2026-11-07; 2.9 GB RAM, 2 CPUs, shared with a
+  peer lab self-test). Full-suite runs of main 58c677f and 699825a started
+  at low priority in /home/beamo-qual/bw-linux-20261107 (out/status.txt).
+- 2026-11-08, Claude (Opus 5.5), takeover after the original thread wedged
+  (its turns died before the provider started; C: had filled to 0.5 GB):
+  * LINUX (verified, not assumed): both runs FINISHED. main 58c677f:
+    320 failed / 11109 passed / 477 skipped (1:14:28). Combined 699825a:
+    588 failed / 14185 passed / 490 skipped / 26 errors (2:23:01). 295
+    failure ids are new versus main (AssertionError 292 vs 10; no ENOSPC,
+    OOM, segfault or display loss). Largest groups: test_tk_runtime 83,
+    test_sound_dialog_state_pass12 48, test_accessible_fit_20261027 32,
+    test_accessible_runtime 28, console stop-hold/key-origin errors 22.
+    Isolated rerun of those 295 ids started 2026-11-08T21:46:59Z
+    (out/rerun.log) to separate regressions from order/load effects.
+  * HELPERS: all six helper agents of 2026-11-07 were dead (cancelled at
+    the session restart); none had committed. Their uncommitted work was
+    intact in beamo-wipe-{158,177g,180f,184,185,186}-20261107. #183 had
+    not started. The lead scratchpad with the task texts was deleted in
+    the disk cleanup; texts were recovered verbatim from the subagent
+    transcripts to C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\
+    (with RESUME.md). All six restarted 2026-11-08 ~21:45Z as delegated
+    tasks to finish from the existing worktrees.
+  * LINUX TRIAGE (2026-11-08): the isolated rerun reproduced 294 of the 295
+    new ids (268 failed, 26 errors, 27 passed; 1 was order-dependent), so
+    they are deterministic. Likely cause: the task branches were tested
+    on native Windows, where test_tk_runtime, test_adaptive_layout, the
+    GTK runtime and termios console tests are skipped, so pins drifted
+    across the stack. Logs copied to
+    C:\Users\Jack\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
+    rerun.log, rerun.ids, main.log, top.log). Three delegated triage
+    branches started: fix/linux-tk-20261108, fix/linux-console-20261108,
+    fix/linux-gtkweb-20261108 (WSL runs serialised by
+    /home/beamo-qual/triage-wsl.lock).
+  * MERGED into integrate/ui-review-20261107 locally: #180F
+    safety/guard-wording-180f @ 921b39e (merge f641541; not yet pushed).
+
+## BW-180F-GUARD-WORDING — Beamo USB wording in the shown boot-guard messages (DONE LOCALLY, safety: commit; MERGED INTO INTEGRATION; LINUX 72 DPI, NATIVE REVIEW, HOSTED GATE, MAIN MERGE PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch `safety/guard-wording-180f`
+  @ 921b39e (pushed), base 84efc57; merged into
+  `integrate/ui-review-20261107` as f641541.
+- WHAT CHANGED: safety.BOOT_APPEARED_SELECTABLE/ALIAS (shown as the blocked
+  screen body) say "The Beamo USB ..." in EN plus FR/DE/ES/IT drafts.
+  Reword only; guards, raise sites and constant comparisons unchanged.
+  tests/test_glossary_180.py now lints safety.py and nwipe_runner.py with
+  per-text ALLOWED reasons (nwipe's own "not wiping it" output; evidence
+  failure_reason "nwipe exited without wiping"; never-shown SafetyError
+  texts mapped to PREFLIGHT_BLOCKED / STARTUP_UNCONFIRMED /
+  EVIDENCE_INVALID). docs/glossary.md and docs/translations.md updated.
+- TESTS: +6. New file on base: 10 failed; on branch: 95 passed.
+- CHECKS (Windows native): ruff clean; mypy same as base; 12 focused
+  files 965 passed / 1 skipped / 29 failed with identical failure ids on
+  base.
+- NOT VERIFIED: Linux 72 DPI full suite; PICK_BLOCKED screenshots; native
+  review of the 8 locale strings.
+- OWNER QUESTION (optional): "nwipe exited without wiping" is kept because
+  it is persisted evidence text; renaming it needs its own decision.
+
+## BW-186 — SSD firmware erase decision record (PROPOSAL READY; OWNER DECISION PENDING; MERGED INTO INTEGRATION)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch
+  `docs/ssd-erase-decision-186` @ 6d73615 (pushed), base 84efc57; merged
+  into `integrate/ui-review-20261107` as 249d1eb.
+- WHAT CHANGED: new docs/decisions/ssd-firmware-erase.md (options, risks,
+  verification limits, draft outcome copy, exact claims.md lines affected,
+  safety gates, test matrix, effort, staged rollout, 8 owner decisions in
+  §12); one link line in docs/compatibility-matrix.md §14. No code, claims
+  or product copy changed.
+- RECOMMENDATION: keep today's nwipe overwrite (Option A). Only with owner
+  approval, stage NVMe Sanitize on internal NVMe disks before the normal
+  overwrite; never ATA Security Erase; refuse behind USB bridges/RAID/VMD.
+  Needs a physical lab (blocked on this remote-only host); estimate 8–12
+  engineer-weeks plus the lab.
+- CHECKS: 11 focused docs/claims files on a full copy: base 231 passed /
+  11 skipped / 0 failed; with the change identical.
+- NOT VERIFIED: no hardware; IEEE 2883, ACS-3, NVM Command Set and TCG Opal
+  not read; frozen/Sanitize prevalence, QEMU sanitize, VMD behaviour,
+  nvme-cli licence and Format timeout unverified; effort is an estimate.
+- NEXT ACTION: owner answers §12. Any implementation first needs AGENTS.md
+  and docs/claims.md rule changes, a safety: commit and a physical lab.
+- CLEANUP: work186-scratch-20261107\base84 (319 MB) can be deleted after
+  integration.
+
+## BW-185 — Intel VMD/RST hint on the empty disk list (IMPLEMENTED, safety: commit; MERGED INTO INTEGRATION; GTK RUNTIME, SYSFS-TREE TESTS, LINUX 72 DPI, REAL HARDWARE, NATIVE REVIEW, OWNER WORDING OK PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch `feat/vmd-rst-empty-185`
+  @ 092353d (pushed), base 84efc57; merged into
+  `integrate/ui-review-20261107` as 7e781f0 (lead reviewed the wizard/app
+  hook: display only, probed only when nothing is selectable, cached per
+  discovery, any error keeps the generic text).
+- WHAT CHANGED: new src/beamo_wipe/hidden_storage.py (read-only sysfs PCI
+  reader + lspci parser + fail-closed classifier; Intel IDs from kernel
+  vmd.c vmd_ids[] v6.12+mainline and ahci.c Intel entries in RAID class
+  0x0104). Wizard.empty_storage_hint; recovery_for_empty(hint) shows the
+  owner-approved text only for vmd/rst. Tk, GTK, curses, plain console,
+  web preview (scenario "hidden"), ./preview --scenario hidden. FR/DE/ES/IT
+  drafts. Docs: storage-and-controller-limits §6a, screens.md, runbook §4.c.
+- WORDING: "This PC's disk" became "This computer's disk" because the
+  glossary bans "PC" (enforced by tests/test_glossary_180.py). Owner to
+  confirm.
+- TESTS: +59 (test_hidden_storage_185.py 52, _tk 3, _gtk 2 needing gi);
+  fixtures tests/fixtures/pci_185/. Fail before, pass after on Windows.
+- CHECKS (Windows): ruff, mypy pass; 51 focused files: failure ids
+  identical to base (88 env failures).
+- SCREENS: C:\Users\Jack\dev\BeamoTech\work185-scratch-20261107\shots\.
+- NOT VERIFIED: GTK runtime, real sysfs-tree tests, Linux 72 DPI, real
+  VMD/RST hardware or ISO boot (the live image has no lspci; sysfs only).
+- OWNER QUESTIONS: approve "computer's"; show the hint when vmd is bound
+  but no NVMe controller is visible (it shows now, worded "may be hidden")?
+
+## BW-LINUX-GTKWEB-20261108 — GTK/web-preview share of the Linux 72 DPI regressions (PARTIAL; MERGED INTO INTEGRATION; FOLLOW-UP NEEDED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-gtkweb-20261108
+  @ fb4851c (pushed), from f641541; merged into integrate as the merge after
+  7e781f0 (lead reviewed the product fix and the safety: test rewrite).
+- ENV ROOT CAUSE: the WSL route kept XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir,
+  so GDK used WSLg Wayland (852x689). A private XDG_RUNTIME_DIR (as
+  scripts/ci-hosted.sh) gives X11 / Sans 10 / 800x600; main's
+  test_accessible_runtime goes from 165 failures to 1.
+- FIXED: #175 regression (GTK Help & settings label did not wrap; window
+  941 px at Extra large DE) + test over 5 languages × 3 screens; stale tests
+  for #147/#154/#187 spoken names, #144/#175 fakes, #149/#155/#163/#175/#179
+  web harnesses; safety: #165 GTK Enter test rewritten (it failed at its own
+  commit 1603a08; the new one is stricter, test-only).
+- CHECKS: 4 GTK files 71/71 in WSL with the CI env; 8 web files 62/62 on
+  native Windows only (not WSL); ruff clean; mypy not run.
+- OPEN: 9 test_accessible_runtime failures newly exposed by the correct env
+  (canonical_announcement[verified]/[unverified] — outcome text, check
+  carefully; report_help_intent_refresh_and_scroll ×2; evidence_failure_retry;
+  progress_has_shared_text…; stale_progress…;
+  done_announcement_is_first_heading; confirm_names[ABCD12-3]). Web files
+  not yet run in WSL. test_ui_fit confirm-preview ×5 handed to the Tk agent.
+- INCIDENT 2026-11-08: ~10 full-tree extractions (~322 MB each) grew the
+  WSL vhdx and filled C: to 21 MB; WSL ext4 went read-only. WSL was NOT
+  stopped. Lead freed space: removed 43 clean, pushed old task worktrees
+  (#137–#180 except #143 dirty and #158-20261105 unpushed) and 2.4 GB of
+  re-creatable base/fb source copies + a Go cache in work134–147/180
+  scratch (screenshots and logs kept); deleted the 2.9 GB gtkweb WSL dir
+  and old main/top trees inside WSL. C: back to 3.6 GB; WSL alive again.
+  The vhdx itself was not compacted (needs wsl --shutdown — not done).
+
+## BW-158-LIMITSLINE-B — One-line limits under the selected disk (IMPLEMENTED @ f72aec0; OWNER CHOSE FIX (b) 2026-11-08; REWORK IN PROGRESS; NOT MERGED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/limits-line-158b
+  @ f72aec0 (pushed), base 84efc57, worktree beamo-wipe-158-20261107.
+- Built option B in Tk, GTK, curses/plain console and web preview: one line
+  per disk type (SSD/NVMe "On SSDs, overwriting may not reach every hidden
+  area."; HDD/unknown reuse their notice's opening), full notice under Show
+  more, Storage limits (L) unchanged. +37 tests (36 fail on base).
+- CONFLICT: at 800x600 Extra the line wraps and pushes the #161 "Rarely
+  needed" chip 21 px below the fold (test_rarely_needed_161 fails). Quick
+  zero at 800x600 standard was 46–51 px short; now 93–98 px (title hidden).
+- OWNER DECISION 2026-11-08 (AskUserQuestion): option (b) — show the
+  Storage limits (L) button only after Show more is opened; L key works in
+  every state; keep the #161 test unchanged. Sent back to the #158 helper.
+- NEXT ACTION: helper reports; lead reviews and merges into integration.
+
+## BW-LINUX-CONSOLE-20261108 — console/curses share of the Linux 72 DPI regressions (DONE; MERGED INTO INTEGRATION as a9c684e)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-console-20261108
+  @ cd6554c (pushed), base f641541.
+- REGRESSION fixed (29e103c): the curses Done page at 80x24 had lost the
+  support link for failed results and, after a report save, "You can remove
+  the report USB now." from page 1 (rows added by #134/#135/#171/#175). New
+  tests/test_console_done_first_page_20261108.py (12).
+- STALE tests updated (cd6554c): stop-hold/key-origin fixtures (the #133
+  sound check reached the forbidden read_cmdline on Linux; stop/consent
+  assertions were already passing), console_pick monotonic (#132),
+  export_stages console (#135 panel), journey 80x24 header (#144 badge),
+  German Working wrap (#132).
+- "Not confirmed — the result is unknown" on the USB fixtures is CORRECT
+  (exit-1 failed erase, indeterminate on main too; all 11 result codes equal).
+- CHECKS: WSL 72 DPI: 8 area files + new test 179 passed; neighbours pass.
+- OWNER NOTES: at 80 columns the power badge wins over the step name in the
+  header (per #144); saved panel repeats the removal line on purpose; dead
+  code copy.EXPORT_STAGES / export_stage_lines / report_aftercare.
+
+## BW-LINUX-GTK2-20261108 — GTK runtime tests follow #132–#177 (DONE; MERGED as 4b8a6e9)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-gtk2-20261108
+  @ cbb50ce (pushed), base 623d4f5. Test-only.
+- GTK announces the CORRECT outcome: canonical_announcement verified /
+  unverified failed only because #134 (owner-approved) made the plain
+  headline the heading; the no-evidence fixture is correctly unconfirmed.
+  Other 7 failures stale for #135/#145/#167/#175/#177/#132.
+- CHECKS: WSL 72 DPI, private XDG_RUNTIME_DIR: 13 GTK + web files 330
+  passed / 0 failed / 0 skipped.
+- WATCH: slow_sound_discovery (60 ms limit, also fails on main) and
+  test_orca_announces_every_result are timing-sensitive under load.
+
+## BW-184 — Detect the PC brand and show the right boot key (IMPLEMENTED; MERGED as 6955082; GO SUITE RE-RUN BY LEAD, LINUX 72 DPI, NATIVE REVIEW PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/boot-key-brand-184
+  @ 949218d (pushed), base 84efc57.
+- desktop/bootkeys.json is the single key table (sources in
+  docs/boot-keys.md); scripts/gen_boot_keys.py generates the helper (5
+  languages), launcher and boot-card lists, with a drift test. Brand read
+  without elevation (WMI / sysfs DMI), injected bounded reader. "Most
+  <brand> computers: press <key> at power-on." + table under Show more.
+  Reconciled HP "Esc, then F9", ASUS "Esc or F8".
+- TESTS: Go bootkeys_test.go (11), tests/test_boot_keys_184.py (13).
+- OWNER QUESTIONS: approve HP/ASUS wording; docs/runbook.md and
+  docs/compatibility-matrix.md still say "HP F9/Esc" — update?
+  FR/DE/ES/IT drafts need native review. Lenovo/MSI source pages 403.
+
+## BW-183 — Restart to boot options in the Windows launcher (IMPLEMENTED; MERGED as 7926c45; VM ACCEPTANCE BLOCKED / NOT TESTED)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch
+  feat/restart-boot-options-183 @ 6b2b119 (pushed), stacked on 949218d.
+- Optional, confirmed restart on Win10+ UEFI x64 after the Beamo USB is
+  identified: %WINDIR%\System32\shutdown.exe /r /o /t 0 (no /f, no
+  elevation, no BootNext). Explains Choose an option > Use a device > USB.
+  Saved-work tick; failure falls back to the #184 key. Lead verified: the
+  real runner's first statement is advancedStartupGuard() (refuses under
+  testing.Testing()); wired only in run(); AST test mutation-checked.
+- TESTS: Go advanced_startup_test.go (9), tests/test_restart_boot_options_183.py (7).
+- NOT TESTED: Windows 10/11 VM acceptance (real restart, WinRE screens, EFI
+  USB Device naming, BitLocker, standard/admin, policy-denied shutdown
+  right, cancelled restart) — needs an owner-authorized isolated guest; this
+  host must never restart. Playwright not run locally.
+
+## BW-177G-TRACKING — Tk letter spacing for serials (IMPLEMENTED, safety: commit; MERGED as b5ba1ee; LINUX 72 DPI PENDING)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch feat/serial-tracking-177g
+  @ 0df1f27 (pushed), base 84efc57. Closes the BW-177-SERIAL gap.
+- Each serial/hardware-ID character is its own canvas item (1 px gap
+  Standard, 2 px Large/Extra); #129 token and #152 marks drawn on the same
+  cells. Characters are read back after every draw and must equal the
+  identifier, else the plain label shows with no marks. GTK/web/console
+  unchanged. Spoken/console/evidence text unchanged.
+- TESTS: tests/test_serial_tracking_177g.py (51; 49 fail on base).
+- OWNER NOTE: a 55-character serial wraps one row sooner at Large/Extra.
+
+- 2026-11-08 lead: 27ecb6a adds `# noqa: S105` to the nine #156 TOKEN_*
+  UI strings in copy.py (ci-hosted.sh's S105 gate would fail otherwise).
+  CI lint block re-run on Windows: ruff (src, tests, developer_tests,
+  security sets), ruff format --check, mypy --platform linux (61 files),
+  compileall: all pass.
+
+## BW-LINUX-TK-20261108 — Tk share of the Linux 72 DPI regressions (DONE; MERGED as a5eb605)
+
+- 2026-11-08, Claude (Opus 5.5, delegated). Branch fix/linux-tk-20261108
+  @ 6da4fe9 (pushed), base f641541.
+- STALE tests updated with the same safety meaning: #134 heading/What
+  happened, #135 panel/QEMU marker, #136 guarded refresh (a second F5 or the
+  F8 reader switch never accepts the dialog), #142, #144, #152, #157 reveal,
+  #163, #164, #171, #174, #175. No owner-facing outcome was wrong; the
+  "indeterminate" Done fixtures carry minimal evidence and fail closed.
+- FAKES given later fields (power_badge, screen, high_contrast,
+  take_handoff); pass6 fixture answers the #133 sound check (read_cmdline
+  stays forbidden).
+- REGRESSIONS fixed (6da4fe9, display only): footer tools drop "(F5)/(F8)"
+  only when the line would wrap (#174 made 3 rows at 800x600 Extra on
+  Linux); Working left actions use full width; Confirm always uses the
+  scrolling body (#155 Change was squeezed to 16 px on large windows).
+- ENVIRONMENT: sound_dialog_state_pass12 (48) = WSLg XDG_RUNTIME_DIR leak;
+  120 pass with the fix.
+- CHECKS (WSL 72 DPI): all Tk-area files pass; 14 neighbouring suites
+  350 passed / 2 skipped.
+- FLAKY: test_held_space_from_save_cannot_repeat_onto_shutdown (redraw
+  racing focus_set; failed 1 of 3 runs and in the first combined run).
+- OWNER QUESTIONS: (1) at 800x600 Extra the footer shows "Check disks
+  again" / "Screen-reader view" without "(F5)/(F8)" (keys still on the
+  Keyboard shortcuts page) — acceptable? (2) DE/FR/ES/IT footers at
+  Large/Extra still need 3 rows (852–989 px vs 768) — accept, or move tools?
+
+- 2026-11-08 lead: full Go suite on integration 27ecb6a (Windows): go vet
+  clean, `go test ./...` ok (39.7 s); see below for linux/darwin vet.
+  Linux/darwin amd64: go vet and test build ok.
+
+- 2026-11-08 lead: #158 option (b) done — branch feat/limits-line-158b @
+  6bc3322 (pushed), merged into integration (clean auto-merge). Storage
+  limits (L) shows only when the line is opened (Tk + web); L works in both
+  states; new shortcut line "L opens the storage limits." (Tk/GTK/web, 4
+  locale drafts). test_rarely_needed_161 unchanged and passing. Quick zero
+  at 800x600 standard: 46–51 px short before #158, 83–88 px now (title
+  below the fold; cards not redesigned). Windows on the merged tree: ruff,
+  S-set, mypy (61 files) clean; 7 new-feature test files pass. Linux 72 DPI
+  on the merged tree still to run. Owner: native review of the new locale
+  strings; sign-off on prominence vs docs/claims.md / Ref #18.
+
+## BW-INT-20261107 — 2026-11-09 integration verification round (lead)
+
+- Full Linux 72 DPI run on 7267153 (all merges except #158; private
+  XDG_RUNTIME_DIR): 72 failed / 14878 passed / 478 skipped (1:18:22); 62
+  of the 72 also fail on main (no-.git copy, receipts). 10 new, all
+  integration interactions between separately merged branches:
+  * console 80x24 Done (de/it verification_failed lost the Save a report
+    heading; report-error step off page 1) after 29e103c put the help
+    destination on page 1 -> 4a99b82 drops the duplicate footer read hint
+    ("Up/Down, PgUp/PgDn: read aftercare.") only when the result pages
+    (the pager's "More below. Use Up and Down." stays). 10 console files
+    pass in WSL.
+  * test_canvas_layout negative control and test_tk_runtime serial markers
+    read #152 overlay labels that #177g replaced -> 0c33c90 updates both
+    (checker still reports the forced clip; serial cannot clip now; bold
+    cells read from _SerialFace).
+  * test_laptop_power_ui Working: not a power redraw — the #133 Working
+    finish-sound check bumps sound_revision once when it resolves (timing
+    dependent) -> test waits for it before the no-redraw baseline. Passed
+    twice in WSL.
+  * test_orca_announces_every_result: intermittent Orca/AT-SPI timing,
+    already flagged by both GTK passes; watched, not changed.
+- 80088cb (with #158) run stopped by the lead at 44% (my own PID, rc=143)
+  as superseded; up to 44% its failure count matched 7267153 exactly (63),
+  i.e. #158 added none there. Final full run on 0c33c90 started 03:06Z.
+- SATA release-ack risk (BW-129 run 41528619370): evidence shows the
+  release was never emitted after DONE; QEMU's repeated key-ups did not
+  help, so the guest kernel most likely saw the first release. Lead probe
+  on 0c33c90: every result case at 800x600/1024x768/1280x800/1280x1024
+  reaches Tk idle (12/12 idle callbacks, 0 redraws in 3 s), so the
+  idle-starvation explanation does not reproduce on the current tree.
+  Root cause UNPROVEN; the hosted run is the test.
+- HOSTED PLAN (owner-approved single run): when the final Linux run is
+  clean, fast-forward PR 94's branch fix/release-readiness-20261026 from
+  9c16e13 to the verified integration HEAD; that pull_request event is the
+  one ci.yml run (plus free CodeQL). No dispatch, no merge, no release.
+- 2026-11-09 lead: full Linux 72 DPI run on 0c33c90 (with #158 and the
+  integration fixes): 72 failed / 14929 passed / 478 skipped (1:51:15).
+  All 10 earlier integration failures fixed (Orca timing test passed). 62
+  failures also on main (environment). 10 new, all #158 on Linux 72 DPI:
+  test_storage_limits_visible_and_keyboard_reachable ×6 (stale: full notice
+  now under Show more); test_rarely_needed_161 [size1-extra-en] (chip 5 px
+  under the footer on Linux; passed on Windows); GTK
+  test_every_method_choice_is_above_the_footer_at_800x600 es nvme/sda, fr
+  sda (last radio 17 px over the footer). Sent back to the #158 helper as
+  branch fix/limits-line-158c (from 25e6d1d) with WSL access via the flock.
+- #181 reading level (never assigned by the 2026-11-07 round) started
+  2026-11-09 as feat/reading-level-181 from 25e6d1d (task text recovered
+  to agent-tasks-20261108\181.txt; Notion body was truncated).
+- NOTION batch update NOT done: the old Notion automation script was in
+  the deleted Temp scratchpad; rebuilding desktop UI automation risks the
+  wrong-field pastes seen on 2026-11-07. Pending: mark #158, #183, #184,
+  #185, #186 Done + note (owner's "Done + note" rule), #181 when merged;
+  #182 stays deferred; #116 blocked (physical).
+
+## BW-181 — Bring long sentences down to an 8th-grade reading level (IMPLEMENTED; MERGED INTO INTEGRATION as 645d041; LINUX 72 DPI FULL RUN, NATIVE REVIEW PENDING)
+
+- 2026-11-09, Claude (Opus 5.5, delegated). Branch feat/reading-level-181
+  @ f289657 (pushed), base 25e6d1d.
+- tests/test_reading_level_181.py: every sentence of lang.surface() +
+  copy.py <=20 words, FK grade <9 from 10 words (dependency-free syllable
+  counter; glossary/product/file names count as one word); ALLOWED with
+  reasons (#128 erase warning, two persisted engine-check details,
+  REPORT_OVERWRITE_LIMITS). 19 tests; 7 fail on base (33 sentences).
+- Rewrites: report help, Advanced note, storage-limits notice and page,
+  disk help, Check disks again dialogs, empty list, Diagnostic PREPARE,
+  media/sound/power copy. Meanings, warnings and limits kept; no claims
+  added. FR/DE/ES/IT drafts (two Italian words changed to pass the
+  English-stopword check).
+- Saved reports keep their wording (storage_limits.report_notice() /
+  REPORT_OVERWRITE_LIMITS; goldens unchanged); screens use notice().
+  Choice per Jack's 2026-11-09 rule "pick the Recommended option": keep the
+  persisted report text unchanged (evidence/golden contract) — revisit only
+  if the owner asks.
+- CHECKS: ruff + CI security sets, mypy clean; WSL 72 DPI 39 files: only
+  failures also on base 25e6d1d (the #158 items being fixed in
+  fix/limits-line-158c, sound timing, Orca flake).
+- NOT VERIFIED: native review; helper pages / screen-reader.md still
+  paraphrase some old sentences.
+
+## BW-LINUX-158C-20261109 — #158 fixes for Linux 72 DPI (DONE; MERGED INTO INTEGRATION)
+
+- 2026-11-09, Claude (Opus 5.5, delegated). Branch fix/limits-line-158c
+  @ 87ef77d (pushed), base 25e6d1d.
+- GTK Storage limits (L) moved from the footer into the "Show more:
+  Limits" expander (option (b) parity with Tk/web; the FR/ES footer label
+  wrapped into a second footer row). Tk Method trims its own gaps by 6 px
+  (_title_block(bottom=) used only by Method); cards unchanged; the #161
+  test is unchanged and passes. test_storage_limits_visible_and_keyboard_
+  reachable rewritten to the one-line design with equal strength. New GTK
+  tests: 5 languages × SSD/HDD/unknown fit; L and the button open limits.
+- CHECKS (WSL 72 DPI): before 10 failed / 19 passed; after 232 + 6 passed;
+  accessible_runtime + ui_fit 458 passed / 1 failed (slow_sound_discovery,
+  also on main).
+- Placement treated as covered by the owner's option (b). FOLLOW-UP
+  (pre-existing, not changed): collapsed GTK expander content stays
+  Tab-reachable at 1 px height (all expanders #141/#146/#160/#161/#158).
+
+## BW-INT-20261107 — final local gate before the hosted run (2026-11-09, lead)
+
+- Full Linux 72 DPI run on e1f9634 (all merges incl. #181 and #158c;
+  private XDG_RUNTIME_DIR; /home/beamo-qual/bw-linux-20261107/out/
+  int-e1f9634.log): 64 failed / 14973 passed / 478 skipped (0:54:59).
+  62 failures identical to main 58c677f (CI-evidence/receipt/release-
+  manifest tests that need .git and CI files in an archive copy;
+  slow_sound_discovery). 2 not on main, both intermittent test races:
+  test_laptop_power_ui[size3-working] (settle loop watched the wrong
+  attribute) and test_held_space_from_save_cannot_repeat_onto_shutdown
+  (late Done redraw). ff0e33d stabilises both (test-only); in WSL: 3
+  consecutive passes, then all of test_tk_runtime.py +
+  test_laptop_power_ui.py pass in one run.
+- Windows: ruff (src, tests, developer_tests, CI security sets), ruff
+  format check, mypy --platform linux (61 files), compileall: clean. Go:
+  vet + `go test ./...` ok on Windows; linux/darwin vet + test build ok.
+- NEXT: push integrate/ui-review-20261107; fast-forward PR 94's branch
+  fix/release-readiness-20261026 from 9c16e13 to this head (the single
+  owner-approved hosted ci.yml run via pull_request); update the PR body;
+  read every review comment and fix valid points.
+
+## BW-INT-20261107 — hosted run 1 on 23e9ef5 failed; fixes (2026-11-09, lead)
+
+- Hosted ci.yml run 42577287668 (PR 94 head 23e9ef5): Windows launcher
+  tests PASS; Linux image gate FAIL, 44 failed / 15793 passed / 16 skipped
+  / 2 errors; CI gate FAIL; ISO/QEMU not reached. CodeQL: no new alerts.
+  Old PR head 9c16e13 passed hosted on 2026-11-01.
+- Cause: every failure is in a test that skips locally without Chrome,
+  Go or BEAMO_ISOLATED_X11_TEST=1, so the local gate never ran them.
+- Local route now matches hosted (WSL BeamoComboQualification-20261001):
+  Playwright Chromium 1243 in ~/.cache/ms-playwright (658 MB), NSS from
+  libnss3_3.98-1ubuntu0.3 + libnspr4 unpacked to
+  /home/beamo-qual/bw-userlibs-20261109 (LD_LIBRARY_PATH), pinned Go 1.26.8
+  in /home/beamo-qual/bw-go-20261109, chromium symlink in
+  /home/beamo-qual/bw-bin-20261109; runner bw-linux-20261107/hrun.sh sets
+  BEAMO_ISOLATED_X11_TEST=1, PYTHONPATH=<tree>/src (the venv's editable
+  install points at an old audit checkout) and xvfb-run -n 200 (tests
+  refuse :99).
+- Real product fixes (43bf711): TkWizard._comparison_opener (#149) kept the
+  Pick comparison row and BooleanVar alive after redraw/teardown; cleared
+  now. Wizard.cancel_audio now also cancels the #133 Working availability
+  probe at interface teardown.
+- Stale tests updated to the intentional UI changes (f22493b): #180, #136,
+  #144, #132, #151, #149/#152, #131/#139, Owner overflow for wheel probes,
+  Done redraw settle for the space-release test.
+- Targeted rerun of the 12 files: all pass except two fixed afterwards
+  (decorator placement, bold marks); full hosted-like local run in progress
+  (out/full1.log).
+- NEXT: full run clean -> push f22493b+ to fix/release-readiness-20261026
+  and integrate/ui-review-20261107 (triggers the PR ci.yml run), watch,
+  read comments, repeat. No merge, no release.

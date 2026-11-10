@@ -11,9 +11,34 @@ from beamo_wipe.models import DiscoveryResult
 from beamo_wipe.nwipe_runner import DryRunRunner
 from beamo_wipe.wizard import Wizard
 
-Scenario = Literal["happy", "empty", "blocked", "fail"]
+Scenario = Literal["happy", "empty", "hidden", "blocked", "fail"]
 HERE = Path(__file__).resolve().parent
 DEMO_DURATION_S = 8.0
+# #185 "hidden" preview: only the Beamo USB is listed and this fake lspci
+# -nnk capture shows an Intel VMD controller (Tiger Lake 8086:9a0b) and no
+# NVMe controller. The empty screen then shows the Intel VMD / RST steps.
+DEMO_LSPCI_VMD = (
+    "00:00.0 Host bridge [0600]: Intel Corporation 11th Gen Core Processor "
+    "Host Bridge/DRAM Registers [8086:9a14] (rev 01)\n"
+    "00:02.0 VGA compatible controller [0300]: Intel Corporation TigerLake-LP "
+    "GT2 [Iris Xe Graphics] [8086:9a49] (rev 01)\n"
+    "\tKernel driver in use: i915\n"
+    "00:0e.0 RAID bus controller [0104]: Intel Corporation Volume Management "
+    "Device NVMe RAID Controller [8086:9a0b]\n"
+    "\tKernel driver in use: vmd\n"
+    "00:14.0 USB controller [0c03]: Intel Corporation Tiger Lake-LP USB 3.2 "
+    "Gen 2x1 xHCI Host Controller [8086:a0ed] (rev 20)\n"
+    "\tKernel driver in use: xhci_hcd\n"
+    "00:1f.0 ISA bridge [0601]: Intel Corporation Tiger Lake-LP LPC "
+    "Controller [8086:a082] (rev 20)\n"
+)
+
+
+def demo_pci_functions():
+    """The fake PCI functions of the "hidden" preview (never real sysfs)."""
+    from beamo_wipe.hidden_storage import parse_lspci
+
+    return parse_lspci(DEMO_LSPCI_VMD)
 
 
 def _payload(name: str) -> dict:
@@ -31,7 +56,7 @@ def discovery_for_scenario(scenario: Scenario) -> DiscoveryResult:
             cmdline="",
             env={"BEAMO_WIPE_DRY_RUN": "1"},
         )
-    if scenario == "empty":
+    if scenario in ("empty", "hidden"):
         return discover(
             lsblk_payload=_payload("demo_empty.json"),
             boot_path="/dev/sdb",
@@ -66,4 +91,6 @@ def make_demo_wizard(
     )
     wiz = Wizard(discovery, runner, dry_run=True, rediscover=lambda: discovery_for_scenario(scenario))
     wiz.preview = True
+    if scenario == "hidden":
+        wiz.hidden_storage_probe = demo_pci_functions
     return wiz

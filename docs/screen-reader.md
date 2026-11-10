@@ -9,17 +9,22 @@ announces the same ordered USB-removal steps as text below the question. See
 [the state, console, and recovery rules](report-shutdown.md). No report survives
 live-session shutdown or power loss unless it has been exported.
 
-The live USB offers a GTK 3 view using standard AT-SPI controls and Orca.
+The Beamo USB offers a GTK 3 view using standard AT-SPI controls and Orca.
 Press F8 in the graphical wizard before erasure, or choose **Screen-reader
 view (F8)**. This checks disks again and clears the selected target, ownership
 acknowledgement, typed confirmation, method, and countdown. Complete the entire
 authorization flow in the new view. Switching is unavailable while an erase is
-starting or running. A failed refresh leaves no stale disk selectable.
+starting or running. If Check disks again fails, no stale disk stays selectable.
 
 **Check disks again (F5)** first explains that reset and waits for confirm or
-Back. F8 screen-reader handoff still scans immediately after you choose it.
+Back. It is not offered on the ownership screen. From Confirm, Method or
+Review the dialog is guarded (#136): **Cancel** comes first, Enter on the
+heading does nothing, a second F5 cannot accept it, and only the **Check disks
+again** button clears your answers. In the graphical view, F8 screen-reader
+handoff scans immediately from Pick and earlier; from Confirm, Method or Review
+it first opens the same guarded dialog.
 
-The live USB boot menu also offers **Beamo Wipe: speech for screen readers** —
+The Beamo USB boot menu also offers **Beamo Wipe: speech for screen readers** —
 press **S** when the menu appears. That entry passes `beamo.ui=accessible` on
 the kernel command line; the kiosk supervisor then launches
 `beamo-wipe --accessible` directly, so a blind owner never has to operate the
@@ -39,6 +44,9 @@ checkbox and typed confirmation still gate the next-action button. The Erase now
 disabled for the five-second countdown and never activates automatically.
 F5 checks disks again before erasure. Escape goes back where allowed. Full
 **Storage limits** are available from method selection and return to that method.
+On method selection a one-line storage limits summary is read before the choices;
+the full notice and the **Storage limits (L)** button follow them in a collapsed
+**Show more: Limits** expander (#158). L opens the full limits from method selection.
 Disk identity announcements say **Serial number:** before the value, including
 when a serial is missing. Hardware ID stays Hardware ID when that is the
 strongest identifier.
@@ -63,15 +71,51 @@ selected. **Stop and shut down** uses the report-protected shutdown decision.
 Opening this help retains only the ownership acknowledgement already made;
 select the disk and complete confirmation and countdown again before erasure.
 
-On screen changes, focus moves to the screen explanation. Finished announces
-the canonical evidence outcome and safe next step. Quick zero completion says
-“Erase completed; verification was not performed.” A verified completion checks
-exposed storage only. No read-back result guarantees coverage of inaccessible,
+On screen changes, focus moves to the screen explanation. Finished's heading
+is the outcome in plain words (#134), for example “Done — this disk was erased
+and checked”. Quick zero says “Done — this disk was overwritten with zeros (not
+checked)”, never checked or verified. A finished result's note and its
+numbered **What next** heading and list follow as separate focusable labels;
+the exact status message (“Erase completed; verification was not performed.”)
+and result code are under the **Technical details** expander. A verified
+completion checks exposed storage only. No read-back result guarantees coverage of inaccessible,
 remapped, over-provisioned, or controller-managed flash; extra overwrite passes
 do not fix these limits. Failed or missing evidence remains unsuccessful or
-indeterminate. Confirmed cancellation says “Stopped by you.”
+indeterminate; failures read their plain heading, then What happened (the
+exact status), What it means for your disk and What to do next. Confirmed
+cancellation's status still says “Stopped by you.”
 
-The view starts Orca and PulseAudio on the live USB. Speech requires working
+Next comes the **Save a report (optional)** heading (#135). Its state, the
+numbered steps and any greyed control's reason are focusable labels; Save
+report to USB and Retry evidence save are buttons inside it, and the bottom
+buttons are only Erase another disk and Shut down. When the Beamo USB line
+changes, the view keeps focus where it was; if focus was inside the panel it
+moves to the new status line so Orca reads it. Sound settings stay in the
+Sound check utility.
+
+After Erase another disk (#187), Pick a disk may start with a focusable
+line, "You confirmed that you own these disks or have written permission to
+erase them.", and a Change button that returns to the ownership question.
+A disk erased earlier in this session is read with its tag, for example
+"Erased earlier (checked)".
+
+On the keyboard screen, the check box is named "Optional check: press the key
+labelled Z here…" (#140). Press Z: focus moves to the result, an alert Orca
+reads ("✓ Letters and numbers match …" or "That looks like …. Switch to it?");
+Tab reaches the Switch button. The check is optional and never blocks Continue.
+Before the check box, a collapsed **Show more** expander holds the layout fine
+print (which layouts are offered, that the change lasts until restart and does
+not change firmware or BIOS keyboards) (#141).
+
+After the report panel, Finished has a **Keep a record without a USB**
+heading. The QR code below it is an image a sighted helper can photograph; it
+is not focusable and its accessible name says the same summary follows as
+text. Tab to the next label to read that summary line by line: result as its
+exact status message (the Technical details line), disk, capacity, serial number, method, times, report state and
+software version. It is a summary, not a certificate. It is not shown while an
+erase may still be running or after a stop that could not be confirmed.
+
+The view starts Orca and PulseAudio on the Beamo USB. Speech requires working
 audio output. Native Tk 8.6 is not claimed to expose its custom canvas controls
 to screen readers. The sequential `--plain-console` view is also available for
 terminal environments with an independently configured reader.
@@ -88,7 +132,9 @@ every sound card. No test uses host disks or audio-device passthrough.
 
 ## Sound check
 
-The actions footer on every screen starts with a Sound check button. It
+The actions footer on every screen starts with the Help & settings menu
+button (#175; F10 opens it; unavailable items are focusable labels that
+say why), then a Sound check button. Sound check
 opens a dialog that lists the sound outputs in plain words (Speakers,
 Headphones, HDMI sound, and so on, with the technical device name kept
 as each choice's screen-reader description), shows the volume and mute
@@ -106,9 +152,16 @@ devices are unreachable and the dialog says so instead of touching
 host audio. Speech belongs to this path alone, but outcome earcons
 are shared: the dialog also offers a Sounds off/on toggle and a Hear
 sounds button that plays the finished sound then the attention sound
-through the chosen output. The finished earcon plays once for a
-verified erase and the attention earcon once for any other final
-outcome; muted, missing, or preview audio stays silent. The earcon
+through the chosen output. The finished earcon plays for a
+verified erase and the attention earcon for any other final outcome,
+repeating every minute (at most five plays) until a key press or a
+control is used; muted, missing, or preview audio stays silent. On
+Working, a native check box "Play a sound when it's finished" (on by
+default for each erase) follows the progress, after a focusable line
+that promises the beep only when an output was found, or says sound
+is not available; the box is then insensitive and its accessible
+description gives the reason. Availability changes update the line
+and box in place, so focus never jumps. The earcon
 never changes the Done announcement, heading, or roles, and never
 blocks speech: text and sound stay independent channels. Tk, console,
 and gallery expose the same toggle and hear/replay actions in their

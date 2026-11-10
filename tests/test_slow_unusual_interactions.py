@@ -9,6 +9,7 @@ import time
 from dataclasses import replace
 import pytest
 
+from beamo_wipe.disk_order import pick_order
 from beamo_wipe import copy as C
 from beamo_wipe.copy import REDISCOVER_ERROR
 from beamo_wipe.demo import DEMO_DURATION_S, discovery_for_scenario
@@ -381,7 +382,8 @@ def test_console_wraps_long_identifiers_inside_80_columns(monkeypatch):
     console._loop(term, wiz)
     last = term.frames[-1]
     packed = "".join(last[y] for y in sorted(last))
-    assert wiz.selected.serial in packed
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    assert wiz.selected.serial in packed.replace("[", "").replace("]", "")
     assert all(len(line) < 80 for line in last.values())
     assert max(last) < 24
 
@@ -400,7 +402,7 @@ def test_many_disks_keep_boot_excluded_and_require_a_real_choice():
     wiz.select_disk(boot.path)
     assert wiz.selected is None
     assert boot.path not in {d.path for d in wiz.selectable}
-    last = sorted(wiz.selectable, key=lambda d: d.path)[-1]
+    last = pick_order(wiz.selectable)[-1]  # #151
     wiz.move_selection(1)
     for _ in range(len(wiz.selectable) + 2):
         wiz.move_selection(1)
@@ -424,7 +426,7 @@ def test_console_pages_many_disks_without_overflow(monkeypatch):
 
     discovery = many_disk_discovery()
     wiz = at_pick(make_wiz(discovery=discovery, rediscover=lambda: discovery))
-    last = sorted(wiz.selectable, key=lambda d: d.path)[-1]
+    last = pick_order(wiz.selectable)[-1]  # #151
     wiz.select_disk(last.path)
     term = Terminal(wiz, h=24, w=80, keys=[])
     for name in ("curs_set", "use_default_colors", "echo", "noecho"):
@@ -578,7 +580,7 @@ def test_refresh_after_changed_media_clears_authorization(change):
         old, disks=tuple(disks), selectable=tuple(targets), boot=boot, excluded=()
     )
     wiz._rediscover = lambda: fresh
-    assert wiz.refresh_disks()
+    assert wiz.open_refresh_confirm() and wiz.confirm_refresh()  # #136
     assert wiz.screen == Screen.OWNER
     assert wiz.selected is None
     assert not wiz.owner_ok and not wiz.confirm_input
@@ -857,10 +859,12 @@ def test_tk_report_help_return_restores_origin_focus():
         app._draw()
         app.root.update()
         assert wiz.screen == Screen.OWNER
+        app._open_help_menu()  # #175: report help is in Help & settings
+        app.root.update()
         link = next(
             x
             for x in _descendants(app.root)
-            if isinstance(x, _Button) and x.itemcget(x._label, "text") == C.REPORT_HELP_TITLE
+            if isinstance(x, _Button) and x.itemcget(x._label, "text") == C.MENU_REPORT_HELP
         )
         link._command()
         app.root.update()
@@ -893,7 +897,7 @@ def test_tk_many_disks_overflow_and_keep_selection_in_view():
         assert bbox and bbox[3] > canvas.winfo_height(), (
             "forced many-disk list must overflow; the original demo-list test skipped"
         )
-        ordered = sorted(wiz.selectable, key=lambda d: d.path)
+        ordered = list(pick_order(wiz.selectable))  # #151 shown order
         for _ in range(len(ordered)):
             (app.root.focus_get() or app.root).event_generate("<KeyPress>", keysym="Down")
             app.root.update()
@@ -966,7 +970,7 @@ def test_tk_delayed_progress_paints_old_and_keeps_ticking():
             app._draw()
             app.root.update_idletasks()
             assert app._progress_pct.cget("text") == "42% (old)"
-            assert "No new progress update" in app._progress_label.cget("text")
+            assert "No new progress update" in app._progress_stale.cget("text")
             before = [app._progress_bar.coords(item) for item in app._progress_bar.find_all()]
             scheduled = []
 

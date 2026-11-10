@@ -29,9 +29,9 @@ All rows are asserted by code, the pinned build, or a fake-disk test. No physica
 | How to invoke | Always `nwipe --autonuke --nogui --nowait --method=<prng\|dodshort\|zero> --verify=<last\|off> --rounds=1 --exclude=<boot> --logfile=/tmp/beamo-wipe/... --PDFreportpath=noPDF --noblank <target>` with exactly one `/dev/` target last, exactly one `--exclude` of the boot device, target size re-checked via `block_rdev` + `assert_size_unchanged` before `Popen`, `pass_fds` lock, `cwd="/"`, `shell=False`, `start_new_session True`. | `src/beamo_wipe/methods.py`, `src/beamo_wipe/nwipe_runner.py: build_nwipe_argv()`, `validate_argv()`, `docs/ADVANCED.md` | `python -m pytest tests/test_nwipe_runner.py -k validate` |
 | What overwrite does | `nwipe` writes sequentially through the block device (`write(2)` on the opened `/dev/` node). For `prng`: one PRNG pass; `dodshort`: three passes: a pattern, its inverse, then random data (nwipe's DoD short); `zero`: one zero pass. `verify=last` reads back the last pass; `verify=off` skips verification; `noblank` skips final blank. No ATA/NVMe sanitize command is issued. | nwipe 0.42 `src/nwipe.c` + `src/method.c` (upstream), `src/beamo_wipe/nwipe_runner.py` comment `--method=prng --rounds=1 --verify=last --noblank` etc., `docs/ADVANCED.md` mapping | `nwipe --help` on live image (shows methods), `grep verify src/beamo_wipe/methods.py` |
 | HDD best case | Overwriting and read-back verification cover the exposed block-device storage. Hidden or remapped sectors may remain. The evidence outcome `verified` requires `verify=last`, exit 0, and positive target-completion evidence, with no failure markers or interruption. | `src/beamo_wipe/nwipe_runner.py: evaluate_nwipe_completion()`, `src/beamo_wipe/evidence.py: OUTCOME_VERIFIED` | `tests/test_nwipe_runner.py`, `tests/test_evidence.py` |
-| Storage warning surfaces | Method selection in Tk, GTK, console, and the browser gallery shows device-type guidance from the canonical storage notice. Evidence `warnings[]` uses the same notice. SSD, HDD, and unknown fixtures retain their classification; offline full limits are reachable from method selection. | `src/beamo_wipe/storage_limits.py: notice()`, `src/beamo_wipe/evidence.py: _warnings_for()`, `tests/test_storage_limits_ui.py`, `tests/test_tk_runtime.py` | `python3 -m pytest tests/test_storage_limits_ui.py tests/test_tk_runtime.py` |
+| Storage warning surfaces | Method selection in Tk, GTK, console, and the browser gallery shows device-type guidance from the canonical storage notice. Evidence `warnings[]` and the coverage check use the same notice in the wording saved reports have always used (`report_notice()`); the screens say it in shorter sentences (#181). SSD, HDD, and unknown fixtures retain their classification; offline full limits are reachable from method selection. | `src/beamo_wipe/storage_limits.py: notice()`, `report_notice()`, `src/beamo_wipe/evidence.py: _warnings_for()`, `tests/test_storage_limits_ui.py`, `tests/test_tk_runtime.py` | `python3 -m pytest tests/test_storage_limits_ui.py tests/test_tk_runtime.py` |
 | Structured engine checks | Evidence `checks[]` records hidden-capacity, I/O/media, and coverage results as `pass`, `warning`, `fail`, `unavailable`, or `not_applicable`, with nwipe v0.42 provenance. Parsers use recorded v0.42 log lines only. Unavailable is never stored as pass. Check severity does not rewrite `outcome` or `verification`. Beamo does not invoke `hdparm` or `smartctl`. | `src/beamo_wipe/engine_checks.py`, `tests/test_engine_checks.py`, fixtures in `tests/fixtures/nwipe_v042/` | `python3 -m pytest tests/test_engine_checks.py` |
-| Evidence truthfulness | JSON under `/tmp/beamo-wipe/result-*.json` with `schema_version=2` (readers still accept `1`), `beamo_wipe_version`, wrapper `source_commit`/`build_id`/`build_status` from `/usr/share/beamo-wipe/build-identity.json` only, `nwipe_version/commit`, `device` (realpath+serial+wwn+vendor), `method`, `boot_device`, `timestamps` (monotonic `duration_s` plus `wall_confidence`/`wall_provenance`; ISO format is not clock trust), `nwipe.argv_redacted`, `exit_evidence`, `verification{requested,verified}`, `warnings`, `outcome` in `{started,running,completed,verified,failed,interrupted}` (never `certified`/`sanitized`), `failure_reason`, `log_checksum_sha256`, `provenance{evidence_file,written_at_wall}` + atomic `.sha256` sidecar, `O_NOFOLLOW` `0o600`, `assert_log_not_on_target`. `verify_evidence_checksum()` checks sidecar. | `src/beamo_wipe/evidence.py`, `src/beamo_wipe/build_identity.py`, `tests/test_evidence.py`, `tests/test_build_identity.py` | `BEAMO_WIPE_DRY_RUN=1 python3 -m pytest tests/test_evidence.py tests/test_build_identity.py -v` |
+| Evidence truthfulness | JSON under `/tmp/beamo-wipe/result-*.json` with `schema_version=2` (readers still accept `1`), `beamo_wipe_version`, wrapper `source_commit`/`build_id`/`build_status` from `/usr/share/beamo-wipe/build-identity.json` only, `nwipe_version/commit`, `device` (realpath+serial+wwn+vendor), `method`, `boot_device`, `timestamps` (monotonic `duration_s` plus `wall_confidence`/`wall_provenance`; ISO format is not clock trust), `nwipe.argv_redacted`, optional `nwipe.prng` (random-data methods only: the generator named by nwipe 0.42's single exact `prng = …` options record in the checksummed log snapshot; absent when unknown, display-only, omitted from sharing copies), `exit_evidence`, `verification{requested,verified}`, `warnings`, `outcome` in `{started,running,completed,verified,failed,interrupted}` (never `certified`/`sanitized`), `failure_reason`, `log_checksum_sha256`, `provenance{evidence_file,written_at_wall}` + atomic `.sha256` sidecar, `O_NOFOLLOW` `0o600`, `assert_log_not_on_target`. `verify_evidence_checksum()` checks sidecar. | `src/beamo_wipe/evidence.py`, `src/beamo_wipe/build_identity.py`, `tests/test_evidence.py`, `tests/test_build_identity.py` | `BEAMO_WIPE_DRY_RUN=1 python3 -m pytest tests/test_evidence.py tests/test_build_identity.py -v` |
 | No sanitization claim | No output, UI string, evidence field, or doc claims "certified," "sanitized," "DoD/NIST/NSA certified," "guaranteed unrecoverable," or "Blancco replacement." Forbidden phrases are pinned by tests. | `docs/claims.md` (forbidden list), `tests/test_ui_system.py: test_no_forbidden_claims_in_any_surface`, `tests/test_copy.py` | `grep -r certified docs src --include="*.md" --include="*.py"` |
 
 ### Terminology that is pinned
@@ -55,7 +55,7 @@ All rows are asserted by code, the pinned build, or a fake-disk test. No physica
 | **TRIM / discard / deallocate** | If `discard` was issued to LBAs, the controller may return stale, zero, or indeterminate bytes; subsequent reads are not evidence of overwrite durability. Not piped through `nwipe`'s path. | Not issued by Beamo Wipe (`libata` discard is not in `build_nwipe_argv`). Treat as unknown if the live layer issued discards elsewhere. | Do not rely on "read-back zero" after trim as sanitization proof. |
 | **NVMe vs SATA controller** | A logical overwrite is different from controller-specific erase operations. | Beamo issues no controller secure-erase or sanitize commands. Disposable QEMU disks do not model physical flash behavior. | Consult the drive maker for the exact model and firmware; do not assume command support or coverage. |
 | **eMMC / UFS / SD controller** | Main storage and controller-managed or reserved areas can have different exposure. | Only an eligible whole-disk target is offered. Boot partitions and other ineligible nodes cannot be selected; reported excluded nodes are informational. | Do not claim coverage of unexposed areas. Use model-specific guidance or qualified destruction. |
-| **HPA / DCO (HDD)** | Host Protected Area / Device Configuration Overlay can restrict host-visible capacity. | Hidden areas are outside the overwrite guarantee. Beamo does not expand capacity or change these settings. | Do not bypass protection or alter geometry to force a wipe. Ask support to assess the required assurance. |
+| **HPA / DCO (HDD)** | Host Protected Area / Device Configuration Overlay can restrict host-visible capacity. | Hidden areas are outside what the overwrite reaches. Beamo does not expand capacity or change these settings. | Do not bypass protection or alter geometry to force a wipe. Ask support to assess the required assurance. |
 | **NVMe namespaces & hidden namespaces** | Only exposed namespaces can be discovered. | An erase targets exactly one selected whole-disk path; it does not prove coverage of other or hidden namespaces. | Ask the manufacturer to establish supported coverage for the exact controller. |
 | **RAID / RST / mdadm / LVM / dm-crypt** | A controller or mapped volume can hide physical members and caches. | Supported whole-disk and transport rules remain unchanged. An exposed virtual disk does not prove every physical member was erased. | Consult a qualified storage provider. Beamo does not reconfigure arrays or bypass exclusions. |
 | **Damaged / pending sectors** | Unreadable or unwritable storage can cause an incomplete erase or verification failure. | The evidence validator preserves reported errors. Inability to open a device and unusable geometry have distinct canonical explanations. | Save available evidence and contact support at beamosupport.com; do not force access or automatically retry. |
@@ -91,27 +91,89 @@ Use this decision table in support. Do not down-sell from it to make a sale.
 | **Any SSD/NVMe/eMMC/UFS/SD requiring assurance beyond exposed storage** | Consult exact-model manufacturer guidance and independently validate its supported coverage. If the required assurance cannot be established, use a qualified physical destruction service. Extra Beamo overwrite passes do not fix these limitations. | A vendor process has its own evidence and limits. Beamo does not perform or certify it. |
 | **RAID / RST / SED-l Locked / OPAL-locked / T2** | **Not supported** — do not treat an exposed virtual device as proof about physical members. Consult a qualified provider about the exact hardware and required assurance. | Beamo does not reconfigure arrays, unlock devices or certify a vendor process. |
 | **Hidden areas / namespaces** | If HPA/DCO or hidden NVMe namespace is known or suspected, **vendor guidance** must establish the supported coverage or **destroy**. | Vendor sanitize log; not Beamo overwrite. |
-| **Regulated / lab-certificate required (government, healthcare, finance)** | **Destruction** or a certified facility. Beamo is explicitly **not a lab certificate** and never a Blancco replacement. | Beamo JSON is owner-operated evidence (who/when/what), not third-party certification. Point to destruction receipt. |
+| **Regulated / lab-certificate required (government, healthcare, finance)** | **Destruction** or a certified facility. Beamo is explicitly **not a lab certificate** and not a certified erasure service. | Beamo JSON is owner-operated evidence (who/when/what), not third-party certification. Point to destruction receipt. |
 
 How to say it on the phone (plain language, from `src/beamo_wipe/copy.py`):
 
 > "This USB does a write-over pass with nwipe. On a regular hard disk that's usually what people want. On an SSD the drive decides where writes land, so leftover copies can remain in its spare area. We don't call that certified. If more assurance is required, consult the drive maker about supported coverage for the exact model, or use a qualified destruction service."
 
-The canonical storage notice is prominent at method selection and is also included in evidence warnings. Full supported limits are available from the same screen.
+The canonical storage notice is prominent at method selection and is also included in evidence warnings (same meaning; reports keep their original wording). Full supported limits are available from the same screen.
 
 ---
 
 ## 6. Ownership, result messaging, and fail-closed guidance — no bypass
 
 - **Ownership is a gate, not a hint.** `Owner checkbox` must be checked before Pick; `assert_ready_to_wipe` raises `Owner checkbox` if not. README and wrapper `NOTICE` say: "You run it as the owner … or with written permission." Support must not encourage a friend to "just check it." If ownership is uncertain, do not proceed.
-- **Result wording is fixed.** `outcomes.py` maps validated evidence to the same explanation in native views, console, reports and recovery. Successful read-back says “Erase completed; verification passed”. Successful Quick zero says “Erase completed; verification was not performed”. Confirmed user cancellation says “Stopped by you”. Failures, interruption, missing evidence and unknown states stay distinct; none becomes success from exit 0 alone. See the exact outcome table in `docs/runbook.md`.
-- **Fail-closed help, not bypass.** When boot identity is uncertain or a disk disappears between pick and Last chance, the wizard shows: `We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.` or `Could not check the disks again. Erase did not start.` plus `Selected disk is not in the safe list.` / `identity` message. Guidance is: unplug hubs, try direct port, allow USB boot in firmware, disable fast boot — **not** "pass `--force`" (never built) and **not** "pick sda1." nwipe is never called with `--force`.
+- **Result wording is fixed.** `outcomes.py` maps validated evidence to the same explanation in native views, console, reports and recovery. Successful read-back says “Erase completed; verification passed”. Successful Quick zero says “Erase completed; verification was not performed”. Confirmed user cancellation says “Stopped by you”. The result screen heads these with a plain headline (#134; Quick zero: “… overwritten with zeros (not checked)”) and keeps the status line under Technical details. Failures, interruption, missing evidence and unknown states stay distinct; none becomes success from exit 0 alone. See the exact outcome table in `docs/runbook.md`.
+- **Fail-closed help, not bypass.** When boot identity is uncertain or a disk disappears between pick and Last chance, the wizard shows: `We cannot tell which disk is this USB. Shut down, check USB connections, and start again. If this repeats, contact support.` or `Could not check the disks again. Erase did not start.` plus `Selected disk is not in the safe list.` / `identity` message. Guidance is: unplug hubs, try a direct port on the PC itself, or use the Windows "Use a device" restart; change firmware settings (USB boot, fast boot) only after the owner has the BitLocker recovery key for any Windows they will use again — **not** "pass `--force`" (never built) and **not** "pick sda1." nwipe is never called with `--force`.
 - **Packaging says it plainly.**
   - `helper/index.html` banner: "This page does not erase anything. Restart the computer and press the key for your PC."
-  - `README.md` top: "No warranty. Owner-operated sanitization before recycle or resale. Not a lab certificate."
-  - `NOTICE`: "This is owner-operated disk erasure before recycle or resale. It is not a lab certificate, not a Blancco replacement, and not a claim that every SSD controller will make data unrecoverable."
+  - `README.md` top: "No warranty. Owner-operated disk overwrite before recycle or resale. Not a lab certificate."
+  - `NOTICE`: "This is owner-operated disk erasure before recycle or resale. It is not a lab certificate, not a certified erasure service, and not a claim that every SSD controller will make data unrecoverable."
 
 Back-office policy: a support ticket that asks to bypass ownership, EDID, or the 5 s delay must be closed with the fail-closed copy plus a link to this doc. No script or flag is offered.
+
+## 6a. Disk hidden by Intel VMD or RST (#185)
+
+Many newer laptops ship with the Intel storage controller in **VMD** or
+**RAID (Intel RST)** mode. The live kernel then may not show the computer's
+own disk, so Pick a disk lists only the protected Beamo USB. When the wizard
+can tell that this is the reason, the empty screen replaces its generic
+What happened / What to do next text with:
+
+- What happened: "This computer's disk may be hidden by Intel VMD (RST)."
+- What to do next: "1. Restart and open the BIOS/UEFI setup." "2. Find the
+  storage setting (often called SATA mode, RST or VMD). Change it to AHCI,
+  or turn VMD off." "3. Save, then start from the Beamo USB again." and
+  "Windows may not start until you change this setting back. If BitLocker
+  is on, Windows may ask for its recovery key."
+
+What it means for your disk stays "Nothing can be erased …". The owner
+approved this wording on 2026-11-07 with "This PC's disk"; it says "This
+computer's disk" because [glossary.md](glossary.md) names the computer
+"computer" (enforced by `tests/test_glossary_180.py`).
+
+**How it is detected (`src/beamo_wipe/hidden_storage.py`).** Read-only and
+display-only. It reads `vendor`, `device`, `class` and the `driver` link of
+each `/sys/bus/pci/devices/*` entry. It never writes sysfs, starts a
+process, or changes driver binding, kernel parameters or firmware. The live
+image ships without `pciutils`, so `lspci -nn`/`-nnk` text is parsed only for
+preview fixtures and tests. The specific text is shown only when **all** of
+these hold; otherwise the generic text stays (fail closed):
+
+1. Discovery identified the Beamo USB, reported no error, lists no
+   selectable disk, and saw no disk node other than the Beamo USB, its
+   partitions and loop/optical/RAM devices.
+2. Every PCI entry was readable and well formed (a missing `driver` link
+   counts as "unbound").
+3. No NVMe controller (class `0x0108`) is visible, and no RAID-class
+   (`0x0104`) controller other than a known Intel one is present.
+4. An Intel (`8086`) VMD controller from the kernel's `vmd_ids[]`, or an
+   Intel SATA controller from `ahci_pci_tbl[]` reporting the RAID class, is
+   present. Its driver state (bound `vmd`/`ahci`, or unbound) is logged only.
+
+Device IDs come from the Linux kernel tables, cited in the module:
+`drivers/pci/controller/vmd.c` `vmd_ids[]` (v6.12: 201d, 28c0, 467f, 4c3d,
+a77f, 7d0b, ad0b, 9a0b; mainline a41e364995bb adds 28c1, b60b, b06f, b07f,
+d70b, d73b; a VMD controller newer than the running kernel has no driver,
+so its disks are hidden too) and `drivers/ata/ahci.c` `ahci_pci_tbl[]`
+(every Intel entry, 163 IDs, identical in v6.12 and mainline). Classes are
+`PCI_CLASS_STORAGE_RAID` and `PCI_CLASS_STORAGE_EXPRESS` from
+`include/linux/pci_ids.h`. `ahci_remap_check()` in `ahci.c` prints the same
+remedy: "Switch your BIOS from RAID to AHCI mode".
+
+**What it never does.** The hint never adds, removes or reorders a disk.
+`discover.py` and `safety.py` alone decide the selectable list and the boot
+USB exclusion; the detector only chooses between two texts on a screen that
+already lists no disk. The support code (`no_eligible_disks`) is unchanged.
+The diagnostic log records one line, `wizard empty_storage_hint
+kind=vmd|rst driver=…` or `kind=generic reason=…`, with no serial or path.
+The steps tell the owner to change a firmware setting themselves; Beamo
+changes no firmware and does not claim the disk will then be erasable.
+
+Preview: `./preview --scenario hidden` (Tk) and **Disk hidden by
+Intel VMD** in `./preview --web`, both from fake lsblk and fake `lspci -nnk`
+data (`demo.DEMO_LSPCI_VMD`).
 
 ---
 
@@ -119,7 +181,7 @@ Back-office policy: a support ticket that asks to bypass ownership, EDID, or the
 
 | Bucket | What we handle | Reference |
 |---|---|---|
-| **Supported** | Legacy BIOS + UEFI (Secure Boot disabled) via `syslinux`+`grub-efi`, USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
+| **Supported** | Legacy BIOS + UEFI via `syslinux`+`grub-efi` (Debian-signed shim/GRUB/kernel, so Secure Boot on or off; do not disable it routinely; enforcing acceptance is firmware-dependent and physically NOT TESTED, see Degraded), USB-A/C when firmware lists the stick, NVMe/SATA HDD/SSD/virtio/eMMC main device, same-size disambiguation via `confirm_spec`, 5 s delay, proof-of-attempt JSON. | `docs/compatibility-matrix.md` FW/ST rows |
 | **Degraded (works but not a certificate)** | Any SSD/NVMe/eMMC overwrite as above, damaged reallocated media, PICK_EMPTY only-eMMC, hub-boot, 800×600/HiDPI. Secure Boot acceptance is firmware-dependent on the inspected Debian chain and actual trust/revocations; unknown states cannot Pass. Documented as overwrite, not sanitization. | This doc §3; [Secure Boot cases](secure-boot-acceptance.md) |
 | **Unsupported / out of scope** | Apple Silicon, Chromebooks, RAID controllers (hardware), Apple T2 internal, `nbd/iscsi/fc/nvmeof`, BitLocker/OPAL/Sed locked without prior unlock, HPA/DCO hidden LBAs, hidden NVMe namespaces, Windows in-OS wipe from inside the running OS. Correctly listed-with-no-targets or fails closed. | `docs/compatibility-matrix.md` Unsupported, `docs/claims.md` forbidden list |
 
@@ -133,9 +195,10 @@ Any surface (wizard, gallery, README, helper, evidence, dist `README.txt`, Amazo
 |---|---|
 | "overwrite," "write-over pass," "Everyday / Three overwrites / Quick zero" with nwipe names in Advanced | "sanitize," "purge," "secure erase" (unless naming a vendor tool), "certified," "DoD 5220.22-M / NIST 800-88 certified," "NSA," "military grade," "guaranteed unrecoverable," "impossible to recover," "plug and play," "any laptop / any computer / any Mac," "Apple Silicon supported," "Blancco replacement," "we invented the wipe" |
 | "SSD results depend on the drive's controller. Not a formal certificate." | "SSD is fully erased / sanitized" |
-| "Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations." (method selection and report warning) | "SSD overwrite is certified" |
+| "Overwriting reaches only storage the device exposes. It cannot guarantee to reach flash areas that cannot be accessed. The same goes for remapped, spare and controller-managed areas. Additional overwrite passes do not fix these limitations." (method selection and the storage limits page; plain sentences, #181) | "SSD overwrite is certified" |
+| "Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations." (report warning saved in result.json and RESULT.txt; same meaning, wording kept for saved reports) | "SSD overwrite is certified" |
 | "Overwrite is not a lab certificate. Do not tell customers otherwise." (ADVANCED) | "This SSD is now certified" |
-| "HDD overwrite via nwipe. SSD results depend on the drive's controller. Not a Blancco-style certificate." (claims) | "Works with any SSD guarantee" |
+| "HDD overwrite via nwipe. SSD results depend on the drive's controller. Not a formal erasure certificate." (claims) | "Works with any SSD guarantee" |
 | `evidence.outcome` in `{completed, verified, failed, interrupted}` + `verification.verified` boolean | Any `certificate`, `sanitized`, `compliant` field |
 | "Owner-operated erasure before recycle or resale. No warranty." | "We take ownership liability" |
 
@@ -188,28 +251,28 @@ Physically proving wear-leveling / OP retention requires a sacrificial SSD + ven
 ## Offline supported storage limits
 
 What this tool supports
-Beamo Wipe uses pinned nwipe v0.42 to overwrite a selected whole disk exposed to the operating system. It does not issue controller secure-erase or sanitize commands. It does not support Apple Silicon Macs, Chromebooks, or erasing the running Windows disk.
+Beamo Wipe uses pinned nwipe v0.42 to overwrite a whole disk that you select. The disk must be exposed to the operating system. It does not issue controller secure-erase or sanitize commands. It does not support Apple Silicon Macs, Chromebooks, or erasing the running Windows disk.
 
 SSD and flash storage
-Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.
+Overwriting reaches only storage the device exposes. It cannot guarantee to reach flash areas that cannot be accessed. The same goes for remapped, spare and controller-managed areas. Additional overwrite passes do not fix these limitations.
 
 Read-back verification
 Read-back verification checks exposed storage against the final overwrite. It does not prove that hidden copies were erased.
 
 Hard disks, hidden areas, and damaged media
-Hidden HPA/DCO areas, remapped or unreadable sectors, and unexposed NVMe namespaces are outside the overwrite guarantee. A drive can report completion while hidden data remains. Read or write errors, missing completion evidence, and interruption must not be treated as success.
+The overwrite does not reach hidden HPA/DCO areas. Nor does it reach remapped or unreadable sectors, or NVMe namespaces that are not exposed. A disk can report completion while hidden data remains. Do not treat read or write errors as success. The same goes for an interruption, or for completion evidence that is missing.
 
 Unknown devices and controllers
-A missing device type stays unknown. A USB bridge or RAID controller may hide the media type, physical members, caches, or capacity. An exposed virtual disk does not establish coverage of every physical member. Do not use a displayed SSD or HDD label as proof that hidden areas are absent.
+A missing device type stays unknown. A USB bridge or RAID controller may hide the media type or capacity. It may also hide physical members or caches. An exposed virtual disk does not show that every physical member is covered. Do not use a displayed SSD or HDD label as proof that hidden areas are absent.
 
 Encryption and locked devices
-Beamo Wipe does not unlock BitLocker, OPAL, ATA security, or other locked devices; extract keys; reset passwords; or bypass Secure Boot. Overwriting an exposed encrypted device is not proof of key destruction or coverage of hidden encrypted copies. Mapped volumes and partitions are not whole-disk targets.
+Beamo Wipe does not unlock BitLocker, OPAL, ATA security or other locked devices. It does not extract keys, reset passwords or bypass Secure Boot. Overwriting an exposed encrypted device does not prove that its keys were destroyed. It also does not prove that hidden encrypted copies were covered. Mapped volumes and partitions are not whole-disk targets.
 
 When to use a different process
-If you need coverage beyond exposed storage, consult the drive maker's guidance for the exact model and firmware. Vendor secure erase support and validation vary; this USB does not perform or certify that process. For required assurance that cannot be established, use a qualified destruction service. Beamo reports are not a formal certificate.
+Do you need coverage beyond exposed storage? Then see the disk maker's guidance for the exact model and firmware. Vendor secure erase support and validation vary. This USB does not perform or certify that process. Need assurance that cannot be established? Then use a qualified destruction service. Beamo reports are not a formal certificate.
 
 Ownership and safety
-Erase only disks you own or have written permission to erase. Confirm the device identity and keep backups. Destructive-action warnings, boot exclusion, the confirmation token, and the five-second delay still apply. If identity is uncertain, stop; do not bypass the safety gates.
+Erase only disks you own or have written permission to erase. Confirm the device identity and keep backups. The erase warnings and the Beamo USB exclusion still apply. So do the confirmation token and the five-second delay. If you are unsure of the device identity, stop. Do not bypass the safety gates.
 <!-- END CANONICAL OFFLINE LIMITS -->
 
 Pinned upstream references: [nwipe v0.42 SSD limitations](https://github.com/martijnvanbrummelen/nwipe/blob/6082bde060091e66365d852a1877f2ee80c67105/README.md#ssd-considerations-and-limitations) and [SSD guide](https://github.com/martijnvanbrummelen/nwipe/blob/6082bde060091e66365d852a1877f2ee80c67105/ssd-guide.md). Rechecked 2026-09-05; vendor support is model-specific and is not a Beamo capability.

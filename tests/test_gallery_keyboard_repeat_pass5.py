@@ -4,17 +4,17 @@
 from __future__ import annotations
 
 import json
-import re
 import shutil
 import subprocess
 
 import pytest
 
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
 def _script() -> str:
-    scripts = re.findall(r"<script>(.*?)</script>", gallery_html(), re.S)
+    scripts = [inline_script(gallery_html())]
     assert len(scripts) == 1
     return scripts[0]
 

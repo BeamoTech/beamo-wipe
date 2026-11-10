@@ -130,10 +130,12 @@ def test_what_keeps_enter_action_on_80x24(monkeypatch):
     assert "Space to check" in footer
     assert "Enter chooses a disk only when checked" in footer
     all_text = " ".join(" ".join(frame[y] for y in sorted(frame)) for frame in term.frames)
-    assert "copies you need" in all_text
+    assert "copies of anything you want to keep" in all_text
     assert C.OWNER_CHECKBOX in all_text or "written permission" in all_text
-    assert "F5: Check disks again" in shown
-    assert "R: Need a report?" in shown
+    # #136: no Check disks again before there is a disk list.
+    assert "F5: Check disks again" not in shown
+    # #175: report help is in Help & settings (F10); R still opens it.
+    assert C.MENU_KEY in shown
 
 
 def test_pick_keeps_selection_and_action_visible_with_long_list(monkeypatch):
@@ -142,7 +144,8 @@ def test_pick_keeps_selection_and_action_visible_with_long_list(monkeypatch):
     wiz.selected = many[-1]
     shown, packed, term = _draw(monkeypatch, wiz)
     last = term.frames[-1]
-    assert many[-1].serial in packed
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    assert many[-1].serial in packed.replace("[", "").replace("]", "")
     assert ">" in shown
     assert "Up/Down then Enter" in _footer(term)
     assert all(len(line) < 80 for line in last.values())
@@ -157,6 +160,9 @@ def test_pick_page_keys_reveal_later_disk_identity(monkeypatch):
     all_packed = "".join(
         "".join(frame.get(y, "") for y in sorted(frame)) for frame in term.frames
     )
+    # Same-size cards mark the part to compare in [brackets] (#148).
+    all_packed = all_packed.replace("[", "").replace("]", "")
+    packed = packed.replace("[", "").replace("]", "")
     assert any(disk.serial in all_packed for disk in many[1:])
     assert C.CON_MORE_DISKS_ABOVE in packed or C.CON_MORE_DISKS_BELOW in all_packed or many[0].serial in packed
 
@@ -177,7 +183,7 @@ def test_method_screen_shows_overwrite_and_verification(method, monkeypatch):
         assert spec.description in shown
     assert "L: limits" in shown
     assert "F5: Check disks again" in shown
-    assert "R: Need a report?" in shown
+    assert C.MENU_KEY in shown  # #175: report help is in Help & settings
 
 
 @pytest.mark.parametrize("method", list(METHODS))
@@ -195,12 +201,11 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
     assert view.title in shown
     assert view.id_value in shown
     assert view.kind_chip in shown
-    assert (
-        METHODS[method].overwrite_description.split(":")[0] in shown
-        or METHODS[method].summary in shown
-    )
+    # #164: Review states the method once (name, overwrites, verification).
+    assert wiz.review_method_line in shown
+    assert METHODS[method].summary not in shown
     assert "Check the selected disk and method." in shown
-    assert "never starts erasure" in shown
+    assert "Erasing starts only when you press Erase now." in shown  # #162
     footer = _footer(term)
     assert "Enter to erase" in footer or "Wait" in footer
     wiz.wants_shutdown = False
@@ -208,7 +213,8 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
     shown, packed, term = _draw(monkeypatch, wiz)
     assert view.title in shown
     assert view.id_value in shown
-    assert METHODS[method].summary in shown
+    # #171: the result card's Method row replaces the repeated method line.
+    assert f"Method: {METHODS[method].title}" in shown
     assert wiz.result_view.message in shown or wiz.method_result in shown
 
 
@@ -216,8 +222,17 @@ def test_last_chance_and_done_keep_full_identity(method, monkeypatch):
 def test_every_outcome_console_keeps_identity_and_footer(case, monkeypatch):
     wiz, _, _ = case_evidence(case)
     shown, packed, term = _draw(monkeypatch, wiz)
-    assert wiz.result_view.message in shown
-    assert wiz.result_view.next_step in shown
+    # #134: the plain headline leads; finished outcomes show their What
+    # next list, failures their status message and next step.
+    plain = wiz.result_plain
+    assert plain.headline in shown
+    if plain.checklist:
+        from beamo_wipe import outcomes as O
+
+        assert O.WHAT_NEXT in shown and plain.numbered[-1] in shown
+    else:
+        assert wiz.result_view.message in shown
+        assert wiz.result_view.next_step in shown
     assert wiz.selected.display_name in shown
     footer = _footer(term)
     assert "shut down" in footer.lower() or "run again" in footer.lower()
@@ -256,7 +271,7 @@ def test_working_stale_progress_shows_meaning_and_next_steps(monkeypatch):
         shown, packed, term = _draw(monkeypatch, wiz)
     assert "No new progress update for 1 minute." in shown
     assert STALE_MEANING in shown
-    for fragment in ("Keep the USB in", "wall power", "Do not turn off", '"Stop erase"'):
+    for fragment in ("Keep the USB in", "wall power", "Keep the computer on", '"Stop erase"'):
         assert fragment in shown, fragment
     assert STALE_NEXT.split(". ")[0] in packed.replace("  ", " ")
     last = term.frames[-1]
@@ -279,6 +294,9 @@ def test_working_sounds_keys_toggle_and_hear(monkeypatch):
     disk = sorted(wiz.selectable, key=lambda d: d.path)[0]
     wiz.select_disk(disk.path)
     wiz.screen = Screen.WORKING
+    # A found output (#133); no live availability check in this test.
+    wiz.set_audio_availability(True)
+    wiz._audio_probe_at = wiz.now + 3600
     shown, packed, term = _draw(
         monkeypatch, wiz, keys=[ord("o"), ord("h")]
     )
@@ -286,7 +304,7 @@ def test_working_sounds_keys_toggle_and_hear(monkeypatch):
     assert wiz.sounds_enabled is True
     assert wiz.sound_message == C.SOUND_OUTCOME_OFF_LIVE
     footer = _footer(term)
-    assert "O: Sounds on" in footer
+    assert f"O: {C.FINISH_SOUND_STATE_ON}" in footer
     assert "H: Hear sounds" in footer
     last = term.frames[-1]
     assert max(last) < 24

@@ -12,14 +12,14 @@ Elapsed: less than 1 minute
 Result: Read-back verification failed
 What happened: Read-back verification failed
 What it means for your disk: Files may still be on the disk. Do not treat this as a finished erase.
-What to do next: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+What to do next: Files may still be on the disk. The disk may be unreliable; do not treat or sell it as erased. Consider replacing or physically destroying it. Save the report if available and contact support. Shut down before disconnecting.
 Verification: Read-back verification failed
 Warnings:
 - SSD limits: Overwriting reaches only storage the device exposes. It cannot guarantee coverage of inaccessible, remapped, over-provisioned (spare), or controller-managed flash areas. Additional overwrite passes do not fix these limitations.
 - Two disks share the same size; verify the serial suffix.
 - The hidden-storage check was not available. That is not a pass.
 - The disk reported write or read-back errors. Files may still be on the disk.
-Limitations: Files may still be on the disk. Save the report if available and contact support. Shut down before disconnecting.
+Limitations: Files may still be on the disk. The disk may be unreliable; do not treat or sell it as erased. Consider replacing or physically destroying it. Save the report if available and contact support. Shut down before disconnecting.
 Application: Beamo Wipe 0.2.14
 Wrapper commit: unavailable
 Release build: unavailable

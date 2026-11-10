@@ -128,6 +128,10 @@ class ConfirmSpec:
     token: str
     prompt: str
     identity_field: str = "size"
+    # True when the token is the end of the identifier the disk card shows
+    # (#129). The prompt then names the field, never the characters, and the
+    # card marks them. False keeps the older prompt that prints the token.
+    in_card: bool = False
 
 
 @dataclass(frozen=True)
@@ -184,6 +188,26 @@ class DiscoveryResult:
 
 
 @dataclass(frozen=True)
+class VolumeFacts:
+    """What lsblk already reported about a nested node (#147). Display only.
+
+    Read from the same lsblk JSON as discovery; nothing is mounted or
+    probed. Values are cleaned for display by inventory.volume_facts and
+    never feed eligibility, exclusion or identity comparison.
+    """
+
+    node_type: str = ""
+    fstype: str = ""
+    fsver: str = ""
+    label: str = ""
+    partlabel: str = ""
+    parttype: str = ""
+    parttypename: str = ""
+    size_bytes: int = 0
+    size_gb_label: str = ""
+
+
+@dataclass(frozen=True)
 class ExcludedDevice:
     identity: str
     reasons: Tuple[str, ...]
@@ -194,6 +218,8 @@ class ExcludedDevice:
     kind_label: str = ""
     summary: str = ""
     children: Tuple["ExcludedDevice", ...] = ()
+    # Display-only partition facts (#147); None for synthetic entries.
+    volume: Optional[VolumeFacts] = None
 
     @property
     def explanation(self) -> str:

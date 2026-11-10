@@ -17,6 +17,7 @@ from beamo_wipe.lang import LANGUAGE_ORDER, current as _lang_current
 from beamo_wipe.outcomes import (
     ResultView,
     _method_copy_for_locale,
+    may_have_erased,
     present_evidence,
     view_needs_support,
 )
@@ -61,6 +62,7 @@ H_CAPACITY = "Capacity"
 H_CONNECTION = "Connection"
 H_METHOD = "Method"
 H_OVERWRITES = "Overwrites"
+H_RANDOM_GENERATOR = "Random data generator"
 METHOD_BOTH = "{title}. {summary}"
 H_APPLICATION = "Application"
 H_WRAPPER_COMMIT = "Wrapper commit"
@@ -79,6 +81,10 @@ H_CLOCK = "Clock"
 H_STARTED = "Started (clock not verified)"
 H_ENDED = "Ended (clock not verified)"
 H_IDENTITY_EVIDENCE = "Identity evidence"
+# #187: how the owner box was satisfied for this erase.
+H_OWNERSHIP = "Ownership"
+OWNERSHIP_ON_SCREEN = "Confirmed on screen for this erase"
+OWNERSHIP_CARRIED = "Carried over from an earlier erase in this session"
 WARNINGS_NONE = "None recorded"
 VERIFY_PASSED = "Read-back verification passed"
 VERIFY_SKIPPED = "Verification was not performed"
@@ -329,6 +335,39 @@ def _method_lines(evidence: Mapping[str, Any]) -> list[tuple[str, str]]:
     return [(H_METHOD, method_line), (H_OVERWRITES, overwrites)]
 
 
+def _generator_lines(evidence: Mapping[str, Any], view: ResultView) -> list[tuple[str, str]]:
+    """nwipe's logged random-data generator, only when known and relevant.
+
+    Optional: absent, unknown or unexpected values omit the line rather than
+    print "unavailable". Shown for pinned methods that write random data and
+    results that may have written to the disk.
+    """
+    from beamo_wipe.methods import METHODS, RANDOM_DATA_NWIPE_METHODS
+    from beamo_wipe.models import MethodId
+    from beamo_wipe.nwipe_runner import NWIPE_PRNG_LOG_NAMES
+
+    name = _object_mapping(evidence.get("nwipe")).get("prng")
+    if not isinstance(name, str) or name not in NWIPE_PRNG_LOG_NAMES:
+        return []
+    try:
+        spec = METHODS[MethodId(_object_mapping(evidence.get("method"))["id"])]
+    except (KeyError, TypeError, ValueError):
+        return []
+    if spec.nwipe_method not in RANDOM_DATA_NWIPE_METHODS or not may_have_erased(view.code):
+        return []
+    return [(H_RANDOM_GENERATOR, name)]
+
+
+def _ownership_lines(evidence: Mapping[str, Any]) -> list[tuple[str, str]]:
+    """'Ownership' (#187), only for records that state it; never free text."""
+    value = _object_mapping(evidence.get("authorization")).get("owner_confirmation")
+    if value == "on_screen":
+        return [(H_OWNERSHIP, OWNERSHIP_ON_SCREEN)]
+    if value == "carried_over":
+        return [(H_OWNERSHIP, OWNERSHIP_CARRIED)]
+    return []
+
+
 def _warnings(evidence: Mapping[str, Any], secrets: tuple[str, ...]) -> str:
     raw = evidence.get("warnings")
     if "warnings" not in evidence:
@@ -350,7 +389,12 @@ def _warnings(evidence: Mapping[str, Any], secrets: tuple[str, ...]) -> str:
 
 def _limitations(evidence: Mapping[str, Any]) -> str:
     view = present_evidence(evidence)
-    step = sanitize_value(view.next_step) if view.next_step else UNAVAILABLE
+    # next_step is canonical result copy, never saved prose. The length cap
+    # bounds untrusted values; it must not cut a translated next step short.
+    step = (
+        sanitize_value(view.next_step, limit=max(MAX_VALUE, len(view.next_step)))
+        if view.next_step else UNAVAILABLE
+    )
     if step != UNAVAILABLE:
         return step
     verification = (
@@ -434,6 +478,8 @@ def _result_fields(
         (H_REPORT_CHECKSUM, checksum),
         *_disk_lines(payload, redacted=redacted),
         *_method_lines(payload),
+        *_generator_lines(payload, view),
+        *_ownership_lines(payload),
         (H_ELAPSED, _elapsed(timestamps)),
         (H_RESULT, view.message),
         *_recovery_fields(view),

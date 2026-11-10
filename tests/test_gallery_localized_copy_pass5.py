@@ -4,18 +4,18 @@
 from __future__ import annotations
 
 import json
-import re
 
 import pytest
 
 from beamo_wipe import lang
 from beamo_wipe.gallery import gallery_html
+from preview_page import inline_script
 
 
-@pytest.mark.parametrize("language", ("fr", "de"))
+@pytest.mark.parametrize("language", ("fr", "de", "es", "it"))
 def test_help_and_stop_screen_copy_comes_from_translation_payload(language):
     html = gallery_html(language)
-    script = re.search(r"<script>(.*?)</script>", html, re.S).group(1)
+    script = inline_script(html)
     payload = json.loads(script.split("const P = ", 1)[1].split(";\n", 1)[0])
     for field, constant in (
         ("helpReadHint", "HINT_READ_KEYS"),

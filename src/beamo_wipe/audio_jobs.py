@@ -62,12 +62,34 @@ class AudioWorker:
         self._closed = False
         self._thread: threading.Thread | None = None
 
-    def submit(self, action: Callable, seconds: float = OPERATION_SECONDS, *, protected: bool = False) -> AudioTicket:
-        ticket = AudioTicket(seconds, protected=protected)
+    def submit(
+        self,
+        action: Callable,
+        seconds: float = OPERATION_SECONDS,
+        *,
+        protected: bool = False,
+        background: bool = False,
+    ) -> AudioTicket:
+        """Queue one audio action and return its ticket.
+
+        background=True (#133 availability checks) never displaces anything:
+        it is withdrawn at once when any request is running or waiting, and
+        a later interactive request still replaces it.
+        """
+        ticket = AudioTicket(seconds, protected=protected and not background)
         with self._condition:
             if self._closed:
                 ticket._finish(RuntimeError("Audio worker closed"))
                 return ticket
+            if background and (
+                self._active is not None
+                or self._pending is not None
+                or self._pending_outcome is not None
+            ):
+                ticket.cancel()
+                return ticket
+            if background:
+                protected = False
             if protected:
                 if self._pending_outcome is not None:
                     self._pending_outcome[0].cancel()

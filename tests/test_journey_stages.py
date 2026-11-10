@@ -14,7 +14,7 @@ from beamo_wipe.gallery import gallery_html
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard as console
 from beamo_wipe.ui import tk_wizard as tkui
-from beamo_wipe.wizard import format_progress_percent
+from beamo_wipe.wizard import PREPARATION_PATH, format_progress_percent
 from test_tk_runtime import ui, _drive_to  # noqa: F401
 
 
@@ -94,7 +94,9 @@ def test_cancellation_and_failure_do_not_call_stopping_a_result():
     html = gallery_html()
     assert "stop_confirm:[2,erase" in html.replace(" ", "")
     src = inspect.getsource(console)
-    assert "journey_caption" in src
+    # The console header shows the step-aware caption (#130); erase and
+    # result screens fall back to these same stage names.
+    assert "journey_step_caption" in src
 
 
 def test_tk_and_gallery_stage_indexes_match_and_are_not_percent_bars():
@@ -125,7 +127,8 @@ def test_accessible_view_announces_stage_separately_from_wipe_percent():
         / "ui"
         / "accessible_wizard.py"
     ).read_text(encoding="utf-8")
-    assert "journey_announcement" in gtk_src
+    # Stage plus Preparation step (#130); erase/result fall back to the stage.
+    assert "journey_step_announcement" in gtk_src
     assert "set_description" in gtk_src
     assert 'f"{spoken_stage} {heading.get_text()}"' not in gtk_src
     assert C.journey_announcement(Screen.WORKING) == "Erase."
@@ -149,7 +152,12 @@ def test_rendered_headers_name_preparation_erase_result_not_equal_pages(ui):  # 
     assert "Preparation" in texts
     assert "Erase" in texts
     assert "Result" in texts
-    assert all(" of 8" not in text and not text.startswith("Step ") for text in texts)
+    # Three stages, never eight equal pages. The only "Step" text is the
+    # Preparation sub-step beside them (#130): "Step 6 of 6 · Final check" (#166).
+    assert all(" of 8" not in text for text in texts)
+    steps = [text for text in texts if text.startswith("Step ")]
+    assert steps == [C.journey_step_caption(wiz)]
+    assert steps[0].startswith(f"Step {len(PREPARATION_PATH)} of {len(PREPARATION_PATH)}")
     assert wiz.screen == Screen.LAST_CHANCE
     wiz.screen = Screen.WORKING
     app._draw()
@@ -176,7 +184,21 @@ def test_curses_80x24_names_preparation_without_hiding_pick_count(monkeypatch):
 
     wiz = _at_pick()
     shown, packed, _term = _draw(monkeypatch, wiz, h=24, w=80)
-    assert "Preparation" in packed
+    # The Preparation step, as in the Tk header (#130). #144 appends the
+    # power badge to the same header row and, when both do not fit in 80
+    # columns, keeps the badge with the short step form (never a second
+    # row). The step name returns whenever the badge leaves room.
+    header = _term.frames[-1][0]
+    # The badge the monitor reported when this frame was painted.
+    assert header.endswith("]") and "  [" in header
+    badge = header[header.rindex("  [") + 2:]
+    title = console._screen_title(wiz)
+    full = f"{C.APP_NAME} — {C.journey_step_caption(wiz)} — {title}  {badge}"
+    if console._display_cols(full) <= 78:
+        assert header == full
+    else:
+        assert header == f"{C.APP_NAME} — {C.journey_step_short(wiz)} — {title}  {badge}"
+    assert C.journey_step_short(wiz).startswith("Step 3 of ")
     assert "3 disks available to erase" in packed
     assert wiz.selectable[0].serial in packed
     assert "Step 1 of 8" not in shown

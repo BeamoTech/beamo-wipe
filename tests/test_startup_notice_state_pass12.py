@@ -8,7 +8,7 @@ import pytest
 from beamo_wipe import copy as C, lang, startup_stages
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 def test_one_shot_startup_stall_notices_remain_one_per_stage(monkeypatch, language):
     lang.set_language(language)
     now = [0.0]
@@ -49,7 +49,7 @@ def test_graphical_stall_state_clears_at_stage_and_terminal_boundaries(monkeypat
     assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2
 
 
-@pytest.mark.parametrize("language", ["en", "fr", "de"])
+@pytest.mark.parametrize("language", ["en", "fr", "de", "es", "it"])
 @pytest.mark.parametrize("surface", ["tk", "gtk"])
 def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch, language, surface):
     if os.environ.get("BEAMO_ISOLATED_X11_TEST") != "1":
