@@ -172,6 +172,25 @@ def _pointer_event_time():
     return when if isinstance(when, int) and when > 0 else int(time.monotonic() * 1000)
 
 
+def _fold(expander) -> None:
+    """Keep a collapsed expander's content out of Tab and Orca.
+
+    GTK 3.24 leaves a collapsed expander's child visible and mapped at 1 px,
+    so Tab and the accessibility tree still reached the hidden text and
+    buttons. The child is hidden while collapsed and shown when opened;
+    window.show_all() must not show it again.
+    """
+    child = expander.get_child()
+    if child is None:
+        return
+    child.show_all()
+    child.set_no_show_all(True)
+    child.set_visible(expander.get_expanded())
+    expander.connect(
+        "notify::expanded", lambda widget, _spec: child.set_visible(widget.get_expanded())
+    )
+
+
 class AccessibleWizard:
     def __init__(self, wizard: Wizard, fullscreen: bool = False):
         self.w = wizard
@@ -391,6 +410,7 @@ class AccessibleWizard:
         reader.set_selectable(True)
         reader.set_can_focus(True)
         expander.add(reader)
+        _fold(expander)
         self.body.pack_start(expander, False, False, 4)
 
     def button(self, text: str, action: Callable, *, enabled: bool = True,
@@ -680,6 +700,7 @@ class AccessibleWizard:
             limits_text.set_can_focus(True)
             limits_text.set_selectable(True)
             limits.add(limits_text)
+            _fold(limits)
             self.body.pack_start(limits, False, False, 4)
             if self.w.error:
                 sections = recovery_for_wizard_error(self.w.error)
@@ -737,6 +758,7 @@ class AccessibleWizard:
             platforms_text.set_can_focus(True)
             platforms_text.set_selectable(True)
             platforms.add(platforms_text)
+            _fold(platforms)
             self.body.pack_start(platforms, False, False, 4)
             self.label(C.this_usb_line())
             self.label(C.REPORT_MEDIA_WHAT, focusable=True)
@@ -821,6 +843,7 @@ class AccessibleWizard:
                 reader.set_selectable(True)
                 reader.set_can_focus(True)
                 expander.add(reader)
+                _fold(expander)
                 self.body.pack_start(expander, False, False, 4)
             self._inventory()
         elif screen in (Screen.PICK_EMPTY, Screen.PICK_BLOCKED):
@@ -963,11 +986,13 @@ class AccessibleWizard:
                 note_text.set_can_focus(True)
                 note_text.set_selectable(True)
                 more.add(note_text)
+                _fold(more)
                 self.body.pack_start(more, False, False, 4)
             pages = self.button(storage_limits.BUTTON, self.w.open_limits, in_body=True)
             self.body.remove(pages)
             pages.set_halign(Gtk.Align.START)
             limits_box.pack_start(pages, False, False, 0)
+            _fold(limits_more)  # after the button joins the notice
             # #175: Advanced is in Help & settings (still from Method only).
             self.button(C.primary_action(Screen.METHOD), self.w.continue_method)
         elif screen == Screen.DISK_HELP:
@@ -1364,6 +1389,7 @@ class AccessibleWizard:
                 text.set_can_focus(True)
                 text.set_selectable(True)
                 widget.add(text)
+                _fold(widget)
             elif item.enabled:
                 widget = Gtk.Button.new_with_label(item.label)
                 widget.set_can_default(False)

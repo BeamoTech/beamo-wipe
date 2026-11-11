@@ -6441,3 +6441,42 @@ another very thorough and comprehensive pass of this." Repo
 - #116 rehearsal scratch folder (sub-agent scratchpad `seeddir`, ~1.9 GB):
   already deleted by that agent on 2026-11-10 02:41Z; nothing left to
   reclaim (348 KB of notes remain). C: measured 22.43 GiB free at 06:00Z.
+- POST-MERGE 2026-11-11, Claude (Opus 5.5): PRs 94-97 merged; main at
+  f2b2dea6 (PR 97). main ci.yml 42885593888 SUCCESS (Windows launcher
+  tests 19:31:29Z, Linux image gate 20:58:57Z, CI gate 20:59:14Z, all on
+  2026-11-10); CodeQL "Push on main" 42885592138 SUCCESS (19:31:12Z).
+  Code scanning on main: 0 open (11 dismissed, 25 fixed).
+
+## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (FIXED ON BRANCH; HOSTED GATE AND MERGE PENDING)
+
+- 2026-11-11, Claude (Opus 5.5). Branch `fix/gtk-collapsed-focus-20261110`
+  from main f2b2dea6, worktree beamo-wipe-dec-20261110. Source: the
+  pre-existing FOLLOW-UP in BW-158 ("collapsed GTK expander content stays
+  Tab-reachable at 1 px height", all expanders #141/#146/#160/#161/#158).
+- CAUSE: GTK 3.24.41 keeps a collapsed GtkExpander's child visible and
+  mapped (1 px). On Method, Tab went into the storage notice, Storage
+  limits (L), the Everyday caveat and the Three overwrites note before
+  they were opened; same on Keyboard, Owner, Pick (compare), result
+  Technical details and Help & settings > Keyboard shortcuts.
+- FIX: `_fold(expander)` in src/beamo_wipe/ui/accessible_wizard.py hides
+  the child while collapsed (no_show_all so window.show_all cannot reveal
+  it) and shows it on notify::expanded; called for all 7 expanders. No
+  wording, layout design, disk selection or nwipe change.
+- TESTS: new tests/test_gtk_collapsed_expander_focus.py (10): all 10 fail
+  on main f2b2dea6, pass with the fix. tests/test_accessible_runtime.py
+  ::test_accessible_method_choices_visible_above_grouped_actions now
+  checks every action is a Tab stop except the one in the collapsed notice
+  (Storage limits, #158 option b), which must not be until Show more is
+  opened, then all are.
+- CHECKS (WSL hosted-matching route, tree bw-linux-20261107/dec = main
+  src+tests + this change): the 75 test files that import the GTK view:
+  main 2 failed / 1965 passed; fix (before the 2 updates above) 4 failed /
+  1973 passed, the 2 extra being the test above and a GTK stub without a
+  child (fixed by a None guard). Rerun of the affected 3 files: 206 passed,
+  2 failed = slow_sound_discovery (also fails on main) and
+  test_orca_announces_every_result, which is flaky on both: 3 runs each,
+  fix 2/3 passed, main 2/3 passed. test_compat_story iso_builder also fails
+  on main (archive copy). ruff (src, tests, S-set), mypy --platform linux
+  (61 files): clean.
+- NEXT: one push, PR to main; hosted ci.yml + CodeQL on the PR; merge is
+  the owner's call.
