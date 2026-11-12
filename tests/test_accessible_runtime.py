@@ -481,14 +481,36 @@ def test_accessible_method_choices_visible_above_grouped_actions(ui):
         _, y = choice.translate_coordinates(app.window, 0, 0)
         assert y >= 0
         assert y + choice.get_allocated_height() <= footer_y
-    # Keyboard traversal reaches every footer action through native controls.
-    reached = set()
-    for _ in range(50):
-        app.window.child_focus(Gtk.DirectionType.TAB_FORWARD)
-        focus = app.window.get_focus()
-        if isinstance(focus, Gtk.Button):
-            reached.add(focus)
-    assert set(app.actions.values()) <= reached
+    # Keyboard traversal reaches every action through native controls.
+    # Storage limits (L) sits in the collapsed Show more notice (#158 option
+    # b): Tab skips it until Show more is opened, then reaches it too.
+    def reached_buttons():
+        reached = set()
+        for _ in range(50):
+            app.window.child_focus(Gtk.DirectionType.TAB_FORWARD)
+            focus = app.window.get_focus()
+            if isinstance(focus, Gtk.Button):
+                reached.add(focus)
+        return reached
+
+    def folded(widget):
+        node = widget.get_parent()
+        while node is not None:
+            if isinstance(node, Gtk.Expander) and not node.get_expanded():
+                return node
+            node = node.get_parent()
+        return None
+
+    actions = set(app.actions.values())
+    hidden = {button for button in actions if folded(button) is not None}
+    reached = reached_buttons()
+    assert actions - hidden <= reached
+    assert not hidden & reached
+    assert hidden, "Storage limits (L) waits under Show more"
+    for button in hidden:
+        folded(button).set_expanded(True)
+    drain()
+    assert actions <= reached_buttons()
 
 
 def test_accessible_method_radio_name_stays_summary(ui):
