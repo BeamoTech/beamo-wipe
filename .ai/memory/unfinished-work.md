@@ -6476,7 +6476,7 @@ another very thorough and comprehensive pass of this." Repo
   2026-11-10); CodeQL "Push on main" 42885592138 SUCCESS (19:31:12Z).
   Code scanning on main: 0 open (11 dismissed, 25 fixed).
 
-## BW-USB-FIRST-ANSWER-20261112 — GTK result screen when the first report-USB answer arrives (TEST ON BRANCH; HOSTED GATE AND MERGE PENDING)
+## BW-USB-FIRST-ANSWER-20261112 — GTK result screen when the first report-USB answer arrives (TESTS ON BRANCH, PR 102; HOSTED GATE AND MERGE PENDING)
 
 - 2026-11-12, Claude (Opus 5.5). Branch
   `test/gtk-report-usb-first-answer-20261112` from main 7681c53d, worktree
@@ -6505,7 +6505,34 @@ another very thorough and comprehensive pass of this." Repo
   sha256 checked. With test_report_panel_135, test_usb_report_workflow and
   test_accessible_runtime: 359 passed / 0 failed. Gate ruff sets and ruff
   format on the new file: clean.
-- NEXT: one push, PR to main; hosted ci.yml + CodeQL; merge is Jack's call.
+- PR 102 first push (head 59d091de): ci.yml 43232007438 SUCCESS
+  (15:04:27Z), CodeQL 43232001997 SUCCESS (13:57:18Z). Then BEHIND main
+  (PR 100 and Jack's PR 101 merged).
+- SECOND-PASS REVIEW 2026-11-12 (Jack's queued request), one batched push
+  with the main merge PR 102 needed anyway:
+  - Real gap: no GTK test for a focused "Save report to USB" whose stick
+    is pulled, swapped or cannot be checked. Added
+    test_focused_save_follows_a_later_usb_change[pulled|other|error]:
+    pulled/error -> Save greyed, focus moves to the USB status that says
+    why; other stick -> Save still enabled, focus stays on Save; one
+    rebuild each; the same stick answering again rebuilds nothing.
+  - Added test_closing_while_the_check_is_out_ignores_its_late_answer:
+    close while the check is out, release it; tick returns False and
+    nothing rebuilds.
+  - Tightened the first test: footer focus is the Erase another disk
+    button itself; panel-title focus is inside the panel (words alone
+    could match another control).
+  - Product: correct in every case; no product change.
+  - CHECKS (WSL route; tree = main aecf8456 src/tests + this file, sha256
+    matched): 8/8 passed 4 times. New mutants, each restored (sha256
+    checked): no panel-status fallback -> 3 fail (panel-status, pulled,
+    error); refocus onto a disabled control -> 2 fail (pulled, error);
+    tick works after close -> 1 fail (close test). With
+    test_report_panel_135, test_usb_report_workflow,
+    test_accessible_runtime and test_gtk_collapsed_expander_focus: 373
+    passed / 0 failed (Orca test included). Gate ruff sets, ruff format on
+    the file, git diff --check: clean.
+- NEXT: hosted ci.yml + CodeQL on the new head; merge is Jack's call.
 
 ## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (DONE; MERGED AS 34c3ab30 2026-11-12)
 
@@ -6549,7 +6576,7 @@ another very thorough and comprehensive pass of this." Repo
   43134359902 SUCCESS (Windows launcher tests 01:28:02Z, Linux image gate
   02:29:52Z, CI gate 02:30:05Z, 2026-11-12). Code scanning: 0 open.
 
-## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (SLOW-SOUND MERGED 7681c53d; ONE ROUTE ARTIFACT; ORCA FLAKE FIXED ON BRANCH)
+## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (SLOW-SOUND MERGED 7681c53d; ONE ROUTE ARTIFACT; ORCA FLAKE FIX MERGED 54303400)
 
 - 2026-11-12, Claude (Opus 5.5). Branch `test/slow-sound-causal-20261112`
   from main 34c3ab30, worktree beamo-wipe-dec-20261110. Test-only change.
@@ -6609,5 +6636,16 @@ another very thorough and comprehensive pass of this." Repo
   make Orca re-read or lose the headline on slow hardware. NEXT: a GTK test
   with an injected probe and written evidence; update in place if it
   rebuilds.
-- NEXT: one push for the Orca fix, PR to main; hosted ci.yml + CodeQL;
-  merge is the owner's call.
+- PR 100 (Orca nudge + this entry, head 41553633): ci.yml 43164946125
+  SUCCESS (06:59:42Z), CodeQL 43164943556 SUCCESS (06:00:23Z). Jack
+  approved; merged by Claude 2026-11-12T14:02:17Z as 54303400 (merge
+  commit, pinned to 41553633). Post-merge main: CodeQL 43233083625 SUCCESS
+  (14:06:38Z); ci.yml 43233086778 SUCCESS (Windows launcher tests
+  14:04:04Z, Linux image gate 15:11:19Z, CI gate 15:11:30Z). Code
+  scanning: 0 open. DONE.
+- SECOND-PASS REVIEW 2026-11-12 (Jack's queued request; code reading, no
+  change): log never quiet -> no nudge, still the same 40 s failure, never
+  a false pass (not seen in 14 local runs or hosted); log file missing ->
+  size 0, quiet timer starts normally; first wait has no app -> no nudge
+  as before; at most 2 nudges, quiet timer restarts after each; same
+  number of waits, so the 40 s / 300 s limits are unchanged. No defect.

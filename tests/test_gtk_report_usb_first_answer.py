@@ -122,6 +122,10 @@ def test_first_usb_answer_rebuilds_once_and_keeps_focus(ui, tmp_path, where):  #
             assert _words(focus) == start_words
         if where == "headline":
             assert focus is app.arrival and _words(focus) == headline
+        if where == "footer":
+            assert focus is app.actions[C.BTN_ERASE_ANOTHER]
+        if where == "panel-title":
+            assert focus in app._panel_widgets
         save = app.actions[C.BTN_SAVE_REPORT]
         assert save.get_sensitive()
         assert "SanDisk Ultra, 16 GB" in text(app)
@@ -136,5 +140,98 @@ def test_first_usb_answer_rebuilds_once_and_keeps_focus(ui, tmp_path, where):  #
         assert app.window.get_focus() is focus
         assert wizard.screen == Screen.DONE and not wizard.wants_shutdown
         assert wizard.report_status != "saved"
+    finally:
+        answer.set()
+
+
+OTHER = X.ReportUsbProbe(X.PROBE_FOUND, label="Kingston, 32 GB", filesystem="exFAT")
+
+
+@pytest.mark.parametrize("change", ["pulled", "other", "error"])
+def test_focused_save_follows_a_later_usb_change(ui, tmp_path, change):  # noqa: F811
+    """Focus on Save, then the stick is pulled, swapped or cannot be checked."""
+    current = [FOUND]
+
+    def probe(**_kwargs):
+        if current[0] is None:
+            raise OSError("lsblk failed")
+        return current[0]
+
+    wizard = _done_wizard(_success_receipt, tmp_path)
+    wizard._report_usb_probe = probe
+    wizard._report_usb = FOUND
+    app = ui(wizard)
+    drain()
+    save = app.actions[C.BTN_SAVE_REPORT]
+    assert save.get_sensitive()
+    save.grab_focus()
+    drain()
+    assert app.window.get_focus() is save
+
+    renders = []
+    render = app.render
+
+    def counted():
+        renders.append(app.window.get_focus())
+        return render()
+
+    app.render = counted
+    # The same stick answering again changes nothing.
+    assert _tick_until(
+        app, lambda: not wizard._report_usb_busy and wizard._report_usb_due > 0
+    )
+    assert renders == [] and app.window.get_focus() is save
+
+    current[0] = {
+        "pulled": X.ReportUsbProbe(X.PROBE_NONE),
+        "other": OTHER,
+        "error": None,
+    }[change]
+    assert _tick_until(app, lambda: bool(renders), timeout=6)
+    drain()
+    assert len(renders) == 1
+    focus = app.window.get_focus()
+    assert focus is not None and focus is not save and focus.get_mapped()
+    new_save = app.actions[C.BTN_SAVE_REPORT]
+    if change == "other":
+        # Save still works: Orca stays on it.
+        assert new_save.get_sensitive() and focus is new_save
+        assert "Kingston, 32 GB" in _words(app._panel_status)
+    else:
+        # Save is greyed: Orca moves to the status that says why.
+        assert not new_save.get_sensitive()
+        assert focus is app._panel_status
+        assert "SanDisk Ultra" not in _words(focus)
+        assert C.REPORT_SAVE_WAIT in text(app)
+    assert wizard.screen == Screen.DONE and wizard.report_status != "saved"
+
+
+def test_closing_while_the_check_is_out_ignores_its_late_answer(ui, tmp_path):  # noqa: F811
+    asked = []
+    answer = threading.Event()
+
+    def probe(**_kwargs):
+        asked.append(1)
+        answer.wait(timeout=10)
+        return FOUND
+
+    wizard = _done_wizard(_success_receipt, tmp_path)
+    wizard._report_usb_probe = probe
+    try:
+        app = ui(wizard)
+        drain()
+        assert _tick_until(app, lambda: bool(asked))
+        renders = []
+        app.render = lambda: renders.append(1)
+        app.close()
+        drain()
+        answer.set()
+        deadline = time.monotonic() + 3
+        while wizard._report_usb_busy and time.monotonic() < deadline:
+            time.sleep(0.02)
+        assert not wizard._report_usb_busy
+        assert app.tick() is False
+        drain()
+        assert renders == []
     finally:
         answer.set()
