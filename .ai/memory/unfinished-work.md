@@ -6489,7 +6489,7 @@ another very thorough and comprehensive pass of this." Repo
   43134359902 SUCCESS (Windows launcher tests 01:28:02Z, Linux image gate
   02:29:52Z, CI gate 02:30:05Z, 2026-11-12). Code scanning: 0 open.
 
-## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (ONE FIXED ON BRANCH; ONE ROUTE ARTIFACT; ORCA FLAKE OPEN)
+## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (SLOW-SOUND MERGED 7681c53d; ONE ROUTE ARTIFACT; ORCA FLAKE FIXED ON BRANCH)
 
 - 2026-11-12, Claude (Opus 5.5). Branch `test/slow-sound-causal-20261112`
   from main 34c3ab30, worktree beamo-wipe-dec-20261110. Test-only change.
@@ -6514,8 +6514,40 @@ another very thorough and comprehensive pass of this." Repo
   the test's two nudges were spent and Orca went idle until the 40 s wait
   ended. Hosted runs it on its own Xvfb (BEAMO_HOSTED_ORCA_SEPARATE) and it
   has passed there. NOT CHANGED: more nudges risk the 300 s parent limit
-  (see the test's comments). NEXT: find which re-render destroys the
-  focused heading after the result screen is shown; if the product
-  rebuilds after focusing, fix it there, not in the test.
-- NEXT: one push, PR to main; hosted ci.yml + CodeQL; merge is the owner's
-  call.
+  (see the test's comments).
+- PR 99 (slow-sound test + this entry, head 98753cfc): ci.yml 43142155673
+  SUCCESS (03:21:26Z), CodeQL 43142151742 SUCCESS. Owner approved; merged
+  by Claude 2026-11-12T04:55:16Z as 7681c53d (pinned to 98753cfc).
+  Post-merge main: CodeQL 43157910342 SUCCESS (04:58:49Z); ci.yml
+  43157910972 SUCCESS (Windows launcher tests 04:56:56Z, Linux image gate
+  05:52:57Z, CI gate 05:53:08Z). Code scanning: 0 open.
+- ORCA DIAGNOSIS 2026-11-12, Claude (Opus 5.5). Branch
+  `test/orca-nudge-when-idle-20261112` from main 7681c53d.
+  - NOT a product re-render: showing each result case as the test does and
+    ticking 2-4 s (no Orca) rendered each screen exactly once. The test's
+    demo wizard is dry_run, so the report-USB probe never runs there.
+  - NOT one screen: 14 failed WSL logs missed at least 6 different
+    result/warning phrases. Cause is timing: Orca 43 was slow (0.37 s for
+    one event); the test sent both nudges on a fixed 2 s clock while Orca
+    was still draining the previous screen, the nudge reached a gone widget
+    ("[DEAD]"), and Orca then stayed idle ~20 s with no nudge left.
+  - FIX (test-only): nudge only after Orca's log has been quiet 1.5 s;
+    still at most 2 nudges, same 40 s wait, so no extra risk to the 300 s
+    parent limit.
+  - EVIDENCE (WSL route, interleaved, same tree but this one file): main
+    4/8 passed (missed 4 different phrases, 85-103 s); fix 8/8 (65-91 s),
+    then 6 more 6/6 = 14/14. Whole tests/test_accessible_runtime.py with
+    the fix: 197 passed / 0 failed. Gate ruff sets: clean. dec tree
+    restored to main bytes (sha256 checked).
+- OPEN QUESTION (not tested, product): on a real (non-dry-run) result
+  screen the report-USB probe starts once evidence is written; its first
+  answer bumps report_revision and AccessibleWizard.tick() rebuilds the
+  whole Done screen (accessible_wizard.py tick; wizard.py
+  _run_report_usb_probe), moving focus back to the heading. Tk has a test
+  that a live status change keeps focus (test_report_panel_135
+  test_tk_live_status_change_redraws_and_keeps_focus); GTK has none. Could
+  make Orca re-read or lose the headline on slow hardware. NEXT: a GTK test
+  with an injected probe and written evidence; update in place if it
+  rebuilds.
+- NEXT: one push for the Orca fix, PR to main; hosted ci.yml + CodeQL;
+  merge is the owner's call.

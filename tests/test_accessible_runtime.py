@@ -834,7 +834,12 @@ sys.exit(entry['main']())
         # events after a dense screen is destroyed before it speaks again.
         deadline = time.monotonic() + timeout
         nudges = 0
-        next_nudge = time.monotonic()
+        # Nudge only once Orca's log has been quiet, never on a clock. A
+        # nudge sent while Orca is still draining the last screen's events
+        # reaches it after the widget is gone ("Ignoring defunct object"),
+        # and Orca then stays idle with no nudge left until the deadline.
+        log_seen = -1
+        log_quiet_since = time.monotonic()
         content = ""
         while time.monotonic() < deadline:
             drain()
@@ -855,10 +860,14 @@ sys.exit(entry['main']())
                         break
                     time.sleep(0.01)
                 return
-            if app_box and nudges < 2 and time.monotonic() >= next_nudge:
+            size = log_size()
+            if size != log_seen:
+                log_seen = size
+                log_quiet_since = time.monotonic()
+            elif app_box and nudges < 2 and time.monotonic() - log_quiet_since >= 1.5:
                 nudge_focus(phrase)
                 nudges += 1
-                next_nudge = time.monotonic() + 2
+                log_quiet_since = time.monotonic()
             assert reader.poll() is None, content[-3000:]
             time.sleep(0.02)
         pytest.fail(f"Orca did not announce {phrase!r}: {content[-3000:]}")
