@@ -56,7 +56,7 @@ def test_builder_compiles_from_verified_private_source_copy(tmp_path, monkeypatc
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 linux/amd64\n"
+            return "go version go1.26.11 linux/amd64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

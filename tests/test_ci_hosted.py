@@ -135,7 +135,7 @@ def test_desktop_bundle_rejects_stale_dirty_source(tmp_path):
         "source_sha256": desktop_source_digest(tmp_path),
         "source_dirty": True,
         "version": "0.2.9",
-        "go": "go1.26.8",
+        "go": "go1.26.11",
         "files": binary_hashes,
     }
     (output / "desktop-build.json").write_text(json.dumps(manifest), encoding="utf-8")

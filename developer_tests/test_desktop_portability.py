@@ -74,7 +74,7 @@ def test_native_cleanup_closes_handle_and_preserves_replacement(
 
     def fake_output(argv, **kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 windows/amd64\n"
+            return "go version go1.26.11 windows/amd64\n"
         return "a" * 40 if argv[1:] == ["rev-parse", "HEAD"] else ""
 
     def fake_build(argv, **kwargs):
@@ -165,7 +165,7 @@ def test_failed_initial_lock_stat_closes_owned_handles(
 
     def fake_output(argv, **kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 linux/amd64\n"
+            return "go version go1.26.11 linux/amd64\n"
         return "a" * 40 if argv[1:] == ["rev-parse", "HEAD"] else ""
 
     proxy = FaultOSProxy()

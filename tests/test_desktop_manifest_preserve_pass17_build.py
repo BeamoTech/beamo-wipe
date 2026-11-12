@@ -33,7 +33,7 @@ def test_builder_preserves_unrecognized_existing_manifest(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -71,7 +71,7 @@ def test_builder_replaces_recognized_prior_manifest(
                 "source_commit": "a" * 40,
                 "source_sha256": "b" * 64,
                 "source_dirty": False,
-                "go": "go1.26.8",
+                "go": "go1.26.11",
                 "files": {
                     name: hashlib.sha256(launcher_bytes).hexdigest()
                     for name in BUILDER.LAUNCHERS
@@ -82,7 +82,7 @@ def test_builder_replaces_recognized_prior_manifest(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

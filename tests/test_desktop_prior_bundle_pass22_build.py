@@ -47,7 +47,7 @@ def test_builder_preserves_launcher_changed_since_prior_manifest(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -86,7 +86,7 @@ def test_builder_preserves_launcher_without_prior_manifest(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

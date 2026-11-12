@@ -127,7 +127,7 @@ def test_build_rejects_wrong_go_before_output(tmp_path, monkeypatch):
         "check_output",
         lambda *a, **k: "go version go1.1 linux/amd64\n",
     )
-    with pytest.raises(RuntimeError, match="1.26.8"):
+    with pytest.raises(RuntimeError, match="1.26.11"):
         builder.build(tmp_path)
     assert not list(tmp_path.iterdir())
 
@@ -138,7 +138,7 @@ def test_build_contract_with_space_paths(tmp_path, monkeypatch):
 
     def output(argv, **kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 linux/amd64\n"
+            return "go version go1.26.11 linux/amd64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         return ""
@@ -166,7 +166,7 @@ def test_failed_build_does_not_write_success_manifest(tmp_path, monkeypatch):
     monkeypatch.setattr(
         builder.subprocess,
         "check_output",
-        lambda cmd, **k: "go version go1.26.8 darwin/arm64"
+        lambda cmd, **k: "go version go1.26.11 darwin/arm64"
         if cmd[1:] == ["version"]
         else "a" * 40,
     )
@@ -268,7 +268,9 @@ def test_concurrent_build_cannot_mix_executables_and_hashes(tmp_path, monkeypatc
     errors = []
 
     def output(cmd, **kwargs):
-        return "go version go1.26.8 linux/amd64" if cmd[1:] == ["version"] else "a" * 40
+        return (
+            "go version go1.26.11 linux/amd64" if cmd[1:] == ["version"] else "a" * 40
+        )
 
     def compile_fake(cmd, **kwargs):
         if (

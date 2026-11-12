@@ -37,7 +37,7 @@ firmware APIs. Cross-compilation alone does not prove runtime behavior.
 
 Install Git and Python 3.10 or newer with venv/pip support. Use a current Python
 with maintained security updates. Windows users can use `py -3` wherever these
-examples say `python3`. Go **1.26.8** is needed only for desktop work; build
+examples say `python3`. Go **1.26.11** is needed only for desktop work; build
 commands reject a different version and do not download a replacement silently.
 
 Clone the canonical repository into a development directory:

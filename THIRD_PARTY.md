@@ -107,7 +107,7 @@ must keep saying: the engine is nwipe.
 
 ## Desktop launcher runtime
 
-The standalone Windows and Linux launchers are compiled with Go 1.26.8 and
+The standalone Windows and Linux launchers are compiled with Go 1.26.11 and
 include its runtime and standard library. Go is copyright The Go Authors and
 uses the BSD 3-Clause license. The USB root includes `GO-LICENSE.txt` and
 `GO-PATENTS.txt`; source is available at https://go.dev/dl/. The launcher has

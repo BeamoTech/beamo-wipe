@@ -45,7 +45,7 @@ def doctor(monkeypatch):
         assert argv == ["/fixture/go", "version"]
         assert kwargs["env"]["GOTOOLCHAIN"] == "local"
         return subprocess.CompletedProcess(
-            argv, 0, "go version go1.26.8 linux/amd64\n", ""
+            argv, 0, "go version go1.26.11 linux/amd64\n", ""
         )
 
     monkeypatch.setattr(dev.shutil, "which", which)
@@ -234,7 +234,7 @@ def test_desktop_missing_go_is_actionable(doctor, capsys):
     dev, tools, _, _, _ = doctor
     tools.pop("go")
     assert dev.doctor("desktop") == 2
-    assert "Go 1.26.8" in " ".join(json.loads(capsys.readouterr().out)["problems"])
+    assert "Go 1.26.11" in " ".join(json.loads(capsys.readouterr().out)["problems"])
 
 
 def test_desktop_wrong_version_and_missing_pin_fail_closed(
