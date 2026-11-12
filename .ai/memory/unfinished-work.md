@@ -6447,7 +6447,7 @@ another very thorough and comprehensive pass of this." Repo
   2026-11-10); CodeQL "Push on main" 42885592138 SUCCESS (19:31:12Z).
   Code scanning on main: 0 open (11 dismissed, 25 fixed).
 
-## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (FIXED ON BRANCH; HOSTED GATE AND MERGE PENDING)
+## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (DONE; MERGED AS 34c3ab30 2026-11-12)
 
 - 2026-11-11, Claude (Opus 5.5). Branch `fix/gtk-collapsed-focus-20261110`
   from main f2b2dea6, worktree beamo-wipe-dec-20261110. Source: the
@@ -6478,5 +6478,44 @@ another very thorough and comprehensive pass of this." Repo
   fix 2/3 passed, main 2/3 passed. test_compat_story iso_builder also fails
   on main (archive copy). ruff (src, tests, S-set), mypy --platform linux
   (61 files): clean.
-- NEXT: one push, PR to main; hosted ci.yml + CodeQL on the PR; merge is
-  the owner's call.
+- PR 98 (head 4e27df61): hosted ci.yml 42974761411 SUCCESS (Linux image
+  gate 1h18m, Windows launcher tests, CI gate; finished 2026-11-11
+  08:04:41Z), CodeQL 42974758546 SUCCESS (06:47:55Z). Re-check before
+  merge (2026-11-12, tree bytes = 4e27df61 by sha256): the 3 affected files
+  252 passed / 2 failed (slow_sound_discovery and the Orca flake, both also
+  on main); gate ruff clean. Owner approved the merge; merged by Claude
+  2026-11-12T01:24:57Z as 34c3ab30 (merge commit, pinned to 4e27df61).
+  Post-merge main: CodeQL 43134358581 SUCCESS (01:28:32Z); ci.yml
+  43134359902 SUCCESS (Windows launcher tests 01:28:02Z, Linux image gate
+  02:29:52Z, CI gate 02:30:05Z, 2026-11-12). Code scanning: 0 open.
+
+## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (ONE FIXED ON BRANCH; ONE ROUTE ARTIFACT; ORCA FLAKE OPEN)
+
+- 2026-11-12, Claude (Opus 5.5). Branch `test/slow-sound-causal-20261112`
+  from main 34c3ab30, worktree beamo-wipe-dec-20261110. Test-only change.
+- test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog
+  failed on every WSL run (alone too: 71 ms vs a 60 ms bound). The click
+  builds and shows the GTK dialog synchronously (sound_dialog.py) and
+  hands discovery to the worker; 71 ms is dialog drawing, not discovery
+  (held 2 s). FIX: the test now proves the cause instead of machine speed:
+  discovery runs off the GTK thread, and the click and tick return while
+  discovery is still held. Same route: 3/3 passed; a mutant that runs
+  discovery inside the click fails (`assert not returned.is_set()`), then
+  sound_dialog.py restored (sha256 checked). Whole
+  tests/test_accessible_runtime.py: 196 passed / 1 failed (Orca flake;
+  main had 2 failed). Gate ruff sets (src/tests, S lists, ci-hosted.sh
+  121-128): clean.
+- test_compat_story::test_iso_builder_copies_then_injects_helper: NOT A
+  PRODUCT BUG. It runs `git check-ignore`, which exits 128 because the WSL
+  tree is a tar copy, not a git checkout. Hosted runs use a checkout.
+- test_orca_announces_every_result: FLAKY (about 1 in 3 on the WSL route,
+  same on main). Seen 2026-11-11: the result heading's focus event reached
+  Orca 43 after the widget was gone ("Ignoring defunct object: [DEAD]");
+  the test's two nudges were spent and Orca went idle until the 40 s wait
+  ended. Hosted runs it on its own Xvfb (BEAMO_HOSTED_ORCA_SEPARATE) and it
+  has passed there. NOT CHANGED: more nudges risk the 300 s parent limit
+  (see the test's comments). NEXT: find which re-render destroys the
+  focused heading after the result screen is shown; if the product
+  rebuilds after focusing, fix it there, not in the test.
+- NEXT: one push, PR to main; hosted ci.yml + CodeQL; merge is the owner's
+  call.
