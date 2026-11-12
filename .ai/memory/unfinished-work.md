@@ -6447,6 +6447,37 @@ another very thorough and comprehensive pass of this." Repo
   2026-11-10); CodeQL "Push on main" 42885592138 SUCCESS (19:31:12Z).
   Code scanning on main: 0 open (11 dismissed, 25 fixed).
 
+## BW-USB-FIRST-ANSWER-20261112 — GTK result screen when the first report-USB answer arrives (TEST ON BRANCH; HOSTED GATE AND MERGE PENDING)
+
+- 2026-11-12, Claude (Opus 5.5). Branch
+  `test/gtk-report-usb-first-answer-20261112` from main 7681c53d, worktree
+  beamo-wipe-dec-20261110. Test-only. Placed above BW-GTK-FOLD so it does
+  not touch the lines PR 100 changes. Follows the OPEN QUESTION in
+  BW-LOCAL-GTK-FAILS-20261112 (on PR 100's branch).
+- QUESTION: on a real (non-dry-run) result screen the read-only report-USB
+  check starts once evidence is written; its first answer bumps
+  report_revision and AccessibleWizard.tick() rebuilds the Done screen.
+  Does Orca lose its place? GTK had no test (Tk has
+  test_tk_live_status_change_redraws_and_keeps_focus).
+- ANSWER (current behaviour, now pinned): exactly one rebuild; focus kept
+  on the same words when they still exist (result headline, a footer
+  button, the Save a report title); moved to the new USB status when the
+  panel line focus was on changed; no second rebuild while the answer stays
+  the same (wizard.py only bumps on a changed answer). Orca re-reads the
+  focused item once on that rebuild (new widget, same words); not changed.
+- TEST: tests/test_gtk_report_usb_first_answer.py, 4 cases (headline,
+  footer, panel-title, panel-status). Fake probe held off the GTK thread
+  until released, fake exporter; nothing scans, mounts, saves or erases.
+- CHECKS (WSL route, Xvfb 72 DPI, tree = main 7681c53d src + this file,
+  sha256 e3ac7eed matched): 4/4 passed 3 times on the final bytes (and 3
+  earlier repeats). Mutants: rebuild forgets focus (Done refocus disabled)
+  3/4 fail (headline still passes: it is the default target); every scan
+  counts as news (wizard.py change check removed) 4/4 fail; both restored,
+  sha256 checked. With test_report_panel_135, test_usb_report_workflow and
+  test_accessible_runtime: 359 passed / 0 failed. Gate ruff sets and ruff
+  format on the new file: clean.
+- NEXT: one push, PR to main; hosted ci.yml + CodeQL; merge is Jack's call.
+
 ## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (DONE; MERGED AS 34c3ab30 2026-11-12)
 
 - 2026-11-11, Claude (Opus 5.5). Branch `fix/gtk-collapsed-focus-20261110`
