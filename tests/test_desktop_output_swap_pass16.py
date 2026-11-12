@@ -29,7 +29,7 @@ def test_builder_does_not_write_launcher_through_swapped_output(tmp_path, monkey
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -105,7 +105,7 @@ def test_builder_rechecks_published_launcher_bytes_before_manifest(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -146,7 +146,7 @@ def test_builder_does_not_report_success_after_manifest_output_swap(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

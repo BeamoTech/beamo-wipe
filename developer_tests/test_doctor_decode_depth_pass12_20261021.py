@@ -47,7 +47,7 @@ def test_doctor_probe_json_decode_depth(monkeypatch, capsys, operation, payload_
     def probe(argv, **kwargs):
         calls.append(argv)
         if argv[-1] == "version":
-            return "go version go1.26.8 linux/amd64\n", None
+            return "go version go1.26.11 linux/amd64\n", None
         return payloads[payload_kind], None
 
     monkeypatch.setattr(dev, "doctor_probe", probe)

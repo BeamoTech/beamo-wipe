@@ -1,5 +1,34 @@
 # Unfinished work
 
+## BW-GO-2026-6859-LAUNCHER-20261112 — PR OPEN (launcher Go 1.26.8 -> 1.26.11; blocks signed 0.2.14)
+
+- Date/author: 2026-11-12 / Claude, beamo-wipe-usb BWU-001 thread. Branch `fix/launcher-go1.26.11-20261112` from main
+  `7681c53`, worktree `C:\Users\Jack\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
+- Why: GO-2026-6859 / CVE-2026-97054 (net/http HTTP/1 server crash, MaxBytesReader header race) affects every Go
+  before 1.26.11. The desktop launcher (`desktop/main.go`) serves HTTP with `http.MaxBytesReader` and was built with
+  go1.26.8. Signed-release run 43157568393 (tag `v0.2.14` on `34c3ab3`) was cancelled before publish for this reason;
+  nothing was published. Owner approvals (Jack, 2026-11-12): publish signed 0.2.14; USB Easy Use companion rebuilt on
+  go1.26.11 (manifest `b7cb4f7f…bbe922`) approved.
+- Change: every current go1.26.8 pin -> go1.26.11 (`scripts/build_desktop.py`, `scripts/fetch-ci-go.sh` URL and
+  go.dev SHA-256 `9849f4e0…c710ec`, `desktop/go.mod`, ci.yml Windows setup-go and check, THIRD_PARTY.md, docs/ci.md,
+  docs/development.md, test fixtures). Historical evidence/audit files keep their recorded go1.26.8. Go LICENSE and
+  PATENTS are byte-identical in go1.26.11, so `desktop/GO-*.txt` are unchanged.
+- Local (Windows, go1.26.11 from go.dev, `go.exe` c0ea949d…a6af): `go vet ./...` 0, `go test -count=1 ./...` ok,
+  govulncheck v1.7.0 "No vulnerabilities found". Touched Python tests on Windows: 92 passed, 3 skipped, 24 failed,
+  48 errors — the identical failure set on unchanged main `7681c53` (POSIX-only `fcntl` and Windows file-handle
+  paths). Linux pytest, race, fuzz, launcher build, ISO and QEMU are NOT run locally; the hosted `CI gate` covers them.
+- Acceptance: hosted `CI gate` green on the PR head; independent review recorded on the PR (Greptile unavailable);
+  merge; main push ci.yml green; `v0.2.14` re-tagged on that main commit; release.yml re-dispatched and published
+  signed; the release's `desktop-build.json` says `go1.26.11`.
+- PR #101. First head `3477dac`: CI run 43215418988 failed only `ruff format --check` on
+  developer_tests/test_dev.py (the longer version string pushed one line past the limit); all
+  other phases passed (15888 passed, 16 skipped; negative, preview, launchers). Fixed with ruff
+  0.9.2 format; CI lint block and `mypy --platform linux` pass locally (shellcheck not local).
+- Tag note: `v0.2.14` is an existing pushed, unreleased annotated tag (`daa2fd2` -> `34c3ab3`);
+  publishing 0.2.14 moves it again (owner-approved). Post the move in the coordination note first.
+- Next action: CI gate green on the new head; independent review of the final diff; merge;
+  re-tag and dispatch. Blockers: CI and review.
+
 ## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
 
 - Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
@@ -6520,7 +6549,7 @@ another very thorough and comprehensive pass of this." Repo
   43134359902 SUCCESS (Windows launcher tests 01:28:02Z, Linux image gate
   02:29:52Z, CI gate 02:30:05Z, 2026-11-12). Code scanning: 0 open.
 
-## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (ONE FIXED ON BRANCH; ONE ROUTE ARTIFACT; ORCA FLAKE OPEN)
+## BW-LOCAL-GTK-FAILS-20261112 — The three GTK test failures the WSL route shows on main (SLOW-SOUND MERGED 7681c53d; ONE ROUTE ARTIFACT; ORCA FLAKE FIXED ON BRANCH)
 
 - 2026-11-12, Claude (Opus 5.5). Branch `test/slow-sound-causal-20261112`
   from main 34c3ab30, worktree beamo-wipe-dec-20261110. Test-only change.
@@ -6545,8 +6574,40 @@ another very thorough and comprehensive pass of this." Repo
   the test's two nudges were spent and Orca went idle until the 40 s wait
   ended. Hosted runs it on its own Xvfb (BEAMO_HOSTED_ORCA_SEPARATE) and it
   has passed there. NOT CHANGED: more nudges risk the 300 s parent limit
-  (see the test's comments). NEXT: find which re-render destroys the
-  focused heading after the result screen is shown; if the product
-  rebuilds after focusing, fix it there, not in the test.
-- NEXT: one push, PR to main; hosted ci.yml + CodeQL; merge is the owner's
-  call.
+  (see the test's comments).
+- PR 99 (slow-sound test + this entry, head 98753cfc): ci.yml 43142155673
+  SUCCESS (03:21:26Z), CodeQL 43142151742 SUCCESS. Owner approved; merged
+  by Claude 2026-11-12T04:55:16Z as 7681c53d (pinned to 98753cfc).
+  Post-merge main: CodeQL 43157910342 SUCCESS (04:58:49Z); ci.yml
+  43157910972 SUCCESS (Windows launcher tests 04:56:56Z, Linux image gate
+  05:52:57Z, CI gate 05:53:08Z). Code scanning: 0 open.
+- ORCA DIAGNOSIS 2026-11-12, Claude (Opus 5.5). Branch
+  `test/orca-nudge-when-idle-20261112` from main 7681c53d.
+  - NOT a product re-render: showing each result case as the test does and
+    ticking 2-4 s (no Orca) rendered each screen exactly once. The test's
+    demo wizard is dry_run, so the report-USB probe never runs there.
+  - NOT one screen: 14 failed WSL logs missed at least 6 different
+    result/warning phrases. Cause is timing: Orca 43 was slow (0.37 s for
+    one event); the test sent both nudges on a fixed 2 s clock while Orca
+    was still draining the previous screen, the nudge reached a gone widget
+    ("[DEAD]"), and Orca then stayed idle ~20 s with no nudge left.
+  - FIX (test-only): nudge only after Orca's log has been quiet 1.5 s;
+    still at most 2 nudges, same 40 s wait, so no extra risk to the 300 s
+    parent limit.
+  - EVIDENCE (WSL route, interleaved, same tree but this one file): main
+    4/8 passed (missed 4 different phrases, 85-103 s); fix 8/8 (65-91 s),
+    then 6 more 6/6 = 14/14. Whole tests/test_accessible_runtime.py with
+    the fix: 197 passed / 0 failed. Gate ruff sets: clean. dec tree
+    restored to main bytes (sha256 checked).
+- OPEN QUESTION (not tested, product): on a real (non-dry-run) result
+  screen the report-USB probe starts once evidence is written; its first
+  answer bumps report_revision and AccessibleWizard.tick() rebuilds the
+  whole Done screen (accessible_wizard.py tick; wizard.py
+  _run_report_usb_probe), moving focus back to the heading. Tk has a test
+  that a live status change keeps focus (test_report_panel_135
+  test_tk_live_status_change_redraws_and_keeps_focus); GTK has none. Could
+  make Orca re-read or lose the headline on slow hardware. NEXT: a GTK test
+  with an injected probe and written evidence; update in place if it
+  rebuilds.
+- NEXT: one push for the Orca fix, PR to main; hosted ci.yml + CodeQL;
+  merge is the owner's call.

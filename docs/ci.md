@@ -80,8 +80,8 @@ these containers. Checkout does not retain Git credentials.
 | lint | Python compile, blocking Ruff including security rules, existing developer-tool formatting gate, ShellCheck and blocking mypy |
 | tests | Full fake-device pytest at Xvfb 72 DPI; Orca in a separate clean D-Bus/X session; both groups run concurrently with private runtime directories and both JUnit reports counted in the receipt; Node, Playwright/Chromium, QR decoder and pinned Go installed so their tests execute |
 | preview | Web, console, helper and embedded JavaScript syntax |
-| desktop-launchers | Pinned Go 1.26.8, Linux race/vet/fuzz, shipped Windows and Linux launcher builds, tested bundle |
-| Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.8 |
+| desktop-launchers | Pinned Go 1.26.11, Linux race/vet/fuzz, shipped Windows and Linux launcher builds, tested bundle |
+| Windows | Native Go tests/vet including Win32 and PowerShell fixtures, on pinned Go 1.26.11 |
 | negative | Private safety mutation must produce the expected failing fake-device test, followed by a passing unmodified-source test |
 | iso | Tested launchers, pinned nwipe v0.42, build provenance, ISO size/PVD/checksums |
 | qemu | ISO and USB image inspection, installed-package inventory, fixed-vulnerability scan, BIOS boot files bound to Debian 12 syslinux, isolated shipped-nwipe tests, BIOS/UEFI/Secure Boot checks, full erase journeys per method (virtio) plus SATA (AHCI, BIOS, FAT32 report) and NVMe (UEFI, exFAT report) journeys from a writable USB stick, manifest finalization |
@@ -219,7 +219,7 @@ Do not relabel a fresh build as the old verified artifact.
 
 ## Desktop and regular-file packaging checks
 
-Use the repository-pinned Go 1.26.8 for shipped builds. From `desktop/`,
+Use the repository-pinned Go 1.26.11 for shipped builds. From `desktop/`,
 `go test -race ./...` and `go vet ./...` run the local launcher gate.
 The Blacksmith Windows job compiles and runs the actual Win32 and Windows
 PowerShell fixtures, so the Linux Blacksmith gate skips its duplicate Windows

@@ -34,7 +34,7 @@ def test_launcher_build_ignores_inherited_go_overlays_and_cpu_level(
 
     def output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

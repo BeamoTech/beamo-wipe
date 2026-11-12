@@ -17,7 +17,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-GO_VERSION = "go1.26.8"
+GO_VERSION = "go1.26.11"
 LAUNCHERS = ("Start Beamo Wipe.exe", "Start Beamo Wipe Linux")
 
 
@@ -562,7 +562,7 @@ def build(output=None):
     version_line = subprocess.check_output([go, "version"], text=True, env=env).split()
     if len(version_line) < 3 or version_line[2] != GO_VERSION:
         raise RuntimeError(
-            "Launcher builds require Go 1.26.8 (see scripts/ci-desktop.sh)."
+            "Launcher builds require Go 1.26.11 (see scripts/ci-desktop.sh)."
         )
     sys.path.insert(0, str(ROOT / "src"))
     from beamo_wipe import __version__
