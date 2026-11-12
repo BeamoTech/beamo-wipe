@@ -268,7 +268,9 @@ def test_concurrent_build_cannot_mix_executables_and_hashes(tmp_path, monkeypatc
     errors = []
 
     def output(cmd, **kwargs):
-        return "go version go1.26.11 linux/amd64" if cmd[1:] == ["version"] else "a" * 40
+        return (
+            "go version go1.26.11 linux/amd64" if cmd[1:] == ["version"] else "a" * 40
+        )
 
     def compile_fake(cmd, **kwargs):
         if (

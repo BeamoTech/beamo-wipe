@@ -20,7 +20,14 @@
 - Acceptance: hosted `CI gate` green on the PR head; independent review recorded on the PR (Greptile unavailable);
   merge; main push ci.yml green; `v0.2.14` re-tagged on that main commit; release.yml re-dispatched and published
   signed; the release's `desktop-build.json` says `go1.26.11`.
-- Next action: open the PR (one push); review; merge; re-tag and dispatch. Blockers: CI and review.
+- PR #101. First head `3477dac`: CI run 43215418988 failed only `ruff format --check` on
+  developer_tests/test_dev.py (the longer version string pushed one line past the limit); all
+  other phases passed (15888 passed, 16 skipped; negative, preview, launchers). Fixed with ruff
+  0.9.2 format; CI lint block and `mypy --platform linux` pass locally (shellcheck not local).
+- Tag note: `v0.2.14` is an existing pushed, unreleased annotated tag (`daa2fd2` -> `34c3ab3`);
+  publishing 0.2.14 moves it again (owner-approved). Post the move in the coordination note first.
+- Next action: CI gate green on the new head; independent review of the final diff; merge;
+  re-tag and dispatch. Blockers: CI and review.
 
 ## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
 
