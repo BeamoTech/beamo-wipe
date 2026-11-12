@@ -1809,6 +1809,7 @@ def test_sound_check_dialog_toggles_and_hears_outcome_sounds(ui, monkeypatch):
 
 
 def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, monkeypatch):
+    import threading
     from threading import Event
     from beamo_wipe import sound
     from beamo_wipe.audio_jobs import AudioWorker
@@ -1816,11 +1817,16 @@ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, mon
 
     entered = Event()
     release = Event()
+    returned = Event()
+    ran_on = []
     calls = []
     state = _canned_sound(monkeypatch, calls)
     def slow_outputs():
+        ran_on.append(threading.get_ident())
         entered.set()
-        release.wait(timeout=2)
+        # Held until the finally below; the timeout only bounds a broken test.
+        release.wait(timeout=30)
+        returned.set()
         return state
     monkeypatch.setattr(sound, "list_outputs", slow_outputs)
     app = ui()
@@ -1828,14 +1834,20 @@ def test_slow_sound_discovery_does_not_block_gtk_or_update_closed_dialog(ui, mon
     audio_worker = AudioWorker()
     monkeypatch.setattr(sound_dialog, "worker", audio_worker)
     try:
-        started = time.perf_counter()
+        # Proof by cause, not machine speed: discovery is still held while the
+        # click and the tick return, so GTK never waited for it. Building the
+        # dialog itself took 71 ms under Xvfb in WSL, over the old 60 ms bound.
         app.actions[C.SOUND_CHECK_BUTTON].clicked()
-        assert time.perf_counter() - started < 0.06
-        assert entered.wait(timeout=1)
-        started = time.perf_counter()
+        assert not returned.is_set()
+        assert entered.wait(timeout=5)
+        assert ran_on and ran_on[0] != threading.get_ident()
+        controller = app._sound_dialog
+        assert controller.ticket is not None
         app.tick()
         drain()
-        assert time.perf_counter() - started < 0.06
+        assert not returned.is_set()
+        assert controller.ticket is not None
+        assert controller.status.get_text() == C.SOUND_CHECKING
         dialog = _sound_dialog()[0]
         dialog.destroy()
         drain()
