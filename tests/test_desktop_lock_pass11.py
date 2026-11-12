@@ -29,7 +29,7 @@ def test_builder_owns_lock_through_publication(tmp_path, monkeypatch, replace_lo
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -70,7 +70,7 @@ def test_builder_rejects_manifest_path_inserted_during_build(tmp_path, monkeypat
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:
@@ -109,7 +109,7 @@ def test_builder_rejects_linked_output_directory(tmp_path, monkeypatch, link_par
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 darwin/arm64\n"
+            return "go version go1.26.11 darwin/arm64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

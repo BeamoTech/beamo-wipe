@@ -1,3 +1,3 @@
 module beamo-wipe/desktop
 
-go 1.26.8
+go 1.26.11

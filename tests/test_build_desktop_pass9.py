@@ -63,7 +63,7 @@ def test_windows_build_rejects_swapped_output_with_hardlinked_lock(
 
     def fake_output(argv, **_kwargs):
         if argv[1:] == ["version"]:
-            return "go version go1.26.8 windows/amd64\n"
+            return "go version go1.26.11 windows/amd64\n"
         if argv[1:] == ["rev-parse", "HEAD"]:
             return "a" * 40 + "\n"
         if argv[1:] == ["status", "--porcelain"]:

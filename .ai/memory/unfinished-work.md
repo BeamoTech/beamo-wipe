@@ -1,5 +1,27 @@
 # Unfinished work
 
+## BW-GO-2026-6859-LAUNCHER-20261112 — PR OPEN (launcher Go 1.26.8 -> 1.26.11; blocks signed 0.2.14)
+
+- Date/author: 2026-11-12 / Claude, beamo-wipe-usb BWU-001 thread. Branch `fix/launcher-go1.26.11-20261112` from main
+  `7681c53`, worktree `C:\Users\Jack\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
+- Why: GO-2026-6859 / CVE-2026-97054 (net/http HTTP/1 server crash, MaxBytesReader header race) affects every Go
+  before 1.26.11. The desktop launcher (`desktop/main.go`) serves HTTP with `http.MaxBytesReader` and was built with
+  go1.26.8. Signed-release run 43157568393 (tag `v0.2.14` on `34c3ab3`) was cancelled before publish for this reason;
+  nothing was published. Owner approvals (Jack, 2026-11-12): publish signed 0.2.14; USB Easy Use companion rebuilt on
+  go1.26.11 (manifest `b7cb4f7f…bbe922`) approved.
+- Change: every current go1.26.8 pin -> go1.26.11 (`scripts/build_desktop.py`, `scripts/fetch-ci-go.sh` URL and
+  go.dev SHA-256 `9849f4e0…c710ec`, `desktop/go.mod`, ci.yml Windows setup-go and check, THIRD_PARTY.md, docs/ci.md,
+  docs/development.md, test fixtures). Historical evidence/audit files keep their recorded go1.26.8. Go LICENSE and
+  PATENTS are byte-identical in go1.26.11, so `desktop/GO-*.txt` are unchanged.
+- Local (Windows, go1.26.11 from go.dev, `go.exe` c0ea949d…a6af): `go vet ./...` 0, `go test -count=1 ./...` ok,
+  govulncheck v1.7.0 "No vulnerabilities found". Touched Python tests on Windows: 92 passed, 3 skipped, 24 failed,
+  48 errors — the identical failure set on unchanged main `7681c53` (POSIX-only `fcntl` and Windows file-handle
+  paths). Linux pytest, race, fuzz, launcher build, ISO and QEMU are NOT run locally; the hosted `CI gate` covers them.
+- Acceptance: hosted `CI gate` green on the PR head; independent review recorded on the PR (Greptile unavailable);
+  merge; main push ci.yml green; `v0.2.14` re-tagged on that main commit; release.yml re-dispatched and published
+  signed; the release's `desktop-build.json` says `go1.26.11`.
+- Next action: open the PR (one push); review; merge; re-tag and dispatch. Blockers: CI and review.
+
 ## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
 
 - Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
