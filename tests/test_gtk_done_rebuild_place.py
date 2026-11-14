@@ -202,6 +202,8 @@ def test_open_help_menu_stays_open_on_its_item(held_answer, key):
     item = app._help_items[key]
     assert item is not old_item
     assert app.window.get_focus() is item and item.get_mapped()
+    if key == "shortcuts":
+        assert not item.get_expanded()  # a closed section stays closed
     # Closing it still returns to the menu button, as on any screen.
     app.help_popover.popdown()
     assert _tick_until(
@@ -209,6 +211,38 @@ def test_open_help_menu_stays_open_on_its_item(held_answer, key):
         lambda: not app.help_popover.get_visible()
         and app.window.get_focus() is app.help_button,
     )
+    assert wizard.screen == Screen.DONE and wizard.report_status != "saved"
+
+
+@gtk
+@pytest.mark.parametrize("inside", [True, False])
+def test_open_shortcuts_section_stays_open(held_answer, inside):
+    """The menu is a popover, so the window-wide expander pass misses its
+    Keyboard shortcuts section: an Orca user reading the shortcuts went back
+    to the collapsed header and the text was gone."""
+    app, wizard, rebuild = held_answer
+    app._show_help_menu("shortcuts")
+    drain()
+    section = app._help_items["shortcuts"]
+    section.set_expanded(True)
+    drain()
+    text = section.get_child()
+    assert text.get_mapped()
+    if inside:
+        text.grab_focus()
+        drain()
+    start = text if inside else section
+    assert app.window.get_focus() is start
+    words = text.get_text()
+    rebuild()
+    assert app.help_popover.get_visible()
+    section = app._help_items["shortcuts"]
+    assert section.get_expanded()
+    new_text = section.get_child()
+    assert new_text is not text and new_text.get_visible()
+    assert new_text.get_text() == words
+    focus = app.window.get_focus()
+    assert focus is (new_text if inside else section) and focus.get_mapped()
     assert wizard.screen == Screen.DONE and wizard.report_status != "saved"
 
 

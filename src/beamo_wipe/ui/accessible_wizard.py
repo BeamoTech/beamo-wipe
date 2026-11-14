@@ -589,6 +589,8 @@ class AccessibleWizard:
         refocus_text, refocus_panel = "", False
         reopen_expanders: set = set()
         keep_menu = None
+        menu_sections: set = set()
+        menu_inside = False
         if getattr(self, "shown", None) == Screen.DONE == self.w.screen:
             focused = self.window.get_focus()
             refocus_text = _widget_text(focused)
@@ -597,6 +599,15 @@ class AccessibleWizard:
                 key for key, widget in _expanders(self.window) if widget.get_expanded()
             }
             keep_menu = self._open_help_key(focused)
+            if keep_menu is not None:
+                # The menu is a popover, outside the window's children, so
+                # _expanders() never sees its Keyboard shortcuts section.
+                items = getattr(self, "_help_items", {})
+                menu_sections = {
+                    key for key, widget in items.items()
+                    if isinstance(widget, Gtk.Expander) and widget.get_expanded()
+                }
+                menu_inside = bool(keep_menu) and focused is not items.get(keep_menu)
         self._help_leaving = False
         self._panel_widgets: list = []
         self._panel_status = None
@@ -1378,6 +1389,7 @@ class AccessibleWizard:
             self._show_help_menu(reopen)
         elif keep_menu is not None:
             self._show_help_menu(keep_menu)
+            self._reopen_help_sections(keep_menu, menu_sections, menu_inside)
         emit_serial_marker(f"BEAMO_WIPE_ACCESSIBLE_SCREEN_{screen.name}")
 
     def _help_menu_button(self) -> None:
@@ -1480,6 +1492,21 @@ class AccessibleWizard:
             target = next((w for w in items.values() if w.get_can_focus()), None)
         if target is not None:
             target.grab_focus()
+
+    def _reopen_help_sections(self, focus_key: str, sections: set, inside: bool) -> None:
+        """After a live Done rebuild reopens the menu: its open sections
+        (Keyboard shortcuts) stay open, and focus that was inside one goes
+        back to the same text, not the section header."""
+        items = getattr(self, "_help_items", {})
+        for key in sections:
+            widget = items.get(key)
+            if isinstance(widget, Gtk.Expander):
+                widget.set_expanded(True)
+        target = items.get(focus_key)
+        if inside and isinstance(target, Gtk.Expander) and target.get_expanded():
+            child = target.get_child()
+            if child is not None and child.get_can_focus():
+                child.grab_focus()
 
     def _open_help_key(self, focused):
         """The Help & settings item a live Done rebuild reopens the menu on.
