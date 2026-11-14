@@ -108,9 +108,11 @@ def held_answer(ui, tmp_path):  # noqa: F811
 
     app.render = counted
 
-    def rebuild():
+    def rebuild(before=None):
         assert _tick_until(app, lambda: bool(asked))
         assert renders == []
+        if before is not None:
+            before()  # right before the answer lands, with no tick between
         answer.set()
         assert _tick_until(app, lambda: bool(renders))
         drain()
@@ -207,6 +209,27 @@ def test_open_help_menu_stays_open_on_its_item(held_answer, key):
         lambda: not app.help_popover.get_visible()
         and app.window.get_focus() is app.help_button,
     )
+    assert wizard.screen == Screen.DONE and wizard.report_status != "saved"
+
+
+@gtk
+def test_help_menu_closed_just_before_rebuild_stays_closed(held_answer):
+    """Close lands first, the rebuild follows within a tick: no reopen,
+    even while the menu may still be animating closed."""
+    app, wizard, rebuild = held_answer
+    app._show_help_menu("text_size")
+    drain()
+    assert app.help_popover.get_visible()
+    rebuild(before=app.help_popover.popdown)
+    assert _tick_until(
+        app,
+        lambda: not app.help_popover.get_visible()
+        and app.window.get_focus() is app.help_button,
+        timeout=2.0,
+    )
+    # And it stays closed: nothing reopens it a moment later.
+    _tick_until(app, lambda: False, timeout=0.5)
+    assert not app.help_popover.get_visible()
     assert wizard.screen == Screen.DONE and wizard.report_status != "saved"
 
 

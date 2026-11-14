@@ -1348,9 +1348,10 @@ class AccessibleWizard:
             self.footer.remove(self.utilities)
             self.utilities.destroy()
         self.arrival = arrival
-        for key, widget in _expanders(self.window):
-            if key in reopen_expanders:
-                widget.set_expanded(True)
+        if reopen_expanders:  # only a Done rebuild with an open section
+            for key, widget in _expanders(self.window):
+                if key in reopen_expanders:
+                    widget.set_expanded(True)
         if keep_menu is not None:
             pass  # The menu reopens below and takes focus to its item.
         elif self._focus_active_window() is self.window:
