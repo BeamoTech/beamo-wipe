@@ -106,11 +106,11 @@ def _error_text(wizard: Wizard) -> str:
 
 
 def _widget_text(widget) -> str:
-    """The words a focused label or button shows, else ""."""
+    """The words a focused label, button or expander shows, else ""."""
     if widget is None:
         return ""
     try:
-        if isinstance(widget, Gtk.Button):
+        if isinstance(widget, (Gtk.Button, Gtk.Expander)):
             return widget.get_label() or ""
         if isinstance(widget, Gtk.Label):
             return widget.get_text() or ""
@@ -120,10 +120,16 @@ def _widget_text(widget) -> str:
 
 
 def _find_by_text(root, text: str):
-    """First focusable, sensitive label or button showing exactly ``text``."""
+    """First focusable, sensitive, shown widget with exactly ``text``.
+
+    Hidden subtrees (a collapsed expander's content) are skipped: focus on
+    hidden text is lost to the keyboard and silent in Orca.
+    """
     stack = [root]
     while stack:
         widget = stack.pop(0)
+        if not widget.get_visible():
+            continue
         if (
             widget.get_can_focus()
             and widget.get_sensitive()
@@ -133,6 +139,22 @@ def _find_by_text(root, text: str):
         if isinstance(widget, Gtk.Container):
             stack.extend(widget.get_children())
     return None
+
+
+def _expanders(root) -> list:
+    """Expanders under ``root``, keyed by label and order among that label."""
+    found: list = []
+    seen: dict[str, int] = {}
+    stack = [root]
+    while stack:
+        widget = stack.pop(0)
+        if isinstance(widget, Gtk.Expander):
+            label = widget.get_label() or ""
+            found.append(((label, seen.get(label, 0)), widget))
+            seen[label] = seen.get(label, 0) + 1
+        if isinstance(widget, Gtk.Container):
+            stack.extend(widget.get_children())
+    return found
 
 
 # A disk button opens Review this disk on one click (#150); the rest of a
@@ -562,11 +584,20 @@ class AccessibleWizard:
         self.power_label = None
         # A Done re-render (live report-USB status, #135) keeps Orca where
         # it was; from inside the report panel it moves to the new status.
+        # Open expanders (Technical details) stay open, and an open Help &
+        # settings menu reopens on the same item.
         refocus_text, refocus_panel = "", False
+        reopen_expanders: set = set()
+        keep_menu = None
         if getattr(self, "shown", None) == Screen.DONE == self.w.screen:
             focused = self.window.get_focus()
             refocus_text = _widget_text(focused)
             refocus_panel = focused is not None and focused in getattr(self, "_panel_widgets", ())
+            reopen_expanders = {
+                key for key, widget in _expanders(self.window) if widget.get_expanded()
+            }
+            keep_menu = self._open_help_key(focused)
+        self._help_leaving = False
         self._panel_widgets: list = []
         self._panel_status = None
         self.shown = self.w.screen
@@ -1317,7 +1348,13 @@ class AccessibleWizard:
             self.footer.remove(self.utilities)
             self.utilities.destroy()
         self.arrival = arrival
-        if self._focus_active_window() is self.window:
+        if reopen_expanders:  # only a Done rebuild with an open section
+            for key, widget in _expanders(self.window):
+                if key in reopen_expanders:
+                    widget.set_expanded(True)
+        if keep_menu is not None:
+            pass  # The menu reopens below and takes focus to its item.
+        elif self._focus_active_window() is self.window:
             target = _find_by_text(self.window, refocus_text) if refocus_text else None
             if target is None and refocus_panel:
                 target = self._panel_status
@@ -1339,6 +1376,8 @@ class AccessibleWizard:
         if reopen and self.w.screen == screen:
             # #175: a setting (text size, sounds) keeps the menu open on it.
             self._show_help_menu(reopen)
+        elif keep_menu is not None:
+            self._show_help_menu(keep_menu)
         emit_serial_marker(f"BEAMO_WIPE_ACCESSIBLE_SCREEN_{screen.name}")
 
     def _help_menu_button(self) -> None:
@@ -1442,6 +1481,26 @@ class AccessibleWizard:
         if target is not None:
             target.grab_focus()
 
+    def _open_help_key(self, focused):
+        """The Help & settings item a live Done rebuild reopens the menu on.
+
+        None while the menu is closed or an item was just activated; "" when
+        it is open but focus is on none of its items (reopens on the first).
+        """
+        popover = getattr(self, "help_popover", None)
+        if popover is None or getattr(self, "_help_leaving", False):
+            return None
+        try:
+            if not popover.get_visible():
+                return None
+        except Exception:  # noqa: BLE001 - destroyed popover: nothing to keep
+            return None
+        if focused is not None:
+            for key, widget in getattr(self, "_help_items", {}).items():
+                if focused is widget or focused.is_ancestor(widget):
+                    return key
+        return ""
+
     def _help_closed(self, generation: int) -> None:
         # Focus returns to the menu button unless an item moved on.
         if self.closed or generation != self.generation:
@@ -1459,6 +1518,9 @@ class AccessibleWizard:
             return
         getattr(self.w, "acknowledge_finish_sound", lambda: None)()  # someone is back (#133)
         self._help_reopen = key if key in _menu.STAYS_OPEN else ""
+        # The menu may still be closing: the rebuild follows _help_reopen,
+        # not the menu's visibility.
+        self._help_leaving = True
         popover = getattr(self, "help_popover", None)
         if popover is not None:
             # Leaving: do not pull focus back to the old button.
