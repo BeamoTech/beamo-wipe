@@ -41,6 +41,7 @@ def test_replaced_owned_reader_is_still_cleaned(monkeypatch, replacement, previo
         seen.append(kwargs["reader"])
         if len(seen) == 1:
             return SimpleNamespace(keyboard_layout="us", language="en", text_size="normal",
+                                   high_contrast=False, take_handoff=lambda: (None, ()),
                                    diagnostic_ui="accessible")
         return 0
 
@@ -73,6 +74,7 @@ def test_live_owned_reader_is_reused_and_cleaned_once(monkeypatch):
     monkeypatch.setattr(app, "running_on_live_usb", lambda: True)
     monkeypatch.setattr(app, "Wizard", SimpleNamespace)
     sessions = iter([SimpleNamespace(keyboard_layout="us", language="en", text_size="normal",
+                                     high_contrast=False, take_handoff=lambda: (None, ()),
                                      diagnostic_ui="accessible"), 0])
     monkeypatch.setattr(app, "_run_one_session", lambda *_args, **_kwargs: next(sessions))
     assert app._run_session(SimpleNamespace(demo=False), session_store=None, use_console=False,

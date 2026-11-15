@@ -68,6 +68,7 @@ def test_evidence_fallback_has_one_descriptor_owner(monkeypatch, boundary, close
         _evidence_wall_provenance="injected", _evidence_argv=[],
         _capture_wall=lambda: ("", "injected"), now=0, selected=None, discovery=None,
         method="everyday", language="en", keyboard_layout="us", _evidence_context=lambda: (),
+        owner_source="",
         _persist_evidence=lambda seq: saves.append(seq),
         _evidence_failed=lambda exc, *_args: failures.append(exc),
     )

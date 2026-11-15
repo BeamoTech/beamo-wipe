@@ -39,6 +39,7 @@ class _Session:
         wizard._stage_anchor = None
         wizard._display_progress = None
         wizard._display_progress_at = 0.0
+        wizard.wall_clock_trusted = False
         wizard.runner = SimpleNamespace(
             finalizing=False, progress=None, progress_observation=None
         )

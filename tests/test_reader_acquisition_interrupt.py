@@ -25,7 +25,11 @@ def test_session_reader_acquisition_is_owned_before_next_line(
         keyboard_layout = "us"
         language = "en"
         text_size = "normal"
+        high_contrast = False
         diagnostic_ui = "accessible"
+
+        def take_handoff(self):
+            return None, ()
 
     def poll():
         if previous_status == "unknown":

@@ -49,6 +49,8 @@ def _definitions():
         "_engine_digest", "_validate_nwipe_stat", "_stat_nwipe_binary",
         "_open_nwipe_binary_safe", "assert_nwipe_binary_safe",
         "_verify_pinned_nwipe", "_assert_named_wipe_lock",
+        # main: start() holds the confirmed disk open until the engine exits.
+        "_reserve_target_under_lock",
     }
     nodes = [node for node in TREE.body
              if isinstance(node, (ast.FunctionDef, ast.ClassDef))
@@ -90,12 +92,16 @@ class Harness:
         self.lock_stat.st_ino = 13
         self.log_stat = NS(**vars(self.lock_stat))
         self.log_stat.st_ino = 17
+        self.target_stat = NS(**vars(self.engine_stat))
+        self.target_stat.st_mode = stat.S_IFBLK | 0o600
+        self.target_stat.st_rdev = 23
         self.named_engine_stat = self.engine_stat
         self.named_lock_stat = self.lock_stat
         self.os = NS(open=self.open, close=self.close, fstat=self.fstat,
                      lstat=self.lstat, pread=self.pread, geteuid=lambda: 0,
                      getuid=lambda: 0, getpid=lambda: 65000, path=posixpath,
-                     O_RDONLY=1, O_RDWR=2, O_NOFOLLOW=4, O_CREAT=8)
+                     O_RDONLY=1, O_RDWR=2, O_NOFOLLOW=4, O_CREAT=8,
+                     O_NONBLOCK=16, O_NOCTTY=32, O_CLOEXEC=64)
         self.fcntl = NS(flock=self.flock, LOCK_EX=1, LOCK_NB=2, LOCK_UN=4)
         self.subprocess = NS(run=self.run, Popen=self.popen, DEVNULL=-9001,
                              TimeoutExpired=FakeTimeout)
@@ -122,7 +128,7 @@ class Harness:
                           logfile=LOG_PATH, device_size_bytes=1000,
                           device_rdev=23, boot_rdev=29)
         self.owner = NS(binary=ENGINE_PATH, _lock=FakeMutex(), _cleanup_failed=False,
-                        _proc=None, _lock_fd=None, _lock_path="", _log_fd=None,
+                        _proc=None, _lock_fd=None, _lock_path="", _log_fd=None, _target_fd=None,
                         _progress_read_seq=0, _spawned_this_attempt=False,
                         _sleep_inhibit=NS(start=lambda: self.events.append(("inhibit-start",)),
                                           stop=lambda: self.events.append(("inhibit-stop",))))
@@ -141,7 +147,8 @@ class Harness:
         return fd
 
     def open(self, path, flags, *mode):
-        kind = {ENGINE_PATH: "engine", LOCK_PATH: "lock"}[path]
+        kind = {ENGINE_PATH: "engine", LOCK_PATH: "lock",
+                self.request.device: "target"}[path]
         self.events.append(("open", kind, flags, mode))
         self.fail_at("open-" + kind)
         return self.allocate(kind)
@@ -160,7 +167,7 @@ class Harness:
         self.events.append(("fstat", kind))
         self.fail_at("fstat-" + kind)
         return {"engine": self.engine_stat, "lock": self.lock_stat,
-                "log": self.log_stat}[kind]
+                "log": self.log_stat, "target": self.target_stat}[kind]
 
     def lstat(self, path):
         self.events.append(("lstat", path))
