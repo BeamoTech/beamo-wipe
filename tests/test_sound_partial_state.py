@@ -2,7 +2,8 @@
 import ast
 from pathlib import Path
 from types import SimpleNamespace
-import unittest
+
+import pytest
 
 
 def dialog_type():
@@ -22,48 +23,52 @@ def dialog_type():
     return namespace, namespace["Dialog"]
 
 
-class PartialSoundStateTests(unittest.TestCase):
-    def test_known_mute_state_drives_label_and_repeated_toggle_without_volume(self):
-        for previous in (False, True):
-            for volume in (None, 40):
-                for muted in (False, True):
-                    with self.subTest(previous=previous, volume=volume, muted=muted):
-                        namespace, dialog = dialog_type()
-                        state = SimpleNamespace(available=True, volume_percent=volume, muted=muted)
-                        writes, labels = [], []
+@pytest.mark.parametrize("muted", (False, True))
+@pytest.mark.parametrize("volume", (None, 40))
+@pytest.mark.parametrize("previous", (False, True))
+def test_known_mute_state_drives_label_and_repeated_toggle_without_volume(previous, volume, muted):
+    namespace, dialog = dialog_type()
+    state = SimpleNamespace(available=True, volume_percent=volume, muted=muted)
+    writes, labels = [], []
 
-                        def set_muted(sink, wanted):
-                            writes.append((sink, wanted))
-                            state.muted = wanted
-                            return SimpleNamespace(ok=True, message="")
+    def set_muted(sink, wanted):
+        writes.append((sink, wanted))
+        state.muted = wanted
+        return SimpleNamespace(ok=True, message="")
 
-                        namespace["sound"] = SimpleNamespace(set_muted=set_muted, list_outputs=lambda: state)
-                        obj = dialog()
-                        obj.muted = previous
-                        obj.chosen = SimpleNamespace(id="speaker")
-                        obj.volume_label = SimpleNamespace(set_text=lambda _text: None)
-                        obj.mute_button = SimpleNamespace(set_label=labels.append)
-                        obj._announce = lambda _message: None
-                        obj._submit = lambda action, done: done(action())
-                        obj._show_volume(state)
-                        self.assertEqual(labels[-1], "Unmute" if muted else "Mute")
-                        obj._mute(None)
-                        self.assertEqual(writes, [("speaker", not muted)])
-                        self.assertEqual(labels[-1], "Mute" if muted else "Unmute")
-                        obj._mute(None)
-                        self.assertEqual(writes, [("speaker", not muted), ("speaker", muted)])
+    namespace["sound"] = SimpleNamespace(set_muted=set_muted, list_outputs=lambda: state)
+    obj = dialog()
+    obj.muted = previous
+    obj.chosen = SimpleNamespace(id="speaker")
+    obj.volume_label = SimpleNamespace(set_text=lambda _text: None)
+    obj.mute_button = SimpleNamespace(set_label=labels.append)
+    obj._announce = lambda _message: None
+    obj._submit = lambda action, done: done(action())
+    obj._show_volume(state)
+    assert labels[-1] == ("Unmute" if muted else "Mute")
+    obj._mute(None)
+    assert writes == [("speaker", not muted)]
+    assert labels[-1] == ("Mute" if muted else "Unmute")
+    obj._mute(None)
+    assert writes == [("speaker", not muted), ("speaker", muted)]
 
-    def test_absent_or_unavailable_mute_observation_keeps_last_accepted_state(self):
-        for previous in (False, True):
-            for state in (None,
-                          SimpleNamespace(available=False, volume_percent=None, muted=not previous),
-                          SimpleNamespace(available=True, volume_percent=None, muted=None)):
-                with self.subTest(previous=previous, state=state):
-                    _namespace, dialog = dialog_type()
-                    obj = dialog()
-                    obj.muted = previous
-                    labels = []
-                    obj.volume_label = SimpleNamespace(set_text=lambda _text: None)
-                    obj.mute_button = SimpleNamespace(set_label=labels.append)
-                    obj._show_volume(state)
-                    self.assertEqual(labels[-1], "Unmute" if previous else "Mute")
+
+def _unaccepted_state(kind, previous):
+    if kind == "absent":
+        return None
+    if kind == "unavailable":
+        return SimpleNamespace(available=False, volume_percent=None, muted=not previous)
+    return SimpleNamespace(available=True, volume_percent=None, muted=None)
+
+
+@pytest.mark.parametrize("kind", ("absent", "unavailable", "mute-unknown"))
+@pytest.mark.parametrize("previous", (False, True))
+def test_absent_or_unavailable_mute_observation_keeps_last_accepted_state(previous, kind):
+    _namespace, dialog = dialog_type()
+    obj = dialog()
+    obj.muted = previous
+    labels = []
+    obj.volume_label = SimpleNamespace(set_text=lambda _text: None)
+    obj.mute_button = SimpleNamespace(set_label=labels.append)
+    obj._show_volume(_unaccepted_state(kind, previous))
+    assert labels[-1] == ("Unmute" if previous else "Mute")

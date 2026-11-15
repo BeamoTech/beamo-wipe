@@ -10,6 +10,8 @@ import re
 import stat
 import sys
 import unittest
+
+import pytest
 from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 
@@ -165,10 +167,33 @@ def load_store(source, fake):
     return namespace["Store"], namespace, logs
 
 
-class JournalCleanupTests(unittest.TestCase):
+class _UnittestAssertions:
+    """unittest's assertion methods for a plain pytest class.
+
+    pytest cannot parametrize unittest.TestCase methods, and pytest 9 reports
+    unittest subTest() results in a way the CI evidence check rejects, so these
+    classes are plain pytest classes that keep the original assertions.
+    """
+
+    _checker = unittest.TestCase()
+
+    def __getattr__(self, name):
+        if name.startswith("assert") or name == "fail":
+            return getattr(self._checker, name)
+        raise AttributeError(name)
+
+
+def _name(kind):
+    return "none" if kind is None else kind.__name__
+
+
+class TestJournalCleanup(_UnittestAssertions):
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.source = _SOURCE.read_bytes()
+
+    def setup_method(self, _method=None):
+        self.setUp()
 
     def setUp(self):
         self.fake = FakeOS()
@@ -202,50 +227,44 @@ class JournalCleanupTests(unittest.TestCase):
         self.assertIs(caught, primary)
         self.assertEqual(self.fake.closed.count(17), 1)
 
-    def test_file_and_read_preserve_primary(self):
-        for operation in ("file", "read"):
-            for kind in (KeyboardInterrupt, SystemExit, SafetyError, OSError):
-                for cleanup in (
-                    None,
-                    OSError("private close details"),
-                    KeyboardInterrupt("private close details"),
-                ):
-                    with self.subTest(
-                        operation=operation,
-                        primary=kind.__name__,
-                        cleanup=type(cleanup).__name__,
-                    ):
-                        self.setUp()
-                        primary = kind("private operation details")
-                        self.fake.close_error = cleanup
-                        if operation == "file":
-                            self.fake.metadata_error = primary
+    @pytest.mark.parametrize(
+        "cleanup_kind", (None, OSError, KeyboardInterrupt), ids=_name
+    )
+    @pytest.mark.parametrize(
+        "kind", (KeyboardInterrupt, SystemExit, SafetyError, OSError), ids=_name
+    )
+    @pytest.mark.parametrize("operation", ("file", "read"))
+    def test_file_and_read_preserve_primary(self, operation, kind, cleanup_kind):
+        primary = kind("private operation details")
+        self.fake.close_error = (
+            None if cleanup_kind is None else cleanup_kind("private close details")
+        )
+        if operation == "file":
+            self.fake.metadata_error = primary
 
-                            def action():
-                                return self.store._file("fixture")
-                        else:
-                            self.stub_file()
-                            self.fake.read_error = primary
+            def action():
+                return self.store._file("fixture")
+        else:
+            self.stub_file()
+            self.fake.read_error = primary
 
-                            def action():
-                                return self.store.read("fixture")
+            def action():
+                return self.store.read("fixture")
 
-                        self.assert_primary(action, primary)
+        self.assert_primary(action, primary)
 
-    def test_open_does_not_swallow_cancellation(self):
-        for kind in (KeyboardInterrupt, SystemExit):
-            with self.subTest(kind=kind.__name__):
-                self.setUp()
-                self.stub_file()
-                self.store.fd = self.store.owner = -1
-                primary = kind("cancel journal")
-                self.fake.read_error, self.fake.close_error = primary, OSError("close")
-                self.assert_primary(self.store.open, primary)
-                self.assertEqual(
-                    (self.store.fd, self.store.owner, self.store.quiescent),
-                    (-1, -1, -1),
-                )
-                self.assertEqual(self.fake.closed, [17, 88, 77])
+    @pytest.mark.parametrize("kind", (KeyboardInterrupt, SystemExit), ids=_name)
+    def test_open_does_not_swallow_cancellation(self, kind):
+        self.stub_file()
+        self.store.fd = self.store.owner = -1
+        primary = kind("cancel journal")
+        self.fake.read_error, self.fake.close_error = primary, OSError("close")
+        self.assert_primary(self.store.open, primary)
+        self.assertEqual(
+            (self.store.fd, self.store.owner, self.store.quiescent),
+            (-1, -1, -1),
+        )
+        self.assertEqual(self.fake.closed, [17, 88, 77])
 
     def test_read_success_and_cleanup_only_refusal(self):
         self.stub_file()
@@ -257,73 +276,66 @@ class JournalCleanupTests(unittest.TestCase):
         self.fake.close_error = error
         self.assert_primary(lambda: self.store.read("fixture"), error)
 
-    def test_save_primary_and_cleanup_combinations(self):
-        for kind in (KeyboardInterrupt, SystemExit, SafetyError, OSError):
-            for cleanup_stage in ("close", "metadata", "both"):
-                with self.subTest(primary=kind.__name__, cleanup=cleanup_stage):
-                    self.setUp()
-                    self.stub_file()
-                    primary = kind("write refusal")
-                    self.fake.write_error = primary
-                    if cleanup_stage in {"close", "both"}:
-                        self.fake.close_error = OSError("close")
-                    if cleanup_stage in {"metadata", "both"}:
-                        self.fake.cleanup_error = OSError("cleanup metadata")
-                    self.assert_primary(
-                        lambda: self.store.save({"phase": "preflight"}), primary
-                    )
-                    self.assertFalse(self.fake.published)
-                    self.assertFalse(self.store.invalid)
+    @pytest.mark.parametrize("cleanup_stage", ("close", "metadata", "both"))
+    @pytest.mark.parametrize(
+        "kind", (KeyboardInterrupt, SystemExit, SafetyError, OSError), ids=_name
+    )
+    def test_save_primary_and_cleanup_combinations(self, kind, cleanup_stage):
+        self.stub_file()
+        primary = kind("write refusal")
+        self.fake.write_error = primary
+        if cleanup_stage in {"close", "both"}:
+            self.fake.close_error = OSError("close")
+        if cleanup_stage in {"metadata", "both"}:
+            self.fake.cleanup_error = OSError("cleanup metadata")
+        self.assert_primary(lambda: self.store.save({"phase": "preflight"}), primary)
+        self.assertFalse(self.fake.published)
+        self.assertFalse(self.store.invalid)
 
-    def test_temporary_cleanup_respects_identity(self):
-        for foreign in (False, True):
-            with self.subTest(foreign=foreign):
-                self.setUp()
-                self.stub_file()
-                self.fake.foreign_temporary = foreign
-                primary = SafetyError("write refusal")
-                self.fake.write_error = primary
-                self.assert_primary(lambda: self.store.save({}), primary)
-                self.assertEqual(len(self.fake.unlinked), 0 if foreign else 1)
-                self.assertEqual(len(self.fake.bindings), 1 if foreign else 0)
+    @pytest.mark.parametrize("foreign", (False, True))
+    def test_temporary_cleanup_respects_identity(self, foreign):
+        self.stub_file()
+        self.fake.foreign_temporary = foreign
+        primary = SafetyError("write refusal")
+        self.fake.write_error = primary
+        self.assert_primary(lambda: self.store.save({}), primary)
+        self.assertEqual(len(self.fake.unlinked), 0 if foreign else 1)
+        self.assertEqual(len(self.fake.bindings), 1 if foreign else 0)
 
-    def test_save_publication_durability_and_cleanup_refusals(self):
-        for failure in ("none", "directory_sync", "close"):
-            with self.subTest(failure=failure):
-                self.setUp()
-                self.stub_file()
-                error = OSError(failure)
-                if failure == "directory_sync":
-                    self.fake.dir_sync_error = error
-                if failure == "close":
-                    self.fake.close_error = error
-                if failure == "none":
-                    self.store.save({"phase": "terminal"})
-                    self.assertFalse(self.store.invalid)
-                else:
-                    self.assert_primary(
-                        lambda: self.store.save({"phase": "terminal"}), error
-                    )
-                    self.assertTrue(self.store.invalid)
-                self.assertTrue(self.fake.published)
-                self.assertEqual(self.store.record["phase"], "terminal")
-                self.assertEqual(self.fake.closed, [17])
+    @pytest.mark.parametrize("failure", ("none", "directory_sync", "close"))
+    def test_save_publication_durability_and_cleanup_refusals(self, failure):
+        self.stub_file()
+        error = OSError(failure)
+        if failure == "directory_sync":
+            self.fake.dir_sync_error = error
+        if failure == "close":
+            self.fake.close_error = error
+        if failure == "none":
+            self.store.save({"phase": "terminal"})
+            self.assertFalse(self.store.invalid)
+        else:
+            self.assert_primary(lambda: self.store.save({"phase": "terminal"}), error)
+            self.assertTrue(self.store.invalid)
+        self.assertTrue(self.fake.published)
+        self.assertEqual(self.store.record["phase"], "terminal")
+        self.assertEqual(self.fake.closed, [17])
 
-    def test_quiescent_primary_busy_and_retained_ownership(self):
-        for kind in (KeyboardInterrupt, SystemExit, SafetyError, OSError):
-            with self.subTest(primary=kind.__name__):
-                self.setUp()
-                self.stub_file()
-                primary = kind("lock refusal")
-                self.fake.close_error = OSError("close")
+    @pytest.mark.parametrize(
+        "kind", (KeyboardInterrupt, SystemExit, SafetyError, OSError), ids=_name
+    )
+    def test_quiescent_primary_keeps_no_ownership(self, kind):
+        self.stub_file()
+        primary = kind("lock refusal")
+        self.fake.close_error = OSError("close")
 
-                def fail(*args):
-                    raise primary
+        def fail(*args):
+            raise primary
 
-                self.namespace["fcntl"].flock = fail
-                self.assert_primary(self.store.is_quiescent, primary)
-                self.assertEqual(self.store.quiescent, -1)
-        self.setUp()
+        self.namespace["fcntl"].flock = fail
+        self.assert_primary(self.store.is_quiescent, primary)
+        self.assertEqual(self.store.quiescent, -1)
+
+    def test_quiescent_busy_and_retained_ownership(self):
         self.stub_file()
 
         def busy(*args):
@@ -405,64 +417,58 @@ class JournalCleanupTests(unittest.TestCase):
         self.assert_primary(lambda: self.store.read("fixture"), primary)
         self.assertEqual(self.logs, [("session_recovery", "file_close", "OSError")])
 
-    def test_interruption_at_first_line_after_acquisition(self):
+    @pytest.mark.parametrize("method", ("_file", "read", "save", "is_quiescent"))
+    def test_interruption_at_first_line_after_acquisition(self, method):
         tree = ast.parse(self.source)
         cls = next(
             n
             for n in tree.body
             if isinstance(n, ast.ClassDef) and n.name == "SessionStore"
         )
-        for method in ("_file", "read", "save", "is_quiescent"):
-            with self.subTest(method=method):
-                self.setUp()
-                if method != "_file":
-                    self.stub_file()
-                node = next(
-                    n
-                    for n in cls.body
-                    if isinstance(n, ast.FunctionDef) and n.name == method
-                )
-                statements = sorted(
-                    (n for n in ast.walk(node) if isinstance(n, ast.stmt)),
-                    key=lambda n: n.lineno,
-                )
-                acquisition = next(
-                    n
-                    for n in statements
-                    if isinstance(n, ast.Assign)
-                    and any(isinstance(t, ast.Name) and t.id == "fd" for t in n.targets)
-                    and isinstance(n.value, ast.Call)
-                )
-                line = next(
-                    n.lineno for n in statements if n.lineno > acquisition.lineno
-                )
-                primary = KeyboardInterrupt("inert line event")
+        if method != "_file":
+            self.stub_file()
+        node = next(
+            n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == method
+        )
+        statements = sorted(
+            (n for n in ast.walk(node) if isinstance(n, ast.stmt)),
+            key=lambda n: n.lineno,
+        )
+        acquisition = next(
+            n
+            for n in statements
+            if isinstance(n, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id == "fd" for t in n.targets)
+            and isinstance(n.value, ast.Call)
+        )
+        line = next(n.lineno for n in statements if n.lineno > acquisition.lineno)
+        primary = KeyboardInterrupt("inert line event")
 
-                def trace(frame, event, argument):
-                    if (
-                        event == "line"
-                        and frame.f_code.co_name == method
-                        and frame.f_lineno == line
-                    ):
-                        raise primary
-                    return trace
+        def trace(frame, event, argument):
+            if (
+                event == "line"
+                and frame.f_code.co_name == method
+                and frame.f_lineno == line
+            ):
+                raise primary
+            return trace
 
-                previous = sys.gettrace()
-                try:
-                    sys.settrace(trace)
-                    action = (
-                        (lambda: self.store._file("fixture"))
-                        if method == "_file"
-                        else (lambda: self.store.read("fixture"))
-                        if method == "read"
-                        else (lambda: self.store.save({}))
-                        if method == "save"
-                        else self.store.is_quiescent
-                    )
-                    self.assert_primary(action, primary)
-                finally:
-                    sys.settrace(previous)
+        previous = sys.gettrace()
+        try:
+            sys.settrace(trace)
+            action = (
+                (lambda: self.store._file("fixture"))
+                if method == "_file"
+                else (lambda: self.store.read("fixture"))
+                if method == "read"
+                else (lambda: self.store.save({}))
+                if method == "save"
+                else self.store.is_quiescent
+            )
+            self.assert_primary(action, primary)
+        finally:
+            sys.settrace(previous)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    raise SystemExit(pytest.main([__file__]))

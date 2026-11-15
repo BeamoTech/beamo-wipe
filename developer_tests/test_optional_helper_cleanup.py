@@ -11,6 +11,8 @@ import re
 import stat
 import sys
 import unittest
+
+import pytest
 import unicodedata
 from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
@@ -121,7 +123,30 @@ class DiagnosticOS:
         self.payload = self.payload[:size]
 
 
-class DiagnosticCleanup(unittest.TestCase):
+class _UnittestAssertions:
+    """unittest's assertion methods for a plain pytest class.
+
+    pytest cannot parametrize unittest.TestCase methods, and pytest 9 reports
+    unittest subTest() results in a way the CI evidence check rejects, so these
+    classes are plain pytest classes that keep the original assertions.
+    """
+
+    _checker = unittest.TestCase()
+
+    def __getattr__(self, name):
+        if name.startswith("assert") or name == "fail":
+            return getattr(self._checker, name)
+        raise AttributeError(name)
+
+
+def _name(kind):
+    return kind.__name__
+
+
+class TestDiagnosticCleanup(_UnittestAssertions):
+    def setup_method(self, _method=None):
+        self.setUp()
+
     def setUp(self):
         self.os = DiagnosticOS()
         self.stderr = io.StringIO()
@@ -190,48 +215,50 @@ class DiagnosticCleanup(unittest.TestCase):
             self.assertFalse(self.env["emit_serial_marker"](marker))
         self.assertEqual(self.os.opened, [])
 
-    def test_constructor_preserves_primary_and_closes_remaining_handles(self):
-        for kind in (OSError, KeyboardInterrupt, SystemExit):
-            for after in (1, 2):
-                with self.subTest(kind=kind, after=after):
-                    self.setUp()
-                    primary = kind("verify")
-                    self.os.verify_error = primary
-                    self.os.verify_at = after
-                    self.os.close_error = OSError("close")
-                    with self.assertRaises(kind) as caught:
-                        self.call("_open_diagnostics")
-                    self.assertIs(caught.exception, primary)
-                    self.assert_closed_once()
+    @pytest.mark.parametrize("after", (1, 2))
+    @pytest.mark.parametrize(
+        "kind", (OSError, KeyboardInterrupt, SystemExit), ids=_name
+    )
+    def test_constructor_preserves_primary_and_closes_remaining_handles(
+        self, kind, after
+    ):
+        primary = kind("verify")
+        self.os.verify_error = primary
+        self.os.verify_at = after
+        self.os.close_error = OSError("close")
+        with self.assertRaises(kind) as caught:
+            self.call("_open_diagnostics")
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
 
-    def test_body_interrupt_is_not_swallowed_by_cleanup_error(self):
-        for name in ("read_diagnostics", "log_diag", "emit_serial_marker"):
-            for kind in (KeyboardInterrupt, SystemExit):
-                with self.subTest(name=name, kind=kind):
-                    self.setUp()
-                    primary = kind("body")
-                    if name == "read_diagnostics":
-                        self.os.read_error = primary
-                    else:
-                        self.os.write_error = primary
-                    self.os.close_error = OSError("close")
-                    with self.assertRaises(kind) as caught:
-                        self.call(name)
-                    self.assertIs(caught.exception, primary)
-                    self.assert_closed_once()
+    @pytest.mark.parametrize("kind", (KeyboardInterrupt, SystemExit), ids=_name)
+    @pytest.mark.parametrize(
+        "name", ("read_diagnostics", "log_diag", "emit_serial_marker")
+    )
+    def test_body_interrupt_is_not_swallowed_by_cleanup_error(self, name, kind):
+        primary = kind("body")
+        if name == "read_diagnostics":
+            self.os.read_error = primary
+        else:
+            self.os.write_error = primary
+        self.os.close_error = OSError("close")
+        with self.assertRaises(kind) as caught:
+            self.call(name)
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
 
-    def test_ordinary_io_and_cleanup_failures_keep_best_effort_refusal(self):
-        for name in ("read_diagnostics", "log_diag", "emit_serial_marker"):
-            for body_fails in (False, True):
-                with self.subTest(name=name, body_fails=body_fails):
-                    self.setUp()
-                    self.os.close_error = OSError("close")
-                    if body_fails:
-                        self.os.read_error = self.os.write_error = OSError("body")
-                    self.assertEqual(
-                        self.call(name), [] if name == "read_diagnostics" else False
-                    )
-                    self.assert_closed_once()
+    @pytest.mark.parametrize("body_fails", (False, True))
+    @pytest.mark.parametrize(
+        "name", ("read_diagnostics", "log_diag", "emit_serial_marker")
+    )
+    def test_ordinary_io_and_cleanup_failures_keep_best_effort_refusal(
+        self, name, body_fails
+    ):
+        self.os.close_error = OSError("close")
+        if body_fails:
+            self.os.read_error = self.os.write_error = OSError("body")
+        self.assertEqual(self.call(name), [] if name == "read_diagnostics" else False)
+        self.assert_closed_once()
 
     def test_failed_close_is_not_retried_when_os_retains_descriptor(self):
         self.os.close_error = OSError("close")
@@ -246,52 +273,45 @@ class DiagnosticCleanup(unittest.TestCase):
         self.assertEqual(self.os.opened, [0])
         self.assert_closed_once()
 
-    def test_post_acquisition_interrupt_closes_all_owned_handles(self):
-        for name in (
-            "_open_diagnostics",
-            "read_diagnostics",
-            "log_diag",
-            "emit_serial_marker",
-        ):
-            for kind in (KeyboardInterrupt, SystemExit):
-                with self.subTest(name=name, kind=kind):
-                    self.setUp()
-                    primary = kind("after acquisition")
-                    armed = True
-                    previous = sys.gettrace()
+    @pytest.mark.parametrize("kind", (KeyboardInterrupt, SystemExit), ids=_name)
+    @pytest.mark.parametrize(
+        "name",
+        ("_open_diagnostics", "read_diagnostics", "log_diag", "emit_serial_marker"),
+    )
+    def test_post_acquisition_interrupt_closes_all_owned_handles(self, name, kind):
+        primary = kind("after acquisition")
+        armed = True
+        previous = sys.gettrace()
 
-                    def interrupt(frame, event, arg):
-                        nonlocal armed
-                        if (
-                            armed
-                            and event == "line"
-                            and frame.f_code.co_filename == str(_DIAG_SOURCE)
-                            and frame.f_code.co_name == name
-                        ):
-                            local = frame.f_locals
-                            if self.os.handles and (
-                                local.get("owned")
-                                or any(
-                                    local.get(key, -1) >= 0
-                                    for key in ("fd", "directory_fd")
-                                )
-                            ):
-                                armed = False
-                                raise primary
-                        return interrupt
+        def interrupt(frame, event, arg):
+            nonlocal armed
+            if (
+                armed
+                and event == "line"
+                and frame.f_code.co_filename == str(_DIAG_SOURCE)
+                and frame.f_code.co_name == name
+            ):
+                local = frame.f_locals
+                if self.os.handles and (
+                    local.get("owned")
+                    or any(local.get(key, -1) >= 0 for key in ("fd", "directory_fd"))
+                ):
+                    armed = False
+                    raise primary
+            return interrupt
 
-                    try:
-                        sys.settrace(interrupt)
-                        with self.assertRaises(kind) as caught:
-                            self.call(name)
-                        self.assertIs(caught.exception, primary)
-                    finally:
-                        sys.settrace(previous)
-                    self.assertFalse(armed)
-                    self.assert_closed_once()
+        try:
+            sys.settrace(interrupt)
+            with self.assertRaises(kind) as caught:
+                self.call(name)
+            self.assertIs(caught.exception, primary)
+        finally:
+            sys.settrace(previous)
+        self.assertFalse(armed)
+        self.assert_closed_once()
 
 
-class AudioReaperAcceptance(unittest.TestCase):
+class TestAudioReaperAcceptance(_UnittestAssertions):
     def setup_audio(self, *, failure=None, fail_start=False):
         self.events, self.reapers, self.calls = [], [], []
         owner = self
@@ -366,15 +386,16 @@ class AudioReaperAcceptance(unittest.TestCase):
         )
         return env["_popen"]
 
-    def test_failed_acceptance_revokes_reaper_before_cleanup(self):
-        for failure in (RuntimeError, KeyboardInterrupt, SystemExit):
-            with self.subTest(failure=failure):
-                spawn = self.setup_audio(failure=failure)
-                self.assertIsNone(spawn("paplay", ["inert.wav"]))
-                self.assertEqual(self.calls, ["terminate", "wait"])
-                self.assertFalse(self.events[1].is_set())
-                self.reapers[0].target()
-                self.assertEqual(self.calls, ["terminate", "wait"])
+    @pytest.mark.parametrize(
+        "failure", (RuntimeError, KeyboardInterrupt, SystemExit), ids=_name
+    )
+    def test_failed_acceptance_revokes_reaper_before_cleanup(self, failure):
+        spawn = self.setup_audio(failure=failure)
+        self.assertIsNone(spawn("paplay", ["inert.wav"]))
+        self.assertEqual(self.calls, ["terminate", "wait"])
+        self.assertFalse(self.events[1].is_set())
+        self.reapers[0].target()
+        self.assertEqual(self.calls, ["terminate", "wait"])
 
     def test_failed_thread_start_owns_cleanup_without_reaper(self):
         spawn = self.setup_audio(fail_start=True)
@@ -390,4 +411,4 @@ class AudioReaperAcceptance(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    raise SystemExit(pytest.main([__file__]))

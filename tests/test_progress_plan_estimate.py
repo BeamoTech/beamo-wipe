@@ -4,7 +4,8 @@
 from contextlib import nullcontext
 from datetime import datetime, timedelta
 from types import SimpleNamespace
-from unittest import TestCase
+
+import pytest
 
 from beamo_wipe import progress
 from beamo_wipe.models import MethodId, Screen, WipeResult
@@ -21,6 +22,14 @@ _MISMATCHES = (
     (MethodId.EXTRA, (2, 2, 3, 3), "verifying"),
     (MethodId.QUICK_ZERO, (1, 1, 3, 3), "writing"),
 )
+
+
+def _case_id(value):
+    if isinstance(value, MethodId):
+        return value.value
+    if isinstance(value, tuple):
+        return "-".join(map(str, value))
+    return None
 
 
 class _Session:
@@ -73,162 +82,159 @@ class _Session:
         return view
 
 
-class TestProgressPlanEstimate(TestCase):
-    def test_three_parsed_method_disagreements_suppress_estimates(self):
-        for method, counters, phase in _MISMATCHES:
-            with self.subTest(method=method, counters=counters):
-                session = _Session(method)
-                view = session.stable(counters, phase)
-                self.assertTrue(view.mismatch)
-                self.assertIsNone(view.position)
-                self.assertIsNone(view.remaining)
-                self.assertIsNone(view.step_percent)
-                self.assertIn(progress.STAGE_MISMATCH, view.timing_text)
-                self.assertIsNone(session.wizard.wipe_result)
+class TestProgressPlanEstimate:
+    @pytest.mark.parametrize("method,counters,phase", _MISMATCHES, ids=_case_id)
+    def test_three_parsed_method_disagreements_suppress_estimates(self, method, counters, phase):
+        session = _Session(method)
+        view = session.stable(counters, phase)
+        assert view.mismatch
+        assert view.position is None
+        assert view.remaining is None
+        assert view.step_percent is None
+        assert progress.STAGE_MISMATCH in view.timing_text
+        assert session.wizard.wipe_result is None
 
-    def test_matching_final_stage_estimates_for_every_method(self):
-        self.assertEqual({case[0] for case in _FINALS}, set(MethodId))
-        for method, counters, phase, position in _FINALS:
-            with self.subTest(method=method):
-                view = _Session(method).stable(counters, phase)
-                self.assertFalse(view.mismatch)
-                self.assertEqual(view.position, position)
-                self.assertEqual(view.remaining, 18.0)
-                self.assertEqual(view.estimate_state, "")
+    def test_final_stage_cases_cover_every_method(self):
+        assert {case[0] for case in _FINALS} == set(MethodId)
 
-    def test_writes_before_required_verification_do_not_estimate(self):
-        cases = (
+    @pytest.mark.parametrize("method,counters,phase,position", _FINALS, ids=_case_id)
+    def test_matching_final_stage_estimates_for_every_method(self, method, counters, phase, position):
+        view = _Session(method).stable(counters, phase)
+        assert not view.mismatch
+        assert view.position == position
+        assert view.remaining == 18.0
+        assert view.estimate_state == ""
+
+    @pytest.mark.parametrize(
+        "method,counters,position",
+        (
             (MethodId.EVERYDAY, (1, 1, 1, 1), 0),
             (MethodId.EXTRA, (1, 1, 1, 3), 0),
             (MethodId.EXTRA, (1, 1, 2, 3), 1),
             (MethodId.EXTRA, (1, 1, 3, 3), 2),
-        )
-        for method, counters, position in cases:
-            with self.subTest(method=method, counters=counters):
-                view = _Session(method).stable(counters, "writing")
-                self.assertFalse(view.mismatch)
-                self.assertEqual(view.position, position)
-                self.assertIsNone(view.remaining)
-                self.assertEqual(view.estimate_state, progress.ESTIMATE_LAST_STEP)
+        ),
+        ids=_case_id,
+    )
+    def test_writes_before_required_verification_do_not_estimate(self, method, counters, position):
+        view = _Session(method).stable(counters, "writing")
+        assert not view.mismatch
+        assert view.position == position
+        assert view.remaining is None
+        assert view.estimate_state == progress.ESTIMATE_LAST_STEP
 
-    def test_unknown_or_missing_stage_does_not_estimate(self):
-        for method, counters, _phase, _position in _FINALS:
-            for phase, reported in (("unknown", counters), ("writing", (1, 1, 0, 0))):
-                with self.subTest(method=method, phase=phase):
-                    view = _Session(method).stable(reported, phase)
-                    self.assertFalse(view.mismatch)
-                    self.assertIsNone(view.remaining)
-                    if phase == "writing" or method != MethodId.QUICK_ZERO:
-                        self.assertIsNone(view.position)
+    @pytest.mark.parametrize("phase", ("unknown", "writing"))
+    @pytest.mark.parametrize("method,counters,_phase,_position", _FINALS, ids=_case_id)
+    def test_unknown_or_missing_stage_does_not_estimate(self, method, counters, _phase, _position, phase):
+        reported = counters if phase == "unknown" else (1, 1, 0, 0)
+        view = _Session(method).stable(reported, phase)
+        assert not view.mismatch
+        assert view.remaining is None
+        if phase == "writing" or method != MethodId.QUICK_ZERO:
+            assert view.position is None
 
     def test_empty_observation_stays_unlocated(self):
         view = _Session(MethodId.EXTRA).wizard.progress_view
-        self.assertIsNone(view.position)
-        self.assertFalse(view.mismatch)
-        self.assertIsNone(view.remaining)
-        self.assertEqual(view.phase, "Preparing")
+        assert view.position is None
+        assert not view.mismatch
+        assert view.remaining is None
+        assert view.phase == "Preparing"
 
-    def test_syncing_and_retrying_do_not_estimate(self):
-        for method, counters, _phase, _position in _FINALS:
-            for phase, state in (
-                ("syncing", progress.ESTIMATE_SYNCING),
-                ("retrying", progress.ESTIMATE_RETRYING),
-            ):
-                with self.subTest(method=method, phase=phase):
-                    view = _Session(method).stable(counters, phase)
-                    self.assertIsNone(view.remaining)
-                    self.assertEqual(view.estimate_state, state)
+    @pytest.mark.parametrize(
+        "phase,state",
+        (("syncing", progress.ESTIMATE_SYNCING), ("retrying", progress.ESTIMATE_RETRYING)),
+        ids=("syncing", "retrying"),
+    )
+    @pytest.mark.parametrize("method,counters,_phase,_position", _FINALS, ids=_case_id)
+    def test_syncing_and_retrying_do_not_estimate(self, method, counters, _phase, _position, phase, state):
+        view = _Session(method).stable(counters, phase)
+        assert view.remaining is None
+        assert view.estimate_state == state
 
-    def test_retry_keeps_final_stage_anchor_and_requires_fresh_progress(self):
-        for method, counters, phase, position in _FINALS:
-            with self.subTest(method=method):
-                session = _Session(method)
-                self.assertIsNotNone(session.stable(counters, phase).remaining)
-                retry = session.emit(65, counters, "retrying")
-                self.assertEqual(retry.position, position)
-                self.assertFalse(retry.mismatch)
-                self.assertIsNone(retry.remaining)
-                self.assertEqual(retry.estimate_state, progress.ESTIMATE_RETRYING)
-                resumed = session.emit(5, counters, phase)
-                self.assertIsNone(resumed.remaining)
-                for percent in (15, 25, 35, 45, 55):
-                    resumed = session.emit(percent, counters, phase)
-                self.assertEqual(resumed.position, position)
-                self.assertEqual(resumed.remaining, 18.0)
+    @pytest.mark.parametrize("method,counters,phase,position", _FINALS, ids=_case_id)
+    def test_retry_keeps_final_stage_anchor_and_requires_fresh_progress(self, method, counters, phase, position):
+        session = _Session(method)
+        assert session.stable(counters, phase).remaining is not None
+        retry = session.emit(65, counters, "retrying")
+        assert retry.position == position
+        assert not retry.mismatch
+        assert retry.remaining is None
+        assert retry.estimate_state == progress.ESTIMATE_RETRYING
+        resumed = session.emit(5, counters, phase)
+        assert resumed.remaining is None
+        for percent in (15, 25, 35, 45, 55):
+            resumed = session.emit(percent, counters, phase)
+        assert resumed.position == position
+        assert resumed.remaining == 18.0
 
-    def test_retry_without_anchor_does_not_guess_verification(self):
-        for method, counters, _phase, _position in _FINALS[:2]:
-            with self.subTest(method=method):
-                view = _Session(method).stable(counters, "retrying")
-                self.assertIsNone(view.position)
-                self.assertFalse(view.mismatch)
-                self.assertIsNone(view.remaining)
+    @pytest.mark.parametrize("method,counters,_phase,_position", _FINALS[:2], ids=_case_id)
+    def test_retry_without_anchor_does_not_guess_verification(self, method, counters, _phase, _position):
+        view = _Session(method).stable(counters, "retrying")
+        assert view.position is None
+        assert not view.mismatch
+        assert view.remaining is None
 
-    def test_mismatch_discards_prior_estimate_and_valid_stage_can_recover(self):
-        for method, counters, phase in _MISMATCHES:
-            with self.subTest(method=method, counters=counters):
-                final = next(case for case in _FINALS if case[0] == method)
-                session = _Session(method)
-                self.assertIsNotNone(session.stable(final[1], final[2]).remaining)
-                mismatch = session.emit(65, counters, phase)
-                self.assertTrue(mismatch.mismatch)
-                self.assertIsNone(mismatch.remaining)
-                first_valid = session.emit(5, final[1], final[2])
-                self.assertFalse(first_valid.mismatch)
-                self.assertIsNone(first_valid.remaining)
-                for percent in (15, 25, 35, 45, 55):
-                    recovered = session.emit(percent, final[1], final[2])
-                self.assertEqual(recovered.position, final[3])
-                self.assertEqual(recovered.remaining, 18.0)
+    @pytest.mark.parametrize("method,counters,phase", _MISMATCHES, ids=_case_id)
+    def test_mismatch_discards_prior_estimate_and_valid_stage_can_recover(self, method, counters, phase):
+        final = next(case for case in _FINALS if case[0] == method)
+        session = _Session(method)
+        assert session.stable(final[1], final[2]).remaining is not None
+        mismatch = session.emit(65, counters, phase)
+        assert mismatch.mismatch
+        assert mismatch.remaining is None
+        first_valid = session.emit(5, final[1], final[2])
+        assert not first_valid.mismatch
+        assert first_valid.remaining is None
+        for percent in (15, 25, 35, 45, 55):
+            recovered = session.emit(percent, final[1], final[2])
+        assert recovered.position == final[3]
+        assert recovered.remaining == 18.0
 
-    def test_terminal_states_suppress_an_existing_estimate(self):
-        for terminal in ("stopping", "finalizing", "recovered", "result"):
-            with self.subTest(terminal=terminal):
-                session = _Session(MethodId.EXTRA)
-                self.assertIsNotNone(session.stable((1, 1, 3, 3), "verifying").remaining)
-                wizard = session.wizard
-                if terminal == "stopping":
-                    wizard.screen = Screen.STOPPING
-                elif terminal == "finalizing":
-                    wizard.runner.finalizing = True
-                elif terminal == "recovered":
-                    wizard._recovered = True
-                else:
-                    wizard.wipe_result = WipeResult(False, 1, "fixture", "")
-                view = wizard.progress_view
-                self.assertIsNone(view.remaining)
-                self.assertEqual(view.estimate_state, "")
-                self.assertIsNone(view.stale_for)
-                if terminal in {"stopping", "finalizing"}:
-                    self.assertFalse(wizard._progress_timing.samples)
+    @pytest.mark.parametrize("terminal", ("stopping", "finalizing", "recovered", "result"))
+    def test_terminal_states_suppress_an_existing_estimate(self, terminal):
+        session = _Session(MethodId.EXTRA)
+        assert session.stable((1, 1, 3, 3), "verifying").remaining is not None
+        wizard = session.wizard
+        if terminal == "stopping":
+            wizard.screen = Screen.STOPPING
+        elif terminal == "finalizing":
+            wizard.runner.finalizing = True
+        elif terminal == "recovered":
+            wizard._recovered = True
+        else:
+            wizard.wipe_result = WipeResult(False, 1, "fixture", "")
+        view = wizard.progress_view
+        assert view.remaining is None
+        assert view.estimate_state == ""
+        assert view.stale_for is None
+        if terminal in {"stopping", "finalizing"}:
+            assert not wizard._progress_timing.samples
 
     def test_repeated_record_does_not_renew_estimate_freshness(self):
         session = _Session(MethodId.EXTRA)
-        self.assertIsNotNone(session.stable((1, 1, 3, 3), "verifying").remaining)
+        assert session.stable((1, 1, 3, 3), "verifying").remaining is not None
         session.clock[0] = 31.0
         view = session.wizard.progress_view
-        self.assertIsNone(view.remaining)
-        self.assertEqual(view.stale_for, 11.0)
-        self.assertTrue(view.percent_is_old)
-        self.assertEqual(view.estimate_state, progress.ESTIMATE_PAUSED)
+        assert view.remaining is None
+        assert view.stale_for == 11.0
+        assert view.percent_is_old
+        assert view.estimate_state == progress.ESTIMATE_PAUSED
 
     def test_missing_poll_clears_estimate_without_inventing_a_stage(self):
         session = _Session(MethodId.EXTRA)
-        self.assertIsNotNone(session.stable((1, 1, 3, 3), "verifying").remaining)
+        assert session.stable((1, 1, 3, 3), "verifying").remaining is not None
         session.wizard.runner.progress_observation = None
         view = session.wizard.progress_view
-        self.assertIsNone(view.position)
-        self.assertFalse(view.mismatch)
-        self.assertIsNone(view.remaining)
+        assert view.position is None
+        assert not view.mismatch
+        assert view.remaining is None
 
-    def test_telemetry_does_not_display_completion_or_finish_the_wipe(self):
-        for method, counters, phase, _position in _FINALS:
-            with self.subTest(method=method):
-                session = _Session(method)
-                session.stable(counters, phase)
-                view = session.emit(100, counters, phase)
-                self.assertEqual(view.percent, 99.9)
-                self.assertEqual(view.step_percent, view.percent)
-                self.assertNotIn("100%", view.status_text)
-                self.assertIsNone(view.remaining)
-                self.assertIsNone(session.wizard.wipe_result)
+    @pytest.mark.parametrize("method,counters,phase,_position", _FINALS, ids=_case_id)
+    def test_telemetry_does_not_display_completion_or_finish_the_wipe(self, method, counters, phase, _position):
+        session = _Session(method)
+        session.stable(counters, phase)
+        view = session.emit(100, counters, phase)
+        assert view.percent == 99.9
+        assert view.step_percent == view.percent
+        assert "100%" not in view.status_text
+        assert view.remaining is None
+        assert session.wizard.wipe_result is None

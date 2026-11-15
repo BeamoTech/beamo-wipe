@@ -9,6 +9,8 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 _SOURCE = Path(__file__).resolve().parents[1] / "src/beamo_wipe/app.py"
 _STORE_SOURCE = (
     Path(__file__).resolve().parents[1] / "src/beamo_wipe/session_recovery.py"
@@ -19,13 +21,29 @@ class SafetyError(RuntimeError):
     pass
 
 
-class EntryCleanupTests(unittest.TestCase):
+class _UnittestAssertions:
+    """unittest's assertion methods for a plain pytest class.
+
+    pytest cannot parametrize unittest.TestCase methods, and pytest 9 reports
+    unittest subTest() results in a way the CI evidence check rejects, so these
+    classes are plain pytest classes that keep the original assertions.
+    """
+
+    _checker = unittest.TestCase()
+
+    def __getattr__(self, name):
+        if name.startswith("assert") or name == "fail":
+            return getattr(self._checker, name)
+        raise AttributeError(name)
+
+
+class TestEntryCleanup(_UnittestAssertions):
     @classmethod
-    def setUpClass(cls):
+    def setup_class(cls):
         cls.source = _SOURCE.read_bytes()
         cls.store_source = _STORE_SOURCE.read_bytes()
 
-    def setUp(self):
+    def setup_method(self, _method=None):
         self.closed, self.logs, self.markers = [], [], []
         self.body_error = self.close_error = self.open_error = None
         self.diagnostic_error = None
@@ -124,62 +142,60 @@ class EntryCleanupTests(unittest.TestCase):
             (self.store.fd, self.store.owner, self.store.quiescent), (-1, -1, -1)
         )
 
-    def test_escaping_primary_survives_all_cleanup_and_diagnostic_errors(self):
-        for primary_type in (KeyboardInterrupt, SystemExit, RuntimeError):
-            for cleanup_type in (None, OSError, KeyboardInterrupt):
-                with self.subTest(
-                    primary=primary_type.__name__, cleanup=str(cleanup_type)
-                ):
-                    self.setUp()
-                    primary = primary_type("PRIVATE original")
-                    self.body_error = primary
-                    self.close_error = (
-                        None
-                        if cleanup_type is None
-                        else cleanup_type("PRIVATE cleanup")
-                    )
-                    self.diagnostic_error = SystemExit("PRIVATE diagnostic")
-                    self.assert_raised(primary)
-                    if cleanup_type is not None:
-                        self.assertEqual(
-                            self.logs,
-                            [
-                                (
-                                    "session_recovery",
-                                    "store_close",
-                                    cleanup_type.__name__,
-                                )
-                            ],
-                        )
+    @pytest.mark.parametrize(
+        "cleanup_type",
+        (None, OSError, KeyboardInterrupt),
+        ids=("none", "OSError", "KeyboardInterrupt"),
+    )
+    @pytest.mark.parametrize(
+        "primary_type",
+        (KeyboardInterrupt, SystemExit, RuntimeError),
+        ids=lambda t: t.__name__,
+    )
+    def test_escaping_primary_survives_all_cleanup_and_diagnostic_errors(
+        self, primary_type, cleanup_type
+    ):
+        primary = primary_type("PRIVATE original")
+        self.body_error = primary
+        self.close_error = (
+            None if cleanup_type is None else cleanup_type("PRIVATE cleanup")
+        )
+        self.diagnostic_error = SystemExit("PRIVATE diagnostic")
+        self.assert_raised(primary)
+        if cleanup_type is not None:
+            self.assertEqual(
+                self.logs,
+                [("session_recovery", "store_close", cleanup_type.__name__)],
+            )
 
-    def test_handled_startup_refusals_keep_failure_status(self):
-        for source in ("open", "body"):
-            for error_type in (OSError, SafetyError, ValueError):
-                with self.subTest(source=source, error=error_type.__name__):
-                    self.setUp()
-                    primary = error_type("PRIVATE refusal")
-                    if source == "open":
-                        self.open_error = primary
-                    else:
-                        self.body_error = primary
-                    self.close_error = OSError("PRIVATE cleanup")
-                    self.assertEqual(self.main([]), 3)
-                    self.assertEqual(self.closed, [17, 1])
-                    self.assertEqual(self.calls, 0 if source == "open" else 1)
-                    self.assertEqual(self.markers, ["BEAMO_WIPE_RECOVERY_UNAVAILABLE"])
-                    self.assertEqual(
-                        self.logs, [("session_recovery", "store_close", "OSError")]
-                    )
+    @pytest.mark.parametrize(
+        "error_type", (OSError, SafetyError, ValueError), ids=lambda t: t.__name__
+    )
+    @pytest.mark.parametrize("source", ("open", "body"))
+    def test_handled_startup_refusals_keep_failure_status(self, source, error_type):
+        primary = error_type("PRIVATE refusal")
+        if source == "open":
+            self.open_error = primary
+        else:
+            self.body_error = primary
+        self.close_error = OSError("PRIVATE cleanup")
+        self.assertEqual(self.main([]), 3)
+        self.assertEqual(self.closed, [17, 1])
+        self.assertEqual(self.calls, 0 if source == "open" else 1)
+        self.assertEqual(self.markers, ["BEAMO_WIPE_RECOVERY_UNAVAILABLE"])
+        self.assertEqual(self.logs, [("session_recovery", "store_close", "OSError")])
 
-    def test_success_and_close_only_refusal(self):
+    def test_success_closes_the_journal(self):
         self.assertEqual(self.main([]), 9)
         self.assertEqual(self.closed, [17, 1])
-        for kind in (OSError, KeyboardInterrupt):
-            with self.subTest(kind=kind.__name__):
-                self.setUp()
-                error = kind("close only")
-                self.close_error = error
-                self.assert_raised(error)
+
+    @pytest.mark.parametrize(
+        "kind", (OSError, KeyboardInterrupt), ids=lambda t: t.__name__
+    )
+    def test_close_only_refusal(self, kind):
+        error = kind("close only")
+        self.close_error = error
+        self.assert_raised(error)
 
     def test_preview_route_does_not_open_or_close_journal(self):
         self.live = False
@@ -189,4 +205,4 @@ class EntryCleanupTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    raise SystemExit(pytest.main([__file__]))

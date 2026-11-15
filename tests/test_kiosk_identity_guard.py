@@ -2,7 +2,8 @@
 import re
 from pathlib import Path
 from types import SimpleNamespace
-import unittest
+
+import pytest
 
 
 KIOSK = Path(__file__).resolve().parents[1] / 'packaging/live/config/includes.chroot/usr/local/sbin/beamo-wipe-kiosk'
@@ -26,20 +27,25 @@ def decision(probe=None, import_error=None):
     exec(compile(match.group(1), str(KIOSK), 'exec'), env)  # noqa: S102
 
 
-class KioskIdentityGuardTests(unittest.TestCase):
-    def test_only_explicit_absence_allows_power(self):
-        for value in (False, True, None, 0, 1, '', 'False'):
-            with self.subTest(value=value):
-                with self.assertRaises(SystemExit) as caught:
-                    decision(probe=lambda: value)
-                self.assertEqual(caught.exception.code, 0 if value is False else 1)
+@pytest.mark.parametrize("value", (False, True, None, 0, 1, '', 'False'))
+def test_only_explicit_absence_allows_power(value):
+    with pytest.raises(SystemExit) as caught:
+        decision(probe=lambda: value)
+    assert caught.value.code == (0 if value is False else 1)
 
-    def test_inspection_and_import_failures_cannot_succeed(self):
-        for error in (OSError('unreadable'), RuntimeError('inspection failed'), KeyboardInterrupt()):
-            with self.subTest(error=type(error).__name__):
-                def failed():
-                    raise error
-                with self.assertRaises(type(error)):
-                    decision(probe=failed)
-        with self.assertRaises(ImportError):
-            decision(import_error=ImportError('unavailable'))
+
+@pytest.mark.parametrize(
+    "error",
+    (OSError('unreadable'), RuntimeError('inspection failed'), KeyboardInterrupt()),
+    ids=lambda error: type(error).__name__,
+)
+def test_inspection_failures_cannot_succeed(error):
+    def failed():
+        raise error
+    with pytest.raises(type(error)):
+        decision(probe=failed)
+
+
+def test_import_failure_cannot_succeed():
+    with pytest.raises(ImportError):
+        decision(import_error=ImportError('unavailable'))

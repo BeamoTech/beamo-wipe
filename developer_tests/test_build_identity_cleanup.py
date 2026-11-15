@@ -16,6 +16,8 @@ import unittest
 from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 
+import pytest
+
 _SOURCE = Path(__file__).resolve().parents[1] / "src/beamo_wipe/build_identity.py"
 
 
@@ -72,7 +74,26 @@ class FakeOS:
         return SimpleNamespace(st_dev=1, st_ino=9)
 
 
-class IdentityCleanup(unittest.TestCase):
+class _UnittestAssertions:
+    """unittest's assertion methods for a plain pytest class.
+
+    pytest cannot parametrize unittest.TestCase methods, and pytest 9 reports
+    unittest subTest() results in a way the CI evidence check rejects, so these
+    classes are plain pytest classes that keep the original assertions.
+    """
+
+    _checker = unittest.TestCase()
+
+    def __getattr__(self, name):
+        if name.startswith("assert") or name == "fail":
+            return getattr(self._checker, name)
+        raise AttributeError(name)
+
+
+class TestIdentityCleanup(_UnittestAssertions):
+    def setup_method(self, _method=None):
+        self.setUp()
+
     def setUp(self):
         self.os = FakeOS()
         self.read_error = None
@@ -156,44 +177,44 @@ class IdentityCleanup(unittest.TestCase):
         self.assertIs(caught.exception, failure)
         self.assert_closed_once()
 
-    def test_directory_child_open_failure_preserves_primary(self):
-        for kind in (OSError, KeyboardInterrupt, SystemExit):
-            with self.subTest(kind=kind):
-                self.setUp()
-                primary = kind("primary")
-                self.os.open_errors[1] = primary
-                self.os.close_errors[10] = OSError("close")
-                with self.assertRaises(kind) as caught:
-                    self.directory()
-                self.assertIs(caught.exception, primary)
-                self.assert_closed_once()
+    @pytest.mark.parametrize(
+        "kind", (OSError, KeyboardInterrupt, SystemExit), ids=lambda kind: kind.__name__
+    )
+    def test_directory_child_open_failure_preserves_primary(self, kind):
+        primary = kind("primary")
+        self.os.open_errors[1] = primary
+        self.os.close_errors[10] = OSError("close")
+        with self.assertRaises(kind) as caught:
+            self.directory()
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
 
-    def test_publisher_token_failure_closes_directory(self):
-        for kind in (OSError, KeyboardInterrupt, SystemExit):
-            with self.subTest(kind=kind):
-                self.setUp()
-                primary = kind("token")
-                self.token_error = primary
-                self.os.close_errors[10] = OSError("close")
-                with self.assertRaises(kind) as caught:
-                    self.publish()
-                self.assertIs(caught.exception, primary)
-                self.assert_closed_once()
-                self.assertEqual(self.os.operations, [])
+    @pytest.mark.parametrize(
+        "kind", (OSError, KeyboardInterrupt, SystemExit), ids=lambda kind: kind.__name__
+    )
+    def test_publisher_token_failure_closes_directory(self, kind):
+        primary = kind("token")
+        self.token_error = primary
+        self.os.close_errors[10] = OSError("close")
+        with self.assertRaises(kind) as caught:
+            self.publish()
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
+        self.assertEqual(self.os.operations, [])
 
-    def test_publisher_write_failure_preserves_primary_and_closes_all(self):
-        for kind in (OSError, KeyboardInterrupt, SystemExit):
-            with self.subTest(kind=kind):
-                self.setUp()
-                primary = kind("write")
-                self.os.write_error = primary
-                self.os.close_errors[11] = OSError("file close")
-                self.os.close_errors[10] = OSError("directory close")
-                with self.assertRaises(kind) as caught:
-                    self.publish()
-                self.assertIs(caught.exception, primary)
-                self.assert_closed_once()
-                self.assertNotIn("replace", self.os.operations)
+    @pytest.mark.parametrize(
+        "kind", (OSError, KeyboardInterrupt, SystemExit), ids=lambda kind: kind.__name__
+    )
+    def test_publisher_write_failure_preserves_primary_and_closes_all(self, kind):
+        primary = kind("write")
+        self.os.write_error = primary
+        self.os.close_errors[11] = OSError("file close")
+        self.os.close_errors[10] = OSError("directory close")
+        with self.assertRaises(kind) as caught:
+            self.publish()
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
+        self.assertNotIn("replace", self.os.operations)
 
     def test_publisher_success_checks_both_names_and_closes_all(self):
         self.publish()
@@ -213,29 +234,35 @@ class IdentityCleanup(unittest.TestCase):
         self.assertIs(caught.exception, failure)
         self.assert_closed_once()
 
-    def test_reader_primary_interrupt_is_not_swallowed_by_close_failure(self):
-        for function in ("load_injected_build", "runtime_source_sha256"):
-            for kind in (KeyboardInterrupt, SystemExit):
-                with self.subTest(function=function, kind=kind):
-                    self.setUp()
-                    primary = kind("read")
-                    self.read_error = primary
-                    self.os.close_errors[10] = OSError("close")
-                    with self.assertRaises(kind) as caught:
-                        self.env[function]()
-                    self.assertIs(caught.exception, primary)
-                    self.assert_closed_once()
+    @pytest.mark.parametrize(
+        "kind", (KeyboardInterrupt, SystemExit), ids=lambda kind: kind.__name__
+    )
+    @pytest.mark.parametrize(
+        "function", ("load_injected_build", "runtime_source_sha256")
+    )
+    def test_reader_primary_interrupt_is_not_swallowed_by_close_failure(
+        self, function, kind
+    ):
+        primary = kind("read")
+        self.read_error = primary
+        self.os.close_errors[10] = OSError("close")
+        with self.assertRaises(kind) as caught:
+            self.env[function]()
+        self.assertIs(caught.exception, primary)
+        self.assert_closed_once()
 
-    def test_reader_ordinary_read_and_close_failures_still_refuse_identity(self):
-        for function in ("load_injected_build", "runtime_source_sha256"):
-            for read_fails in (False, True):
-                with self.subTest(function=function, read_fails=read_fails):
-                    self.setUp()
-                    if read_fails:
-                        self.read_error = OSError("read")
-                    self.os.close_errors[10] = OSError("close")
-                    self.assertIsNone(self.env[function]())
-                    self.assert_closed_once()
+    @pytest.mark.parametrize("read_fails", (False, True))
+    @pytest.mark.parametrize(
+        "function", ("load_injected_build", "runtime_source_sha256")
+    )
+    def test_reader_ordinary_read_and_close_failures_still_refuse_identity(
+        self, function, read_fails
+    ):
+        if read_fails:
+            self.read_error = OSError("read")
+        self.os.close_errors[10] = OSError("close")
+        self.assertIsNone(self.env[function]())
+        self.assert_closed_once()
 
     def test_reader_normal_hash_and_payload(self):
         self.assertIsInstance(self.env["runtime_source_sha256"](), str)
@@ -251,51 +278,52 @@ class IdentityCleanup(unittest.TestCase):
         self.assertEqual(self.env["load_injected_build"](), record)
         self.assert_closed_once()
 
-    def test_post_acquisition_line_interrupt_cleans_owned_handle(self):
-        for function in (
+    @pytest.mark.parametrize(
+        "function",
+        (
             "_identity_directory",
             "_publish_identity",
             "load_injected_build",
             "runtime_source_sha256",
-        ):
-            with self.subTest(function=function):
-                self.setUp()
-                primary = KeyboardInterrupt("after acquisition")
-                armed = True
-                previous = sys.gettrace()
+        ),
+    )
+    def test_post_acquisition_line_interrupt_cleans_owned_handle(self, function):
+        primary = KeyboardInterrupt("after acquisition")
+        armed = True
+        previous = sys.gettrace()
 
-                def interrupt(frame, event, arg):
-                    nonlocal armed
-                    if (
-                        armed
-                        and event == "line"
-                        and frame.f_code.co_filename == str(_SOURCE)
-                        and frame.f_code.co_name == function
-                    ):
-                        local = frame.f_locals
-                        owned = local.get("owned", {})
-                        if self.os.active and (
-                            owned or local.get("fd", -1) >= 0 or "directory_fd" in local
-                        ):
-                            armed = False
-                            raise primary
-                    return interrupt
+        def interrupt(frame, event, arg):
+            nonlocal armed
+            if (
+                armed
+                and event == "line"
+                and frame.f_code.co_filename == str(_SOURCE)
+                and frame.f_code.co_name == function
+            ):
+                local = frame.f_locals
+                owned = local.get("owned", {})
+                if self.os.active and (
+                    owned or local.get("fd", -1) >= 0 or "directory_fd" in local
+                ):
+                    armed = False
+                    raise primary
+            return interrupt
 
-                try:
-                    sys.settrace(interrupt)
-                    with self.assertRaises(KeyboardInterrupt) as caught:
-                        if function == "_identity_directory":
-                            self.directory()
-                        elif function == "_publish_identity":
-                            self.publish()
-                        else:
-                            self.env[function]()
-                    self.assertIs(caught.exception, primary)
-                finally:
-                    sys.settrace(previous)
-                self.assertFalse(armed, "probe must reach the acquisition boundary")
-                self.assert_closed_once()
+        try:
+            sys.settrace(interrupt)
+            with self.assertRaises(KeyboardInterrupt) as caught:
+                if function == "_identity_directory":
+                    self.directory()
+                elif function == "_publish_identity":
+                    self.publish()
+                else:
+                    self.env[function]()
+            self.assertIs(caught.exception, primary)
+        finally:
+            sys.settrace(previous)
+        self.assertFalse(armed, "probe must reach the acquisition boundary")
+        self.assert_closed_once()
 
 
 if __name__ == "__main__":
-    unittest.main()
+    raise SystemExit(pytest.main([__file__]))
