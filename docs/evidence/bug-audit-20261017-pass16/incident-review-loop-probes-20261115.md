@@ -120,9 +120,20 @@ is byte-identical at the pass's HEAD `35107a8d` and on main `93a7c9e9`.
     contains a space);
   - pytest runs as root on a machine with usable loop devices.
 
+  Correction (2026-11-15 17:18Z, see the follow-up section below): an
+  earlier version of this review said that
   `tests/test_qemu_bus_journeys_20261028.py` and `tests/test_runbook.py` use
-  the same `#!{sys.executable}` fake pattern. This review did not check what
-  they would fall back to.
+  the same pattern. They do not. The first runs `#!/usr/bin/env bash` scripts
+  explicitly with `bash` and asserts that `losetup` is absent. The second
+  only reads `docs/runbook.md`. The files that did use `#!{sys.executable}`
+  fakes on main were:
+  - `tests/test_blacksmith_ci.py`: `docker`, `sudo`, `losetup` and
+    `dbus-run-session`;
+  - `tests/test_qemu_iso_inspection.py`: `xorriso`;
+  - `tests/test_usb_download_verification.py`: `curl`.
+
+  The `xorriso` and `curl` fakes are the other two tools that fell back
+  during pass 16.
 - **Hosted CI exposure is low but unverified.** The main pytest gate runs as
   root inside a Docker container. That container gets `--privileged` only for
   the qemu gate (`scripts/ci-blacksmith.sh`) and uses `/usr/bin/python3`, so
@@ -156,3 +167,25 @@ is byte-identical at the pass's HEAD `35107a8d` and on main `93a7c9e9`.
 
   Until then, do not run the suite as root on a machine with loop devices
   unless it is a disposable isolated worker.
+
+## Follow-up applied (2026-11-15 17:18Z, local commit, not pushed)
+
+- New `tests/fake_tool_shebang.py` provides `python_shebang()`. It returns
+  `#!<python>\n` only when Linux can start that interpreter: an absolute
+  path with no blank, at most 127 bytes including `#!`. Otherwise it fails the
+  test (`pytest.fail`, never a skip), so a fake that could not start is never
+  written.
+- All six `#!{sys.executable}` fakes listed above now use it.
+- `test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files` now
+  runs the real probe source with `PATH` set to the fake's directory only. If
+  the fake cannot start, `losetup` is not found and the probe fails. The PATH
+  search can no longer reach `/usr/sbin/losetup`.
+- New `tests/test_fake_tool_shebang.py` covers the helper with nine cases
+  (three accepted, six refused). The refused cases include the pass 16
+  interpreter path.
+- Limits:
+  - The other fakes still append the inherited PATH, because the scripts
+    they drive need real `bash` and core utilities. For those fakes the
+    shebang check is the protection.
+  - The changed Linux tests were not run here (no WSL/Linux in this pass).
+    Only lint and the portable helper test ran.

@@ -15,6 +15,7 @@ import sys
 import pytest
 
 from beamo_wipe import release_signing as signing
+from fake_tool_shebang import python_shebang
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "0.2.12"
@@ -193,7 +194,7 @@ def test_copyable_document_block_with_fixture_downloads(release, tmp_path, downl
     default_python.write_text("#!/bin/sh\necho 'unselected default Python was invoked' >&2\nexit 91\n")
     default_python.chmod(0o755)
     curl = tools / "curl"
-    curl.write_text(f"#!{sys.executable}\n" +
+    curl.write_text(python_shebang() +
                    "import os,pathlib,sys\n"
                    "name=sys.argv[-1].rsplit('/',1)[-1]\n"
                    "data=(pathlib.Path(os.environ['FIXTURE_RELEASE'])/name).read_bytes()\n"

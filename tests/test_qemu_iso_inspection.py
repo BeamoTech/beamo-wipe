@@ -10,6 +10,8 @@ import sys
 
 import pytest
 
+from fake_tool_shebang import python_shebang
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # A fake xorriso: extracted directories get a few regular files, the GRUB
@@ -51,7 +53,7 @@ def _run_with_fake(tmp_path, source, payload, **env):
     tools = tmp_path / "bin"
     tools.mkdir()
     extractor = tools / "xorriso"
-    extractor.write_text(f"#!{sys.executable}\n" + FAKE_XORRISO)
+    extractor.write_text(python_shebang() + FAKE_XORRISO)
     extractor.chmod(0o755)
     destination = tmp_path / "extracted"
     destination.mkdir()
