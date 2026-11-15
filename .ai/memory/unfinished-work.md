@@ -3,7 +3,7 @@
 ## BW-GO-2026-6859-LAUNCHER-20261112 — PR OPEN (launcher Go 1.26.8 -> 1.26.11; blocks signed 0.2.14)
 
 - Date/author: 2026-11-12 / Claude, beamo-wipe-usb BWU-001 thread. Branch `fix/launcher-go1.26.11-20261112` from main
-  `7681c53`, worktree `C:\Users\Jack\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
+  `7681c53`, worktree `C:\Users\USERNAME\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
 - Why: GO-2026-6859 / CVE-2026-97054 (net/http HTTP/1 server crash, MaxBytesReader header race) affects every Go
   before 1.26.11. The desktop launcher (`desktop/main.go`) serves HTTP with `http.MaxBytesReader` and was built with
   go1.26.8. Signed-release run 43157568393 (tag `v0.2.14` on `34c3ab3`) was cancelled before publish for this reason;
@@ -31,7 +31,7 @@
 
 ## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
 
-- Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
+- Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
 - Owner decision (Jack, 2026-11-08): on the Wipe USB that also carries USB Easy Use, keep USB Easy Use's apps (`USB Easy Use (Windows app).exe`, `USB Easy Use (Linux app)`) and its start page `START HERE - USB Easy Use.html`; drop Beamo Wipe's own `Start Beamo Wipe.exe`, `Start Beamo Wipe Linux` and `START-HERE.html` from that USB. Hand off without code.
 - Today: `scripts/build_desktop.py` (`LAUNCHERS`) builds both Wipe launchers; `scripts/build-usb-image.sh` requires "exactly both desktop launchers" in the USB manifest and reads them back; `helper/index.html` is copied to the data partition as `START-HERE.html`. USB Easy Use is added to the Wipe USB root with its own copy tool (usb-easy-use `docs/integration.md`, row "Beamo Wipe writable USB image", now updated to this decision).
 - Check before removing: `START-HERE.html` and the Wipe launcher help hold things USB Easy Use does not (separate Windows 10/11 Recovery Environment steps, kiosk recovery, the Intel Mac Option key, the beamosupport.com card and code); the printed card says "open START-HERE.html". Whether any of that moves to USB Easy Use, and the card wording, are not decided here.
@@ -1762,7 +1762,7 @@
   BW-READINESS-REVIEW-20261026. Repo BeamoTech/beamo-wipe, branch
   `fix/release-readiness-20261026` from main `58c677f` (product bytes = tag
   v0.2.14 `9764d93`). Owned shared-object sparse clone (docs/evidence omitted)
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
   in the main checkout and PR93 untouched. State: committed locally; pushed only
   as a branch if noted below. No PR, no hosted CI, no tag, no release.
 - Test environment: existing WSL distro (no /mnt/c by design) with owned copies
@@ -1969,12 +1969,12 @@
   work from BW-READINESS-WORK-20261026, BW-RR-UX-POLISH-20261027 and
   BW-COMPAT-UX-20261027. Repo BeamoTech/beamo-wipe, branch
   `fix/release-readiness-20261026`, clone
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
   the pushed `40ccf8b`: 26 commits `0a02a03`..`872d38c` plus the commit adding this entry. State: pushed as branch `fix/release-readiness-20261026` (head = the commit adding this entry; ci.yml runs only for PRs/pushes to main or dispatch, so no workflow ran). No PR, no hosted
   CI, no tag, no release, no device operation.
 - Agent clones (owned, safe to delete after merge): `beamo-wipe-{ui,results,
   l10n,export,it}-20261027`, `beamo-wipe-helper-20261028`,
-  `beamo-wipe-pr93trial-20261028` under `C:/Users/Jack/dev/BeamoTech/`; WSL
+  `beamo-wipe-pr93trial-20261028` under `C:/Users/USERNAME/dev/BeamoTech/`; WSL
   copies `/home/beamo-qual/bw-*-2026102[78]`.
 
 ### Done (commit: what, evidence)
@@ -2092,7 +2092,7 @@
 
 - 2026-10-28 / Claude (Opus 5.5) for the owner's request to run another very
   thorough pass. Branch `fix/release-readiness-20261026` (clone
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
   from `465274d`. Four independent read-only reviewers covered
   `58c677f..465274d` (runtime safety; UI and locales; image, build and release
   scripts; docs, helper pages and claims). Every finding was re-checked against
@@ -2100,9 +2100,9 @@
   amd64-/intel-microcode hooks, madison, security tracker) before fixing.
   No PR, hosted CI, tag, release, device or host-setting change.
 - Lab: current lab revision `6fd49c5` in owned clone
-  `C:/Users/Jack/dev/beamo-remote-lab-claude-20261028` (peer checkout at
+  `C:/Users/USERNAME/dev/beamo-remote-lab-claude-20261028` (peer checkout at
   `d3d0959` left untouched); run root
-  `C:/Users/Jack/beamo-release-evidence/wipe-pass2-claude-20261028`:
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-pass2-claude-20261028`:
   self-test PASS (61 tests, framework), doctor/sync/plan PASS (preparation).
   Plan still lists WIPE-ISO-QEMU "no new spend authorized".
 
@@ -2233,9 +2233,9 @@
   care of all of the rest of the stuff ... do what's best for the mass
   majority of customers". The open owner decisions from BW-PASS2-20261028
   were decided on that basis (below). Branch `fix/release-readiness-20261026`,
-  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
+  clone `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
   `22fa70c`. Lab `6fd49c5` (owned clone), run root
-  `C:/Users/Jack/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
   20261028T230010Z-b9c571b692a3, sync 20261028T230035Z-07fe5d9eb357, plan
   20261028T230038Z-e303374f8e43 PASS (preparation only).
 - The owner's message is taken as the go-ahead for the paid hosted gate
@@ -2342,7 +2342,7 @@
 ## BW-PASS3-CI-UI-20261031 — HOSTED GATE ITERATING; UI REDESIGN COMMITTED; GREPTILE UNAVAILABLE; WSL STILL DOWN
 
 - 2026-10-29..31 / Claude (Opus 5.5). Branch `fix/release-readiness-20261026`,
-  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
+  clone `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
   Continues BW-PASS3-20261028 (its open items stand unless updated here).
 
 ### Done (commit: what, evidence)
@@ -2364,7 +2364,7 @@
   bars, quiet footer tools, owner check above its notes (in view at all
   four sizes, five languages), Pick leads with disks, roomy review card;
   gallery and helper mirror it. Local (Windows harness, scratch
-  `C:/Users/Jack/dev/beamo-wipe-pass3-scratch-20261028/per`):
+  `C:/Users/USERNAME/dev/beamo-wipe-pass3-scratch-20261028/per`):
   modern_layout+ui_polish 81 PASS, pick_row_fit 24, header_caption 98
   (+1 Tk-load flake), ui_fit 262, adaptive 91 (one test hangs on Windows
   on the frozen base too), gallery/helper/UI-system 215, ruff 0.9.2 and
@@ -2432,7 +2432,7 @@
 Owner request: "It still needs a bit of modernization. Go ahead and run
 another very thorough and comprehensive pass of this." Repo
 `beamo-wipe`, branch `fix/release-readiness-20261026`, readiness clone
-`C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`.
+`C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`.
 
 - DONE locally (commit after this note on the same branch):
   - lighter secondary button edge (`BUTTON_EDGE`);
@@ -2514,7 +2514,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented and committed as `adaaef1` on branch
   `feat/qr-erase-summary-127` (worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
   head `9c16e13` plus local docs commits `0f8f5e0`, `fdaaa44`, `13322c1`.
   2026-11-02, Claude. NOT Done: the Linux/hosted gate, phone-camera scans
   and native-speaker review are open, and nothing is on main. It depends on
@@ -2607,7 +2607,7 @@ another very thorough and comprehensive pass of this." Repo
   - browser-preview screenshot (Windows demo disks are not eligible); its
     content is covered by `test_gallery_preview_shows_the_sample_record`.
 - Screenshots (scratch, not committed):
-  `C:\Users\Jack\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
+  `C:\Users\USERNAME\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
   `shots-after\`.
 - NEXT (owner chooses):
   1. Fold this commit into PR #94, or open it as a PR after #94 merges. The
@@ -2622,7 +2622,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented on branch `feat/single-erase-warning-128` (stacked on
   `feat/qr-erase-summary-127` at `2a79067`, which sits on PR #94 head `9c16e13`),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`.
   2026-11-02, Claude. NOT Done: the Linux 72 DPI suite, GTK/Orca runtime and
   ISO/QEMU gate have not run, the translations need native review, and
   nothing is on main (it depends on unmerged PR #94 and #127).
@@ -2712,7 +2712,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented on branch `feat/serial-suffix-token-129`, stacked on
   `feat/single-erase-warning-128` (`39316c9`) -> #127 -> PR #94 `9c16e13`;
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`.
   2026-11-02, Claude. SAFETY change (confirmation token): `safety:` commit.
   NOT Done: Linux 72 DPI suite, GTK/Orca runtime, ISO build and the QEMU
   gate (whose guest helper derives the token) have not run; translations
@@ -2842,7 +2842,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/step-progress-130` (stacked on
   `feat/serial-suffix-token-129` @ 946c622), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
   (UI review item 4) with #138 (one set of names) and #166 (Review last
   before Erase); #138/#166 are not recorded in this repo.
 - Owner decision (2026-11-02, in chat): sub-steps, keeping the three stages
@@ -2884,7 +2884,7 @@ another very thorough and comprehensive pass of this." Repo
   private); the rest pass alone or fail identically on the baseline
   (export worker st_rdev, canvas progress). ruff (CI selections), mypy
   --platform linux, compileall pass. Screenshots
-  `C:\Users\Jack\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
+  `C:\Users\USERNAME\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
   console/GTK text `console-{before,after}.txt`.
 - Not run here: GTK/Orca runtime test (no gi), full pytest on Linux at
   72 DPI, ISO/QEMU, web preview in a browser (payload checked by test).
@@ -2898,7 +2898,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/language-first-131` (stacked
   on `feat/step-progress-130` @ 979b5ff), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
   (UI review item 5); #139/#140/#155 are not recorded in this repo.
 - What changed: `keyboard.LANGUAGE_LAYOUTS` (en->us, fr->fr, de->de,
   es->es, it->it; shipped layouts only) and `LANGUAGE_ALTERNATIVE_LAYOUTS`
@@ -2945,7 +2945,7 @@ another very thorough and comprehensive pass of this." Repo
   flakes (pass alone), Windows cp1252 source reads (pass with UTF-8, as on
   Linux) or the sparse checkout without docs/evidence (environment). ruff
   (CI selections), mypy --platform linux, compileall pass. Screenshots
-  `C:\Users\Jack\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
+  `C:\Users\USERNAME\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
   console `console-before.txt`.
 - NOT DONE: Orca speaking in the chosen language. Bookworm's Orca 43 speaks
   with its configured voice; the live image has no locale data, and
@@ -2961,7 +2961,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/working-screen-132` (stacked
   on `feat/language-first-131` @ e319a6c), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
   (UI review item 6). Ref #133/#167/#168 are not recorded in this repo; not
   implemented here (the sound toggle already sits on Working).
 - What changed: shared `ProgressView` glance in progress.py
@@ -3026,7 +3026,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/finish-sound-133` (stacked on
   `feat/working-screen-132` @ d1ec2a3), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
   (UI review item 7). Ref #168 (screen stays lit) not in this repo; not done.
 - Design: the existing design ties one session setting (`sounds_enabled`)
   to the outcome sound, so the Working toggle "Play a sound when it's
@@ -3078,7 +3078,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/plain-result-134` (stacked on
   `feat/finish-sound-133` @ 572d35d), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
   (UI review item 8). Refs #170/#171/#172 are coordination only (not in this
   repo's backlog record; not done). Proposal recorded first (9ea6d68).
 - OWNER APPROVAL (2026-11-03, in chat): "I approve it all, just do whatever is
@@ -3160,7 +3160,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/report-panel-135` (stacked on
   `feat/plain-result-134` @ 1d69a67), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
   (UI review item 9). Refs #127/#145/#153/#175 coordination only.
 - WHAT CHANGED: the result footer keeps two actions (Erase another disk,
   Shut down; preview: Close preview, Run again). Report saving is a
@@ -3249,7 +3249,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/refresh-guard-136` (stacked on
   `feat/report-panel-135` @ 05161a5), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
   (UI review item 10). Safety-adjacent: `safety:` commit.
 - BASELINE (05161a5): the utility showed on What/Owner (no disk list); the
   Check disks again screen from Review/Confirm focused "Check disks again",
@@ -3316,7 +3316,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/start-line-137` (stacked on
   `feat/refresh-guard-136` @ c856f2b), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
   review item 11); Refs #138/#181 coordination.
 - WHAT CHANGED: `copy.SPLASH_TAGLINE` "You already started from this USB.
   Next you will pick a disk to erase." -> "Erase a disk in a few steps.
@@ -3347,7 +3347,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/stage-names-138` (stacked on
   `feat/start-line-137` @ 57bac5a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
   review item 12); decided with #130 (step bar) and #166 (Review last before
   Erase); #180 coordination only.
 - BASELINE: header = stages Preparation/Erase/Result (stepper >=1000 px,
@@ -3391,7 +3391,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/setup-order-139` (stacked on
   `feat/stage-names-138` @ 126bd2a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
   review item 13); #131/#140/#141/#142 coordination only (not changed).
 - BASELINE (126bd2a): Tk showed language picker, then the "Check your
   keyboard" heading, lead and limits, then text size, then layouts and the
@@ -3426,7 +3426,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-check-140` (stacked on
   `feat/setup-order-139` @ 9d93be5), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
   review item 14); #131/#139/#155 coordination only.
 - DESIGN: "Optional check: press the key labelled Z here." The active
   layout turns that physical key into a character; Z sits in a different
@@ -3469,7 +3469,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-fineprint-141`
   (stacked on `feat/keyboard-check-140` @ 7865ea1), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
   review item 15); Ref #50 (shared Show more).
 - WHAT CHANGED: `copy.KEYBOARD_LIMITS` (wording unchanged) is no longer in
   the keyboard screen's main view. Tk: behind the shared `_more_link` Show
@@ -3498,7 +3498,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/layout-badges-142` (stacked on
   `feat/keyboard-fineprint-141` @ a27ea6f), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
   review item 16); Ref #174 (keyboard-shortcuts help) not built in this repo,
   so the shortcut is documented in the screen's key hint and docs.
 - WHAT CHANGED: Tk builds a 1-7 key-cap per layout card but packs it only
@@ -3530,7 +3530,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/owner-reason-143` (stacked on
   `feat/layout-badges-142`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
   review item 17). Ref #178 (improved disabled-button style) is not in this
   repo: the existing DISABLED_BG/FG style is kept; adopt #178 when it lands.
 - WHAT CHANGED: new `copy.OWNER_CONTINUE_REASON` "Tick the box above to
@@ -3556,7 +3556,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/power-badge-144` (stacked on
   `feat/owner-reason-143`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
   review item 18); Ref #165/#183 (erase-time power warnings) unchanged;
   Ref #175 coordination only.
 - WHAT CHANGED: `power.PowerStatus.badge` -> PowerBadge(kind, text) with
@@ -3606,7 +3606,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/report-teaser-145` (stacked on
   `feat/power-badge-144` @ e6ff9c4), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
   review item 19); Ref #127 shipped (photo option leads), #135 panel;
   #25 confirm-before-discarding unchanged.
 - WHAT CHANGED: `copy.REPORT_MEDIA_WHAT` (same key, new text): "Want a
@@ -3643,7 +3643,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/compat-showmore-146` (stacked
   on `feat/report-teaser-145` @ 7c0a793), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
 - WHY: in the live wizard the PC has already started from this USB, so
   "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. Not
   Apple Silicon Macs. Not Chromebooks." is pre-boot guidance. docs/claims.md
@@ -3695,7 +3695,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/partition-names-147` (stacked
   on `feat/compat-showmore-146` @ aabf550), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
   review item 21); coordinates with #149 (one-line rows: the summary is one
   line) and #154 (BitLocker/LUKS named "BitLocker encrypted"/"LUKS
   encrypted"; nothing else of #154 implemented).
@@ -3802,7 +3802,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-once-148` (stacked on
   `feat/partition-names-147` @ 1a2dc42), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
   review item 22). Ref #129 (token marks on Confirm) unchanged; #152 and
   #177 are not in the repo or backlog: the existing [bracket] comparison
   mark is kept as the distinguishing-characters highlight.
@@ -3856,7 +3856,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/compact-rows-149` (stacked on
   `feat/serial-once-148` @ 0b54fa4), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
   review item 23). Coordinates with #147 (summary on the collapsed row),
   #148 (serial once, on the expanded card); #150/#151 not implemented.
 - WHY: at 800x600 only about 1.5 disk cards were visible (six-disk fake
@@ -3935,7 +3935,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/review-on-activate-150`
   (stacked on `feat/compact-rows-149` @ 54f8c81), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
   review item 24). Ref #149 (compact rows: the row a double-click starts on
   expands, so the second press is matched by disk, not by position).
 - BASELINE: Tk Enter with a disk selected already ran continue_pick
@@ -4029,7 +4029,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/disk-order-151` (stacked on
   `feat/review-on-activate-150`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
   review item 25). Ref #149 (compact rows; Up/Down by disk identity).
 - BASELINE: every view sorted eligible disks by device path (Tk rows,
   GTK buttons, curses blocks, plain console numbers, Compare disks "Disk
@@ -4100,7 +4100,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-diff-152` (stacked on
   `feat/disk-order-151`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
   review item 26). Ref #66 (distinguishing logic), #129 (Confirm token marks,
   unchanged), #148 (serial once; this closes its pairwise follow-up).
 - BASELINE (scratch work152-scratch-20261104/before, fixture-lookalike.json):
@@ -4176,7 +4176,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `fix/key-hints-153` (stacked on
   `feat/serial-diff-152`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
   review item 27). Ref #174 (not implemented here).
 - BASELINE (scratch work153-scratch-20261104/before, web-before-*.png,
   web-hint-before-zoom.png): Tk (roomy windows) and the web preview render
@@ -4232,7 +4232,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/encrypted-tag-154` (stacked on
   `fix/key-hints-153`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
   review item 28). Ref #147 (contents line, FORMAT_BITLOCKER/FORMAT_LUKS).
 - BASELINE (scratch work154-scratch-20261104/before, fixture154.py): no
   view tagged encryption; only the #147 summary said "Windows (BitLocker
@@ -4284,7 +4284,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/confirm-layout-hint-155`
   (stacked on `feat/encrypted-tag-154`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
   review item 29). Ref #140 (keyboard check), #156 (token comparison, not
   changed here).
 - BASELINE (scratch work155-scratch-20261104/before): Confirm always showed
@@ -4361,7 +4361,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/token-feedback-156` (stacked
   on `feat/confirm-layout-hint-155` @ 9e94fc7), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
   review item 30). Ref #129 (card token), #155 (timing of the help).
 - RULE (documented in docs/screens.md "Comparison (#156)", decided with
   #129 and unchanged here): safety.token_matches strips leading/trailing
@@ -4412,7 +4412,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/confirm-spacing-157` (stacked
   on `feat/token-feedback-156` @ 5680c3e), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
   review item 31). Ref #128 (warning), #155 (help after a wrong entry),
   #156 (feedback).
 - BASELINE (work157-scratch-20261104/before, metrics.txt): on roomy windows
@@ -4464,7 +4464,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Backlog #158 (UI review item 32). Branch
   `feat/method-limits-line-158` (no commits; @ d55220e), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
   measurement prototype was reverted). Scratch:
   `work158-scratch-20261105` (shots158.py; before/, opt-base/, opt-A/,
   opt-B/, opt-C/ with metrics.txt and screenshots).
@@ -4511,7 +4511,7 @@ another very thorough and comprehensive pass of this." Repo
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/method-cards-159` (stacked
   on `fix/confirm-spacing-157` @ 595224a; commits 741e417 feat, 2a0fa29
   fix), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
   review item 33). Ref #158 (above), #160, #161.
 - BASELINE (work159-scratch-20261105/before, metrics.txt): each card had
   five to seven lines (sentence, overwrite count, check, rough guide, extra
@@ -4582,7 +4582,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/everyday-caveat-160`
   (stacked on `feat/method-cards-159` @ 0205571; commit 18cfe5a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
   review item 34). Ref #158 (proposal, owner decision pending), #159.
 - CLAIMS CHECK: docs/claims.md and docs/storage-and-controller-limits.md do
   not require copy.EVERYDAY_LIMITS ("This checks only storage the disk
@@ -4635,7 +4635,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/rarely-needed-161` (stacked
   on `feat/everyday-caveat-160` @ cec9ecf; commit a8f2a2c), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
   review item 35). Ref #159.
 - OWNER SIGN-OFF REQUIRED (task requirement; not yet given): the English
   copy below. Do not merge #161 until the owner approves it or supplies
@@ -4693,7 +4693,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/countdown-copy-162` (stacked
   on `feat/rarely-needed-161` @ bae2823; commit beab555 safety:), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
   review item 36). Ref #163 (not implemented here).
 - BASELINE: copy.LAST_LEAD "Check the selected disk and method. The
   countdown never starts erasure." (FR/DE/ES/IT equivalents), read by Tk,
@@ -4738,7 +4738,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/countdown-ready-163`
   (stacked on `fix/countdown-copy-162` @ f798714; commit e7d7e06 safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
   #163 (UI review item 37). Ref #162.
 - BASELINE (work163-scratch-20261105/before, metrics.txt): at zero the Tk
   ring showed "0" (PRIMARY) with COUNTDOWN_READY beside it; GTK only
@@ -4790,7 +4790,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/review-method-once-164`
   (stacked on `feat/countdown-ready-163` @ 3beb2c2; commit d0415be safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
   #164 (UI review item 38). Keeps #33's operation summaries intact.
 - BASELINE (work164-scratch-20261105/before, console-before.txt): Review
   showed "One overwrite, followed by verification." and "Everyday: 1
@@ -4843,7 +4843,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `safety/review-enter-focus-165`
   (stacked on `fix/review-method-once-164` @ dbe5793; commit 1603a08 safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
   #165 (UI review item 39), SAFETY-SENSITIVE. Ref #49 (Enter activates only
   the focused control), #162.
 - CURRENT BEHAVIOUR DOCUMENTED (before):
@@ -4912,7 +4912,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/final-check-step-166`
   (stacked on `safety/review-enter-focus-165` @ 2e1c48a; commit ef88356),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
   #166 (UI review item 40). Ref #130, #138.
 - BASELINE (work164-scratch-20261105/before/last-en-standard-1280x820-*):
   the header said "Step 6 of 6 · Review" beside the stepper with
@@ -4948,7 +4948,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/working-times-167` (stacked
   on `fix/final-check-step-166` @ 4c3465b; commit 2d5bde9), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
   review item 41). Ref #36 (clock confidence), #132 (glance), #133.
 - OWNER QUESTION (asked 2026-11-05, unanswered): may the OS clock ever be
   treated as trusted for Working's clock times? Existing logic never trusts
@@ -5001,7 +5001,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/screen-awake-168` (stacked
   on `feat/working-times-167` @ f3e6b72; commit 33a7278), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
   review item 42). Ref #39 (SleepInhibit), #132, #133.
 - WHERE BLANKING COMES FROM: packaging/live/.../etc/X11/xorg.conf.d/
   10-beamo.conf (ServerFlags BlankTime 10, Standby/Suspend/OffTime 0) and
@@ -5050,7 +5050,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/result-hints-169` (stacked on
   `feat/screen-awake-168` @ eb07f50; commit 58ef52d), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
   review item 43). Ref #174.
 - BEHAVIOUR DOCUMENTED (before): Tk preview result: Enter runs the preview
   again (accept_done_keyboard -> reset_for_preview), Esc does nothing
@@ -5085,7 +5085,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/report-notice-170` (stacked on
   `fix/result-hints-169` @ 0db2331; commit 4c6213a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
   review item 44). Ref #96 (separation), #135 (report panel).
 - BASELINE (work170-scratch-20261105/before): every report panel state
   (ready, failed/unavailable, saved) showed "Saving or checking a report
@@ -5122,7 +5122,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/result-card-171` (stacked on
   `fix/report-notice-170` @ f4b5cfa; commit 937da72), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
   review item 45). Ref #127 (photo record), #134, #172.
 - BASELINE (work171-scratch-20261105/before): the result screen showed the
   "This disk" card, then (after the report panel) the method line again
@@ -5172,7 +5172,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/help-settings-menu-175`
   (stacked on `feat/result-card-171` @ a39794d; commit 9548946, `safety:`),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
   #175 (UI review item 49). Ref #135, #144, #174, #179.
 - BASELINE (work175-scratch-20261105/before, metrics.txt): footer tools
   changed per screen — Owner: Keyboard layout, Text size, Need a report?;
@@ -5340,7 +5340,7 @@ another very thorough and comprehensive pass of this." Repo
   shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
 - 2026-11-09, Claude (Opus 5.5), research sub-agent. Owner direction
   2026-11-10: prepare so only the purchase remains. LOCAL ONLY, uncommitted, in
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110` (branch
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-dec-20261110` (branch
   `fix/owner-decisions-20261110` = origin/main d1c8508). Nothing bought, no
   account, no secret, no push, no hosted run.
   * DECISION RECORDED in `docs/code-signing.md`: Microsoft Artifact Signing
@@ -5368,7 +5368,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/layout-hint-build-155`
   (stacked on `feat/help-settings-menu-175` @ 27f4f0b; commit 25362d9),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155b-20261105`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-155b-20261105`.
   Regression from #155 found during #171.
 - WHAT CHANGED: tk_wizard._confirm keeps an empty hint frame;
   _sync_layout_hint builds the sentence + Change (_build_layout_hint) when
@@ -5385,7 +5385,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/result-balance-172` (stacked
   on `fix/layout-hint-build-155` @ 2e5c3e7; commit a00a936), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
   (UI review item 46). Ref #134, #135, #171.
 - BASELINE (work172-scratch-20261105/before, before-preview): every live
   result scrolls (content 1,165–1,708 px in a 403–855 px view, 800x600 to
@@ -5416,7 +5416,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/footer-align-173` (stacked on
   `fix/result-balance-172` @ 1a1ef13; commit 9c3e7ba), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
   (UI review item 47). Ref #174, #175.
 - BASELINE (work173-scratch-20261105/before/metrics.txt): link text vs hint
   start offset -11 px (text hint) / -14 px (hint starting with a key-cap)
@@ -5442,7 +5442,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/shortcuts-collapse-174`
   (stacked on `fix/footer-align-173` @ 01cb4e6; commit dbf3574), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
   (UI review item 48). Ref #173, #175, #142.
 - DECISION: collapse (not "hints after the first key press"): one footer
   height (no row appearing under the pointer), two rows on every screen;
@@ -5479,7 +5479,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/selected-style-176` (stacked
   on `feat/shortcuts-collapse-174` @ 76c8eff; commit a2461f9), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
   (UI review item 50). Ref #179 (high contrast can swap the token).
 - BASELINE (work176-scratch-20261105/before): radio dot + edge on cards,
   filled navy pill in the size switch, edge-only language chips; web
@@ -5508,7 +5508,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/serial-type-177` (stacked on
   `feat/selected-style-176` @ 8a7dd36; commit acd2517), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
   (UI review item 51). Ref #129, #148, #152.
 - FONT: the live image ships fonts-dejavu-core; _mono_family picks DejaVu
   Sans Mono first. Rendered DejaVu Sans Mono 2.37.3 (jsDelivr npm
@@ -5542,7 +5542,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/disabled-buttons-178` (stacked
   on `feat/serial-type-177` @ 5ff66a2; commit 17afdf8), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
   review item 52). Ref #143, #179.
 - BASELINE (work178-scratch-20261105/before/metrics.txt): disabled primary
   = DISABLED_BG #E8ECF1 / DISABLED_FG #6E7989, no outline — label 3.72:1,
@@ -5587,7 +5587,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/high-contrast-179` (stacked
   on `feat/disabled-buttons-178` @ e60c7fa; commit dfd8786), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
   review item 53). Enables the #175 Help & settings item.
 - BASELINE: no theme; the Help & settings High contrast item was greyed
   ("not in this version"). Screens: work179-scratch-20261105/std178
@@ -5652,7 +5652,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-06, Claude (Opus 5.5). Branch `feat/one-name-180` (stacked on
   `feat/high-contrast-179` @ 16e45f2; commit e339343), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
 - BASELINE (work180-scratch-20261105/lint_before.txt, scan1/scan2.txt):
   120 banned-synonym hits on English surfaces — boot/live/original/Beamo
   boot USB for the Beamo USB, wipe for erase, PC/machine for computer,
@@ -5700,7 +5700,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187` (stacked
   on `feat/one-name-180` @ 065a8dd; record only), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
   review item 61). Safety-sensitive: any change to owner_ok persistence is
   a gate change (`safety:` commit, focused tests, owner approval).
 - BASELINE (code read on 065a8dd; screens
@@ -5845,7 +5845,7 @@ another very thorough and comprehensive pass of this." Repo
 - 2026-11-07, Claude (Opus 5.5). Branch `integrate/ui-review-20261107`
   (from `feat/owner-carryover-187` @ 699825a, which contains every pushed
   task branch #127–#187), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-int-20261107`.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-int-20261107`.
 - OWNER DECISIONS (given in chat 2026-11-07, by AskUserQuestion):
   * #158: option B — one SSD limits line between the disk card and the
     method cards, full text under Show more; re-measure on top of #159.
@@ -5891,7 +5891,7 @@ another very thorough and comprehensive pass of this." Repo
     intact in beamo-wipe-{158,177g,180f,184,185,186}-20261107. #183 had
     not started. The lead scratchpad with the task texts was deleted in
     the disk cleanup; texts were recovered verbatim from the subagent
-    transcripts to C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\
+    transcripts to C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\
     (with RESUME.md). All six restarted 2026-11-08 ~21:45Z as delegated
     tasks to finish from the existing worktrees.
   * LINUX TRIAGE (2026-11-08): the isolated rerun reproduced 294 of the 295
@@ -5900,7 +5900,7 @@ another very thorough and comprehensive pass of this." Repo
     on native Windows, where test_tk_runtime, test_adaptive_layout, the
     GTK runtime and termios console tests are skipped, so pins drifted
     across the stack. Logs copied to
-    C:\Users\Jack\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
+    C:\Users\USERNAME\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
     rerun.log, rerun.ids, main.log, top.log). Three delegated triage
     branches started: fix/linux-tk-20261108, fix/linux-console-20261108,
     fix/linux-gtkweb-20261108 (WSL runs serialised by
@@ -5976,7 +5976,7 @@ another very thorough and comprehensive pass of this." Repo
   fixtures tests/fixtures/pci_185/. Fail before, pass after on Windows.
 - CHECKS (Windows): ruff, mypy pass; 51 focused files: failure ids
   identical to base (88 env failures).
-- SCREENS: C:\Users\Jack\dev\BeamoTech\work185-scratch-20261107\shots\.
+- SCREENS: C:\Users\USERNAME\dev\BeamoTech\work185-scratch-20261107\shots\.
 - NOT VERIFIED: GTK runtime, real sysfs-tree tests, Linux 72 DPI, real
   VMD/RST hardware or ISO boot (the live image has no lspci; sysfs only).
 - OWNER QUESTIONS: approve "computer's"; show the hint when vmd is bound
@@ -6327,7 +6327,7 @@ another very thorough and comprehensive pass of this." Repo
   hosted evidence stay exact; fold it into the PR with the next real push.
 - Notion: DEFERRED. No Notion connector/API in this session; old UI
   automation is gone and mis-pasted on 2026-11-07. Ready-to-paste notes:
-  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
   (#158, #181, #183, #184, #185, #186 -> Done; #182 stays deferred, owner
   chose unsigned; #116 stays blocked).
 - STILL BLOCKED / OPEN: #183 Windows 10/11 VM acceptance (no VM
@@ -6363,7 +6363,7 @@ another very thorough and comprehensive pass of this." Repo
   Claude Docs "notion" export format). The T3 preview browser's default
   profile redirects https://www.notion.so to /login (not signed in);
   signing in needs Jack. Notes stay ready to paste in
-  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
 
 ### BW-NOTION-20261109 (Claude, 2026-11-09) — Notion updates applied
 
@@ -6419,7 +6419,7 @@ another very thorough and comprehensive pass of this." Repo
   option on every wording/decision item and record it; fix or rebut the 9
   older CodeQL alerts; prepare #182 to purchase-only; build the #116
   physical packet. Branch `fix/owner-decisions-20261110` from main d1c8508,
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110`. The two
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-dec-20261110`. The two
   sub-agent entries above (BW-182 dated note, BW-116-PACKET) say
   "uncommitted": their files are now committed on this branch (fef92745,
   c7adb3ee, 586367a7); the compatibility-matrix and runbook links were added.

@@ -21,7 +21,7 @@ Commands were authenticated `gh api` GETs for
 `repos/BeamoTech/beamo-wipe/branches/main/protection` and
 `repos/BeamoTech/beamo-wipe/rulesets?includes_parents=true`.
 Responses and timestamps are preserved under
-`C:\Users\Jack\AppData\Local\BeamoWipe\development-ci-120\20261001T140001Z-review-policy`.
+`C:\Users\USERNAME\AppData\Local\BeamoWipe\development-ci-120\20261001T140001Z-review-policy`.
 Credentials were supplied only to the subprocess environment and were not logged.
 No remote protection mutation was necessary: there was no active approval rule
 to remove. The required CI, administrator and branch-integrity protections stay
