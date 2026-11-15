@@ -149,6 +149,21 @@ def launch_case(tmp_path, monkeypatch):
     )
     runner = module.NwipeRunner()
     case.runner, case.request = runner, request
+    target_backing = tmp_path / "target-reservation"
+    target_backing.write_bytes(b"")
+    case.target_fds = []
+
+    def reserve_target(req):
+        # Main holds the confirmed disk open read-only under the wipe lock,
+        # before the final rediscovery. A private regular file stands in for
+        # the disk so this fake-only test never opens a device node.
+        assert req is request and runner._lock_fd is not None
+        case.events.append("reserve-target")
+        fd = os.open(target_backing, os.O_RDONLY)
+        case.target_fds.append(fd)
+        return fd
+
+    monkeypatch.setattr(module, "_reserve_target_under_lock", reserve_target)
 
     def discover():
         # Keep _recheck_identity_under_lock and assert_rediscovered_identity real.
@@ -235,6 +250,9 @@ def _assert_refusal_cleanup(case):
     assert len(case.probe_fds) == len(case.lock_fds) == len(case.log_fds) == 1
     for fd in (*case.probe_fds, *case.lock_fds, *case.log_fds):
         _assert_closed(fd)
+    # A refused launch also releases main's read-only target reservation.
+    assert len(case.target_fds) == 1
+    _assert_closed(case.target_fds[0])
     assert "inhibitor-stop" in case.events
     # Prove that the actual fixture lock can be acquired again, not just cleared
     # in Python state. This opens only a regular file in pytest's private tmpdir.
@@ -273,6 +291,7 @@ def test_inhibitor_inventory_change_is_refused_before_engine_popen(
     assert case.spawns == []
     assert case.scans and case.scans[-1] is case.current
     assert case.events.index("inhibitor-start") < case.events.index("discover")
+    assert case.events.index("reserve-target") < case.events.index("discover")
     _assert_refusal_cleanup(case)
 
 
@@ -292,3 +311,5 @@ def test_unchanged_inventory_still_launches_only_the_fake_engine(launch_case):
     _assert_closed(case.probe_fds[0])
     assert case.runner._lock_fd == case.lock_fds[0]
     assert case.runner._log_fd == case.log_fds[0]
+    # The launched engine runs while main's target reservation is still held.
+    assert case.runner._target_fd == case.target_fds[0]

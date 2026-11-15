@@ -8,6 +8,7 @@ from unittest.mock import Mock, call
 
 import pytest
 
+from beamo_wipe import diagnostics
 from beamo_wipe import evidence
 from beamo_wipe import support_export
 from beamo_wipe.report_intent import ReportIntentStore
@@ -225,10 +226,15 @@ def test_report_bundle_close_error_still_closes_all_directories(tmp_path, monkey
             raise OSError(errno.EIO, "fake directory close failure")
         return real_close(fd)
 
+    logged = []
     try:
         with monkeypatch.context() as patch:
             patch.setattr(os, "open", track_open)
             patch.setattr(os, "close", fail_first_directory_close)
+            # The cleanup diagnostic opens its own log directory; keep it out
+            # of the bundle's directory count and check that it was recorded.
+            patch.setattr(diagnostics, "log_diag",
+                          lambda area, code, detail="", **_kw: logged.append((area, code, detail)))
             with pytest.raises(OSError, match="fake directory close failure"):
                 if operation == "write":
                     support_export.write_report_bundle(
@@ -237,6 +243,7 @@ def test_report_bundle_close_error_still_closes_all_directories(tmp_path, monkey
                 else:
                     support_export.verify_report_bundle(tmp_path, name, files)
         assert failed and len(directories) == 3
+        assert ("report_export", "cleanup_failed", "report_close:OSError") in logged
         for fd in directories:
             with pytest.raises(OSError) as exc:
                 os.fstat(fd)
