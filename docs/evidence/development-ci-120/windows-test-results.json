@@ -14,34 +14,34 @@
   },
   "tests": [
     {
-      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests.log",
+      "path": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests.log",
       "sha256": "8792c4328059e3c7e96feaa2f4321d4fe18337d27a5c7f10706c0aba1276d0d6",
       "failed": 3,
       "passed": 49,
       "skipped": 1
     },
     {
-      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-final.log",
+      "path": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-final.log",
       "sha256": "c51941d57ebebd4364338a0a57dbb156b550a885e7f7090d67aebda145a53e54",
       "passed": 59,
       "skipped": 1,
       "failed": 0
     },
     {
-      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions.log",
+      "path": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions.log",
       "sha256": "24bba1c34430e28400eeb8017e26605977e9da72d07d5b7b9e338cbc4c1ed843",
       "passed": 7,
       "failed": 0
     },
     {
-      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-reviewed.log",
+      "path": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\native-tests-reviewed.log",
       "sha256": "c34b92e9628ee1b028ac5e815ae9fa2b80f58a9e00bf0e2a3bde58dba38e1cf7",
       "passed": 64,
       "skipped": 3,
       "failed": 0
     },
     {
-      "path": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions-reviewed.log",
+      "path": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\builder-regressions-reviewed.log",
       "sha256": "683327a945c860d217ef7ea9dc3fcc3c670e35b90d612e9672c908fafd0bbfa1",
       "passed": 7,
       "failed": 0
@@ -56,7 +56,7 @@
     "superseded_result": "Cancelled after Windows and Linux source success; image/KVM incomplete",
     "reviewed_source_qualification": "PENDING; observe the replacement PR gate for exact merge revision"
   },
-  "verification_environment": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z",
+  "verification_environment": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z",
   "unvalidated": [
     "Full POSIX/GTK/Orca suite and wizard previews: native Windows without installed WSL distribution",
     "Real desktop build/test/vet: pinned Go not installed",
