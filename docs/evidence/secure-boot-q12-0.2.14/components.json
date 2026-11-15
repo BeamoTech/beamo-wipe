@@ -1,0 +1,212 @@
+{
+  "schema": "beamo-wipe-secure-boot-inspection/2",
+  "inspection_date_utc": "2026-11-15",
+  "tag": "v0.2.14",
+  "tag_commit": "aecf84569b27591821295c1a4de256544c5bcbe1",
+  "release_run": 43259400038,
+  "iso": {
+    "size": 846200832,
+    "sha256": "b38514399a410090e1fc4e17a16b82036f690970ec994f6f57a7159af82c2564",
+    "matches_published_SHA256SUMS": true,
+    "volume_id": "BEAMO_WIPE"
+  },
+  "usb_gzip": {
+    "size": 956902680,
+    "sha256": "5ccad10c2a77a812f16020d6a322197403d40c1fdc4ecc428913373b938c0911",
+    "matches_published": true
+  },
+  "usb": {
+    "size": 2147483648,
+    "sha256": "10ce123e1cf1384c91110c9bf6d46956e3bca3cebd15c227fc03cc200c597d02",
+    "matches_published": true,
+    "partition": {
+      "index": 1,
+      "type": "0x0c",
+      "boot": true,
+      "start_lba512": 2048,
+      "sectors512": 4192256
+    },
+    "fat": 32
+  },
+  "eltorito_efi_image": {
+    "bytes": 5308416,
+    "sha256": "0a763df6a9ea85c06ac906d5a53318007f36e20ae470df37f094f611adb6593a",
+    "fat": 12,
+    "is_isohybrid_esp_partition": true
+  },
+  "ranged_extents_match_streamed_iso": {
+    "iso:EFI/boot/bootx64.efi": true,
+    "iso:EFI/boot/grubx64.efi": true,
+    "iso:live/vmlinuz": true,
+    "iso:live/vmlinuz-6.12.115+deb12-amd64": true,
+    "eltorito-efi": true
+  },
+  "shim_sbat": [
+    "shim,4",
+    "shim.debian,1"
+  ],
+  "shim_sbatlevel_automatic": [
+    "sbat,1,2025021800",
+    "shim,4",
+    "grub,5"
+  ],
+  "shim_sbatlevel_latest": [
+    "sbat,1,2025051000",
+    "shim,4",
+    "grub,5",
+    "grub.proxmox,2"
+  ],
+  "grub_sbat": [
+    "grub,5",
+    "grub.debian,5",
+    "grub.debian12,1"
+  ],
+  "debian_ca_der_sha256": "079646974bce09b1f04da67bd722d1fb0947ae4c4010bccdbba52d5b23cbf1a2",
+  "vendor_dbx_sha256": "45e89b4a5f8283cd8ae7c66bda8346697120c84880537aadb49a665c7d7eec0f",
+  "microsoft_uefi_ca_der_sha256": {
+    "Microsoft Corporation UEFI CA 2011": "48e99b991f57fc52f76149599bff0a58c47154229b9f8d603ac40d3500248507",
+    "Microsoft UEFI CA 2023": "f6124e34125bee3fe6d79a574eaa7b91c0e7bd9d929c1a321178efd611dad901"
+  },
+  "components": [
+    {
+      "path": "EFI/boot/bootx64.efi",
+      "role": "removable-media entry (shim)",
+      "size": 1048504,
+      "sha256": "0fc347af103ec1dfac6e3f184c0a5241a2ce756a0932b359c404d39c45423806",
+      "machine": "0x8664",
+      "authenticode_sha256": "80a66d53a945d2286fcadd780fae1c225aa732079cd67b5225dc78aaab4e2ff8",
+      "signatures": [
+        {
+          "signer": "CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+          "issuer": "CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+          "signer_validity": [
+            "2026-03-12T19:35:19+00:00",
+            "2026-06-26T19:35:19+00:00"
+          ],
+          "signer_der_sha256": "9bb5d35801594fa0101e044fcc54c364d6e268daa0a07d9951f9eae5da7b6e79",
+          "embedded_chain": [
+            "CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+            "CN=Microsoft Corporation UEFI CA 2011,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US"
+          ],
+          "pe_digest_matches_signed_digest": true,
+          "message_digest_matches": true,
+          "signature_verifies_with_signer_key": true
+        },
+        {
+          "signer": "CN=Microsoft UEFI CA 2023 signer,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+          "issuer": "CN=Microsoft UEFI CA 2023,O=Microsoft Corporation,C=US",
+          "signer_validity": [
+            "2025-07-24T18:22:43+00:00",
+            "2026-07-23T18:22:43+00:00"
+          ],
+          "signer_der_sha256": "a538829c015ee28bf0c9a4ed9d2bb346e245c6bbab85724bad1a3265228ac271",
+          "embedded_chain": [
+            "CN=Microsoft UEFI CA 2023 signer,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+            "CN=Microsoft UEFI CA 2023,O=Microsoft Corporation,C=US"
+          ],
+          "pe_digest_matches_signed_digest": true,
+          "message_digest_matches": true,
+          "signature_verifies_with_signer_key": true
+        }
+      ],
+      "leaf_directly_issued_by": [
+        [
+          "Microsoft Corporation UEFI CA 2011"
+        ],
+        [
+          "Microsoft UEFI CA 2023"
+        ]
+      ],
+      "sbat": [
+        "sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md",
+        "shim,4,UEFI shim,shim,1,https://github.com/rhboot/shim",
+        "shim.debian,1,Debian,shim,16.1,https://tracker.debian.org/pkg/shim"
+      ],
+      "eltorito_identical": true,
+      "usb_identical": true
+    },
+    {
+      "path": "EFI/boot/grubx64.efi",
+      "role": "second stage (GRUB, loaded by shim)",
+      "size": 3835328,
+      "sha256": "f0cf6c345219815d6cd51e42736074e0fe466dfe57b86d6469afeddb16fec1eb",
+      "machine": "0x8664",
+      "authenticode_sha256": "dca841985136f0533ecd18b589ddf75503660b499c2dcd77b7c7efa7bc5d6a02",
+      "signatures": [
+        {
+          "signer": "CN=Debian Secure Boot Signer 2022 - grub2",
+          "issuer": "CN=Debian Secure Boot CA",
+          "signer_validity": [
+            "2022-08-18T17:32:34+00:00",
+            "2032-08-15T17:32:34+00:00"
+          ],
+          "signer_der_sha256": "71024100bf7718749440e65f9360f8df6f9a28d0842d3a493dfcbfcbc478991d",
+          "embedded_chain": [
+            "CN=Debian Secure Boot Signer 2022 - grub2"
+          ],
+          "pe_digest_matches_signed_digest": true,
+          "message_digest_matches": true,
+          "signature_verifies_with_signer_key": true
+        }
+      ],
+      "leaf_directly_issued_by": [
+        [
+          "Debian Secure Boot CA (shim .vendor_cert)"
+        ]
+      ],
+      "sbat": [
+        "sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md",
+        "grub,5,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/",
+        "grub.debian,5,Debian,grub2,2.06-13+deb12u2,https://tracker.debian.org/pkg/grub2",
+        "grub.debian12,1,Debian,grub2,2.06-13+deb12u2,https://tracker.debian.org/pkg/grub2"
+      ],
+      "eltorito_identical": true,
+      "usb_identical": true
+    },
+    {
+      "path": "live/vmlinuz-6.12.115+deb12-amd64",
+      "role": "kernel selected by all three UEFI GRUB entries",
+      "size": 12081088,
+      "sha256": "02f73dc8e02097bc04daa86a651141f6e0fc75c5504af17854c7637944b2be12",
+      "machine": "0x8664",
+      "authenticode_sha256": "419aa641b541a3cdf4eed3514dbdc087e8aca32f4b7506bcb6d942c21ea0f773",
+      "signatures": [
+        {
+          "signer": "CN=Debian Secure Boot Signer 2022 - linux",
+          "issuer": "CN=Debian Secure Boot CA",
+          "signer_validity": [
+            "2022-08-18T17:32:37+00:00",
+            "2032-08-15T17:32:37+00:00"
+          ],
+          "signer_der_sha256": "65378fdbd50b85960563bac3923b4cf6e43f60b7c969c1527ce2ca34f82f2dc5",
+          "embedded_chain": [
+            "CN=Debian Secure Boot Signer 2022 - linux"
+          ],
+          "pe_digest_matches_signed_digest": true,
+          "message_digest_matches": true,
+          "signature_verifies_with_signer_key": true
+        }
+      ],
+      "leaf_directly_issued_by": [
+        [
+          "Debian Secure Boot CA (shim .vendor_cert)"
+        ]
+      ],
+      "sbat": null,
+      "eltorito_identical": null,
+      "usb_identical": true
+    }
+  ],
+  "iso_efi_boot_listing": [
+    "bootia32.efi",
+    "bootx64.efi",
+    "grubx64.efi"
+  ],
+  "iso_live_kernels": [
+    "vmlinuz",
+    "vmlinuz-6.12.115+deb12-amd64"
+  ],
+  "grub_cfg_sha256": "efb5878b97ff7bf226bb696b2b5b830e944b69cad78e08e6c43bb9790ec1b8c5",
+  "physical_status": "NOT TESTED",
+  "signature_scope": "Authenticode PE digests, signed-attribute message digests and RSA signatures verified with each embedded signer key; each signer certificate verified as directly issued by the Microsoft UEFI CA 2011/2023 certificates fetched from Microsoft PKI or by the Debian Secure Boot CA embedded in this shim. No firmware db/dbx, MOK or active SBAT policy was inspected; no timestamp/CRL checks; no firmware state changed."
+}

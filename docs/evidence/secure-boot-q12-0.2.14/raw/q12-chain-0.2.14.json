@@ -1,0 +1,80 @@
+{
+  "shim_sections": [
+    ".eh_frame",
+    ".text",
+    ".reloc",
+    ".data.ident",
+    ".sbatlevel",
+    ".data",
+    ".vendor_cert",
+    ".dynamic",
+    ".rela",
+    ".sbat"
+  ],
+  "shim_sbat": [
+    "sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md",
+    "shim,4,UEFI shim,shim,1,https://github.com/rhboot/shim",
+    "shim.debian,1,Debian,shim,16.1,https://tracker.debian.org/pkg/shim"
+  ],
+  "shim_sbatlevel": [
+    [
+      "sbat,1,2025021800",
+      "shim,4",
+      "grub,5"
+    ],
+    [
+      "sbat,1,2025051000",
+      "shim,4",
+      "grub,5",
+      "grub.proxmox,2"
+    ]
+  ],
+  "shim_vendor_cert": {
+    "authorized_der_sha256": "079646974bce09b1f04da67bd722d1fb0947ae4c4010bccdbba52d5b23cbf1a2",
+    "vendor_dbx_sha256": "45e89b4a5f8283cd8ae7c66bda8346697120c84880537aadb49a665c7d7eec0f",
+    "vendor_dbx_size": 8664,
+    "authorized_subject": "CN=Debian Secure Boot CA",
+    "authorized_issuer": "CN=Debian Secure Boot CA"
+  },
+  "debian_ca": {
+    "subject": "CN=Debian Secure Boot CA",
+    "not_before": "2016-08-16T18:09:18+00:00",
+    "not_after": "2046-08-09T18:09:18+00:00"
+  },
+  "anchor_der_sha256": {
+    "Microsoft Corporation UEFI CA 2011": "48e99b991f57fc52f76149599bff0a58c47154229b9f8d603ac40d3500248507",
+    "Microsoft UEFI CA 2023": "f6124e34125bee3fe6d79a574eaa7b91c0e7bd9d929c1a321178efd611dad901"
+  },
+  "leaf_issuance": {
+    "EFI_boot_bootx64.efi": [
+      {
+        "leaf": "CN=Microsoft Windows UEFI Driver Publisher,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+        "leaf_directly_issued_by": [
+          "Microsoft Corporation UEFI CA 2011"
+        ]
+      },
+      {
+        "leaf": "CN=Microsoft UEFI CA 2023 signer,O=Microsoft Corporation,L=Redmond,ST=Washington,C=US",
+        "leaf_directly_issued_by": [
+          "Microsoft UEFI CA 2023"
+        ]
+      }
+    ],
+    "EFI_boot_grubx64.efi": [
+      {
+        "leaf": "CN=Debian Secure Boot Signer 2022 - grub2",
+        "leaf_directly_issued_by": [
+          "Debian Secure Boot CA (shim .vendor_cert)"
+        ]
+      }
+    ],
+    "live_vmlinuz-6.12.115+deb12-amd64": [
+      {
+        "leaf": "CN=Debian Secure Boot Signer 2022 - linux",
+        "leaf_directly_issued_by": [
+          "Debian Secure Boot CA (shim .vendor_cert)"
+        ]
+      }
+    ]
+  }
+}
