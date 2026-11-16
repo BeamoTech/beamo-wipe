@@ -1048,7 +1048,7 @@ STRINGS = {
         "CHANGED_TERMINAL": "Abschlussstatus geändert",
         "EVIDENCE_NOT_SAVING": "Der Berichtsnachweis wird nicht gespeichert. {error} Das Löschen läuft noch.",
         "EVIDENCE_SAVING": "Berichtsnachweis wird gespeichert… Das Löschergebnis ist unverändert.",
-        "RETRY_SAVE_REMAINING": " Speichern erneut versuchen ({remaining} Versuche übrig).",
+        "RETRY_SAVE_REMAINING": " Speichern erneut versuchen (verbleibende Versuche: {remaining}).",
         "KEEP_SESSION_OPEN": " Lassen Sie diese Sitzung offen und wenden Sie sich an den Support.",
         "TEMP_EVIDENCE_LOST": " Temporäre Nachweise gehen bei Herunterfahren oder Stromausfall verloren.",
         "NO_EXPORT_EVIDENCE": "Kein aktueller geprüfter Nachweis zum Exportieren",

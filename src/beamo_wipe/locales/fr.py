@@ -420,7 +420,7 @@ STRINGS = {
         "CON_PANEL_RETRY": "E : réessayer l’enregistrement",
         "CON_PLAIN_RECHECK": "Branchez la clé USB, puis appuyez sur Enter pour vérifier à nouveau.",
         "CON_DONE_SHUTDOWN": "Enter : éteindre",
-        "CON_DONE_READ": "Up/Down, PgUp/PgDn : lire les consignes après effacement.",
+        "CON_DONE_READ": "Up/Down, PgUp/PgDn : lire les étapes suivantes.",
         "CON_DONE_ANOTHER": "{action}    A : effacer un autre disque",
         "CON_BACK": "Esc : retour",
         "CON_REFRESH_HINT_CONFIRM": "Tapez CHECK DISKS AGAIN pour continuer. Tapez BACK pour garder vos réponses.",

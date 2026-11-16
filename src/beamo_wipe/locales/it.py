@@ -612,7 +612,7 @@ STRINGS = {
         "INTRO": "Solo a titolo informativo. Questi dispositivi non possono essere selezionati per la cancellazione.",
         "NESTED_INTRO": "Su questo disco (non cancellabili separatamente):",
         "REASON_UNSUPPORTED": "dispositivo non supportato",
-        "REASON_PROTECTED": "protetto (avvio o sistema)",
+        "REASON_PROTECTED": "protetto: avvio o sistema",
         "REASON_MOUNTED": "montato o in uso",
         "REASON_READ_ONLY": "sola lettura",
         "REASON_CAPACITY_UNKNOWN": "impossibile confermare la capacità",
