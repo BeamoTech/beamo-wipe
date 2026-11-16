@@ -715,16 +715,22 @@ def test_orca_announces_every_result(tmp_path, request):
                 timeout=300,
             )
         except subprocess.TimeoutExpired as exc:
-            out = (exc.stdout or "") + (exc.stderr or "")
+            # TimeoutExpired can carry bytes even when run(text=True).
+            out = "".join(
+                chunk.decode("utf-8", "replace") if isinstance(chunk, bytes) else chunk or ""
+                for chunk in (exc.stdout, exc.stderr)
+            )
             pytest.fail(
                 "Orca child exceeded 300s on private Xvfb/XDG_RUNTIME_DIR: "
                 + out[-4000:]
             )
         finally:
-            if xvfb is not None:
-                _stop_private_xvfb(xvfb)
-            if runtime is not None:
-                runtime.cleanup()
+            try:
+                if xvfb is not None:
+                    _stop_private_xvfb(xvfb)
+            finally:
+                if runtime is not None:
+                    runtime.cleanup()
         assert result.returncode == 0, result.stdout + result.stderr
         assert "warning" not in result.stdout.lower(), result.stdout
         return
@@ -732,17 +738,13 @@ def test_orca_announces_every_result(tmp_path, request):
     orca_executable = shutil.which("orca")
     assert orca_executable, "The supported Linux image requires Orca"
     assert os.environ.get("DBUS_SESSION_BUS_ADDRESS"), "Use dbus-run-session"
-    audio = subprocess.Popen(
-        ["pulseaudio", "--daemonize=no", "--exit-idle-time=30"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    audio = None
     logfile = tmp_path / "orca.log"
-    reader = subprocess.Popen(
-        [
-            sys.executable,
-            "-c",
-            """import runpy, sys
+    reader = None
+    reader_argv = [
+        sys.executable,
+        "-c",
+        """import runpy, sys
 entry = runpy.run_path(sys.argv[2], run_name='orca_entry')
 from orca import debug
 # Line buffering changes only diagnostic delivery, not Orca speech generation.
@@ -752,12 +754,9 @@ debug.eventDebugLevel = debug.LEVEL_OFF
 sys.argv = ['orca']
 sys.exit(entry['main']())
 """,
-            str(logfile),
-            orca_executable,
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+        str(logfile),
+        orca_executable,
+    ]
 
     app_box = []
 
@@ -873,6 +872,15 @@ sys.exit(entry['main']())
         pytest.fail(f"Orca did not announce {phrase!r}: {content[-3000:]}")
 
     try:
+        audio = subprocess.Popen(
+            ["pulseaudio", "--daemonize=no", "--exit-idle-time=30"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        # A failed reader start still owns the audio process above.
+        reader = subprocess.Popen(
+            reader_argv, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
         wait_for("Screen reader on")
         first, _, _ = case_evidence(CASES[0])
         checkpoint = log_size()
@@ -934,15 +942,19 @@ sys.exit(entry['main']())
         assert wizard.selected is None and not wizard.runner.started
         app.close()
     finally:
-        reader.terminate()
         try:
-            reader.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            reader.kill()
-            reader.wait(timeout=5)
-        if audio.poll() is None:
-            audio.terminate()
-            audio.wait(timeout=5)
+            if reader is not None:
+                reader.terminate()
+                try:
+                    reader.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    reader.kill()
+                    reader.wait(timeout=5)
+        finally:
+            # Reader termination/wait errors must not skip independent cleanup.
+            if audio is not None and audio.poll() is None:
+                audio.terminate()
+                audio.wait(timeout=5)
 
 
 @pytest.mark.parametrize("live", [False, True])
@@ -1759,6 +1771,65 @@ def test_sound_check_dialog_plays_test_and_switches_output(ui, monkeypatch):
     dialog.destroy()
     drain()
     assert _sound_dialog() == []
+
+
+def test_sound_check_keeps_open_disk_comparison(ui, monkeypatch):
+    from beamo_wipe import inventory
+
+    _canned_sound(monkeypatch, [])
+    wizard = make_demo_wizard()
+    wizard.screen = Screen.PICK
+    assert len(wizard.selectable) > 1
+    app = ui(wizard)
+
+    def comparison():
+        found = [
+            widget for widget in widgets(app.window)
+            if isinstance(widget, Gtk.Expander)
+            and widget.get_label() == inventory.COMPARE_TITLE
+        ]
+        assert len(found) == 1
+        return found[0]
+
+    comparison().set_expanded(True)
+    drain()
+    assert comparison().get_expanded()
+    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+    wait_sound(app)
+    app._sound_dialog.close()
+    drain()
+    assert comparison().get_expanded()
+    assert wizard.screen == Screen.PICK
+    assert not wizard.runner.started
+
+
+def test_sound_check_updates_review_without_replacing_it(ui, monkeypatch):
+    from test_accessible_sound_review_pass15_ui import _review
+
+    _canned_sound(monkeypatch, [])
+    wizard, clock = _review()
+    app = ui(wizard)
+    clock.value = 5.0
+    app.update_status()
+    assert wizard.erase_enabled and app.actions[C.BTN_ERASE].get_sensitive()
+    app.actions[C.SOUND_CHECK_BUTTON].clicked()
+    assert not wizard.erase_enabled
+    assert not app.actions[C.BTN_ERASE].get_sensitive()
+    wait_sound(app)
+    clock.value = 12.0
+    app.tick()
+    assert not wizard.erase_enabled
+    app._sound_dialog.close()
+    drain()
+    assert wizard.countdown_left == 5.0
+    clock.value = 16.99
+    app.tick()
+    assert not app.actions[C.BTN_ERASE].get_sensitive()
+    clock.value = 17.0
+    app.tick()
+    assert wizard.erase_enabled and app.actions[C.BTN_ERASE].get_sensitive()
+    assert wizard.screen == Screen.LAST_CHANCE
+    assert not wizard.runner.started
 
 
 def test_sound_check_dialog_reports_no_audio_and_orca_failure(ui, monkeypatch):

@@ -169,15 +169,6 @@ def canonical_digest(obj: Any) -> str:
     return hashlib.sha256(canonical_bytes(obj)).hexdigest()
 
 
-def _require_nonempty(mapping: Mapping[str, Any], key: str, *, what: str) -> Any:
-    value = mapping.get(key)
-    if value is None or (isinstance(value, str) and not value.strip()):
-        raise RuntimeError(f"{what} is missing required field {key!r}")
-    if isinstance(value, (list, dict)) and len(value) == 0:
-        raise RuntimeError(f"{what} is missing required field {key!r}")
-    return value
-
-
 def _check_no_secrets(blob: str, *, what: str) -> None:
     for pattern in SECRET_RES:
         if pattern.search(blob):

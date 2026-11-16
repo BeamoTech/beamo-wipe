@@ -2,7 +2,6 @@
 
 import hashlib
 import os
-from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -19,25 +18,30 @@ def test_qemu_hash_does_not_follow_replaced_directory(tmp_path, monkeypatch):
     outside.mkdir()
     (outside / "summary.txt").write_bytes(b"unrelated private data\n")
 
-    original_iterdir = Path.iterdir
+    original_listdir = ci_evidence.os.listdir
+    swaps = 0
 
-    def swap_after_directory_check(path):
-        if path == evidence:
+    def swap_after_directory_check(directory_fd):
+        nonlocal swaps
+        if swaps == 0 and isinstance(directory_fd, int):
             evidence.rename(tmp_path / "original-evidence")
             evidence.symlink_to(outside, target_is_directory=True)
-        return original_iterdir(path)
+            swaps += 1
+        return original_listdir(directory_fd)
 
-    monkeypatch.setattr(Path, "iterdir", swap_after_directory_check)
+    monkeypatch.setattr(ci_evidence.os, "listdir", swap_after_directory_check)
     private_digest = hashlib.sha256(b"unrelated private data\n").hexdigest()
     try:
         try:
             hashes = qemu_evidence_hashes(evidence)
         except RuntimeError:
-            return
-        assert hashes["summary.txt"] != private_digest
+            pass
+        else:
+            assert hashes["summary.txt"] != private_digest
     finally:
         if evidence.is_symlink():
             evidence.unlink()
+    assert swaps == 1
 
 
 @pytest.mark.parametrize("change", ["in_place", "replace_name"])
@@ -70,6 +74,9 @@ def test_qemu_hash_rejects_file_changed_during_read(tmp_path, monkeypatch, chang
         def hexdigest(self):
             return self.inner.hexdigest()
 
+        def digest(self):
+            return self.inner.digest()
+
     monkeypatch.setattr(ci_evidence.hashlib, "sha256", MutatingHash)
     if change == "in_place":
         # Overlay filesystems can report the same timestamp for a rapid
@@ -82,6 +89,8 @@ def test_qemu_hash_rejects_file_changed_during_read(tmp_path, monkeypatch, chang
                 return info
             return SimpleNamespace(
                 st_mode=info.st_mode,
+                st_uid=info.st_uid,
+                st_nlink=info.st_nlink,
                 st_dev=info.st_dev,
                 st_ino=info.st_ino,
                 st_size=info.st_size,
