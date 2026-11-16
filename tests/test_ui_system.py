@@ -219,7 +219,10 @@ def test_gallery_and_tk_share_plain_titles_and_more_detail():
     assert "BTN_MORE" in source
     assert "SECURE_BOOT_HINT" in source
     assert "SPLASH_META" not in source
-    assert "kind_label" in inspect.getsource(tkui)
+    # The plain disk-kind chip reaches Tk through the shared identity view.
+    from beamo_wipe import identity
+    assert "kind_label(disk.kind)" in inspect.getsource(identity)
+    assert "view.kind_chip" in inspect.getsource(tkui)
 
 
 def test_gallery_step_order_matches_tk():

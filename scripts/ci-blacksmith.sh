@@ -46,6 +46,7 @@ phase() {
     -e PIP_CACHE_DIR="$ROOT/.ci-cache/pip/$gate" \
     -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0="$ROOT" \
     "$IMAGE" bash -ceu '
+      set -o pipefail
       mounted_root="$1"
       private_sources="$2"
       gate="$3"
@@ -60,12 +61,8 @@ phase() {
         code=0
         bash scripts/ci-hosted.sh "$gate" || code=$?
         if [[ -d "$private_root/dist/evidence" ]]; then
-          mkdir -p "$mounted_root/dist/evidence"
-          for artifact in "$private_root/dist/evidence/$gate".*; do
-            if [[ -f "$artifact" ]]; then
-              cp "$artifact" "$mounted_root/dist/evidence/"
-            fi
-          done
+          python3 scripts/handoff_ci_outputs.py receipts \
+            "$private_root/dist/evidence" "$mounted_root/dist/evidence" "$gate"
         fi
         if [[ "$gate" == desktop-launchers && "$code" -eq 0 ]]; then
           if [[ -L "$private_root/dist/desktop" || ! -d "$private_root/dist/desktop" ]]; then
@@ -75,9 +72,8 @@ phase() {
             # The ISO must embed the exact launcher pair that passed the Go
             # race/vet/fuzz and cross-build gate in this private source tree.
             # build-iso.sh verifies its signed inventory before staging it.
-            rm -rf -- "$mounted_root/dist/desktop"
-            mkdir -p "$mounted_root/dist"
-            cp -a -- "$private_root/dist/desktop" "$mounted_root/dist/desktop"
+            python3 scripts/handoff_ci_outputs.py desktop \
+              "$private_root/dist/desktop" "$mounted_root/dist/desktop" "$gate"
           fi
         fi
         exit "$code"

@@ -111,7 +111,9 @@ def test_verifier_refuses_artifact_changed_during_bounded_read(
             changed = True
             _mutation(target, kind, target_bytes, target_metadata)
 
-    if host == "posix":
+    if host == "nt":
+        monkeypatch.setattr(builder, "os", WindowsOSProxy())
+    if builder.os.name == "posix":
         real_fdopen = builder.os.fdopen
 
         def fdopen(fd, mode="r", *args, **kwargs):
@@ -123,7 +125,6 @@ def test_verifier_refuses_artifact_changed_during_bounded_read(
 
         monkeypatch.setattr(builder.os, "fdopen", fdopen)
     else:
-        monkeypatch.setattr(builder, "os", WindowsOSProxy())
         real_open = Path.open
 
         def path_open(path, mode="r", *args, **kwargs):

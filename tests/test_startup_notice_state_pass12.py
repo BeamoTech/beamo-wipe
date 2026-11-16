@@ -61,7 +61,9 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
     lang.set_language(language)
     now = [0.0]
     release, finished = threading.Event(), threading.Event()
-    frames, windows, rescue_fired, markers = [], [], [], []
+    frames, windows, rescue_fired, markers, runs = [], [], [], [], []
+    idle_sources = set()
+    rescue_timer = None
     real_run = startup_stages.StartupRun
     frame = [0]
     monkeypatch.setattr(startup_stages, "_emit", markers.append)
@@ -73,9 +75,7 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
         monkeypatch.setattr(target, forbidden)
 
     def root():
-        if surface == "tk":
-            return windows[0]
-        return next(window for window in Gtk.Window.list_toplevels() if window.get_title() == C.STARTING_TITLE and window.get_mapped())
+        return windows[0]
 
     def widgets(widget):
         yield widget
@@ -94,10 +94,34 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
         return False
 
     def after(callback):
-        return root().after_idle(callback) if surface == "tk" else GLib.idle_add(callback)
+        if surface == "tk":
+            return root().after_idle(callback)
+
+        def dispatch():
+            idle_sources.discard(source)
+            return callback()
+
+        source = GLib.idle_add(dispatch)
+        idle_sources.add(source)
+        return source
+
+    def inspect(index):
+        if surface == "gtk":
+            assert root().get_mapped(), "startup window is not mapped"
+        text = [widget.get_text() if isinstance(widget, Gtk.Label) else widget.cget("text") for widget in widgets(root()) if isinstance(widget, (Gtk.Label, tk_wizard.tk.Label))]
+        frames.append(C.STARTUP_STILL_WORKING in text)
+        if index == 2:
+            now[0] = 12
+            runs[0].report(startup_stages.STAGE_BOOT_USB)
+        elif index == 3:
+            now[0] = 23
+        elif index == 5:
+            after(close)
+        return False
 
     def fake_run(build, **_kwargs):
         run = real_run(build, clock=lambda: now[0], stall_after_s=10)
+        runs.append(run)
         original = run.stalled_note
 
         def note(**kwargs):
@@ -107,19 +131,8 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
                 now[0] = 11
             value = original(**kwargs)
 
-            def inspect():
-                text = [widget.get_text() if isinstance(widget, Gtk.Label) else widget.cget("text") for widget in widgets(root()) if isinstance(widget, (Gtk.Label, tk_wizard.tk.Label))]
-                frames.append(C.STARTUP_STILL_WORKING in text)
-                if index == 2:
-                    now[0] = 12
-                    run.report(startup_stages.STAGE_BOOT_USB)
-                elif index == 3:
-                    now[0] = 23
-                elif index == 5:
-                    after(close)
-                return False
-
-            after(inspect)
+            if surface == "tk":
+                after(lambda: inspect(index))
             return value
 
         run.stalled_note = note
@@ -150,6 +163,31 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
         monkeypatch.setattr(tk_wizard, "_ensure_tk_display", lambda: None)
         presenter = tk_wizard.run_tk_startup
     else:
+        real_window_init = Gtk.Window.__init__
+        real_timeout_add = GLib.timeout_add
+
+        def window_init(window, *args, **kwargs):
+            real_window_init(window, *args, **kwargs)
+            windows.append(window)
+
+        def observe_poll(interval, callback, *args, **kwargs):
+            if interval == 100 and callback.__name__ == "poll":
+                # The initial render has completed. Read its actual widgets
+                # before a due poll can replace them; do the same after each
+                # subsequent render, without changing GLib source priorities.
+                assert frame[0] == 1
+                inspect(0)
+
+                def observed_poll(*callback_args):
+                    result = callback(*callback_args)
+                    inspect(frame[0] - 1)
+                    return result
+
+                return real_timeout_add(interval, observed_poll, *args, **kwargs)
+            return real_timeout_add(interval, callback, *args, **kwargs)
+
+        monkeypatch.setattr(Gtk.Window, "__init__", window_init)
+        monkeypatch.setattr(GLib, "timeout_add", observe_poll)
         monkeypatch.setattr(accessible_wizard, "_ensure_gtk_display", lambda: None)
         rescue_timer = GLib.timeout_add(3000, rescue)
         presenter = accessible_wizard.run_accessible_startup
@@ -157,10 +195,20 @@ def test_graphical_startup_keeps_stall_text_until_the_stage_changes(monkeypatch,
         outcome = presenter(build)
         assert outcome == ("abandoned", None)
         assert not rescue_fired
-        assert frames == [False, True, True, False, True, True]
-        assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2
+        assert frames == [False, True, True, False, True, True], "startup frame history"
+        assert markers.count(startup_stages.STAGE_STALLED_MARKER) == 2, "startup stall marker count"
     finally:
         release.set()
-        assert finished.wait(timeout=1)
-        if surface == "gtk" and not rescue_fired:
-            GLib.source_remove(rescue_timer)
+        try:
+            # A build-finally event precedes publication of its outcome. Join
+            # the exact owned worker within the original cleanup budget.
+            if runs and runs[0].thread.ident is not None:
+                runs[0].thread.join(timeout=1)
+                assert not runs[0].thread.is_alive()
+                assert finished.is_set()
+        finally:
+            if surface == "gtk":
+                for source in idle_sources | ({rescue_timer} if rescue_timer is not None else set()):
+                    pending = GLib.MainContext.default().find_source_by_id(source)
+                    if pending is not None:
+                        pending.destroy()

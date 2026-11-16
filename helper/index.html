@@ -580,7 +580,7 @@
       <p>If this computer has a battery, plug it into wall power before you erase. Keep the lid open. A power cut stops the erase. The screen may go dark; press a key or move the mouse to bring it back. That is the display, not sleep.</p>
       <p id="photo-record">No report USB? After the erase, the result screen shows a code. Photograph it with your phone to keep a short summary of the result, the disk and its serial number. It is a summary, not a certificate.</p>
       <p>If you want a report afterwards, you need a separate FAT32 or exFAT USB stick with one volume (any size). Keep it unplugged until the result screen asks for it. A USB that is already plugged in cannot be used for the report.</p>
-      <p>The Beamo USB asks Linux to ignore lid closure and a short power-button press, and disables sleep. Firmware or a held power button can still stop the erase. Use Stop erase and wait for the result before shutting down. A power cut can leave the disk partly erased and lose unsaved reports; an interrupted erase does not resume automatically.</p>
+      <p>The Beamo USB asks Linux to ignore lid closure and a short power-button press, and disables sleep. Firmware or a held power button can still stop the erase. Use Stop erase and wait for the result before shutting down. A power cut can leave the disk partly erased and lose unsaved reports. An interrupted erase does not resume automatically. Start it again from the beginning.</p>
       <p>This page cannot read battery or wall-power status. The live wizard shows reported readings when available; unknown readings are not proof that power is connected or will last.</p>
       <p>For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. <strong>Not Apple Silicon Macs. Not Chromebooks.</strong> Some Intel Macs may show this USB; many will not.</p>
       <p class="small">Source: <a href="https://github.com/BeamoTech/beamo-wipe">github.com/BeamoTech/beamo-wipe</a></p>
@@ -618,7 +618,7 @@
         <li>Leave the Beamo USB and the erased disk plugged in while Beamo Wipe runs.</li>
         <li>The Beamo USB is safe to remove only after the computer is fully off. Removing it earlier ends the session immediately.</li>
         <li>If you restart instead of shutting down, leave the Beamo USB plugged in to come back to Beamo Wipe. Anything unsaved is still lost.</li>
-        <li>If more than one USB is plugged in, or anything was unplugged and plugged back in, do not guess which is which. Shut down first, then sort the USB sticks while the computer is off.</li>
+        <li>Is more than one USB plugged in? Was anything unplugged and plugged back in? Then do not guess which is which. Shut down first, then sort the USB sticks while the computer is off.</li>
       </ol>
     </div>
     <div class="card" id="beamo-support">

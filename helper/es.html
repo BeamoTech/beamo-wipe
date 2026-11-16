@@ -463,19 +463,19 @@
         </ol>
         <details>
           <summary>Detalle técnico</summary>
-          <p>El lanzador solo comprueba la memoria USB original, si se puede leer la configuración de inicio y si existe una vía de reinicio compatible. Esas comprobaciones no aseguran que la memoria USB vaya a arrancar. Para seguir los pasos de arranque basta con abrir esta página en un navegador desde la memoria USB. Después del arranque, la recuperación no puede identificar discos ni confirmar el resultado de un borrado.</p>
+          <p>El lanzador solo comprueba la memoria USB Beamo, si se puede leer la configuración de inicio y si existe una vía de reinicio compatible. Esas comprobaciones no aseguran que la memoria USB vaya a arrancar. Para seguir los pasos de arranque basta con abrir esta página en un navegador desde la memoria USB. Después del arranque, la recuperación no puede identificar discos ni confirmar el resultado de un borrado.</p>
         </details>
         <p><a class="back" href="#guide">Volver a los problemas</a></p>
       </article>
     </div>
     <div class="card">
       <h2>Cuando esta memoria USB se inicie</h2>
-      <p>Elija un disco → Confirme su identidad → Revise y borre. No se borra nada hasta que usted confirme.</p>
+      <p>Preparación (6 pasos) → Borrado → Resultado. No se borra nada hasta que elija Borrar ahora.</p>
     </div>
     <div class="card">
       <h2>Iniciar desde su escritorio</h2>
-      <p>En Windows, abra <strong>Start Beamo Wipe.exe</strong> en esta memoria USB. En un escritorio Linux compatible, abra <strong>Start Beamo Wipe Linux</strong>. El lanzador muestra comprobaciones separadas de la memoria USB original, de si se puede leer la configuración de inicio y de si hay disponible una vía de reinicio compatible. Cada comprobación explica qué hacer a continuación; Detalles técnicos muestra las pruebas.</p>
-      <p>Una comprobación no verificada no es un resultado correcto. En Windows, guarde su trabajo y utilice Reiniciar; luego elija esta memoria USB en el menú de arranque. En Windows 10 y 11, el lanzador también puede ofrecer <strong>Restart to boot options</strong> (reiniciar en las opciones de arranque): Windows se reinicia en sus opciones de arranque y después elija <strong>Usar un dispositivo</strong> y esta memoria USB (puede aparecer como <strong>EFI USB Device</strong>). En escritorios Linux compatibles, se puede ofrecer un reinicio guiado cuando sus comprobaciones son correctas; es posible que se necesite permiso de administrador. Estas comprobaciones no aseguran que la memoria USB vaya a arrancar.</p>
+      <p>En Windows, abra <strong>Start Beamo Wipe.exe</strong> en esta memoria USB. En un escritorio Linux compatible, abra <strong>Start Beamo Wipe Linux</strong>. El lanzador muestra comprobaciones separadas de la memoria USB Beamo, de si se puede leer la configuración de inicio y de si hay disponible una vía de reinicio compatible. Cada comprobación explica qué hacer a continuación; Detalles técnicos muestra las pruebas.</p>
+      <p>Una comprobación no verificada no es un resultado correcto. En Windows, guarde su trabajo y utilice Reiniciar; luego elija esta memoria USB en el menú de arranque. En Windows 10 y 11, el lanzador también puede ofrecer <strong>Restart to boot options</strong> (reiniciar en las opciones de arranque): Windows se reinicia en sus opciones de arranque y después usted elige <strong>Usar un dispositivo</strong> y esta memoria USB (puede aparecer como <strong>EFI USB Device</strong>). En escritorios Linux compatibles, se puede ofrecer un reinicio guiado cuando sus comprobaciones son correctas; es posible que se necesite permiso de administrador. Estas comprobaciones no aseguran que la memoria USB vaya a arrancar.</p>
       <p>Abrir la aplicación requiere una acción suya; conectar la memoria USB no la ejecuta automáticamente. Pueden aparecer avisos de permisos o de confianza en la aplicación. La configuración del escritorio y del montaje de Linux puede impedir la ejecución directa.</p>
       <p>El lanzador no borra nada. El borrado se realiza después de reiniciar desde esta memoria USB, donde usted elige y confirma el disco. También puede seguir las instrucciones de arranque de abajo sin abrir ninguna aplicación.</p>
     </div>
@@ -486,7 +486,7 @@
       <table>
         <caption>Solo ejemplos. Su PC puede usar otra tecla.</caption>
         <thead>
-          <tr><th scope="col">PC</th><th scope="col">Tecla habitual</th></tr>
+          <tr><th scope="col">Marca</th><th scope="col">Tecla habitual</th></tr>
         </thead>
         <tbody>
           <!-- boot-keys:table -->
@@ -507,7 +507,7 @@
       <h2>Si es posible que vuelva a usar esta instalación de Windows</h2>
       <p>Confirme que puede acceder a la clave de recuperación de BitLocker de este PC <strong>antes</strong> de cambiar el firmware, el orden de arranque, Secure Boot o la configuración del TPM. Esos cambios pueden hacer que Windows pida la clave de recuperación de 48 dígitos la próxima vez que se inicie.</p>
       <p>El soporte técnico de Microsoft no puede recuperar, proporcionar ni volver a crear una clave perdida. La clave puede estar guardada en una cuenta Microsoft en otro dispositivo, en manos del departamento de TI de su trabajo o centro educativo, impresa o guardada en una memoria USB que guardó cuando se activó el cifrado.</p>
-      <p>Esta ayuda no desactiva BitLocker, no extrae claves ni recomienda cambiar Secure Boot. Si todavía necesitará este Windows más adelante y no encuentra la clave, no cambie el firmware. Utilice en su lugar los pasos de Windows de abajo, otro puerto USB o las instrucciones de inicio del fabricante.</p>
+      <p>Esta ayuda no desactiva BitLocker, no extrae claves ni recomienda cambiar Secure Boot. Si más adelante va a necesitar este Windows y no encuentra la clave, no cambie el firmware. Utilice en su lugar los pasos de Windows de abajo, otro puerto USB o las instrucciones de inicio del fabricante.</p>
     </div>
 
     <div class="card" id="screen-reader">
@@ -570,7 +570,7 @@
         <li><strong>Qué significa para su disco</strong> — si se borró algo y qué no debe suponer.</li>
         <li><strong>Qué hacer ahora</strong> — pasos seguros. No eluda la protección. Si tiene dudas, mantenga los discos conectados.</li>
       </ol>
-      <p>Los <strong>Detalles técnicos</strong> (códigos de resultado, marcadores de exportación, registros) están disponibles si los pide. No sustituyen a las tres secciones. El menú de recuperación de la memoria USB live tras fallos repetidos de inicio es aparte: su opción Technical details and logs no es esta presentación del asistente.</p>
+      <p>Los <strong>Detalles técnicos</strong> (códigos de resultado, marcadores de exportación, registros) están disponibles si los pide. No sustituyen a las tres secciones. El menú de recuperación de la memoria USB Beamo tras fallos repetidos de inicio es aparte: su opción Technical details and logs no es esta presentación del asistente.</p>
     </div>
 
     <div class="card">
@@ -578,9 +578,9 @@
       <p>Beamo Wipe borra todo lo que contiene el disco que elija, incluido Windows o Linux si lo tiene. No podrá recuperarlo. Asegúrese de tener copias de todo lo que quiera conservar.</p>
       <p>Solo se borra el disco que usted confirma. Los demás discos no. Volver a instalar un sistema operativo es una tarea aparte.</p>
       <p>Si este equipo tiene batería, conéctelo a la corriente antes de borrar. Mantenga la tapa abierta. Un corte de corriente detiene el borrado. La pantalla puede apagarse; presione una tecla o mueva el ratón para que vuelva a verse. Es la pantalla, no la suspensión.</p>
-      <p id="photo-record">¿No tiene una segunda memoria USB? Después del borrado, la pantalla de resultado muestra un código. Fotografíelo con su teléfono para guardar un breve resumen del resultado, el disco y su número de serie. Es un resumen, no un certificado.</p>
+      <p id="photo-record">¿No tiene una memoria USB para el informe? Después del borrado, la pantalla de resultado muestra un código. Fotografíelo con su teléfono para guardar un breve resumen del resultado, el disco y su número de serie. Es un resumen, no un certificado.</p>
       <p>Si quiere un informe después, necesita una memoria USB FAT32 o exFAT aparte con un solo volumen (de cualquier tamaño). Manténgala desconectada hasta que la pantalla de resultado la pida. Una memoria USB que ya está conectada no sirve para el informe.</p>
-      <p>La memoria USB live pide a Linux que ignore el cierre de la tapa y una pulsación breve del botón de encendido, y desactiva la suspensión. El firmware o mantener pulsado el botón de encendido aún pueden detener el borrado. Utilice Detener el borrado y espere el resultado antes de apagar. Un corte de corriente puede dejar el disco parcialmente borrado y hacer que se pierdan los informes no guardados; un borrado interrumpido no se reanuda automáticamente.</p>
+      <p>La memoria USB Beamo pide a Linux que ignore el cierre de la tapa y una pulsación breve del botón de encendido, y desactiva la suspensión. El firmware o mantener pulsado el botón de encendido aún pueden detener el borrado. Utilice Detener el borrado y espere el resultado antes de apagar. Un corte de corriente puede dejar el disco parcialmente borrado y hacer que se pierdan los informes no guardados. Un borrado interrumpido no se reanuda automáticamente. Vuelva a empezarlo desde el principio.</p>
       <p>Esta ayuda sin conexión no puede leer el estado de la batería ni de la corriente. El asistente live muestra las lecturas informadas cuando están disponibles; una lectura desconocida no demuestra que haya corriente conectada ni que vaya a durar.</p>
       <p>Para PC con Windows o Linux de 64 bits Intel/AMD que se inician desde esta memoria USB. <strong>No para Mac con Apple Silicon. No para Chromebooks.</strong> Algunos Mac con Intel pueden mostrar esta memoria USB; muchos no lo harán.</p>
       <p class="small">Código fuente: <a href="https://github.com/BeamoTech/beamo-wipe">github.com/BeamoTech/beamo-wipe</a></p>
@@ -590,7 +590,7 @@
       <h2>Si el equipo no se inicia después del borrado</h2>
       <p>Si el disco borrado era desde el que se inicia el equipo, es posible que el equipo muestre una pantalla negra, un mensaje de «no hay sistema operativo» o una reparación de inicio en lugar de iniciarse con normalidad. Es lo esperado: el borrado eliminó el sistema operativo junto con todo lo demás de ese disco.</p>
       <p>Para volver a usar ese equipo, primero instale un sistema operativo con un medio de instalación o con la recuperación del fabricante del equipo. Si tiene dudas, pida ayuda a una persona de confianza antes de cambiar nada.</p>
-      <p>Si el disco borrado era una unidad adicional, el equipo debería iniciarse con normalidad. La unidad borrada aparecerá vacía hasta que se prepare para volver a usarla.</p>
+      <p>Si el disco borrado era un disco adicional, el equipo debería iniciarse con normalidad. El disco borrado aparecerá vacío hasta que se prepare para volver a usarlo.</p>
     </div>
     <div class="card" id="saving-report">
       <h2>Guardar el informe</h2>
@@ -618,7 +618,7 @@
         <li>Deje conectados la memoria USB Beamo y el disco borrado mientras Beamo Wipe esté en marcha.</li>
         <li>La memoria USB Beamo solo se puede retirar con seguridad cuando el equipo esté completamente apagado. Retirarla antes termina la sesión de inmediato.</li>
         <li>Si reinicia en lugar de apagar, deje conectada la memoria USB Beamo para volver a Beamo Wipe. Todo lo que no esté guardado se pierde igualmente.</li>
-        <li>Si hay más de una memoria USB conectada, o si se desconectó y volvió a conectar algo, no adivine cuál es cuál. Primero apague y luego ordene las memorias USB con el equipo apagado.</li>
+        <li>¿Hay más de una memoria USB conectada? ¿Se desconectó y volvió a conectar algo? Entonces no adivine cuál es cuál. Primero apague y luego ordene las memorias USB con el equipo apagado.</li>
       </ol>
     </div>
     <div class="card" id="beamo-support">

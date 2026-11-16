@@ -74,7 +74,7 @@ verify_prior_bundle() {
   # A regular file at an output name is not proof that this builder owns it.
   # Check the complete prior bundle before replacing it, and check the moved
   # backup again so a same-user replacement during the long build is retained.
-  python3 - "$1" "$VERSION" "${2:-$1}" <<'PYPRIOR'
+  python3 - "$1" "$VERSION" "${2:-$1}" "${3:-prior}" <<'PYPRIOR'
 import hashlib
 import json
 import os
@@ -86,6 +86,7 @@ import sys
 directory = pathlib.Path(sys.argv[1])
 version = sys.argv[2]
 reference_directory = pathlib.Path(sys.argv[3])
+require_current = sys.argv[4] == "current"
 iso = f"beamo-wipe-{version}-amd64.iso"
 manifest = f"beamo-wipe-{version}-amd64.manifest.json"
 names = (iso, manifest, manifest + ".sha256", iso + ".sha256", "SHA256SUMS")
@@ -151,6 +152,8 @@ def unique_fields(pairs):
 
 try:
     present = [name for name in names if (directory / name).exists() or (directory / name).is_symlink()]
+    if require_current and len(present) != len(names):
+        raise ValueError("incomplete current bundle")
     if not present:
         raise SystemExit(0)
     if present == ["SHA256SUMS"]:
@@ -235,6 +238,37 @@ except (OSError, ValueError, UnicodeError, TypeError, KeyError) as exc:
     raise SystemExit(f"Unverified prior ISO bundle in {directory}; move it aside before rebuilding ({exc})")
 PYPRIOR
 }
+restore_prior_file() {
+  # Both names are on the output filesystem. Link creation refuses every
+  # existing destination atomically; unlike mv it cannot overwrite or nest.
+  # If unlink fails, retaining both names is safer than losing the backup.
+  python3 - "$1" "$2" <<'PYRESTORE'
+import os
+import sys
+
+try:
+    if os.path.isdir(sys.argv[1]) and not os.path.islink(sys.argv[1]):
+        # A directory swapped in during backup is refused by the builder,
+        # but rollback must still restore it without replacing a new output.
+        import ctypes
+        import errno
+
+        libc = ctypes.CDLL(None, use_errno=True)
+        rename = getattr(libc, "renameat2", None)
+        if rename is None:
+            raise OSError(errno.ENOTSUP, "Atomic directory restoration unavailable")
+        rename.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        rename.restype = ctypes.c_int
+        if rename(-100, os.fsencode(sys.argv[1]), -100, os.fsencode(sys.argv[2]), 1):
+            number = ctypes.get_errno()
+            raise OSError(number, os.strerror(number))
+    else:
+        os.link(sys.argv[1], sys.argv[2], follow_symlinks=False)
+        os.unlink(sys.argv[1])
+except OSError as exc:
+    raise SystemExit(f"Could not restore prior ISO bundle file; backup retained: {exc}")
+PYRESTORE
+}
 cleanup() {
   rc=$?
   if [ "$bundle_in_progress" -gt 0 ] && [ -n "$BACKUP_DIR" ]; then
@@ -267,7 +301,7 @@ cleanup() {
         if [ -e "$BACKUP_DIR/$name" ] || [ -L "$BACKUP_DIR/$name" ]; then
           # Do not replace a path another process created during rollback.
           if [ ! -e "$OUT_DIR/$name" ] && [ ! -L "$OUT_DIR/$name" ]; then
-            mv -- "$BACKUP_DIR/$name" "$OUT_DIR/$name" || true
+            restore_prior_file "$BACKUP_DIR/$name" "$OUT_DIR/$name" || true
           fi
         fi
       fi
@@ -405,6 +439,10 @@ if ! same_regular_inode "$OUT_DIR/$ISO_NAME" "$BUILD_OUT/$ISO_NAME"; then
   echo "ERROR: published ISO was replaced before bundle finalization" >&2
   exit 1
 fi
+# In-place writes preserve the ISO hardlink identity. Reuse the bounded,
+# no-follow bundle verifier to check the final ISO, manifest and every checksum
+# together before retiring any prior output.
+verify_prior_bundle "$OUT_DIR" "$OUT_DIR" current
 bundle_in_progress=0
 for name in $BUNDLE_FILES; do
   if ! rm -f -- "$BACKUP_DIR/$name"; then
