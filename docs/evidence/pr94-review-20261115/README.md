@@ -28,6 +28,8 @@
 I traced every path I could find from a confirmed disk to the nwipe argv. I found no path where the boot USB or an unconfirmed disk becomes the target. The confirm token, 5 s countdown, owner tick and Erase-now click cannot be bypassed. The owner tick carries over only as #187 intends. The nwipe flags and the log location are unchanged. Between f00e55ca and 93a7c9e9 the only source changes are in
 `src/beamo_wipe/ui/accessible_wizard.py` (GTK Done/help rebuild) plus launcher/signing scripts. The safety-critical modules are byte-identical on main, so every finding below still applies on 93a7c9e9.
 
+Rechecked on main `9b9102e6` (2026-11-16). PR #93 (commit `8bf5a3b6`) changed `nwipe_runner.py` and `safety.py` after this review. LOW-1, LOW-3 and LOW-4 are unchanged: the cited lines and files are byte-identical. LOW-2 still applies; its anchors and the start-side ordering are updated below.
+
 ## Findings
 
 ### LOW-1: The Confirm prompt can give the wrong reason for needing more than 4 characters
@@ -37,9 +39,9 @@ I traced every path I could find from a confirmed disk to the nwipe argv. I foun
 - Confidence: CONFIRMED by reading the code. This is a copy accuracy issue, not a safety bypass.
 
 ### LOW-2: `xset` runs synchronously inside the runner's start and finish critical sections
-- Where: `src/beamo_wipe/sleep_inhibit.py:83` (`_keep_display_on`), `:122` (`timeout=5`) and `:149` (`_restore_display` in `stop`). They are called from `src/beamo_wipe/nwipe_runner.py:1548` (`self._sleep_inhibit.start()`, under `self._lock` and the wipe flock, after the final identity recheck and target reservation) and from `:2095` (`_release_wipe_lock` → `stop()`). The code is the same on main.
+- Where: `src/beamo_wipe/sleep_inhibit.py:83` (`_keep_display_on`), `:122` (`timeout=5`) and `:149` (`_restore_display` in `stop`). They are called from `src/beamo_wipe/nwipe_runner.py:1548` on 93a7c9e9 (`self._sleep_inhibit.start()`, under `self._lock` and the wipe flock, after the final identity recheck and target reservation) and from `:2095` (`_release_wipe_lock` → `stop()`). On main `9b9102e6` these are `:1571` and `:2198`. PR #93 moved `start()` so that it runs before the final identity recheck and `_reserve_target_under_lock` (`:1588`), still under `self._lock` and the wipe flock. `sleep_inhibit.py` is unchanged.
 - How it happens:
-  - Start: up to 5 s pass after the target has been reserved and rediscovered, before `Popen`. The open target fd from `_reserve_target_under_lock` keeps the kernel name from being reused, so this is not a hotplug safety gap. It does lengthen the time the UI shows "Checking".
+  - Start: up to 5 s pass after the target has been reserved and rediscovered, before `Popen`. The open target fd from `_reserve_target_under_lock` keeps the kernel name from being reused, so this is not a hotplug safety gap. It does lengthen the time the UI shows "Checking". On main `9b9102e6` the delay comes before the final recheck and reservation instead, so a disk change during it is caught by the recheck. The longer "Checking" time remains.
   - Finish: the engine-exit branch of `NwipeRunner.poll` calls `_release_wipe_lock()`. `Wizard.tick()` reaches `poll` while it holds `Wizard._lock`, on the Tk/GTK UI thread. A slow or wedged X server can therefore freeze the result screen for up to 5 s while the wizard lock is held.
 - Failure scenario: an X server that does not answer (some fbdev/safe-video setups) leaves the interface unresponsive for about 5 s exactly when the erase finishes. The outcome is still correct.
 - Confidence: the code path is CONFIRMED; whether it hurts in practice is PLAUSIBLE, because it needs a slow X server.
