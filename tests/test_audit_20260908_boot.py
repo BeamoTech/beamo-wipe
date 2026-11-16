@@ -15,6 +15,7 @@ set -eu
 QEMU_TARGET_SERIAL=123456
 REPORT_RAW=unused
 send_key_for_marker() { printf 'marker %s %s\\n' "$3" "$4"; }
+start_erase_with_return() { printf 'erase-start %s\\n' "$3"; }
 send_key() { printf 'key %s\\n' "$2"; }
 wait_for_marker() { printf 'await %s\\n' "$2"; }
 type_token_for_marker() { :; }
@@ -29,8 +30,9 @@ sleep() { printf 'wait %s\\n' "$1"; }
     actions = result.stdout.splitlines()
     final = actions.index('marker ret BEAMO_WIPE_SCREEN_LAST_CHANCE')
     assert actions[final + 1:final + 4] == [
-        'wait 6', 'key tab', 'marker ret BEAMO_WIPE_SCREEN_WORKING',
+        'wait 6', 'key tab', 'erase-start 20',
     ]
+    assert 'marker ret BEAMO_WIPE_SCREEN_WORKING' not in actions
     # #135: Save report is greyed until the result screen's read-only
     # detection finds the stick, so the driver waits for that marker (not a
     # fixed 5 s sleep) after the result screen, then Tab, Tab, Space.
