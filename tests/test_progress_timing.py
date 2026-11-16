@@ -3,7 +3,7 @@
 import pytest
 
 from beamo_wipe.models import Screen, WipeResult
-from beamo_wipe.nwipe_runner import NwipeRunner
+from beamo_wipe.nwipe_runner import METHODS, NwipeRunner
 from beamo_wipe.progress import (
     ENGINE_PROGRESS_INTERVAL_S,
     FIRST_UPDATE_GRACE_S,
@@ -472,13 +472,39 @@ def test_method_gates_estimate_on_final_operation(method, phase, allowed):
     w._progress_timing.start(0)
     w.screen = Screen.WORKING
     w.method = MethodId(method)
+    passes = METHODS[w.method].overwrite_passes
+    counters = f"round 1 of 1, pass {passes} of {passes}"
     for n in range(6):
         w.runner.progress = 10 + n
-        w.runner.progress_observation = sample(10 + n, eta=450 - n * 5, phase=phase)
+        w.runner.progress_observation = sample(
+            10 + n, eta=450 - n * 5, phase=phase, counters=counters
+        )
         view = w.progress_view
         if n < 5:
             clock.advance(5)
     assert (view.remaining is not None) == allowed
+
+
+def test_verify_counters_that_contradict_the_plan_give_no_estimate():
+    """Extra overwrites three times; a read-back reporting pass 1 of 1 is not
+    provably the final step, so no time estimate is shown (never guess)."""
+    from beamo_wipe.demo import make_demo_wizard
+    from beamo_wipe.models import MethodId
+
+    w = make_demo_wizard()
+    clock = Clock()
+    w._clock = clock
+    w._progress_timing = ProgressTiming(clock, lambda: clock.wall)
+    w._progress_timing.start(0)
+    w.screen = Screen.WORKING
+    w.method = MethodId("extra")
+    for n in range(6):
+        w.runner.progress = 10 + n
+        w.runner.progress_observation = sample(10 + n, eta=450 - n * 5, phase="verifying")
+        view = w.progress_view
+        if n < 5:
+            clock.advance(5)
+    assert view.remaining is None
 
 
 def test_invalid_initial_monotonic_time_is_unavailable():

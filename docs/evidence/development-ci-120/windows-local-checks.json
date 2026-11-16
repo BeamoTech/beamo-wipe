@@ -11,8 +11,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "environment_version": "3.13.6",
@@ -38,8 +38,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
@@ -64,8 +64,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "environment_version": "3.13.6",
@@ -91,8 +91,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
@@ -117,8 +117,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "wsl": "C:\\WINDOWS\\system32\\wsl.exe",
@@ -143,8 +143,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "environment_version": "3.13.6",
@@ -170,8 +170,8 @@
         "python": "3.13.6",
         "host": "win32",
         "machine": "AMD64",
-        "checkout": "C:\\Users\\Jack\\beamo-wipe",
-        "environment_python": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "checkout": "C:\\Users\\USERNAME\\beamo-wipe",
+        "environment_python": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "git": "C:\\Program Files\\Git\\cmd\\git.EXE",
         "live_environment": false,
         "gh": "C:\\Program Files\\GitHub CLI\\gh.EXE",
@@ -192,7 +192,7 @@
     {
       "label": "doctor-local",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -201,13 +201,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.319,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-local.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-local.log",
       "sha256": "64838b4e288d400c1b8c2f4880b70f326fc9d975a65619a4745e993cab89760f"
     },
     {
       "label": "doctor-test",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -216,13 +216,13 @@
       "exit": 2,
       "expected_exit": 2,
       "seconds": 0.206,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test.log",
       "sha256": "d2408ff2fe6b4afc44cdbd3bc242b8243d026e9f7c2b25fbbf2c3b449c05e05a"
     },
     {
       "label": "doctor-test-native",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -231,13 +231,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.291,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test-native.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-test-native.log",
       "sha256": "2f2b71d2b0b61466030ea3edc7ea404e5903e16fb661b7af77dfa9033b6114d7"
     },
     {
       "label": "doctor-preview",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -246,13 +246,13 @@
       "exit": 2,
       "expected_exit": 2,
       "seconds": 0.203,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview.log",
       "sha256": "426085f771ff2e7d37f74c8730da2386d1964c0457b484b56209a92a73099c49"
     },
     {
       "label": "doctor-preview-web",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -261,13 +261,13 @@
       "exit": 2,
       "expected_exit": 2,
       "seconds": 0.206,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview-web.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-preview-web.log",
       "sha256": "f8c5ce49e9bb5aca72439bcb4cc8ff248ec2f5111f5f0dcc3a07cec0cb0c7fd1"
     },
     {
       "label": "doctor-desktop",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -276,13 +276,13 @@
       "exit": 2,
       "expected_exit": 2,
       "seconds": 0.311,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-desktop.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-desktop.log",
       "sha256": "5be1cc231ef5ab84ae8da4912b52c24fe8303283b94883de28e70c1ff5cd166c"
     },
     {
       "label": "doctor-qualification",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--for",
@@ -291,26 +291,26 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.212,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-qualification.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\doctor-qualification.log",
       "sha256": "1f445c040b44280418c385ad9469b8c78a12d7ac067cdac9019003370cf0d14f"
     },
     {
       "label": "help-main",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "--help"
       ],
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.148,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-main.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-main.log",
       "sha256": "dcec55cc03dbad58786ae0774b114a05f7f8d1368cf55b08af1f85a6962f31f1"
     },
     {
       "label": "help-doctor",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "doctor",
         "--help"
@@ -318,13 +318,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.146,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-doctor.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-doctor.log",
       "sha256": "29516452986ac131065b750d09343ed7db03cfb673bea45289bac8528a326431"
     },
     {
       "label": "help-setup",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "setup",
         "--help"
@@ -332,13 +332,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.142,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-setup.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-setup.log",
       "sha256": "9913c42d3dbf3100df49e1b752054a10accbd2f29695ed77490a352808b844a3"
     },
     {
       "label": "help-test",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "test",
         "--help"
@@ -346,13 +346,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.146,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-test.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-test.log",
       "sha256": "7340af63ee8566877815043ef746c96510df0e6f574efd3d2a8896ec76f79b62"
     },
     {
       "label": "help-desktop-build",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "desktop-build",
         "--help"
@@ -360,13 +360,13 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.144,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-build.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-build.log",
       "sha256": "7bd89eba23608d90733ac90cbd79ba81176ae5d030130bfb3ebf405735de6110"
     },
     {
       "label": "help-desktop-test",
       "argv": [
-        "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
+        "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\venv\\Scripts\\python.exe",
         "dev.py",
         "desktop-test",
         "--help"
@@ -374,7 +374,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.136,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-test.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\help-desktop-test.log",
       "sha256": "880ac68ca6b11fe5b3f98e6e18a7d7bec44b2922a7453a2e537b790de2f3dfeb"
     },
     {
@@ -389,7 +389,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.139,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-ci-cloud.sh.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-ci-cloud.sh.log",
       "sha256": "5db583d97ede90f49aeb4bd2c2357d6c01376f4aea2d3eea238bb21e09cae105"
     },
     {
@@ -404,7 +404,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.056,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-install-cloud-triggers.sh.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\legacy-help-install-cloud-triggers.sh.log",
       "sha256": "7432d916edc9e8a8c7137c383668f4ead02e96998beb638a50a96eaec92b52d5"
     },
     {
@@ -419,7 +419,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.059,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -434,7 +434,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.058,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-cloud.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-cloud.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -449,7 +449,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.06,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-install-cloud-triggers.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-install-cloud-triggers.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -464,7 +464,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.057,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-blacksmith.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-blacksmith.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -479,7 +479,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.058,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-hosted.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-hosted.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -494,7 +494,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.057,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-desktop.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-ci-desktop.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -509,7 +509,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.064,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check-release-ready.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-check-release-ready.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -524,7 +524,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.065,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-publish-release-blacksmith.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-publish-release-blacksmith.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -539,7 +539,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.057,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-iso.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-iso.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -554,7 +554,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.057,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-desktop.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-build-desktop.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -569,7 +569,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.056,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-preview.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-preview.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
@@ -584,7 +584,7 @@
       "exit": 0,
       "expected_exit": 0,
       "seconds": 0.056,
-      "log": "C:\\Users\\Jack\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-test-all.log",
+      "log": "C:\\Users\\USERNAME\\AppData\\Local\\BeamoWipe\\development-ci-120\\20261001T042235Z\\syntax-test-all.log",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ],

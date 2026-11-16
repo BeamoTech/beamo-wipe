@@ -147,12 +147,6 @@ def _optional_text(mapping: Mapping[str, Any], key: str) -> str:
     return _text(mapping.get(key))
 
 
-def _int_text(value: object) -> str:
-    if type(value) is int and not isinstance(value, bool) and value >= 0:
-        return str(value)
-    return UNAVAILABLE
-
-
 def _finite_number(value: object) -> float | None:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
@@ -231,12 +225,6 @@ def _secrets(device: Mapping[str, Any]) -> tuple[str, ...]:
         if isinstance(value, str) and value.strip():
             found.append(value.strip())
     return tuple(sorted(set(found), key=len, reverse=True))
-
-
-def _maybe_withhold(value: str) -> str:
-    if value in {UNAVAILABLE, _identity.SERIAL_NOT_REPORTED}:
-        return value
-    return WITHHELD
 
 
 def _scrub(text: str, secrets: tuple[str, ...]) -> str:

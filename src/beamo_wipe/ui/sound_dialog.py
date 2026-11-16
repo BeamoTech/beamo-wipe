@@ -173,13 +173,14 @@ class SoundDialog:
             self.w.end_review_overlay()
 
     def _show_volume(self, state):
+        if state is not None and state.available and state.muted is not None:
+            self.muted = bool(state.muted)
         if state is not None and state.available and state.volume_percent is not None:
             text = f"{C.SOUND_VOLUME}: {state.volume_percent}%"
             if state.muted:
                 text += f", {C.SOUND_MUTED_STATE}"
             elif state.volume_percent < 20:
                 text += f" {C.SOUND_VOLUME_LOW}"
-            self.muted = bool(state.muted)
         else:
             text = C.SOUND_VOLUME_UNKNOWN
         self.volume_label.set_text(text)

@@ -1,0 +1,290 @@
+{
+  "failed_tasks": {
+    "alternate_combined": {
+      "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-combined-alternate-r2",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-combined-alternate-r2:ordinal:1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-combined-alternate-r2",
+      "hasPendingChildRuns": false,
+      "hasPendingQuestion": false,
+      "latestTerminalResultContextTransferId": null,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-combined-alternate-r2:ordinal:1",
+      "latestTerminalStatus": "failed",
+      "latestTerminalSummary": null,
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "pendingApproval": null,
+      "providerInstanceId": "codex_c9557e4f-b7c3-4192-b8b7-05f17aca8816",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-combined-alternate-r2:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:f967cb53-8c61-4e86-913f-f3fdce86b151",
+      "status": "failed",
+      "summary": "Failed to open codex provider session provider-session:provider-instance:codex_c9557e4f-b7c3-4192-b8b7-05f17aca8816:shared.",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-combined-alternate-r2",
+      "waitTimedOut": false,
+      "workState": "result_available"
+    },
+    "build": {
+      "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-build-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-build-r1:ordinal:1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-build-r1",
+      "hasPendingChildRuns": false,
+      "hasPendingQuestion": false,
+      "latestTerminalResultContextTransferId": null,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-build-r1:ordinal:1",
+      "latestTerminalStatus": "failed",
+      "latestTerminalSummary": null,
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "pendingApproval": null,
+      "providerInstanceId": "codex",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-build-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:c350bb03-1227-40ca-8207-8c1cbf8389dd",
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-build-r1",
+      "waitTimedOut": false,
+      "workState": "result_available"
+    },
+    "lifecycle": {
+      "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-lifecycle-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-lifecycle-r1:ordinal:1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-lifecycle-r1",
+      "hasPendingChildRuns": false,
+      "hasPendingQuestion": false,
+      "latestTerminalResultContextTransferId": null,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-lifecycle-r1:ordinal:1",
+      "latestTerminalStatus": "failed",
+      "latestTerminalSummary": null,
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "pendingApproval": null,
+      "providerInstanceId": "codex",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-lifecycle-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:ef113d65-b439-4267-b50a-5d99607c7a08",
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-lifecycle-r1",
+      "waitTimedOut": false,
+      "workState": "result_available"
+    },
+    "report": {
+      "childNodeId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-report-r1",
+      "childRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-report-r1:ordinal:1",
+      "childThreadId": "thread:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-report-r1",
+      "hasPendingChildRuns": false,
+      "hasPendingQuestion": false,
+      "latestTerminalResultContextTransferId": null,
+      "latestTerminalRunId": "run:thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-report-r1:ordinal:1",
+      "latestTerminalStatus": "failed",
+      "latestTerminalSummary": null,
+      "model": "gpt-6.1-sol",
+      "options": [
+        {
+          "id": "reasoningEffort",
+          "value": "xhigh"
+        },
+        {
+          "id": "serviceTier",
+          "value": "default"
+        }
+      ],
+      "pendingApproval": null,
+      "providerInstanceId": "codex",
+      "resultContextTransferId": "context-transfer:type:subagent_result:source-thread:thread%3Adelegated-task%3Acommand%253Amcp%253A4bdd0e15-8ec5-4244-8be5-c95112345d86%253Adelegate-task%253Awipe-r12-20261026-report-r1:target-thread:936ab786-cf63-41d1-a774-82c15b7105f7:9860944a-51b5-4214-b192-dc7bda002da2",
+      "status": "failed",
+      "summary": "exceeded retry limit, last status: 429 Too Many Requests",
+      "taskId": "node:delegated-task:command%3Amcp%3A4bdd0e15-8ec5-4244-8be5-c95112345d86%3Adelegate-task%3Awipe-r12-20261026-report-r1",
+      "waitTimedOut": false,
+      "workState": "result_available"
+    }
+  },
+  "local_summary": {
+    "check_hashes": {
+      "helper-implementation.json": "316235fb7543e0a171c0881dbc31d4d17f628622004ca64be04c19ac02a8a66f",
+      "helper-pytest.xml": "64aa9851fcaab50f56f839d21ed67053515f136faf11acbd9acbf7030d1a788c",
+      "helper-static.json": "7532cf4885217565ce80113265bdb06e8748072732a1616365f25bbb038bc36b"
+    },
+    "checks_reused_not_rerun": {
+      "direct_unittest_nodes": 13,
+      "portable_pytest_nodes": 13,
+      "portable_subtests": 29,
+      "ruff_commands": 4,
+      "scope": "Exact unchanged936 inputs and pinned interpreter/Ruff bytes only; existing Linux/Python3.11 stub notes/native gaps preserved.",
+      "syntax_files": 747,
+      "types_files": 52
+    },
+    "complete_serialized_oracles_rechecked": true,
+    "current_ast_bindings": 41,
+    "distinct_matching_source_fake_cases": 43,
+    "executed_source_files": 3,
+    "extra_static_bindings": [
+      {
+        "ast_sha256": "6bfebf04e05eeb9242a7d7b09601021fd27ea2ee3fffd3746004e012e7847f3d",
+        "end": 61,
+        "file": {
+          "bytes": 8357,
+          "sha256": "d8b3c0154f813074971b9c015f447d691615e92e8f10a6ff6dc3d3aa4725e56c"
+        },
+        "line": 20,
+        "node": "_cleanup_report_handles",
+        "path": "src/beamo_wipe/report_intent.py",
+        "segment_sha256": "e06a70947ec751e65fffef436a92b31934e2acbcfa87ba1fdd9ae11080202d43"
+      },
+      {
+        "ast_sha256": "abff3dc85b1cea94dd307e3fb85cb535f0b2208156552abf33d961ad1a16bae2",
+        "end": 218,
+        "file": {
+          "bytes": 8357,
+          "sha256": "d8b3c0154f813074971b9c015f447d691615e92e8f10a6ff6dc3d3aa4725e56c"
+        },
+        "line": 64,
+        "node": "ReportIntentStore",
+        "path": "src/beamo_wipe/report_intent.py",
+        "segment_sha256": "0b812f815ba52d300b0e36d97cb802866213bfdd68291584eba1e174713f617b"
+      },
+      {
+        "ast_sha256": "40314ab406e3ad4e9fed170da110a42086f985f5f705313dc08dabea7345bea9",
+        "end": 149,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 116,
+        "node": "collect_secrets",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "5659f42217228bf8a4c93ba9e0a096734fb57362402d68c0b6926bd841028e4d"
+      },
+      {
+        "ast_sha256": "b77e5e05a8ca1f70641f33e27248ec050bb8cd2dc1bc00231fc5bc9714827c58",
+        "end": 162,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 152,
+        "node": "_scrub",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "f45a21283962351a782a2ced38f883986bbd1be63c882867dd0721b53a242f2c"
+      },
+      {
+        "ast_sha256": "3451e0dffc860154d348026c444d2db295a530b15edc8cee5d7a3534e38afade",
+        "end": 166,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 165,
+        "node": "_pick",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "28d1f06a3d3de963201fe061a7b98764aae0067b2cb8682ed6eece0995ded91e"
+      },
+      {
+        "ast_sha256": "273a0a3d43a00b36e09282c1d0958b89972606457c4e486f48e61516c11ee96d",
+        "end": 174,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 169,
+        "node": "_scalar_fields",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "e01feb7af0fb0d38f89f065518c128d713676dee91878859b84cf1b4a10cbaac"
+      },
+      {
+        "ast_sha256": "be2bed694c4e055ed9b58a2246a94fb35e771d5d475eac60db1b039e824cce29",
+        "end": 235,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 177,
+        "node": "_restore_safe_strings",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "f53ed4f9b0fcf3a5effbf3d0de090bd304f925100c76d29987585d0ae4f3db55"
+      },
+      {
+        "ast_sha256": "9aade666ff89d3a93fb9888ba28cdf05f610b4a6b065af5a9a78268eda30480c",
+        "end": 272,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 238,
+        "node": "make_sharing_copy",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "6376984e22bf2a82c56637b1cdb552b4abc284feeec7ca52a55f73d7539c7d5b"
+      },
+      {
+        "ast_sha256": "bba45de164a54ce010281a04a109f132f0660ec0c880e370a9c9d7e5430a1f43",
+        "end": 279,
+        "file": {
+          "bytes": 10063,
+          "sha256": "bcb9c6ce4764a7e6df54b970aede4003c3f90357535fc42530b831eeef0face2"
+        },
+        "line": 275,
+        "node": "encode_sharing_copy",
+        "path": "src/beamo_wipe/privacy.py",
+        "segment_sha256": "b4c9a33b4a4cb30780db1638910f3898847a1a8d55aa965e47d946aa385aed39"
+      },
+      {
+        "ast_sha256": "c2e4ceb12dc2b5ae186ab2af4dba5099ad67b3062a123b1403d5c4178a9a669c",
+        "end": 964,
+        "file": {
+          "bytes": 41232,
+          "sha256": "6eea55bfa18bd217402bdcb3ea258223ad206d65aa76143c3cb7c5d541ed0ec1"
+        },
+        "line": 889,
+        "node": "finalize",
+        "path": "src/beamo_wipe/ci_evidence.py",
+        "segment_sha256": "1552a265949b06b6a47ed77a65c4bc8ca919298b5f8e7024075e596b68afe632"
+      }
+    ],
+    "extra_static_inputs": 3,
+    "fresh_independent_review": "BLOCKED: three provider429 failures and one alternate session-open failure. No review evidence returned; all failures retained, no more retries.",
+    "functional_count": 936,
+    "functional_identity": "682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7",
+    "limits": "Root validation is not independent review. No actual modules, worker/export process, directory race, native syscall/process/GTK, artifact/platform/full or physical acceptance.",
+    "original_probe_actual_exits": [
+      1,
+      1,
+      0
+    ],
+    "original_read_chunks": [
+      "f8e4f9",
+      "fe3ee4",
+      "4ea8a7",
+      "9d5365"
+    ],
+    "retained_failures": "V1 missing future-import dependency before observations; V2 six _strptime dependency errors,37 completed cases. V3 only six failed cases replayed; no repeated37 coverage counted.",
+    "static_findings": "No new actionable defect established. Intent publication/load ownership/primary cleanup, sharing allowlist/scrub/canonical reconstruction, finalizer accepted-byte/checksum/source/artifact binding were inspected at source level only.",
+    "status": "LOCAL SAVED CHECKS VALID; FRESH INDEPENDENT REVIEW BLOCKED",
+    "utc": "2026-10-26T12:29:36.263318+00:00",
+    "whole_source_unchanged": true
+  },
+  "status": "INCOMPLETE: AVAILABLE LOCAL WORK FINISHED; FRESH INDEPENDENT REVIEW BLOCKED",
+  "successful_new_independent_reviews": 0,
+  "utc": "2026-10-26T12:33:15.497280+00:00"
+}

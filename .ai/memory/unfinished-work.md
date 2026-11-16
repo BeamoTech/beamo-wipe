@@ -3,7 +3,7 @@
 ## BW-GO-2026-6859-LAUNCHER-20261112 — PR OPEN (launcher Go 1.26.8 -> 1.26.11; blocks signed 0.2.14)
 
 - Date/author: 2026-11-12 / Claude, beamo-wipe-usb BWU-001 thread. Branch `fix/launcher-go1.26.11-20261112` from main
-  `7681c53`, worktree `C:\Users\Jack\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
+  `7681c53`, worktree `C:\Users\USERNAME\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
 - Why: GO-2026-6859 / CVE-2026-97054 (net/http HTTP/1 server crash, MaxBytesReader header race) affects every Go
   before 1.26.11. The desktop launcher (`desktop/main.go`) serves HTTP with `http.MaxBytesReader` and was built with
   go1.26.8. Signed-release run 43157568393 (tag `v0.2.14` on `34c3ab3`) was cancelled before publish for this reason;
@@ -31,12 +31,689 @@
 
 ## BW-UEU340-DUPLICATES-20261108 — HANDOFF (owner decision recorded; no builder code changed)
 
-- Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
+- Date/author: 2026-11-08 / Claude, for USB Easy Use task UEU-340 ("Remove the duplicates: two apps on the Wipe USB, and two driver tools on the combo USB", owner-tagged). Branch `claude/ueu-340-duplicates-handoff`, base main `9764d93`, sparse worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-ueu340-20261108` (only `.ai/memory/`). Local only; not pushed.
 - Owner decision (Jack, 2026-11-08): on the Wipe USB that also carries USB Easy Use, keep USB Easy Use's apps (`USB Easy Use (Windows app).exe`, `USB Easy Use (Linux app)`) and its start page `START HERE - USB Easy Use.html`; drop Beamo Wipe's own `Start Beamo Wipe.exe`, `Start Beamo Wipe Linux` and `START-HERE.html` from that USB. Hand off without code.
 - Today: `scripts/build_desktop.py` (`LAUNCHERS`) builds both Wipe launchers; `scripts/build-usb-image.sh` requires "exactly both desktop launchers" in the USB manifest and reads them back; `helper/index.html` is copied to the data partition as `START-HERE.html`. USB Easy Use is added to the Wipe USB root with its own copy tool (usb-easy-use `docs/integration.md`, row "Beamo Wipe writable USB image", now updated to this decision).
 - Check before removing: `START-HERE.html` and the Wipe launcher help hold things USB Easy Use does not (separate Windows 10/11 Recovery Environment steps, kiosk recovery, the Intel Mac Option key, the beamosupport.com card and code); the printed card says "open START-HERE.html". Whether any of that moves to USB Easy Use, and the card wording, are not decided here.
 - Acceptance: a manufactured Wipe USB that carries USB Easy Use has one Windows app, one Linux app and one start page (USB Easy Use's); builder manifest/readback checks and tests updated; the USB still starts Beamo Wipe; evidence retained.
 - Exact next action: in a reviewed beamo-wipe task, remove the two launchers and `START-HERE.html` from the Wipe USB build that carries USB Easy Use and update its checks/tests/docs. Blockers: owner scheduling; that task's own gates. No physical write, push or release here.
+
+## BW-SECURITY-PR93-G1 - FIXED IN SOURCE / FINAL-HEAD REVIEW AND CI PENDING
+
+2026-10-27 UTC / Codex; BeamoTech/beamo-wipe,
+fix/security-audit-handoff-20261027, isolated 20261027-main-handoff checkout.
+Greptile's first review at7f2f2a4 scored4/5 and raised one valid P2:
+handoff close errors skip later handles and mask primary failures. No finding
+was disputed. The corrected ownership/cleanup and member-write paths are in
+scripts/handoff_ci_outputs.py; portable regressions are in
+developer_tests/test_ci_handoff_cleanup.py. Original192-case matrix:
+148 failures /44 controls; corrected240-case matrix:240 passes, no skips.
+Canonical follow-up: docs/evidence/security-main-handoff-20261027/greptile-r1.json.
+Next: verify the pushed correction, read the final-head review and all required
+CI results, and merge only after current protections and safety gates pass.
+First-head native Windows CI passed; Linux was still running when read.
+That result does not qualify the corrected head. No release or physical action.
+
+## BW-SECURITY-MAIN-HANDOFF-20261027 - CHECKPOINT / MERGE PENDING
+
+Date/author: 2026-10-27 UTC / Codex. Canonical current status and exact next
+actions: [security review handoff](../../docs/security-review-handoff.md).
+Repo BeamoTech/beamo-wipe; integration branch
+fix/security-audit-handoff-20261027, base
+58c677f7316b5e2fc0cbb3ee4b502681c80338c1; isolated checkout
+C:/Users/USERNAME/beamo-release-work/20261027-main-handoff. This new checkpoint
+preserves the R1-R16 source fixes and the newer security regressions. Original
+worktrees/indices and the historical records below remain intact.
+
+Latest owner authorization requests a resumable commit/push toward main.
+Acceptance remains pending: exact-final-head Greptile/independent review,
+required CI gate, actual full Linux/GTK/Orca/shell/native/image/KVM checks and
+exact main-push evidence. Do not bypass branch protection or publish a release.
+Next: inspect the pushed branch/PR, retain all findings and actual check
+results, resolve failures, merge only through the protected path when ready.
+Source binding and credential-free evidence are committed under
+docs/evidence/security-main-handoff-20261027. Local static checks and portable
+Windows developer tests passed (473 passed / 4 platform skips); 41 security
+test-body model cases passed after a journal-fixture integration correction.
+These are not Linux/native/image acceptance. Original failed replay retained.
+
+Hostinger access/isolation/capacity/KVM admission is still BLOCKED; do not retry
+authentication without owner-confirmed authorization. No physical device,
+Windows-session, firmware or host security changes are authorized. Task119
+remains NOT TESTED/BLOCKED under its original physical-session prerequisites.
+No release, artifact signing/publication or historical release mutation.
+
+
+## BW-COMPREHENSIVE-REPASS-20261026-R16
+
+The available R16 source/model review is finished (2026-10-26T18:25:23.518965+00:00). No new actionable defect was established. Full Linux, native, artifact and physical acceptance remains incomplete or blocked.
+
+The three independent reviews and parent validation are complete. Safety covered24 final model cases, lifecycle26 and build35. Parent checks verified269,447 and72 AST binding records respectively, two exact ISO heredocs, all67 reviewer packet files and retained original failures. These are bounded source/model observations, not native tests or proof of all branches. No production or test edits were made in R16.
+
+Root checked three exact-source compatibility-export controls: the current path, an explicit unsafe unlink mutation and ordinary export. All matched their oracles. The current path has no final-name rollback; its inactive unlink hook alone is not a new coverage defect because the unchanged test rejects the unsafe mutation. Other active publication callbacks were inspected. No new source correction is requested.
+
+All939 functional inputs match sealed R15 and R16 entry identity 0a099f5f59c78a1fb9937c29ef792dfd81b6b3ade89ceef693c87661e5faaccc. Owned checkout C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus pre-existing dirty work. Peer/Lab refs and status and guide bytes remain unchanged. Nothing was staged, committed, pushed or published. Earlier signed/released bytes were not changed. All236 R15 raw records, its canonical records and historical backlog bytes were read back and preserved.
+
+Lab doctor, sync, plan, report and four verifiers passed at preparation/integrity level. Report UTF8/CSP/offline checks and all five isolated-renderer filters passed. Only4000 of9561 report CSS pixels were visually captured; this is not full/native visual acceptance. Earlier collaborative-browser error remains retained: Preview automation evaluate timed out after15000ms. Historical syntax/lint/type evidence is retained only for unchanged target/configuration bytes and checked tool executable pins; no new R16 static or runtime gate was run. Prior untyped-body notes and the build review's unavailable App Execution Alias executable hash remain explicit.
+
+Every original reviewer setup/adapter failure and parent validator bookkeeping failure is retained with its corrected check. Lifecycle corrected only None-fromlist handling, typing.cast and output labels, preserving all26 case functions/assertions/oracles. Build preserved every assertion while correcting fake import timing. Parent guide-path, wrapped-error and pending-exit schema assumptions were corrected without changing a product oracle or replaying product cases. Source no-objection does not relabel those failures as original passes.
+
+Remaining acceptance requires controlled main/Orca containment and the original ten finite selftests, plus applicable actual full/Linux/native/platform/shell/artifact/ISO/QEMU/required hosted gates on separately authorized isolated resources. Entry disk7541608448bytes was below the unchanged8GiB floor; the1GiB available-RAM floor also remains unchanged. No host cleanup, lower threshold, WSL/admission retry, installation, guest/container/mount or hosted spend was used to remove blockers. Capacity-change causes are not inferred.
+
+Task119 remains NOT TESTED/BLOCKED. It requires an explicit new owner physical session, dedicated spare machine, valuable disks disconnected, authenticated cold media reconnect/readback, independent firmware/live recovery and evidence access, and complete actual firmware trust/revocation/SBAT/enforcement evidence. A successful boot alone is insufficient. Preserve the running Windows session, security, network and every connected physical disk/USB.
+
+R11-C1, initial-reader, optional callback, terminal-leaf and arbitrary-opcode/native close/signal hypotheses retain their prior unproved qualifications. Accepted conservative recovery/export refusal outside retained windows and the withdrawn unrelated-controller NVMe hypothesis remain unchanged. Evidence is retained in C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r16; reviews.json and verification.json beside this report give the review identities and limits. Available source work is complete; release and physical qualification are not.
+
+Earlier records (historical bytes preserved):
+
+# Unfinished work
+
+## BW-COMPREHENSIVE-REPASS-20261026-R15
+
+The available R15 source review is finished (2026-10-26T17:53:12.889997+00:00). Full Linux, native, artifact and physical acceptance remains incomplete or blocked.
+
+The review found and corrected one pre-existing P3 coverage defect. A QEMU directory-replacement test patched Path.iterdir even though the reader uses os.listdir(fd), so its intended race never ran. The test now swaps the directory at the active descriptor boundary and asserts that exactly one swap occurred. It preserves the original private-file digest assertion and cleanup. A suppressed trigger or an earlier refusal can no longer make the test pass without exercising the race. The causal model changed from three failures plus one passing control to four passes. No unsafe production read was demonstrated.
+
+R15 changes only tests/test_ci_qemu_directory_race_pass31.py. Production code is unchanged. All three broad independent reviews and the fresh correction review are complete, with their source bindings, original failures, actual exits, manifests and evidence bytes independently validated by the parent. R14's production cleanup correction received bounded source/model no-objection. These conclusions do not qualify native filesystem races or a release.
+
+The owned checkout is C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus pre-existing dirty work. Final source identity for 939 functional inputs: 0a099f5f59c78a1fb9937c29ef792dfd81b6b3ade89ceef693c87661e5faaccc. Nothing is staged, committed or pushed.
+
+The local checks passed 40 application/session cases, 42 GUI input/overlay cases and 26 full launcher-JavaScript cases with fake server/restart transport. The corrected race test passed four causal model controls. Syntax checks covered 750 Python files before the test-only change and the final edited test afterward. Focused Ruff passed. Earlier mypy results for 52 unchanged source files, with unchanged configuration and tool bytes, were reused; their untyped-body notes remain explicit. None of these is a native test count.
+
+Lab doctor, sync, plan, report and four integrity verifiers passed at preparation level. The report's offline parser/CSP and isolated renderer checks passed. The collaborative-browser timeout and inactive controls, fixture-token omission, recorder truncation and parent schema/order assumptions remain retained with their corrected checks. Replays add no new cases. Earlier packets, released artifacts and historical backlog bytes were preserved.
+
+Remaining acceptance requires the original controlled main/Orca containment and ten finite selftests, and the applicable actual full/Linux/native/platform/shell/artifact/ISO/QEMU/hosted gates on separately authorized isolated resources. Entry disk and available RAM were below the unchanged 8 GiB/1 GiB admission floors. No host cleanup, reduced threshold, WSL retry, installation, guest, mount or hosted spend was used to remove those blockers.
+
+Task119 remains NOT TESTED/BLOCKED. It still requires an explicit owner physical session, spare machine, valuable disks disconnected, authenticated cold media reconnect/readback, independent firmware/live recovery and evidence access, and actual trust/revocation/SBAT/enforcement evidence. A successful boot alone is insufficient. Preserve the running Windows session, security, network and all physical disks/USBs.
+
+Evidence is retained in C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r15; see reviews.json and verification.json beside this report. R11-C1 and the initial-reader, optional callback, terminal-leaf and arbitrary-opcode/native-release candidates retain their prior unproved qualifications. Source review is complete; release and physical qualification are not.
+
+Earlier records (historical bytes preserved):
+
+# Unfinished work
+
+## BW-COMPREHENSIVE-REPASS-20261026-R14
+
+Available local R14 pass FINISHED, root,2026-10-26T16:26:15.863576+00:00. Conditional P3 R14-QEMU-MEMBER-CLEANUP locally corrected; candidate source/model validation passed. Independent source approval and full/Linux/native/platform/artifact/physical acceptance remain INCOMPLETE/BLOCKED.
+Owned C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branchcodex/wipe-audit-20261024, base9764d93ac21273aa79ae4618629b0a30e3eda271+pre-existing dirty work. Final939 functional inputs:
+b4458b5c06099ca927a11b06b5f0b9509b350b8031a721fe97ba05f2950088e0.
+Exactly3 R14 changes: src/beamo_wipe/ci_evidence.py, tests/test_qemu_member_cleanup.py, tests/test_ci_qemu_directory_race_pass31.py. Local/unstaged/uncommitted/unpushed.
+
+Finding: QEMU member stream cleanup can replace a primary read/cancellation; post-open line interruption can leave a fake member FD. Conditional source/model P3 only: native close/read fault co-occurrence, FD release and signal timing remain unqualified; no false gate pass or unsafe wipe shown. Correction reuses protected double-read hash/cleanup and returns the authenticated opened metadata for final directory checks. Hardlink/non-regular diagnostic preserved. A->B->A inode-rebinding refusal tested. Existing hash checks/cleanup, all other production declarations and QEMU outer directory/name checks preserved. Fixture digest()/uid/nlink additions preserve every original assertion and emulate actual stat/hash interfaces.
+
+Validation at final source:19 new regressions pass (original14 failures/5controls);4 causal probes match after original3counterexamples;3 legacy fixture contracts pass after frozen3counterexamples. Replays add zero cases. Eight unchanged reader groups pass,485ownership checks; actual parser->outcome13 and audio ticket18 cases pass. All fake/selected source only, no product modules/process/thread/native/device execution. Focused Ruff0, mypy52 Linux3.11 stubs0,3 changed-file syntax checks0. Existing untyped-body notes retained. Full Linux pytest and native shell/filesystem/race acceptance remain pending.
+
+All3 independent reviews FAILED before review: HTTP429 Too Many Requests; zero independent findings/cases/approval. No blind retry/provider switch; correction review NOT RUN/PENDING due availability. Original red tests, adapter failures, missing import alias, report evaluate timeout, validator failure, corrected unchanged-oracle replays and exact actual exits retained. Initial green/source identities are superseded, not relabeled final. Root final snapshot/source/AST/oracle validation0.
+
+Lab doctor/sync/plan/report PASS/preparation only, all4 receipt verifiers0; new report offline UTF8/CSP/parser and5 DOM filters checked. Initial evaluate timeout retained; focused read confirmed new report then short interaction succeeded. No screenshot/native visual acceptance. Prior R13 packets/canonical audits unchanged; historical backlog is preserved in full. See canonical README/reviews/verification and rawC:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r14.
+
+Remaining criteria/next actions: obtain independent review of this exact939-input candidate when provider availability allows; run actual required full/Linux/main/Orca/native/platform/shell/artifact/ISO/QEMU/final hosted gates only on separately authorized isolated resources. Unchanged8GiB disk/1GiB RAM floors: entry disk1232388096bytes below floor; capacity-loss cause unknown. No WSL/admission retry/cleanup/floor reduction. Controlled main/Orca containment and original10 finite selftests unqualified. Source work is not release approval.
+Task119 NOT TESTED/BLOCKED until explicit owner physical-session update/sparePC/valuable disks disconnected/authenticated cold reconnect-readback/independent firmware-live recovery and actual trust/revocation/SBAT/enforcement. Successful boot insufficient. Preserve Windows remote session/network/security/allUSB. No stage/commit/push/release/CI-spend/install/guest/container/mount/engine/device/USB/power/firmware actions. R11-C1/optional callback/terminal-leaf/native opcode candidates keep their unproved limits.
+
+Earlier records (historical bytes preserved):
+
+# Unfinished work
+
+## BW-COMPREHENSIVE-REPASS-20261026-R13
+
+Available R13 source audit FINISHED, 2026-10-26T14:40:19.767406+00:00. No new actionable product defect established; no production/test edits.
+Overall independent coverage remains INCOMPLETE. Independent safety review FAILED HTTP429 before review; root coverage does not replace it. Required full/Linux/native/platform/artifact/physical acceptance remains BLOCKED/INCOMPLETE. Task119 NOT TESTED/BLOCKED.
+
+Owned worktree C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus pre-existing dirty work. All938 functional inputs unchanged from entry and sealed R12:
+f9383493f8bcc6002a7f1d95534ffac1ae7a968cfb1b78081829c8e23fae686e.
+
+Root:60/60 distinct bounded selected-AST/fake cases match (25 refresh/UI,35 authorization -> rediscovery -> argv);71 binding records/69 unique bindings. Live/block/rdev/size/log/transport/metadata and lexical aliases are fake. No actual engine, discovery producer, kernel race, thread, native GUI or device qualification.
+Build independent review:13 resolved snapshots,57 bindings,18 inputs plus one static supplemental input; original diagnostic oracle failure exit1 retained. Corrected comparison performs no product replay.
+Recovery independent review:14 resolved snapshots plus5 static notes,244 binding records/135 unique bindings,12 inputs. Initial setup1 and adapter1 retained;3 original unchanged-oracle cases replayed0, zero additional cases. Root independently validated both complete drivers/fakes/oracles/snapshots/source/exits and every packet byte, exit0.
+Safety delegate failed before review: exceeded retry limit, last status429 Too Many Requests. No blind retry or provider switch. This is a missing review, never a no-objection or pass.
+
+R12 payloads271/3347567bytes and canonical/post receipts fully reread unchanged. Historical R12 source17/Ruff4/types52/syntax749 remain exact-source historical evidence, not new R13 executions. Interpreter/Ruff pins checked earlier; entire current tool-package environment not recensused. No duplicate unchanged gate run.
+Lab doctor/sync/plan/report preparation PASS and integrity VALID, actual exits0. Offline report UTF-8/CSP/parser check0 and5 browser filters match, no external resource entries. Screenshot timeout retained; visual verification INCOMPLETE. Lab integrity/planning cannot qualify a product or candidate.
+
+Closing validator v1 failed exit1 while incorrectly comparing the historical R12 backlog hash with the current R13 prefix. V2 verifies the exact preserved preR13 backlog against the old hash and confirms the current backlog retains those full bytes. Original driver/failure remain intact; no product/gate change. Root read-only recovery receipt lookup failed exit1 because commands.json does not exist; separate actual attempt/replay/seal/post/closure receipts were then read. All original failures/truncated-display limits retained; complete raw objects/source bytes, rather than truncated displays, support validation. Current source/peer/Lab refs/status/guides reconciled. No staging, commits, pushes, PR, release, CI/spend, installs or host/device actions.
+
+Remaining criteria and exact next actions: fresh independent safety review when provider availability permits, without blind retry; exact-final required full/Linux/main/Orca/native/platform/shell/artifact/ISO/QEMU gates on separately authorized isolated resources. Unchanged8GiB disk/1GiB RAM floors: entry disk1290539008bytes below floor; capacity-loss cause unknown. No WSL/admission retry, cleanup or floor reduction. Controlled main/Orca containment and all original10 finite selftests remain unqualified. Preserve the running Windows session, network/security settings and every physical USB/disk.
+Task119 requires explicit owner physical-session update, spare machine, valuable disks disconnected, authenticated cold media reconnect/readback, independent firmware/live recovery/evidence route and full actual trust/revocation/SBAT/enforcement evidence. Boot alone insufficient. R11-C1 and prior optional callback/terminal-leaf/native-opcode candidates retain their unproved reachability limits.
+
+Canonical docs/evidence/bug-audit-20261026-pass13/README.md, reviews.json, verification.json.
+Raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r13; evidence-seal.json and postseal-verification.json bind final bytes. This available-source closure is not release qualification.
+
+Earlier records (historical bytes preserved):
+
+# Unfinished work
+
+## BW-COMPREHENSIVE-REPASS-20261026-R12-RESUME1
+
+Available source audit FINISHED. Root,2026-10-26T13:33:57.134928+00:00.
+Full/Linux/native/platform/artifact/physical acceptance remains BLOCKED/INCOMPLETE.
+Read docs/evidence/bug-audit-20261026-pass12-resume1/README.md,verification.json,
+reviews.json and raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r12-resume1.
+Owned C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2,branchcodex/wipe-audit-20261024,base9764d93ac21273aa79ae4618629b0a30e3eda271+dirty.
+Final938 inputs:f9383493f8bcc6002a7f1d95534ffac1ae7a968cfb1b78081829c8e23fae686e. Exactly4functional changes listed in final-reconciliation.json;
+P3 R12-JOURNAL-CLEANUP corrected at source/model level, native occurrence unknown.
+R3 report/lifecycle/build and R4/R5 correction reviews complete,parent-validated.
+Final17portable groups0failures/errors/skips;Ruff4checks0,mypy52files0,syntax749.
+Existing assertions preserved; all original provider/harness/candidate/type/receipt
+failures retained. All evidence bytes/source/oracles reconciled. No staging,
+commit,push,PR,release,CI/spend,host/device/security/network/firmware actions.
+Original sealed R12 checkpoint and historical backlog bytes preserved.
+
+Remaining acceptance: unchanged8GiB disk/1GiB RAM floors; entry disk1133289472bytes,
+capacity-loss cause unknown. No WSL/admission retry/cleanup/floor reduction/guest.
+Main/Orca containment+ten finite selftests unqualified; authorized isolated worker
+and exact-final full/Linux/native/platform/shell/artifact/ISO/QEMU/hosted gates
+still required. Next action on separate authorized resources only; no host remedy.
+Task119 NOT TESTED/BLOCKED until explicit new owner physical session,sparePC,
+valuable disks disconnected,authenticated cold reconnect/readback,independent
+recovery/evidence and complete trust/revocation/SBAT/enforcement. Boot insufficient.
+R11-C1 remains unproved synthetic; optional sound callback and terminal log leaf/
+arbitrary opcode native timing remain unqualified/outside correction. See canonical
+remaining criteria and original evidence before any future disposition.
+Peer and Lab refs/status/guides unchanged. Lab4preparation VALID, report offline/
+UTF8/DOM checked,visual NOT QUALIFIED(timeout15000ms;prior fallback unavailable).
+No source-audit review or correction work remains; release/full qualification
+must not be relabeled pass. Preserve Windows/session/network/security/allUSB.
+
+## BW-COMPREHENSIVE-REPASS-20261026-R12
+
+INCOMPLETE. Available local work FINISHED; fresh independent review BLOCKED.
+Root,2026-10-26 UTC. Owned C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2,
+branchcodex/wipe-audit-20261024,base9764d93ac21273aa79ae4618629b0a30e3eda271 plus pre-existing dirty.
+Source936 unchanged:682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7. No production/test edits.
+Read canonical pass12 README.md/verification.json/reviews.json and raw
+C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r12. Root43 distinct finite AST/fake cases match,
+41bindings;3extra static inputs/10bindings. No new confirmed defect. Root is not
+independent review. Original harness failures retained:exits1/1/0,37+6 final cases,
+not49new cases. R10 exact-source portable13+29/Ruff4/types52/syntax747 reused,
+not rerun. R11 seal160members/2708918bytes fully reread; history retained.
+
+R12-FRESH-REVIEW BLOCKED:three429 rate-limit task failures; one alternate-provider
+session-open failure;zero fresh successful reviews,no pending children. No more
+retry/account/tool/security changes this pass. Next only when provider state
+changes:resume R12,recheck source,send fresh bounded three-scope reviews with
+original briefs/prior failures; parent independently validates and handles proved
+findings,necessary gates and exact final source/evidence reconciliation. This
+criterion remains pending; do not call R12 comprehensive review complete or start
+a duplicate pass. No owner approval is missing for ordinary review; external
+provider availability blocks it. See provider-failure-checkpoint.json and briefs.
+
+Lab4preparation exit0/verifiedVALID; offlineDOM/text checked, visualBLOCKED after
+two snapshot timeouts and no fallback browser. No adapter/guest/full test pass.
+Full/Linux/native/platform/artifact acceptance remains incomplete. Unchanged8GiB
+disk/1GiB RAM floors; checkpoint disk1136787456bytes.
+Full main/Orca containment andten finite selftests remain unqualified. No WSL/
+admission retry/cleanup/floor reduction/guest. C1 remains unproved per R11.
+Physical119 NOT TESTED/BLOCKED:explicit new physical session,sparePC,valuable disks
+disconnected,authenticated coldreadback,recovery/evidence and full firmware trust/
+revocation/SBAT/enforcement required. Boot alone insufficient. No stage/commit/
+push/PR/release/CI/spend/hostpower/device/firmware/security/network/service/guest/
+mount/realengine or peer operations. HistoricalR11-and-earlier bytes follow intact.
+
+## BW-COMPREHENSIVE-REPASS-20261026-R11
+
+Available source audit FINISHED. Root,2026-10-26 UTC. Required Linux/full/native/
+artifact/physical acceptance remains BLOCKED/INCOMPLETE. Read canonical pass11
+README.md,verification.json,reviews.json and raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r11.
+Owned codex/wipe-audit-20261024,base9764d93ac21273aa79ae4618629b0a30e3eda271 plus existing dirty.
+No production/test changes this pass. Source936 unchanged from R10:
+682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7.
+Four terminal reviews parentvalidated:launcher30,completion43cases/87observations,
+safety24distinctcases/22matchingcontrols/2syntheticmismatches,focused C1 disposition.
+Safety probe exits1/1 remain failures; zero new focused product probes. Root39
+finite fake observations plus6fresh path fixtures; failed harness attempt retained.
+R10 portable13+29/Ruff4/types52/syntax747 reused at exact unchanged source/tool
+bytes, not rerun. Lab4validpreparation; reportDOM/text checked; visualBLOCKED.
+
+R11-SAFETY-C1 status UNPROVED SYNTHETIC CANDIDATE. No production-reachable unsafe
+wipe, universal malformed-input contract breach or required fix established.
+Literal cross-owner crypt/partition PATH plus unlisted read-only peer reaches
+fake launch only. Parent and primary producer inspection support disposition(b).
+Remaining criteria:authentic same-device kernel association, exact built package/
+kernel binding and complete reachable producer/race trace. Next action only on a
+separately authorized isolated worker: qualify actual producer/topology against
+saved case and coherent aliases/mounted controls, then decide narrow hardening.
+Do not promote fake Popen to real erasure or patch merely to satisfy an impossible
+synthetic oracle. See path-parent-validation.json and path-disposition-review.
+Optional sound duplicate-destroy callback remains unproved without shipped GTK
+reachability; preserve optional-static-review.json, no code change requested.
+
+Remaining full acceptance:separately authorized capacity/worker admission,
+controlled full main/Orca containment andten finite selftests, then exact-final
+Linux/full/native/platform/artifact/public ISO/QEMU/hosted gates as authorized.
+Disk closure1499353088bytes; unchanged8GiB disk/1GiB
+RAM floors. No WSL/admission retry/cleanup/floor reduction/guest occurred.
+Physical119 NOT TESTED/BLOCKED:explicit new physical session,sparePC,valuable
+disks disconnected,authenticated coldreadback,recovery/evidence and full firmware
+trust/revocation/SBAT/enforcement. Boot alone insufficient. No stage/commit/push/
+PR/release/CI/spend/hostpower/device/firmware/security/network/service/guest/mount/
+realengine/peer operations. HistoricalR10-and-earlier bytes follow intact.
+
+## BW-COMPREHENSIVE-REPASS-20261026-R10
+
+Available source audit FINISHED. Required Linux/full/native/artifact/physical
+acceptance remains BLOCKED/INCOMPLETE. Read canonical pass10 README.md,
+verification.json,reviews.json and raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r10.
+Owned branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus existing dirty work.
+Two P3 diagnostic/sound cleanup findings corrected; only diagnostics.py,sound.py
+and new developer_tests/test_optional_helper_cleanup.py changed.936 inputs:
+682501409de92473b4cdb44505358a4dda83a24514b75bb4fd0eec5b7e8d77f7.
+Fresh portable13pytest+29subtests/unittest13/Ruff4/types52/syntax747 pass. Four
+terminal reviews parentvalidated at bounded fake/source scope: runtime49,
+artifact74,truth29,helper114 before/after/controls. No concrete scoped objection.
+Original failures19+4errors retained; no release qualification. R9/history intact.
+Lab4preparationvalid; offlineDOM/textchecked; visualBLOCKED after screenshot
+timeouts and unavailable fallback. No native/product adapter acceptance.
+Next: separately authorized capacity/worker admission; complete reviewed full
+main/Orca containment and ten finite selftests, then exact-final-source original
+Linux/full/native/platform/artifact/public ISO/QEMU/hosted gates as authorized.
+Disk observed 1,618,214,912 bytes; unchanged8GiB disk/1GiB
+RAM floors. No WSL/admission retry, cleanup/floor reduction or guest occurred.
+Physical119 NOT TESTED/BLOCKED: explicit new owner physical session, sparePC,
+valuable-disks disconnected, authenticated coldreadback, recovery/evidence and
+complete firmware trust/revocation/SBAT/enforcement required. Boot aloneinsufficient.
+No stage/commit/push/PR/release/CI/spend/hostpower/device/firmware/security/network/
+service/guest/mount/realengine or peer operations. Historical R9 bytes follow intact.
+
+## BW-COMPREHENSIVE-REPASS-20261026-R9
+
+Available source audit FINISHED. Required Linux/full/native/artifact/physical
+acceptance remains BLOCKED/INCOMPLETE. Root,2026-10-26 UTC. Read canonical pass9
+README.md,verification.json,reviews.json and raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r9.
+Owned C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus
+pre-existing dirty. Two P3 build_identity cleanup defects corrected; only that
+module and new developer_tests/test_build_identity_cleanup.py changed.935 inputs:
+4f3ddeaf0f57af82174537992d635c022b8f273e09e65c7ca705d25b2f0da7fc.
+Fresh11 portable pytest nodes+21 subtests, Ruff4, types52, syntax746 pass.
+All4 reviews terminal and parent-validated at bounded source/fake scope. Original
+startup INCOMPLETE/SOURCE DRIFT retained; current21-case/16-node replay and fresh
+correction review reconcile changed readers. Old passes retain original scope.
+No remaining concrete scoped implementation objection; no release qualification.
+Next: separately authorized capacity restoration and worker/peer admission,
+complete reviewed full main/Orca containment and ten finite selftests, then
+exact-final-source Linux/full/native/platform/artifact and separately authorized
+public ISO/QEMU/hosted gates with original assertions and limits. Disk observed
+1,548,914,688 bytes; unchanged8GiB floor. No WSL/admission
+retry, cleanup or lowered floor occurred. Full/native/module integration unrun.
+Physical119 NOT TESTED/BLOCKED pending explicit new physical session, spare PC,
+valuable-disk disconnection, verified cold readback, recovery/evidence and complete
+firmware trust/revocation/SBAT/enforcement prerequisites. Boot alone insufficient.
+Commit/push/merge/release still awaits applicable verification and authorization.
+No host power/device/media/firmware/security/network/service/guest/engine/CI/spend/
+publication, staging or peer edits. Historical R8-and-earlier bytes follow intact.
+
+## BW-COMPREHENSIVE-REPASS-20261026-R8
+
+Available source re-audit FINISHED; required Linux/full/native/artifact/physical
+acceptance BLOCKED/INCOMPLETE. Root, 2026-10-26 UTC. Read canonical pass8 README,
+verification.json and reviews.json in docs/evidence/bug-audit-20261026-pass8/.
+Owned worktree C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2,
+branch codex/wipe-audit-20261024, base 9764d93ac21273aa79ae4618629b0a30e3eda271 plus existing dirty bytes.
+Raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261026-r8.
+No concrete new actionable product defect established; no product/test edits.
+Three fresh bounded reviews terminal and independently validated. Root66 safety
++55 confirmation observations match; fresh745 Python syntax parses. Prior254+37
+portable, kiosk2+10, Ruff4 and types52 rebound to identical source/config, NOT
+rerun. Current934 identity 25ff560c06cbba0ce405603e71a735af452c13a0afb81f77d23ecdf5a191dc9e.
+Next: independently authorized capacity restoration, current peer/worker admission,
+finish reviewed full main/Orca containment plus ten finite selftests, then exact-
+identity Linux/full/native/platform/artifact/final public ISO/QEMU/hosted gates at
+original assertions and limits. Disk1,436,913,664<8GiB;
+capacity-loss cause unknown. No WSL/admission retry, cleanup or threshold reduction.
+Physical119 NOT TESTED/BLOCKED pending explicit owner physical session, spare PC,
+valuable-disk disconnection, verified cold media readback, recovery and complete
+firmware trust/revocation/SBAT/enforcement evidence. Boot alone is insufficient.
+Commit/push/merge/release still awaits applicable verification and authorization.
+No host power/device/media/firmware/security/network/service/guest/real-engine/
+CI/spend/publication, staging or peer edits. Historical R7+suffix follows intact.
+
+## BW-COMPREHENSIVE-REPASS-20261025-R7
+
+Available audit finished; required Linux/full/native/artifact/physical acceptance
+BLOCKED/INCOMPLETE. Root,2026-10-26 UTC. Owned worktree/branch/base and exact
+checks/reviews are in docs/evidence/bug-audit-20261025-pass7/README.md,
+verification.json,reviews.json. Raw:C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261025-r7.
+
+- R7-POWER-2 pre-existing P2 live fallback skipped external-engine inspection.
+  Full app/store/UI fake chain:6red/28controls; minimal runner-type exemption
+  removed, independent correction review no concrete objection. Parent10/10
+  current fake cases. New30-case Linux regression remains UNRUN.
+- R7-POWER-1 kiosk guard now also requires explicit executable-identity absence;
+  scoped correction no objection. Native descriptor/pgrep/kiosk/import evidence
+  remains unqualified,11 new shell cases unrun. R7-LIFE-DOC-1 procedure corrected.
+- Eight review tasks terminal; packets/source independently checked, every failed/
+  superseded adapter and earlier incomplete gate retained at original scope.
+- Current934 identity:25ff560c06cbba0ce405603e71a735af452c13a0afb81f77d23ecdf5a191dc9e.
+  Overlay:92d62cc727f14153dfcedff626cfdc54ee51f7a0db409ccc8cb9b400dadc8510. Fresh portable254+37subtests,
+  kiosk2+10 current-bound, Ruff4, static types52pass. No full/native acceptance.
+- Next:restore capacity through separately authorized work, current peer/worker
+  admission; complete reviewed full containment+ten selftests and final-identity
+  gate chain at original limits. Disk2,150,330,368<8GiB,
+  cause unknown; no WSLretry/cleanup/floor reduction. Native/import/shell/platform/
+  artifact/final public ISO/QEMU/hosted gates still required before publication.
+- Physical119 NOT TESTED/BLOCKED pending explicit owner physical session and all
+  original cold-readback/disk-disconnection/recovery/trust/revocation/SBAT checks.
+  Boot alone is insufficient. Commit/push/merge/release awaits gates/authority.
+- No host power/device/media/firmware/security/network/service/guest/real-engine/
+  CI/spend/publication actions, staged paths or peer edits. Prior R6+suffix
+  preserved byte-for-byte. Do not publish from bounded fake/static checks.
+
+## BW-COMPREHENSIVE-REPASS-20261025-R6
+
+Available review/checks finished; full/native/artifact/physical acceptance remains
+BLOCKED / INCOMPLETE. Read docs/evidence/bug-audit-20261025-pass6/README.md,
+verification.json and reviews.json. Raw evidence is C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261025-r6.
+
+- One proved pre-existing P3, R6-SOUND-1: known mute state ignored on failed
+  volume query. Minimal dialog fix + new action/label regressions. Root causal
+  before 4 failures/4 controls, after 8 matching observations. Fresh independent
+  review: 55 current matches; 51 historical cases separate, bounded no objection.
+- All four tasks are terminal: safety-r1, outcomes-r1, build-r1 and
+  sound-fix-review-r2. Full task identities/briefs/limits and root packet/source
+  validation are preserved. No new proved wipe-safety/completion defect emerged.
+- New portable pytest 2 nodes +14 subtests; four Ruff checks; Windows-hosted
+  Linux-stub mypy52 pass. Not actual-Linux/native acceptance. Prior R5 portable
+  254+37 subtests only rebound to unchanged inputs, not rerun. All harness failures,
+  annotation/AST binding and gate limits remain disclosed.
+- Final source 932 inputs: 7e14f2ffb55ab8323365aeb06a34d284277efc6ae1df3a9b72905c6e0b382376.
+  Only sound dialog/new test differ from entry. Verified overlay:
+  e18cb63cdd7f89c3b1f2473b8479810caa01e4efd3e52437e676f79f0e52561d. No staging or peer changes.
+- Linux/full admission blocked by disk 2,360,705,024
+  bytes <8 GiB; no WSL gate/retry, cleanup or floor reduction. Need adequate
+  capacity/current peer admission and reviewed final-identity controller chain.
+  Full containment design +ten selftests remains unimplemented/unqualified.
+- Unproved native question: fd-based engine launch versus kiosk pgrep name check.
+  Primary-source concern retained in native-process-name-question.md; no native
+  observation/speculative edit. Resolve with harmless owned fixtures/inert power
+  recorder before publication. Other prior unproved candidates remain unproved.
+- Native GTK/audio/Go/startup/platform/artifact/final ISO/QEMU gates pending;
+  fresh Lab preparation0/VALID is not this product's qualification. Physical
+  Task119 remains NOT TESTED/BLOCKED pending explicit physical-session update and
+  all original disk/recovery/trust/revocation/SBAT/enforcement prerequisites.
+- No host power/firmware/security/network/service/device/media change, real
+  nwipe, guest, hosted spend, stage/commit/push/release. Existing backlog below
+  preserved byte-for-byte. Next: unblock required acceptance; do not publish
+  from bounded review/model checks alone.
+
+## BW-COMPREHENSIVE-REPASS-20261025-R5 — BLOCKED / SOURCE FIXES SAVED
+
+- Date/author: 2026-10-25 local / Codex (UTC2026-10-26). Repo BeamoTech/beamo-wipe,
+  branch `codex/wipe-audit-20261024`, base `9764d93ac21273aa79ae4618629b0a30e3eda271` dirty,
+  worktree `C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2`. No stage/commit/push/merge/hosted/release.
+- Canonical `docs/evidence/bug-audit-20261025-pass5/README.md`, verification.json
+  and reviews.json bind findings, actual checks, dispositions and remaining gates.
+  Raw `C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261025-r5`. Final931-input identity
+  `2a6260d711af5f78442d8a2728fbfe663859ee5d94cea778f196ba6a95b31333`; 79-path readback overlay
+  `2d86f20f4c784ff7373df4883efaa09886f24719d8bced2895e64dcd122930f9`. Source/peer/guides/index stable.
+- Source findings CORRECTED / BOUNDED REVIEW NO OBJECTION: preference acquisition/
+  primary cleanup; matching-stage ETA; accepted finalizer manifest/ISO bytes;
+  original checksum snapshot/absence; atomic writer and reader/caller ownership.
+  R5 leaf named-stat disappearance/hidden cleanup regression and optional cleanup-
+  origin absence contract corrected via private operation-level marker. Native
+  close-ENOENT feasibility remains UNPROVEN; several paths predate this work.
+  Foreign checksum bytes retained; accepted snapshots are not an atomic visible
+  multi-file bundle; downstream verification remains required.
+- COMPLETED scope: all13 delegated tasks terminal/no live children; R7 independently
+  reproduces prior objections and has bounded no objection, 224current/186historical
+  fake observations, zero failed oracles. This is not410productpasses. Entire
+  finalizer/close helper/RM bytes, all other CI AST and old20testbodies preserved.
+  Parent46newleaf controls and retained11/20/12/16/six matrices pass; counts overlap.
+- Final available checks: portable AST-only pytest254pass+37subtests in three
+  disjoint batches, zero fail/error/skip, actual exits0; Ruff4x0/809stable inputs;
+  Windows-hosted mypy/Linux3.11stubs52files0 with five old untyped-body notes;
+  742Python+embedded syntax; all931source/79overlay readback, whitespace/index/
+  peer/guides checks. Evidence r6-check-reconciliation.json and r7-final-observation.json.
+  Expanded reader attempt45stimeout/outer124/testexitnull retained INCOMPLETE;
+  all26groups then split into two13-group batches with every assertion/deadline
+  unchanged. Preserve prior style/oracle/setup failures/timeouts and exact old
+  b310/R4 passes; none relabeled as current full/native qualification.
+- R5-G1 BLOCKED: actualLinux adjacent/build/shell/completion/preview/negative/
+  types/newmodule/21checksum fixture gates. No R5 WSL test started. Latest Cfree
+  2790412288bytes/RAM8449486848;
+  disk below unchanged8GiBfloor, cause UNKNOWN. Next: adequatecapacity/current
+  peer/ownership admission, new reviewed finalidentity controller and unique
+  phase chain fromr4v2-new-regressions. Retain1GiBRAM/8GiBdisk/300sphase/420stransport.
+  No peer/cache cleanup, floor relaxation, consumed-name reuse or blind retry.
+- R5-G2 BLOCKED: fullmain/Orca mode disabled. Next: implement/independently qualify
+  R4 PID-init/reaping/lifeline/private-proc/service/interop/aggregateCPU-memory-task/
+  boundedstorage-log containment plus ten finite selftests before any fullrun.
+  Earlier timeouts remain incomplete; observer[] is not universal cleanup proof.
+- R5-G3 INCOMPLETE: native Go/startup/Windows/macOS/platform/artifact and separately
+  authorized final-public isolated ISO/QEMU/hosted gates. Next: actual required
+  platform/worker evidence after safe controlled startup resolution. No guest,
+  new spend, cross-build relabeling or publication authority from this audit.
+- R5-G4 NOT TESTED/BLOCKED: physicalTask119 reconnect/coldreadback/valuable-disk
+  disconnection/firmware/SecureBoot trust/revocation/SBAT/enforcement. Next: explicit
+  owner physical-session update and original equipment/recovery prerequisites.
+  Windows/remoteaccess and every physicalUSB/disk remain protected; no realnwipe.
+- R5-G5 PENDING: commit/push/merge/release only after all required gates/authority.
+  Labd3d0959... unchanged with pre-existing notes; preparationPASS/VALID only.
+  AppinitialreaderSIGINT/QEMUfdopenMemoryError/nativeerrno/signal timing remain
+  qualified UNPROVEN candidates; no arbitrary-bytecode/native/hardware acceptance.
+
+## BW-COMPREHENSIVE-REPASS-20261025-R4 — BLOCKED / SOURCE FIXES SAVED
+
+- Date/author: 2026-10-25 / Codex. Owner requested another comprehensive pass.
+  Owned repo BeamoTech/beamo-wipe, worktree
+  C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2, branch
+  codex/wipe-audit-20261024, base9764d93ac21273aa79ae4618629b0a30e3eda271 dirty.
+  No staging/commit/push/hosted CI/release. Peer captured inputs unchanged.
+- Six independently reproduced defects corrected: engine/wipe-lock acquisition
+  ownership; launch primary-error masking; concurrent SHA256SUMS clobber; French
+  curses UTF-8 confirmation; evidence directory acquisition leak; evidence close
+  masking cancellation. Defensive collision-origin handling preserves the writer
+  two-argument boundary; ordinary Linux close EEXIST remains unproved.
+- Final926-input identity fc2d15fdfeebe3aa9d3352f752bf5f1dba0d7deff34042e223b879d2212b829b;
+  72-path readback-verified overlay SHA256
+  6b81da679f125d044a57d81c897963b7547d4cdd88141d022338c52e37645777.
+  Canonical docs/evidence/bug-audit-20261025-pass4/README.md, verification.json
+  and reviews.json; raw C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261025-r4.
+- Completed: all8 delegated tasks terminal; root causal probes; source/overlay
+  readback;737Python and embedded-Python parse; git diff --check. Exact-source
+  Linux r4v2-lint actual0 (syntax/shell/security/lint/types52files), followed by
+  r4v2-new-regressions504pass/0fail/errors/skips, actual0, namespace/source/group
+  cleanup guards valid. Portable Windows AST-only124pass/0fail/errors/skips,
+  actual0 with process/network creation refused; these124 overlap Linux504.
+  This is no full/native application or real-engine acceptance.
+- Failed/incomplete receipts retained: initial Ruff style/annotations and two
+  mypy optional returns were corrected without assertions/global-rule changes;
+  latest lint passes. Earlier native child45s startup/report timeouts and R3
+  full/1106-case300s timeout remain incomplete. Reporter-local hostname fallback
+  corrected only in inert harness; other native startup cause remains unproved.
+  No blind Go retry. Provisional final-verification.json/erratum retained;
+  completion-verification.json is the reconciled current record.
+- R4-V1 BLOCKED: next adjacent batch refused before WSL/test startup, controller2,
+  testexitnull, Cfree6432006144/RAM811606016. Final report observation Cfree3996053504
+  /RAM998588416 below unchanged8GiB/1GiB floors; resource cause UNKNOWN. Remaining
+  adjacent, evidence/build (including21checksum fixtures), completion-a/b,
+  preview/negative batches. Next: fresh adequate capacity/peer preflight, then
+  a new reviewed/pinned controller based on candidate-checks-r4-v2.py with unique
+  names and explicit source chain from r4v2-new-regressions; v2 names are hardcoded,
+  and consumed r4v2-adjacent cannot be overwritten/retried.
+  Acceptance: exact-source actual0, complete required assertions/JUnit, no
+  unexpected skips, source stability and valid owned cleanup. No floor relaxed.
+- R4-V2 BLOCKED: full source main+Orca gate. Full mode remains disabled; resource
+  admission additionally needs2GiB available RAM and proved aggregate limits.
+  Next: satisfy full-containment-review/review.md, independently review PID-init/
+  lifeline/private-proc/service-endpoint isolation, bounded storage/log transport
+  and aggregate memory/task/CPU controls, then ten finite inert selftests before
+  any full execution. These are NOT IMPLEMENTED/NOT TESTED. Same-UID exact owned
+  namespace observer returned0, observations[]/inaccessible[] without signals;
+  limited observation does not prove universal descendants or capacity cause.
+- R4-V3 INCOMPLETE: native Go/startup, native launcher/macOS/platform/artifact and
+  separately authorized final-public isolated ISO/QEMU/hosted gates. Next: resolve
+  native startup safely and obtain actual required worker/platform evidence;
+  preserve original gates/approvals, no AST/cross-build substitute or blind retry.
+- R4-V4 NOT TESTED/BLOCKED: physical reconnect/cold readback, valuable-disk
+  disconnection, firmware/SecureBoot trust/revocation/SBAT/enforcement matrix.
+  Next: explicit owner physical-session update plus original safe equipment and
+  independent recovery prerequisites. No host restart/USB/disk/firmware action,
+  real nwipe, guest or host-service change. No physical case marked Pass.
+- Lab code unchanged d3d0959bb26b17531464dbd1ba233d4d842ad581, pre-existing memory
+  dirty paths preserved. Doctor/sync/plan/report are preparation PASS/VALID only,
+  candidate_acceptance=false. Saved coordination note is not acknowledgement.
+
+## BW-COMPREHENSIVE-REPASS-20261025-R3 — BLOCKED / SOURCE FIXES SAVED
+
+- Date/author:2026-10-25 / Codex. Comprehensive pass implemented and reviewed;
+  final qualification incomplete. Repo BeamoTech/beamo-wipe, base
+  `9764d93ac21273aa79ae4618629b0a30e3eda271`, branch `codex/wipe-audit-20261024`, worktree
+  `C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2`.
+- Final922-input identity `1016e41e61b2f78a4cf84841c8657b5cc55a4ae09a2553668ffb5635a909df51`.
+  Four production modules/nine regression modules changed this pass. Fixed P1
+  stale malformed-progress completion, reader ownership/primary-error cleanup,
+  activity provenance, invalid-journal shutdown, raw/reverse boot ancestry,
+  surviving head/private NVMe transport lookup and normalized projection budget.
+  Added defensive terminal snapshot ownership; shipped wizard race reachability
+  remains unproved. General large-log suffix limitation and unrelated controller
+  reuse bypass remain withdrawn as new findings.
+- Canonical report `docs/evidence/bug-audit-20261025-repass/README.md`, companions
+  verification.json/reviews.json. Raw evidence
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-comprehensive-repass-20261025-r3`.
+  Readback-verified63-path source overlay SHA256
+  `f5deda9e5ffa882cefd8fd02faa4e652980b82d1f94b0f7b0a73954d46317a9e`. Prior checkpoints retained there.
+- All14 delegated tasks terminal. Final budget review: no objection,2306
+  exact-AST fake-I/O checks; final private-NVMe review:43/43 fake cases. Root
+  independent old/current causal probes pass. Final cache-free native Windows
+  Ruff code/security/developer-format commands all exit0, bound bytes unchanged.
+  Eight unchanged-input Windows regular-file helper tests remain narrow evidence.
+- Earlier actual Linux receipts: c4 new332/adjacent694 passes, no failures/errors/
+  skips, exact source and owned cleanup valid; entry470 and intermediate134
+  passes. These predate the latest two fixes and do not qualify final v2.
+  The1106-case expanded run timed out300s, queried test exit null/no final JUnit.
+  Older full gate incomplete; no pending/canceled/observed-dot result is a pass.
+- Final v2 r3-v2-lint BLOCKED before WSL startup:8,464,756,736 free C:bytes below
+  8GiB; controller exit2, gate exit null. Subsequent final selected/large-log and
+  canonical types/shell/lint/preview/negative phases unrun. Lossless compression
+  of15 owned old JSON receipts preserved every hash/identity/mtime; no deletion
+  or peer cleanup. Linux retirement plan only, never executed. No floor lowered.
+- Next/acceptance: with safely available capacity prepare NEW uniquely named
+  source-bound phases (preserve refused receipts), verify922 inputs, run all new
+  regressions including76 NVMe/20 budget cases, adjacent, large-log A/B and
+  canonical lint/types/shell/preview/negative. Fix all failures/material warnings.
+  Complete full source/GTK/Orca gate with reviewed service ownership. Native Go
+  startup remains BLOCKED after45s no-output version timeout; diagnose safely
+  before native Go/vet/launcher checks. Native/macOS/artifact/isolated ISO/QEMU and
+  separately authorized final public gates remain open. Physical readback,
+  reconnect, disk removal, firmware/Secure Boot and real devices NOT TESTED /
+  BLOCKED. No host or USB action authorized by these model/source checks.
+- Lab report20261025T214341Z-b627490ee204 preparation PASS/VALID (6files/3events),
+  candidate_acceptance=false. Local-file preview unsupported; visual QA pending.
+  Peer source/status unchanged, index empty, changed Python AST/diff checks pass.
+  LOCAL ONLY: no stage, commit, push, hosted job, guest, release or device write.
+  Stage explicit paths after applicable gates; disk selection needs safety:
+  commit plus tests. Publication/merge acceptance remains separate.
+
+## BW-INTEGRATED-AUDIT-20261025 — BLOCKED / INTEGRATED LOCAL FIXES SAVED
+
+- Date/author: 2026-10-25 / Codex. Owner requested another comprehensive pass
+  and review of newer work first. Base `9764d93ac21273aa79ae4618629b0a30e3eda271`,
+  branch `codex/wipe-audit-20261024`, worktree
+  `C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2`.
+- Snapshotted the separate development checkout without modifying it, then
+  integrated its 42 functional changed/added paths. Preserved this audit's
+  report cleanup, parser and causal audio fixes. Cancellation conflict was
+  formatting only; newer terminal-evidence checks are retained. Changed Python
+  AST and Git whitespace checks pass. Combined runtime remains unqualified.
+- Canonical continuation: `docs/evidence/bug-audit-20261025/README.md`.
+  Exact source/merge/raw receipts and the preserved peer backlog:
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-integrated-audit-20261025`.
+  Prior audit and newer peer passing selections remain separate evidence.
+- Current doctor/sync/Wipe plan are preparation PASS, all three receipts VALID.
+  Entry resources: C: 16,061,997,056 bytes free, available RAM 277,200,896 bytes.
+  Full gate blocked by the 2 GiB available-RAM admission floor; no broad gate
+  started. Two bounded read-only integration/build reviews are running.
+- Next: finish reviews and safe causal probes, fix only proven defects, freeze
+  combined inputs, then complete applicable source/GUI/native gates with
+  adequate resources and owned teardown. Existing GUI/service, packaging,
+  framework, isolated ISO/QEMU and physical acceptance items remain open.
+  No stage/commit/push/hosted job/guest/release/device operation. Commit/push
+  remain gated on applicable verification; publication is separate authority.
+- Continuation: reproduced a further reader acquisition ownership gap using
+  the exact extracted session function (eight failing interruption cases/four
+  controls). Protected current ownership across replacement; all twelve probes
+  and twelve native inert pytest cases pass (5.60s, no services/platform claim).
+  Added `tests/test_reader_acquisition_interrupt.py`. Full configured Ruff and
+  diff checks pass. First build/evidence review found no new actionable defect;
+  eight inert controls passed. Remaining two reviews pending. 20:21 UTC resource
+  snapshot: C: 9,093,091,328 free bytes, RAM 1,159,487,488 available; full gate
+  remains inadmissible. No peer cleanup or process control.
+- Final continuation: all four bounded reviews are complete. The overlap
+  reviewer also found an Orca-test audio acquisition gap; root reproduced two
+  failures/two controls and moved startup into the existing protected block.
+  Added eight inert cases. Final 20 new cases plus seven existing ownership
+  cases pass, zero failures/errors/skips; these use AST-extracted exact
+  functions and fake handles, not product/platform imports. Reader review:
+  93 probes; final Orca review: 36 extracted invocations, with overlap.
+- Full Ruff/configured security/developer formatting, XML/exits, limited AST
+  changes, all 42 integrated paths, prior audit preservation, all 913 final
+  source/config inputs, peer status/bytes, empty index and whitespace verified.
+  Final identity `ca24d8be91cf1f386d5d9d98573cb0306eb5eb0ea525c74f218bd3141e9ad62d`.
+  Canonical report/verification/reviews are in the October 25 evidence folder;
+  raw packet includes readback-verified changed-source overlay. Initial S102
+  warnings in the new exact-source loaders were resolved with the existing
+  narrow handler-test pattern; no global rule/assertion/timeout was relaxed.
+- Remaining acceptance/next action: complete combined-source types/shell,
+  preview/negative, full pytest/GUI and applicable native checks on an adequate
+  authorized environment with corrected private tmpfs and bounded owned
+  teardown/watchdog. At 20:30 UTC: C: 9,139,253,248 free bytes, available RAM
+  1,241,522,176 bytes, below the 2 GiB full-gate floor. No broad run attempted.
+  Existing GUI/service, packaging, framework, ISO/QEMU and physical gates stay
+  open at their original scopes; the older interrupted gate is not a pass.
+  No active delegated task or owned test session remains. No commit/push;
+  all source remains local. Publication still requires separate authority.
+
+## BW-AUDIT-20261024 - BLOCKED / LOCAL FIXES SAVED
+
+- Continued by **BW-INTEGRATED-AUDIT-20261025** above. The worktree now has a
+  newer combined identity; this entry's runtime identity and results are
+  historical and do not qualify the integrated source.
+
+- Date/author: 2026-10-24 / Codex. Comprehensive bug audit against
+  `9764d93ac21273aa79ae4618629b0a30e3eda271`, branch `codex/wipe-audit-20261024`,
+  worktree `C:/Users/USERNAME/beamo-release-work/20261024-wipe-audit-pass2`.
+  Older dirty audit worktrees are preserved. No commit, stage, push or release.
+- Fixed after causal failures: parser whitespace backtracking, primary errors
+  replaced by report cleanup, interrupted worker/bundle/member-file acquisition,
+  interrupted RW/RO mount ownership, and cancellation rewriting observed exits.
+  Added 161 regression cases; all 311 focused/adjacent cases pass with exact
+  final runtime hashes. Lint/security/types/shell, previews, safety-negative,
+  Orca and four live documentation URL tests pass. GTK causal mutation rejects
+  synchronous execution; all 19 separate original audio timing cases pass.
+- Four read-only independent reviews completed; every concrete finding was
+  independently reproduced. Parser samples: 192,160 plus 24,000 comparisons.
+- Final full gate is INCOMPLETE: 8,119 pass lines / three fixture failures /
+  18 skip lines observed before environment interruption. No main JUnit,
+  queried final exit or original controller cleanup receipt. Raw stdout ends
+  in NUL bytes. Do not count this or either earlier canceled run as a pass.
+- All three full failures reproduce by moving fake recovery files off /tmp's
+  filesystem. The three cases and whole module pass on private tmpfs. The guard
+  correctly reports `Log directory must be on the /tmp filesystem.` The owned
+  harness now restores tmpfs fixtures, failed-fixture retention and resource
+  admission (8 GiB disk / 2 GiB available RAM). Admission refusal and nested
+  syntax checks pass; full corrected configuration remains unqualified. Never
+  relax production guard/assertions. Four network skips
+  were separately checked and passed; remaining artifact/tool skips stay pending.
+- Host resource blocker: about 506 MiB free memory, C: down to 92,262,400 bytes,
+  and a read-only Windows command access violation. Later recovery showed WSL
+  uptime ~125 seconds; no host/WSL restart was requested and cause is unknown.
+  Current owned source/fixture cwd scope is empty; all candidate bytes match
+  the test-start inventory. Original teardown remains unverified.
+- Recovered/hashed raw logs and source inventory. Sealed three failed fixture
+  directories before retiring only this owned disposable fixture tree. Verified
+  exact Git regeneration of the source tar before removing its redundant gzip.
+  No peer files, physical disks/USBs, services or host settings changed.
+- Canonical audit, exact statuses and machine-readable hashes:
+  `docs/evidence/bug-audit-20261024/{README.md,verification.json}`.
+  Raw evidence: `C:/Users/USERNAME/beamo-release-evidence/wipe-audit-pass2-20261024`.
+  Runtime/test identity: `ed606e09bb66493629f618c34a22627cc5275965a3c9ac235294ca0dea6615b0`.
+- Remote Lab `d3d0959`: doctor/sync/Wipe plan prep passes, self-test 58 passes /
+  one missing PID-fixture error (FAIL integrity valid). Native Windows Go timeout
+  900s, no test exit/output; owned cleanup exit125 and descendant absence recorded.
+  Native vet/developer, desktop, ISO/QEMU and physical acceptance remain pending.
+- Next: use a suitable authorized worker with adequate resources and tmpfs test
+  fixtures; confirm bounded passed-fixture cleanup behavior before use, run the
+  full gate and inspect final exits/JUnit/skips/source/cleanup. No blind retry
+  on this constrained host. No commit/push while required gates remain incomplete.
 
 ## BW-RELEASE-20261017-ALL — IN PROGRESS / FINAL LOCAL QUALIFIED, PUSH PENDING
 
@@ -1762,7 +2439,7 @@
   BW-READINESS-REVIEW-20261026. Repo BeamoTech/beamo-wipe, branch
   `fix/release-readiness-20261026` from main `58c677f` (product bytes = tag
   v0.2.14 `9764d93`). Owned shared-object sparse clone (docs/evidence omitted)
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`. Peer dirty work
   in the main checkout and PR93 untouched. State: committed locally; pushed only
   as a branch if noted below. No PR, no hosted CI, no tag, no release.
 - Test environment: existing WSL distro (no /mnt/c by design) with owned copies
@@ -1969,12 +2646,12 @@
   work from BW-READINESS-WORK-20261026, BW-RR-UX-POLISH-20261027 and
   BW-COMPAT-UX-20261027. Repo BeamoTech/beamo-wipe, branch
   `fix/release-readiness-20261026`, clone
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`. Commits after
   the pushed `40ccf8b`: 26 commits `0a02a03`..`872d38c` plus the commit adding this entry. State: pushed as branch `fix/release-readiness-20261026` (head = the commit adding this entry; ci.yml runs only for PRs/pushes to main or dispatch, so no workflow ran). No PR, no hosted
   CI, no tag, no release, no device operation.
 - Agent clones (owned, safe to delete after merge): `beamo-wipe-{ui,results,
   l10n,export,it}-20261027`, `beamo-wipe-helper-20261028`,
-  `beamo-wipe-pr93trial-20261028` under `C:/Users/Jack/dev/BeamoTech/`; WSL
+  `beamo-wipe-pr93trial-20261028` under `C:/Users/USERNAME/dev/BeamoTech/`; WSL
   copies `/home/beamo-qual/bw-*-2026102[78]`.
 
 ### Done (commit: what, evidence)
@@ -2092,7 +2769,7 @@
 
 - 2026-10-28 / Claude (Opus 5.5) for the owner's request to run another very
   thorough pass. Branch `fix/release-readiness-20261026` (clone
-  `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
+  `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`), continuing
   from `465274d`. Four independent read-only reviewers covered
   `58c677f..465274d` (runtime safety; UI and locales; image, build and release
   scripts; docs, helper pages and claims). Every finding was re-checked against
@@ -2100,9 +2777,9 @@
   amd64-/intel-microcode hooks, madison, security tracker) before fixing.
   No PR, hosted CI, tag, release, device or host-setting change.
 - Lab: current lab revision `6fd49c5` in owned clone
-  `C:/Users/Jack/dev/beamo-remote-lab-claude-20261028` (peer checkout at
+  `C:/Users/USERNAME/dev/beamo-remote-lab-claude-20261028` (peer checkout at
   `d3d0959` left untouched); run root
-  `C:/Users/Jack/beamo-release-evidence/wipe-pass2-claude-20261028`:
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-pass2-claude-20261028`:
   self-test PASS (61 tests, framework), doctor/sync/plan PASS (preparation).
   Plan still lists WIPE-ISO-QEMU "no new spend authorized".
 
@@ -2233,9 +2910,9 @@
   care of all of the rest of the stuff ... do what's best for the mass
   majority of customers". The open owner decisions from BW-PASS2-20261028
   were decided on that basis (below). Branch `fix/release-readiness-20261026`,
-  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
+  clone `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`, from
   `22fa70c`. Lab `6fd49c5` (owned clone), run root
-  `C:/Users/Jack/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
+  `C:/Users/USERNAME/beamo-release-evidence/wipe-pass3-claude-20261028`: doctor
   20261028T230010Z-b9c571b692a3, sync 20261028T230035Z-07fe5d9eb357, plan
   20261028T230038Z-e303374f8e43 PASS (preparation only).
 - The owner's message is taken as the go-ahead for the paid hosted gate
@@ -2342,7 +3019,7 @@
 ## BW-PASS3-CI-UI-20261031 — HOSTED GATE ITERATING; UI REDESIGN COMMITTED; GREPTILE UNAVAILABLE; WSL STILL DOWN
 
 - 2026-10-29..31 / Claude (Opus 5.5). Branch `fix/release-readiness-20261026`,
-  clone `C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
+  clone `C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`, PR #94.
   Continues BW-PASS3-20261028 (its open items stand unless updated here).
 
 ### Done (commit: what, evidence)
@@ -2364,7 +3041,7 @@
   bars, quiet footer tools, owner check above its notes (in view at all
   four sizes, five languages), Pick leads with disks, roomy review card;
   gallery and helper mirror it. Local (Windows harness, scratch
-  `C:/Users/Jack/dev/beamo-wipe-pass3-scratch-20261028/per`):
+  `C:/Users/USERNAME/dev/beamo-wipe-pass3-scratch-20261028/per`):
   modern_layout+ui_polish 81 PASS, pick_row_fit 24, header_caption 98
   (+1 Tk-load flake), ui_fit 262, adaptive 91 (one test hangs on Windows
   on the frozen base too), gallery/helper/UI-system 215, ruff 0.9.2 and
@@ -2432,7 +3109,7 @@
 Owner request: "It still needs a bit of modernization. Go ahead and run
 another very thorough and comprehensive pass of this." Repo
 `beamo-wipe`, branch `fix/release-readiness-20261026`, readiness clone
-`C:/Users/Jack/dev/BeamoTech/beamo-wipe-readiness-20261026`.
+`C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-readiness-20261026`.
 
 - DONE locally (commit after this note on the same branch):
   - lighter secondary button edge (`BUTTON_EDGE`);
@@ -2514,7 +3191,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented and committed as `adaaef1` on branch
   `feat/qr-erase-summary-127` (worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`). Base: PR #94
   head `9c16e13` plus local docs commits `0f8f5e0`, `fdaaa44`, `13322c1`.
   2026-11-02, Claude. NOT Done: the Linux/hosted gate, phone-camera scans
   and native-speaker review are open, and nothing is on main. It depends on
@@ -2607,7 +3284,7 @@ another very thorough and comprehensive pass of this." Repo
   - browser-preview screenshot (Windows demo disks are not eligible); its
     content is covered by `test_gallery_preview_shows_the_sample_record`.
 - Screenshots (scratch, not committed):
-  `C:\Users\Jack\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
+  `C:\Users\USERNAME\dev\BeamoTech\qr127-scratch-20261101\shots-before\` and
   `shots-after\`.
 - NEXT (owner chooses):
   1. Fold this commit into PR #94, or open it as a PR after #94 merges. The
@@ -2622,7 +3299,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented on branch `feat/single-erase-warning-128` (stacked on
   `feat/qr-erase-summary-127` at `2a79067`, which sits on PR #94 head `9c16e13`),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`.
   2026-11-02, Claude. NOT Done: the Linux 72 DPI suite, GTK/Orca runtime and
   ISO/QEMU gate have not run, the translations need native review, and
   nothing is on main (it depends on unmerged PR #94 and #127).
@@ -2712,7 +3389,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - Status: implemented on branch `feat/serial-suffix-token-129`, stacked on
   `feat/single-erase-warning-128` (`39316c9`) -> #127 -> PR #94 `9c16e13`;
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`.
   2026-11-02, Claude. SAFETY change (confirmation token): `safety:` commit.
   NOT Done: Linux 72 DPI suite, GTK/Orca runtime, ISO build and the QEMU
   gate (whose guest helper derives the token) have not run; translations
@@ -2842,7 +3519,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/step-progress-130` (stacked on
   `feat/serial-suffix-token-129` @ 946c622), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #130
   (UI review item 4) with #138 (one set of names) and #166 (Review last
   before Erase); #138/#166 are not recorded in this repo.
 - Owner decision (2026-11-02, in chat): sub-steps, keeping the three stages
@@ -2884,7 +3561,7 @@ another very thorough and comprehensive pass of this." Repo
   private); the rest pass alone or fail identically on the baseline
   (export worker st_rdev, canvas progress). ruff (CI selections), mypy
   --platform linux, compileall pass. Screenshots
-  `C:\Users\Jack\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
+  `C:\Users\USERNAME\dev\BeamoTech\step130-scratch-20261102\shots-{before,after}\`,
   console/GTK text `console-{before,after}.txt`.
 - Not run here: GTK/Orca runtime test (no gi), full pytest on Linux at
   72 DPI, ISO/QEMU, web preview in a browser (payload checked by test).
@@ -2898,7 +3575,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/language-first-131` (stacked
   on `feat/step-progress-130` @ 979b5ff), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #131
   (UI review item 5); #139/#140/#155 are not recorded in this repo.
 - What changed: `keyboard.LANGUAGE_LAYOUTS` (en->us, fr->fr, de->de,
   es->es, it->it; shipped layouts only) and `LANGUAGE_ALTERNATIVE_LAYOUTS`
@@ -2945,7 +3622,7 @@ another very thorough and comprehensive pass of this." Repo
   flakes (pass alone), Windows cp1252 source reads (pass with UTF-8, as on
   Linux) or the sparse checkout without docs/evidence (environment). ruff
   (CI selections), mypy --platform linux, compileall pass. Screenshots
-  `C:\Users\Jack\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
+  `C:\Users\USERNAME\dev\BeamoTech\lang131-scratch-20261102\shots-{before,after}\`,
   console `console-before.txt`.
 - NOT DONE: Orca speaking in the chosen language. Bookworm's Orca 43 speaks
   with its configured voice; the live image has no locale data, and
@@ -2961,7 +3638,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-02, Claude (Opus 5.5). Branch `feat/working-screen-132` (stacked
   on `feat/language-first-131` @ e319a6c), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #132
   (UI review item 6). Ref #133/#167/#168 are not recorded in this repo; not
   implemented here (the sound toggle already sits on Working).
 - What changed: shared `ProgressView` glance in progress.py
@@ -3026,7 +3703,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/finish-sound-133` (stacked on
   `feat/working-screen-132` @ d1ec2a3), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #133
   (UI review item 7). Ref #168 (screen stays lit) not in this repo; not done.
 - Design: the existing design ties one session setting (`sounds_enabled`)
   to the outcome sound, so the Working toggle "Play a sound when it's
@@ -3078,7 +3755,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/plain-result-134` (stacked on
   `feat/finish-sound-133` @ 572d35d), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #134
   (UI review item 8). Refs #170/#171/#172 are coordination only (not in this
   repo's backlog record; not done). Proposal recorded first (9ea6d68).
 - OWNER APPROVAL (2026-11-03, in chat): "I approve it all, just do whatever is
@@ -3160,7 +3837,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/report-panel-135` (stacked on
   `feat/plain-result-134` @ 1d69a67), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #135
   (UI review item 9). Refs #127/#145/#153/#175 coordination only.
 - WHAT CHANGED: the result footer keeps two actions (Erase another disk,
   Shut down; preview: Close preview, Run again). Report saving is a
@@ -3249,7 +3926,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/refresh-guard-136` (stacked on
   `feat/report-panel-135` @ 05161a5), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-readiness-20261026`. Backlog #136
   (UI review item 10). Safety-adjacent: `safety:` commit.
 - BASELINE (05161a5): the utility showed on What/Owner (no disk list); the
   Check disks again screen from Review/Confirm focused "Check disks again",
@@ -3316,7 +3993,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/start-line-137` (stacked on
   `feat/refresh-guard-136` @ c856f2b), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-137-20261103`. Backlog #137 (UI
   review item 11); Refs #138/#181 coordination.
 - WHAT CHANGED: `copy.SPLASH_TAGLINE` "You already started from this USB.
   Next you will pick a disk to erase." -> "Erase a disk in a few steps.
@@ -3347,7 +4024,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/stage-names-138` (stacked on
   `feat/start-line-137` @ 57bac5a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-138-20261103`. Backlog #138 (UI
   review item 12); decided with #130 (step bar) and #166 (Review last before
   Erase); #180 coordination only.
 - BASELINE: header = stages Preparation/Erase/Result (stepper >=1000 px,
@@ -3391,7 +4068,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/setup-order-139` (stacked on
   `feat/stage-names-138` @ 126bd2a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-139-20261103`. Backlog #139 (UI
   review item 13); #131/#140/#141/#142 coordination only (not changed).
 - BASELINE (126bd2a): Tk showed language picker, then the "Check your
   keyboard" heading, lead and limits, then text size, then layouts and the
@@ -3426,7 +4103,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-check-140` (stacked on
   `feat/setup-order-139` @ 9d93be5), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-140-20261103`. Backlog #140 (UI
   review item 14); #131/#139/#155 coordination only.
 - DESIGN: "Optional check: press the key labelled Z here." The active
   layout turns that physical key into a character; Z sits in a different
@@ -3469,7 +4146,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/keyboard-fineprint-141`
   (stacked on `feat/keyboard-check-140` @ 7865ea1), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-141-20261103`. Backlog #141 (UI
   review item 15); Ref #50 (shared Show more).
 - WHAT CHANGED: `copy.KEYBOARD_LIMITS` (wording unchanged) is no longer in
   the keyboard screen's main view. Tk: behind the shared `_more_link` Show
@@ -3498,7 +4175,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/layout-badges-142` (stacked on
   `feat/keyboard-fineprint-141` @ a27ea6f), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-142-20261103`. Backlog #142 (UI
   review item 16); Ref #174 (keyboard-shortcuts help) not built in this repo,
   so the shortcut is documented in the screen's key hint and docs.
 - WHAT CHANGED: Tk builds a 1-7 key-cap per layout card but packs it only
@@ -3530,7 +4207,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/owner-reason-143` (stacked on
   `feat/layout-badges-142`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-143-20261103`. Backlog #143 (UI
   review item 17). Ref #178 (improved disabled-button style) is not in this
   repo: the existing DISABLED_BG/FG style is kept; adopt #178 when it lands.
 - WHAT CHANGED: new `copy.OWNER_CONTINUE_REASON` "Tick the box above to
@@ -3556,7 +4233,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/power-badge-144` (stacked on
   `feat/owner-reason-143`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-144-20261103`. Backlog #144 (UI
   review item 18); Ref #165/#183 (erase-time power warnings) unchanged;
   Ref #175 coordination only.
 - WHAT CHANGED: `power.PowerStatus.badge` -> PowerBadge(kind, text) with
@@ -3606,7 +4283,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/report-teaser-145` (stacked on
   `feat/power-badge-144` @ e6ff9c4), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-145-20261103`. Backlog #145 (UI
   review item 19); Ref #127 shipped (photo option leads), #135 panel;
   #25 confirm-before-discarding unchanged.
 - WHAT CHANGED: `copy.REPORT_MEDIA_WHAT` (same key, new text): "Want a
@@ -3643,7 +4320,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/compat-showmore-146` (stacked
   on `feat/report-teaser-145` @ 7c0a793), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-146-20261103`. Backlog #146.
 - WHY: in the live wizard the PC has already started from this USB, so
   "For 64-bit Intel/AMD Windows or Linux PCs that start from this USB. Not
   Apple Silicon Macs. Not Chromebooks." is pre-boot guidance. docs/claims.md
@@ -3695,7 +4372,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-03, Claude (Opus 5.5). Branch `feat/partition-names-147` (stacked
   on `feat/compat-showmore-146` @ aabf550), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-147-20261103`. Backlog #147 (UI
   review item 21); coordinates with #149 (one-line rows: the summary is one
   line) and #154 (BitLocker/LUKS named "BitLocker encrypted"/"LUKS
   encrypted"; nothing else of #154 implemented).
@@ -3802,7 +4479,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-once-148` (stacked on
   `feat/partition-names-147` @ 1a2dc42), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-148-20261104`. Backlog #148 (UI
   review item 22). Ref #129 (token marks on Confirm) unchanged; #152 and
   #177 are not in the repo or backlog: the existing [bracket] comparison
   mark is kept as the distinguishing-characters highlight.
@@ -3856,7 +4533,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/compact-rows-149` (stacked on
   `feat/serial-once-148` @ 0b54fa4), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-149-20261104`. Backlog #149 (UI
   review item 23). Coordinates with #147 (summary on the collapsed row),
   #148 (serial once, on the expanded card); #150/#151 not implemented.
 - WHY: at 800x600 only about 1.5 disk cards were visible (six-disk fake
@@ -3935,7 +4612,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/review-on-activate-150`
   (stacked on `feat/compact-rows-149` @ 54f8c81), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-150-20261104`. Backlog #150 (UI
   review item 24). Ref #149 (compact rows: the row a double-click starts on
   expands, so the second press is matched by disk, not by position).
 - BASELINE: Tk Enter with a disk selected already ran continue_pick
@@ -4029,7 +4706,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/disk-order-151` (stacked on
   `feat/review-on-activate-150`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-151-20261104`. Backlog #151 (UI
   review item 25). Ref #149 (compact rows; Up/Down by disk identity).
 - BASELINE: every view sorted eligible disks by device path (Tk rows,
   GTK buttons, curses blocks, plain console numbers, Compare disks "Disk
@@ -4100,7 +4777,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/serial-diff-152` (stacked on
   `feat/disk-order-151`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-152-20261104`. Backlog #152 (UI
   review item 26). Ref #66 (distinguishing logic), #129 (Confirm token marks,
   unchanged), #148 (serial once; this closes its pairwise follow-up).
 - BASELINE (scratch work152-scratch-20261104/before, fixture-lookalike.json):
@@ -4176,7 +4853,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `fix/key-hints-153` (stacked on
   `feat/serial-diff-152`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-153-20261104`. Backlog #153 (UI
   review item 27). Ref #174 (not implemented here).
 - BASELINE (scratch work153-scratch-20261104/before, web-before-*.png,
   web-hint-before-zoom.png): Tk (roomy windows) and the web preview render
@@ -4232,7 +4909,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/encrypted-tag-154` (stacked on
   `fix/key-hints-153`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-154-20261104`. Backlog #154 (UI
   review item 28). Ref #147 (contents line, FORMAT_BITLOCKER/FORMAT_LUKS).
 - BASELINE (scratch work154-scratch-20261104/before, fixture154.py): no
   view tagged encryption; only the #147 summary said "Windows (BitLocker
@@ -4284,7 +4961,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/confirm-layout-hint-155`
   (stacked on `feat/encrypted-tag-154`), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-155-20261104`. Backlog #155 (UI
   review item 29). Ref #140 (keyboard check), #156 (token comparison, not
   changed here).
 - BASELINE (scratch work155-scratch-20261104/before): Confirm always showed
@@ -4361,7 +5038,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-04, Claude (Opus 5.5). Branch `feat/token-feedback-156` (stacked
   on `feat/confirm-layout-hint-155` @ 9e94fc7), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-156-20261104`. Backlog #156 (UI
   review item 30). Ref #129 (card token), #155 (timing of the help).
 - RULE (documented in docs/screens.md "Comparison (#156)", decided with
   #129 and unchanged here): safety.token_matches strips leading/trailing
@@ -4412,7 +5089,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/confirm-spacing-157` (stacked
   on `feat/token-feedback-156` @ 5680c3e), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-157-20261104`. Backlog #157 (UI
   review item 31). Ref #128 (warning), #155 (help after a wrong entry),
   #156 (feedback).
 - BASELINE (work157-scratch-20261104/before, metrics.txt): on roomy windows
@@ -4464,7 +5141,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Backlog #158 (UI review item 32). Branch
   `feat/method-limits-line-158` (no commits; @ d55220e), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-158-20261105` (clean; the
   measurement prototype was reverted). Scratch:
   `work158-scratch-20261105` (shots158.py; before/, opt-base/, opt-A/,
   opt-B/, opt-C/ with metrics.txt and screenshots).
@@ -4511,7 +5188,7 @@ another very thorough and comprehensive pass of this." Repo
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/method-cards-159` (stacked
   on `fix/confirm-spacing-157` @ 595224a; commits 741e417 feat, 2a0fa29
   fix), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-159-20261105`. Backlog #159 (UI
   review item 33). Ref #158 (above), #160, #161.
 - BASELINE (work159-scratch-20261105/before, metrics.txt): each card had
   five to seven lines (sentence, overwrite count, check, rough guide, extra
@@ -4582,7 +5259,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/everyday-caveat-160`
   (stacked on `feat/method-cards-159` @ 0205571; commit 18cfe5a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-160-20261105`. Backlog #160 (UI
   review item 34). Ref #158 (proposal, owner decision pending), #159.
 - CLAIMS CHECK: docs/claims.md and docs/storage-and-controller-limits.md do
   not require copy.EVERYDAY_LIMITS ("This checks only storage the disk
@@ -4635,7 +5312,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/rarely-needed-161` (stacked
   on `feat/everyday-caveat-160` @ cec9ecf; commit a8f2a2c), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-161-20261105`. Backlog #161 (UI
   review item 35). Ref #159.
 - OWNER SIGN-OFF REQUIRED (task requirement; not yet given): the English
   copy below. Do not merge #161 until the owner approves it or supplies
@@ -4693,7 +5370,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/countdown-copy-162` (stacked
   on `feat/rarely-needed-161` @ bae2823; commit beab555 safety:), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-162-20261105`. Backlog #162 (UI
   review item 36). Ref #163 (not implemented here).
 - BASELINE: copy.LAST_LEAD "Check the selected disk and method. The
   countdown never starts erasure." (FR/DE/ES/IT equivalents), read by Tk,
@@ -4738,7 +5415,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/countdown-ready-163`
   (stacked on `fix/countdown-copy-162` @ f798714; commit e7d7e06 safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-163-20261105`. Backlog
   #163 (UI review item 37). Ref #162.
 - BASELINE (work163-scratch-20261105/before, metrics.txt): at zero the Tk
   ring showed "0" (PRIMARY) with COUNTDOWN_READY beside it; GTK only
@@ -4790,7 +5467,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/review-method-once-164`
   (stacked on `feat/countdown-ready-163` @ 3beb2c2; commit d0415be safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-164-20261105`. Backlog
   #164 (UI review item 38). Keeps #33's operation summaries intact.
 - BASELINE (work164-scratch-20261105/before, console-before.txt): Review
   showed "One overwrite, followed by verification." and "Everyday: 1
@@ -4843,7 +5520,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `safety/review-enter-focus-165`
   (stacked on `fix/review-method-once-164` @ dbe5793; commit 1603a08 safety:),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-165-20261105`. Backlog
   #165 (UI review item 39), SAFETY-SENSITIVE. Ref #49 (Enter activates only
   the focused control), #162.
 - CURRENT BEHAVIOUR DOCUMENTED (before):
@@ -4912,7 +5589,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/final-check-step-166`
   (stacked on `safety/review-enter-focus-165` @ 2e1c48a; commit ef88356),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-166-20261105`. Backlog
   #166 (UI review item 40). Ref #130, #138.
 - BASELINE (work164-scratch-20261105/before/last-en-standard-1280x820-*):
   the header said "Step 6 of 6 · Review" beside the stepper with
@@ -4948,7 +5625,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/working-times-167` (stacked
   on `fix/final-check-step-166` @ 4c3465b; commit 2d5bde9), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-167-20261105`. Backlog #167 (UI
   review item 41). Ref #36 (clock confidence), #132 (glance), #133.
 - OWNER QUESTION (asked 2026-11-05, unanswered): may the OS clock ever be
   treated as trusted for Working's clock times? Existing logic never trusts
@@ -5001,7 +5678,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/screen-awake-168` (stacked
   on `feat/working-times-167` @ f3e6b72; commit 33a7278), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-168-20261105`. Backlog #168 (UI
   review item 42). Ref #39 (SleepInhibit), #132, #133.
 - WHERE BLANKING COMES FROM: packaging/live/.../etc/X11/xorg.conf.d/
   10-beamo.conf (ServerFlags BlankTime 10, Standby/Suspend/OffTime 0) and
@@ -5050,7 +5727,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/result-hints-169` (stacked on
   `feat/screen-awake-168` @ eb07f50; commit 58ef52d), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-169-20261105`. Backlog #169 (UI
   review item 43). Ref #174.
 - BEHAVIOUR DOCUMENTED (before): Tk preview result: Enter runs the preview
   again (accept_done_keyboard -> reset_for_preview), Esc does nothing
@@ -5085,7 +5762,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/report-notice-170` (stacked on
   `fix/result-hints-169` @ 0db2331; commit 4c6213a), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-170-20261105`. Backlog #170 (UI
   review item 44). Ref #96 (separation), #135 (report panel).
 - BASELINE (work170-scratch-20261105/before): every report panel state
   (ready, failed/unavailable, saved) showed "Saving or checking a report
@@ -5122,7 +5799,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/result-card-171` (stacked on
   `fix/report-notice-170` @ f4b5cfa; commit 937da72), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-171-20261105`. Backlog #171 (UI
   review item 45). Ref #127 (photo record), #134, #172.
 - BASELINE (work171-scratch-20261105/before): the result screen showed the
   "This disk" card, then (after the report panel) the method line again
@@ -5172,7 +5849,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/help-settings-menu-175`
   (stacked on `feat/result-card-171` @ a39794d; commit 9548946, `safety:`),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-175-20261105`. Backlog
   #175 (UI review item 49). Ref #135, #144, #174, #179.
 - BASELINE (work175-scratch-20261105/before, metrics.txt): footer tools
   changed per screen — Owner: Keyboard layout, Text size, Need a report?;
@@ -5340,7 +6017,7 @@ another very thorough and comprehensive pass of this." Repo
   shop.certum.eu/code-signing.html; ssl.com/guide/esigner-pricing-for-code-signing.
 - 2026-11-09, Claude (Opus 5.5), research sub-agent. Owner direction
   2026-11-10: prepare so only the purchase remains. LOCAL ONLY, uncommitted, in
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110` (branch
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-dec-20261110` (branch
   `fix/owner-decisions-20261110` = origin/main d1c8508). Nothing bought, no
   account, no secret, no push, no hosted run.
   * DECISION RECORDED in `docs/code-signing.md`: Microsoft Artifact Signing
@@ -5368,7 +6045,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/layout-hint-build-155`
   (stacked on `feat/help-settings-menu-175` @ 27f4f0b; commit 25362d9),
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-155b-20261105`.
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-155b-20261105`.
   Regression from #155 found during #171.
 - WHAT CHANGED: tk_wizard._confirm keeps an empty hint frame;
   _sync_layout_hint builds the sentence + Change (_build_layout_hint) when
@@ -5385,7 +6062,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/result-balance-172` (stacked
   on `fix/layout-hint-build-155` @ 2e5c3e7; commit a00a936), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-172-20261105`. Backlog #172
   (UI review item 46). Ref #134, #135, #171.
 - BASELINE (work172-scratch-20261105/before, before-preview): every live
   result scrolls (content 1,165–1,708 px in a 403–855 px view, 800x600 to
@@ -5416,7 +6093,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `fix/footer-align-173` (stacked on
   `fix/result-balance-172` @ 1a1ef13; commit 9c3e7ba), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-173-20261105`. Backlog #173
   (UI review item 47). Ref #174, #175.
 - BASELINE (work173-scratch-20261105/before/metrics.txt): link text vs hint
   start offset -11 px (text hint) / -14 px (hint starting with a key-cap)
@@ -5442,7 +6119,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/shortcuts-collapse-174`
   (stacked on `fix/footer-align-173` @ 01cb4e6; commit dbf3574), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-174-20261105`. Backlog #174
   (UI review item 48). Ref #173, #175, #142.
 - DECISION: collapse (not "hints after the first key press"): one footer
   height (no row appearing under the pointer), two rows on every screen;
@@ -5479,7 +6156,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/selected-style-176` (stacked
   on `feat/shortcuts-collapse-174` @ 76c8eff; commit a2461f9), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-176-20261105`. Backlog #176
   (UI review item 50). Ref #179 (high contrast can swap the token).
 - BASELINE (work176-scratch-20261105/before): radio dot + edge on cards,
   filled navy pill in the size switch, edge-only language chips; web
@@ -5508,7 +6185,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/serial-type-177` (stacked on
   `feat/selected-style-176` @ 8a7dd36; commit acd2517), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-177-20261105`. Backlog #177
   (UI review item 51). Ref #129, #148, #152.
 - FONT: the live image ships fonts-dejavu-core; _mono_family picks DejaVu
   Sans Mono first. Rendered DejaVu Sans Mono 2.37.3 (jsDelivr npm
@@ -5542,7 +6219,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/disabled-buttons-178` (stacked
   on `feat/serial-type-177` @ 5ff66a2; commit 17afdf8), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-178-20261105`. Backlog #178 (UI
   review item 52). Ref #143, #179.
 - BASELINE (work178-scratch-20261105/before/metrics.txt): disabled primary
   = DISABLED_BG #E8ECF1 / DISABLED_FG #6E7989, no outline — label 3.72:1,
@@ -5587,7 +6264,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-05, Claude (Opus 5.5). Branch `feat/high-contrast-179` (stacked
   on `feat/disabled-buttons-178` @ e60c7fa; commit dfd8786), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-179-20261105`. Backlog #179 (UI
   review item 53). Enables the #175 Help & settings item.
 - BASELINE: no theme; the Help & settings High contrast item was greyed
   ("not in this version"). Screens: work179-scratch-20261105/std178
@@ -5652,7 +6329,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-06, Claude (Opus 5.5). Branch `feat/one-name-180` (stacked on
   `feat/high-contrast-179` @ 16e45f2; commit e339343), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-180-20261105`. Backlog #180.
 - BASELINE (work180-scratch-20261105/lint_before.txt, scan1/scan2.txt):
   120 banned-synonym hits on English surfaces — boot/live/original/Beamo
   boot USB for the Beamo USB, wipe for erase, PC/machine for computer,
@@ -5700,7 +6377,7 @@ another very thorough and comprehensive pass of this." Repo
 
 - 2026-11-06, Claude (Opus 5.5). Branch `feat/owner-carryover-187` (stacked
   on `feat/one-name-180` @ 065a8dd; record only), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-187-20261106`. Backlog #187 (UI
   review item 61). Safety-sensitive: any change to owner_ok persistence is
   a gate change (`safety:` commit, focused tests, owner approval).
 - BASELINE (code read on 065a8dd; screens
@@ -5845,7 +6522,7 @@ another very thorough and comprehensive pass of this." Repo
 - 2026-11-07, Claude (Opus 5.5). Branch `integrate/ui-review-20261107`
   (from `feat/owner-carryover-187` @ 699825a, which contains every pushed
   task branch #127–#187), worktree
-  `C:\Users\Jack\dev\BeamoTech\beamo-wipe-int-20261107`.
+  `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-int-20261107`.
 - OWNER DECISIONS (given in chat 2026-11-07, by AskUserQuestion):
   * #158: option B — one SSD limits line between the disk card and the
     method cards, full text under Show more; re-measure on top of #159.
@@ -5891,7 +6568,7 @@ another very thorough and comprehensive pass of this." Repo
     intact in beamo-wipe-{158,177g,180f,184,185,186}-20261107. #183 had
     not started. The lead scratchpad with the task texts was deleted in
     the disk cleanup; texts were recovered verbatim from the subagent
-    transcripts to C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\
+    transcripts to C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\
     (with RESUME.md). All six restarted 2026-11-08 ~21:45Z as delegated
     tasks to finish from the existing worktrees.
   * LINUX TRIAGE (2026-11-08): the isolated rerun reproduced 294 of the 295
@@ -5900,7 +6577,7 @@ another very thorough and comprehensive pass of this." Repo
     on native Windows, where test_tk_runtime, test_adaptive_layout, the
     GTK runtime and termios console tests are skipped, so pins drifted
     across the stack. Logs copied to
-    C:\Users\Jack\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
+    C:\Users\USERNAME\dev\BeamoTech\linux-triage-20261108\ (BRIEF.md,
     rerun.log, rerun.ids, main.log, top.log). Three delegated triage
     branches started: fix/linux-tk-20261108, fix/linux-console-20261108,
     fix/linux-gtkweb-20261108 (WSL runs serialised by
@@ -5976,7 +6653,7 @@ another very thorough and comprehensive pass of this." Repo
   fixtures tests/fixtures/pci_185/. Fail before, pass after on Windows.
 - CHECKS (Windows): ruff, mypy pass; 51 focused files: failure ids
   identical to base (88 env failures).
-- SCREENS: C:\Users\Jack\dev\BeamoTech\work185-scratch-20261107\shots\.
+- SCREENS: C:\Users\USERNAME\dev\BeamoTech\work185-scratch-20261107\shots\.
 - NOT VERIFIED: GTK runtime, real sysfs-tree tests, Linux 72 DPI, real
   VMD/RST hardware or ISO boot (the live image has no lspci; sysfs only).
 - OWNER QUESTIONS: approve "computer's"; show the hint when vmd is bound
@@ -6327,7 +7004,7 @@ another very thorough and comprehensive pass of this." Repo
   hosted evidence stay exact; fold it into the PR with the next real push.
 - Notion: DEFERRED. No Notion connector/API in this session; old UI
   automation is gone and mis-pasted on 2026-11-07. Ready-to-paste notes:
-  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md
   (#158, #181, #183, #184, #185, #186 -> Done; #182 stays deferred, owner
   chose unsigned; #116 stays blocked).
 - STILL BLOCKED / OPEN: #183 Windows 10/11 VM acceptance (no VM
@@ -6363,7 +7040,7 @@ another very thorough and comprehensive pass of this." Repo
   Claude Docs "notion" export format). The T3 preview browser's default
   profile redirects https://www.notion.so to /login (not signed in);
   signing in needs Jack. Notes stay ready to paste in
-  C:\Users\Jack\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261109.md.
 
 ### BW-NOTION-20261109 (Claude, 2026-11-09) — Notion updates applied
 
@@ -6419,7 +7096,7 @@ another very thorough and comprehensive pass of this." Repo
   option on every wording/decision item and record it; fix or rebut the 9
   older CodeQL alerts; prepare #182 to purchase-only; build the #116
   physical packet. Branch `fix/owner-decisions-20261110` from main d1c8508,
-  worktree `C:\Users\Jack\dev\BeamoTech\beamo-wipe-dec-20261110`. The two
+  worktree `C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-dec-20261110`. The two
   sub-agent entries above (BW-182 dated note, BW-116-PACKET) say
   "uncommitted": their files are now committed on this branch (fef92745,
   c7adb3ee, 586367a7); the compatibility-matrix and runbook links were added.

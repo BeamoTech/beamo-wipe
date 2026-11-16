@@ -355,6 +355,11 @@ def _ready_wizard(monkeypatch, *, probe=None, exporter=None, clock=None):
     base = make_demo_wizard()
     wiz = Wizard(base.discovery, base.runner, clock=clock, dry_run=False,
                  report_exporter=exporter, report_usb_probe=probe)
+    # Live sessions now always ask whether a pinned engine still runs (power
+    # safety no longer depends on the runner type); none runs in this fixture.
+    monkeypatch.setattr(
+        "beamo_wipe.nwipe_runner.pinned_nwipe_already_running", lambda **_k: False
+    )
     wiz.preview = False
     wiz.screen = Screen.DONE
     wiz.selected = wiz.discovery.selectable[0]
