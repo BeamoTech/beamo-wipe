@@ -8,6 +8,8 @@ import sys
 
 import pytest
 
+from fake_tool_shebang import python_shebang
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -19,7 +21,7 @@ def test_parallel_sources_waits_for_every_gate_and_propagates_failure(tmp_path, 
     uname.write_text("#!/bin/sh\necho 'Linux x86_64'\n")
     uname.chmod(0o755)
     docker = tools / "docker"
-    docker.write_text(f"#!{sys.executable}\n" + '''
+    docker.write_text(python_shebang() + '''
 import json, os, pathlib, sys, time
 root = pathlib.Path(os.environ['FAKE_OUTPUT'])
 gate = sys.argv[-1]
@@ -77,7 +79,7 @@ def test_kvm_preflight_checks_privileged_api_not_runner_permissions(tmp_path, pr
     (tools / "grep").write_text("#!/bin/sh\nexit 0\n")
     # No KVM device exists on this fixture host. sudo represents the isolated
     # worker's privileged view, where the device exists but its API may fail.
-    (tools / "sudo").write_text(f"#!{sys.executable}\n" + '''
+    (tools / "sudo").write_text(python_shebang() + '''
 import os, pathlib, sys
 if sys.argv[1:] in (['test', '-c', '/dev/kvm'], ['test', '-c', '/dev/loop-control']):
     raise SystemExit(0)
@@ -107,7 +109,7 @@ def test_loop_pool_prepares_concurrent_nodes_and_cleans_only_owned_files(tmp_pat
     state = tmp_path / "loops.json"
     state.write_text(json.dumps({"loops": {}, "peak": 0, "files": []}))
     command = tools / "losetup"
-    command.write_text(f"#!{sys.executable}\n" + '''
+    command.write_text(python_shebang() + '''
 import json, os, pathlib, sys
 path = pathlib.Path(os.environ['LOOP_STATE'])
 state = json.loads(path.read_text())
@@ -136,9 +138,12 @@ path.write_text(json.dumps(state))
     command.chmod(0o755)
     shell = (ROOT / "scripts/check-ci-kvm.sh").read_text()
     code = shell.split("sudo python3 - <<'PY'\n")[2].split("\nPY", 1)[0]
+    # The probe is the shipped privileged code. Its PATH holds only the fake:
+    # if the fake cannot start, losetup is simply not found. Never let the
+    # search reach the real losetup (bug audit pass 16 incident review).
     result = subprocess.run(
         [sys.executable, "-c", code],
-        env=dict(os.environ, PATH=str(tools) + os.pathsep + os.environ["PATH"],
+        env=dict(os.environ, PATH=str(tools),
                  TMPDIR=str(tmp_path), LOOP_STATE=str(state), LOOP_FAILURE=failure),
         capture_output=True, text=True, timeout=15,
     )
@@ -244,7 +249,7 @@ def test_pytest_groups_overlap_isolate_runtime_and_wait_for_both(tmp_path, faile
     output = tmp_path / "output"
     output.mkdir()
     session = tools / "dbus-run-session"
-    session.write_text(f"#!{sys.executable}\n" + '''
+    session.write_text(python_shebang() + '''
 import json, os, pathlib, sys, time
 import xml.etree.ElementTree as ET
 out = pathlib.Path(os.environ['FAKE_OUTPUT'])
