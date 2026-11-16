@@ -1439,6 +1439,60 @@ send_key_for_marker() {
   wait_for_new_marker "$label" "$marker" "$prior" "$limit"
 }
 
+# Start the erase with one Return press on the explicitly focused Erase now.
+#
+# Hosted runs 41528619370 and 43920534790 (attempts 1 and 2) lost the
+# release of this press. In every passing journey the guest acknowledged it
+# between the first Working draw and Working's own redraw once the erase
+# launched. In each failure the key-up, sent only after the 1 s serial poll
+# saw Working, arrived after that redraw and Tk never acknowledged it.
+# Re-sending key-up cannot recover a lost release: the guest kernel ignores a
+# release for a key it already counts as up. So release as soon as the guest
+# proves it accepted this one press (RETURN_RESULT_CHECKING: exactly one
+# advance, erase not launched yet), polled every 0.1 s, while the screen is
+# stable. The fresh release acknowledgement stays mandatory, Working must
+# still follow, and the press is never repeated.
+start_erase_with_return() {
+  local label="$1" qmp_socket="$2" limit="${3:-20}" release_limit="${4:-20}"
+  local accepted_marker=BEAMO_WIPE_RETURN_RESULT_CHECKING
+  local release_marker=BEAMO_WIPE_KEY_RETURN_RELEASED
+  local accepted_prior working_prior release_prior accepted=0
+  accepted_prior="$(marker_count "$label" "$accepted_marker")"
+  working_prior="$(marker_count "$label" BEAMO_WIPE_SCREEN_WORKING)"
+  qmp_request "$qmp_socket" key-down ret
+  for _poll in $(seq 1 $((limit * 10))); do
+    if [[ "$(marker_count "$label" "$accepted_marker")" -gt "$accepted_prior" ]]; then
+      accepted=1
+      break
+    fi
+    sleep 0.1
+  done
+  release_prior="$(marker_count "$label" "$release_marker")"
+  qmp_request "$qmp_socket" key-up ret
+  if [[ "$accepted" != 1 ]]; then
+    report_marker_summary "$label"
+    capture_guest_screen "$label"
+    echo "QEMU $label never emitted a new exact marker $accepted_marker" >&2
+    return 1
+  fi
+  printf 'QEMU %s reached new marker %s\n' "$label" "$accepted_marker" >&2
+  for release_attempt in $(seq 1 "$release_limit"); do
+    if [[ "$(marker_count "$label" "$release_marker")" -gt "$release_prior" ]]; then
+      wait_for_new_marker "$label" BEAMO_WIPE_SCREEN_WORKING "$working_prior" "$limit"
+      return
+    fi
+    if [[ "$release_attempt" == 5 || "$release_attempt" == 10 ]]; then
+      qmp_request "$qmp_socket" key-up ret
+    fi
+    sleep 1
+  done
+  if ! wait_for_new_marker "$label" "$release_marker" "$release_prior" 1; then
+    capture_guest_screen "$label"
+    return 1
+  fi
+  wait_for_new_marker "$label" BEAMO_WIPE_SCREEN_WORKING "$working_prior" "$limit"
+}
+
 type_token_for_marker() {
   local label="$1" qmp_socket="$2" token="$3" marker="$4" limit="$5" index
   if [[ ! "$token" =~ ^[0-9]+$ ]]; then
@@ -1532,7 +1586,7 @@ drive_report_export() {
   # The final screen starts with Back focused. Explicitly select Erase now;
   # Return follows focus and must never erase from the safe default button.
   send_key "$qmp_socket" tab
-  send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_WORKING 20
+  start_erase_with_return "$label" "$qmp_socket" 20
   wait_for_marker "$label" BEAMO_WIPE_SCREEN_DONE "$done_limit"
 
   # device_add is deliberately after DONE: the export selector accepts only a
