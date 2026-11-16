@@ -463,18 +463,18 @@
         </ol>
         <details>
           <summary>Détail technique</summary>
-          <p>Le lanceur vérifie seulement la clé USB d’origine, la lisibilité des réglages de démarrage et l’existence d’un redémarrage pris en charge. Ces vérifications n’assurent pas que la clé USB démarrera. Pour suivre les étapes de démarrage, il suffit d’ouvrir cette page dans un navigateur depuis la clé USB. Après le démarrage, la récupération ne peut ni identifier les disques ni confirmer un résultat d’effacement.</p>
+          <p>Le lanceur vérifie seulement la clé USB Beamo, la lisibilité des réglages de démarrage et l’existence d’un redémarrage pris en charge. Ces vérifications n’assurent pas que la clé USB démarrera. Pour suivre les étapes de démarrage, il suffit d’ouvrir cette page dans un navigateur depuis la clé USB. Après le démarrage, la récupération ne peut ni identifier les disques ni confirmer un résultat d’effacement.</p>
         </details>
         <p><a class="back" href="#guide">Revenir aux problèmes</a></p>
       </article>
     </div>
     <div class="card">
       <h2>Après le démarrage de cette clé USB</h2>
-      <p>Choisissez un disque → Confirmez son identité → Vérifiez et effacez. Rien n’est effacé avant votre confirmation.</p>
+      <p>Préparation (6 étapes) → Effacement → Résultat. Rien n’est effacé avant que vous choisissiez Effacer maintenant.</p>
     </div>
     <div class="card">
       <h2>Démarrer depuis votre bureau</h2>
-      <p>Sous Windows, ouvrez <strong>Start Beamo Wipe.exe</strong> sur cette clé USB. Sur un bureau Linux pris en charge, ouvrez <strong>Start Beamo Wipe Linux</strong>. Le lanceur affiche des vérifications séparées pour la clé USB d’origine, la lisibilité des réglages de démarrage et la disponibilité d’un redémarrage pris en charge. Chaque vérification explique la suite ; Détails techniques montre les preuves.</p>
+      <p>Sous Windows, ouvrez <strong>Start Beamo Wipe.exe</strong> sur cette clé USB. Sur un bureau Linux pris en charge, ouvrez <strong>Start Beamo Wipe Linux</strong>. Le lanceur affiche des vérifications séparées pour la clé USB Beamo, la lisibilité des réglages de démarrage et la disponibilité d’un redémarrage pris en charge. Chaque vérification explique la suite ; Détails techniques montre les preuves.</p>
       <p>Une vérification non confirmée n’est pas un succès. Sous Windows, enregistrez votre travail et utilisez Redémarrer, puis choisissez cette clé USB dans le menu de démarrage. Sous Windows 10 et 11, le lanceur peut aussi proposer <strong>Restart to boot options</strong> (redémarrer vers les options de démarrage) : Windows redémarre sur ses options de démarrage, puis choisissez <strong>Utiliser un périphérique</strong> et cette clé USB (elle peut s’appeler <strong>EFI USB Device</strong>). Sur un bureau Linux pris en charge, un redémarrage guidé peut être proposé après des vérifications réussies ; une autorisation administrateur peut être nécessaire. Ces vérifications ne garantissent pas que la clé USB démarrera.</p>
       <p>L’ouverture de l’application exige votre action ; brancher la clé USB ne l’exécute pas automatiquement. Des demandes d’autorisation ou de confiance peuvent apparaître. Les réglages de bureau et de montage Linux peuvent empêcher l’exécution directe.</p>
       <p>Le lanceur n’efface rien. L’effacement a lieu après redémarrage sur cette clé USB, où vous choisissez et confirmez le disque. Vous pouvez aussi utiliser les instructions de démarrage ci-dessous sans ouvrir d’application.</p>
@@ -486,7 +486,7 @@
       <table>
         <caption>Exemples uniquement. Votre PC utilise peut-être une autre touche.</caption>
         <thead>
-          <tr><th scope="col">PC</th><th scope="col">Touche habituelle</th></tr>
+          <tr><th scope="col">Marque</th><th scope="col">Touche habituelle</th></tr>
         </thead>
         <tbody>
           <!-- boot-keys:table -->
@@ -506,7 +506,7 @@
     <div class="card warn" id="bitlocker">
       <h2>Si vous pensez réutiliser cette installation Windows</h2>
       <p>Vérifiez que vous pouvez accéder à la clé de récupération BitLocker de ce PC <strong>avant</strong> de modifier le micrologiciel, l’ordre de démarrage, Secure Boot ou les réglages TPM. Ces changements peuvent amener Windows à demander la clé de récupération à 48 chiffres au prochain démarrage.</p>
-      <p>Le support Microsoft ne peut ni récupérer, ni fournir, ni recréer une clé perdue. La clé est peut-être enregistrée avec un compte Microsoft sur un autre appareil, détenue par le service informatique, imprimée ou stockée sur une clé USB enregistrée lors du chiffrement.</p>
+      <p>Le support Microsoft ne peut ni récupérer, ni fournir, ni recréer une clé perdue. La clé est peut-être enregistrée avec un compte Microsoft sur un autre appareil, détenue par le service informatique de votre travail ou de votre école, imprimée, ou enregistrée sur une clé USB lors de l’activation du chiffrement.</p>
       <p>Cette aide ne désactive pas BitLocker, n’extrait pas de clés et ne recommande pas de modifier Secure Boot. Si vous avez encore besoin de ce Windows et ne trouvez pas la clé, ne modifiez pas le micrologiciel. Utilisez plutôt les étapes Windows ci-dessous, un autre port USB ou les instructions de démarrage du constructeur.</p>
     </div>
 
@@ -570,7 +570,7 @@
         <li><strong>Ce que cela signifie pour votre disque</strong> — si quelque chose a été effacé, et ce qu’il ne faut pas supposer.</li>
         <li><strong>Que faire ensuite</strong> — des étapes sûres. Ne contournez pas la protection. Laissez les disques branchés en cas de doute.</li>
       </ol>
-      <p>Les <strong>Détails techniques</strong> (codes de résultat, marqueurs d’exportation, journaux) sont disponibles à la demande. Ils ne remplacent pas les trois sections. Le menu de récupération de la clé USB live après des échecs de démarrage répétés est séparé : son choix Technical details and logs n’est pas cette présentation de l’assistant.</p>
+      <p>Les <strong>Détails techniques</strong> (codes de résultat, marqueurs d’exportation, journaux) sont disponibles à la demande. Ils ne remplacent pas les trois sections. Le menu de récupération de la clé USB Beamo après des échecs de démarrage répétés est séparé : son choix Technical details and logs n’est pas cette présentation de l’assistant.</p>
     </div>
 
     <div class="card">
@@ -580,11 +580,11 @@
       <p>Si cet ordinateur a une batterie, branchez-le sur le secteur avant d’effacer. Gardez le capot ouvert. Une coupure de courant arrête l’effacement. L’écran peut s’éteindre ; appuyez sur une touche ou bougez la souris pour le rallumer. C’est l’affichage, pas la mise en veille.</p>
       <p id="photo-record">Pas de deuxième clé USB ? Après l’effacement, l’écran de résultat affiche un code. Photographiez-le avec votre téléphone pour garder un court résumé du résultat, du disque et de son numéro de série. C’est un résumé, pas un certificat.</p>
       <p>Si vous voulez un rapport ensuite, il vous faut une clé USB FAT32 ou exFAT séparée avec un seul volume (toutes tailles). Gardez-la débranchée jusqu’à ce que l’écran de résultat la demande. Une clé USB déjà branchée ne peut pas servir pour le rapport.</p>
-      <p>La clé USB live demande à Linux d’ignorer la fermeture du capot et un appui bref sur le bouton d’alimentation, et désactive la mise en veille. Le micrologiciel ou un appui prolongé sur ce bouton peuvent quand même arrêter l’effacement. Utilisez Arrêter l’effacement et attendez le résultat avant d’éteindre. Une coupure de courant peut laisser le disque partiellement effacé et faire perdre les rapports non enregistrés ; un effacement interrompu ne reprend pas automatiquement.</p>
+      <p>La clé USB Beamo demande à Linux d’ignorer la fermeture du capot et un appui bref sur le bouton d’alimentation, et désactive la mise en veille. Le micrologiciel ou un appui prolongé sur ce bouton peuvent quand même arrêter l’effacement. Utilisez Arrêter l’effacement et attendez le résultat avant d’éteindre. Une coupure de courant peut laisser le disque partiellement effacé et faire perdre les rapports non enregistrés ; un effacement interrompu ne reprend pas automatiquement.</p>
       <p>Cette aide hors ligne ne peut pas lire l’état de la batterie ni du secteur. L’assistant live affiche les mesures signalées quand elles existent ; une mesure inconnue ne prouve pas que le secteur est branché ni que l’alimentation tiendra.</p>
       <p>Pour PC Windows ou Linux 64 bits Intel/AMD qui démarrent depuis cette clé USB. <strong>Pas les Mac Apple Silicon. Pas les Chromebooks.</strong> Certains Mac Intel peuvent afficher cette clé USB ; beaucoup ne le feront pas.</p>
       <p class="small">Source : <a href="https://github.com/BeamoTech/beamo-wipe">github.com/BeamoTech/beamo-wipe</a></p>
-      <p class="small">L’environnement de récupération Windows, la récupération BitLocker et les emplacements de clé suivent la documentation Microsoft. Les étapes ci-dessus restent disponibles sur cette clé USB, même sans réseau. Références facultatives : <a href="https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment">Windows Recovery Environment</a>, <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11">WinRE technical reference</a>, <a href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview">BitLocker recovery overview</a>, <a href="https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key">Find your BitLocker recovery key</a>.</p>
+      <p class="small">L’environnement de récupération Windows, la récupération BitLocker et les emplacements de clé suivent la documentation Microsoft. Les étapes ci-dessus restent disponibles sur cette clé USB, même sans réseau. Références facultatives (en anglais) : <a href="https://support.microsoft.com/en-us/windows/experience/backup-recovery/windows-recovery-environment">Windows Recovery Environment</a>, <a href="https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference?view=windows-11">WinRE technical reference</a>, <a href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/recovery-overview">BitLocker recovery overview</a>, <a href="https://support.microsoft.com/en-us/windows/security/encryption/find-your-bitlocker-recovery-key">Find your BitLocker recovery key</a>.</p>
     </div>
     <div class="card" id="after-erasing">
       <h2>Si l’ordinateur ne démarre pas après l’effacement</h2>
@@ -598,7 +598,7 @@
         <li>Insérez la clé USB de rapport uniquement quand l’écran de résultat la demande.</li>
         <li>Vérifiez la clé USB : l’assistant n’accepte qu’une seule nouvelle clé USB FAT32 ou exFAT.</li>
         <li>Enregistrez le rapport sur cette clé. Cela peut prendre quelques minutes sur une clé lente ; ne retirez aucune clé USB pendant l’enregistrement.</li>
-        <li>Contrôlez la copie en la relisant avant qu’elle ne compte comme enregistrée.</li>
+        <li>Contrôlez la copie : l’assistant la relit avant qu’elle compte comme enregistrée.</li>
         <li>Le retrait n’est sûr qu’après la confirmation d’enregistrement : elle seule rend la clé USB de rapport sûre à retirer.</li>
       </ol>
       <p>Si l’enregistrement échoue, lisez le message d’erreur exact, corrigez le problème, puis choisissez à nouveau Enregistrer le rapport sur USB. Si la clé USB de rapport est toujours branchée, inutile de la débrancher d’abord.</p>
