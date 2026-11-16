@@ -463,7 +463,7 @@
         </ol>
         <details>
           <summary>Dettaglio tecnico</summary>
-          <p>Il programma di avvio controlla solo la chiavetta USB originale, se le impostazioni di avvio sono leggibili e se esiste un percorso di riavvio supportato. Questi controlli non assicurano che la chiavetta USB si avvii. Per seguire i passaggi di avvio basta aprire questa pagina in un browser dalla chiavetta USB. Dopo l’avvio, il ripristino non può identificare i dischi né confermare il risultato di una cancellazione.</p>
+          <p>Il programma di avvio controlla solo la chiavetta USB Beamo, se le impostazioni di avvio sono leggibili e se esiste un percorso di riavvio supportato. Questi controlli non assicurano che la chiavetta USB si avvii. Per seguire i passaggi di avvio basta aprire questa pagina in un browser dalla chiavetta USB. Dopo l’avvio, il ripristino non può identificare i dischi né confermare il risultato di una cancellazione.</p>
         </details>
         <p><a class="back" href="#guide">Torna ai problemi</a></p>
       </article>
@@ -471,11 +471,11 @@
 
     <div class="card">
       <h2>Dopo l’avvio di questa chiavetta USB</h2>
-      <p>Scelga un disco → ne confermi l’identità → controlli e cancelli. Non viene cancellato nulla finché non conferma.</p>
+      <p>Preparazione (6 passaggi) → Cancellazione → Risultato. Non viene cancellato nulla finché non sceglie Cancella ora.</p>
     </div>
     <div class="card">
       <h2>Avvio dal desktop</h2>
-      <p>In Windows, apra <strong>Start Beamo Wipe.exe</strong> su questa chiavetta USB. Su un desktop Linux supportato, apra <strong>Start Beamo Wipe Linux</strong>. Il programma di avvio mostra controlli separati per la chiavetta USB originale, per la leggibilità delle impostazioni di avvio e per la disponibilità di un percorso di riavvio supportato. Ogni controllo spiega cosa fare dopo; Dettagli tecnici mostra le prove.</p>
+      <p>In Windows, apra <strong>Start Beamo Wipe.exe</strong> su questa chiavetta USB. Su un desktop Linux supportato, apra <strong>Start Beamo Wipe Linux</strong>. Il programma di avvio mostra controlli separati per la chiavetta USB Beamo, per la leggibilità delle impostazioni di avvio e per la disponibilità di un percorso di riavvio supportato. Ogni controllo spiega cosa fare dopo; Dettagli tecnici mostra le prove.</p>
       <p>Un controllo non verificato non è un esito positivo. In Windows, salvi il suo lavoro e usi Riavvia il sistema, poi scelga questa chiavetta USB nel menu di avvio. In Windows 10 e 11 il programma di avvio può anche offrire <strong>Restart to boot options</strong> (riavvia nelle opzioni di avvio): Windows si riavvia nelle sue opzioni di avvio, poi scelga <strong>Usa un dispositivo</strong> e questa chiavetta USB (può comparire come <strong>EFI USB Device</strong>). Sui desktop Linux supportati, può essere offerto un riavvio guidato dopo che i relativi controlli sono superati; potrebbe servire l’autorizzazione di amministratore. Questi controlli non assicurano che la chiavetta USB si avvii.</p>
       <p>Per aprire l’applicazione serve una sua azione; inserire la chiavetta USB non la avvia automaticamente. Potrebbero comparire richieste di autorizzazione o di attendibilità dell’applicazione. Le impostazioni del desktop e di montaggio di Linux possono impedire l’esecuzione diretta.</p>
       <p>Il programma di avvio non cancella nulla. La cancellazione avviene dopo il riavvio da questa chiavetta USB, dove sceglie e conferma il disco. Può anche usare le istruzioni di avvio qui sotto senza aprire alcuna applicazione.</p>
@@ -487,7 +487,7 @@
       <table>
         <caption>Solo esempi. Il suo PC potrebbe usare un tasto diverso.</caption>
         <thead>
-          <tr><th scope="col">PC</th><th scope="col">Tasto più comune</th></tr>
+          <tr><th scope="col">Marca</th><th scope="col">Tasto più comune</th></tr>
         </thead>
         <tbody>
           <!-- boot-keys:table -->
@@ -571,7 +571,7 @@
         <li><strong>Cosa significa per il suo disco</strong> — se è stato cancellato qualcosa e che cosa non presumere.</li>
         <li><strong>Cosa fare ora</strong> — passaggi sicuri. Non aggiri la protezione. Se ha dubbi, tenga collegati i dischi.</li>
       </ol>
-      <p>I <strong>Dettagli tecnici</strong> (codici di risultato, indicatori di esportazione, registri) sono disponibili su richiesta. Non sostituiscono le tre sezioni. Il menu di ripristino della chiavetta USB live dopo ripetuti errori di avvio è separato: la sua opzione Technical details and logs (dettagli tecnici e registri) non è questa struttura della procedura guidata.</p>
+      <p>I <strong>Dettagli tecnici</strong> (codici di risultato, indicatori di esportazione, registri) sono disponibili su richiesta. Non sostituiscono le tre sezioni. Il menu di ripristino della chiavetta USB Beamo dopo ripetuti errori di avvio è separato: la sua opzione Technical details and logs (dettagli tecnici e registri) non è questa struttura della procedura guidata.</p>
     </div>
 
     <div class="card">
@@ -579,9 +579,9 @@
       <p>Beamo Wipe cancella tutto ciò che contiene il disco che sceglie, compresi Windows o Linux se presenti. Non potrà recuperarlo. Si assicuri di avere copie di tutto ciò che vuole conservare.</p>
       <p>Viene cancellato solo il disco che conferma. Gli altri dischi no. Reinstallare un sistema operativo è un’operazione separata.</p>
       <p>Se questo computer ha una batteria, lo colleghi alla presa di corrente prima di cancellare. Tenga aperto il coperchio. Un’interruzione di corrente ferma la cancellazione. Lo schermo può spegnersi; prema un tasto o muova il mouse per riattivarlo. È lo schermo, non la sospensione.</p>
-      <p id="photo-record">Nessuna seconda chiavetta USB? Dopo la cancellazione, la schermata del risultato mostra un codice. Lo fotografi con il telefono per conservare un breve riepilogo del risultato, del disco e del suo numero di serie. È un riepilogo, non un certificato.</p>
+      <p id="photo-record">Nessuna chiavetta USB per il rapporto? Dopo la cancellazione, la schermata del risultato mostra un codice. Lo fotografi con il telefono per conservare un breve riepilogo del risultato, del disco e del suo numero di serie. È un riepilogo, non un certificato.</p>
       <p>Se alla fine vuole un rapporto, le serve una chiavetta USB FAT32 o exFAT separata con un solo volume (di qualsiasi dimensione). La tenga scollegata finché la schermata del risultato non la richiede. Una chiavetta USB già collegata non può essere usata per il rapporto.</p>
-      <p>La chiavetta USB live chiede a Linux di non reagire alla chiusura del coperchio né a una breve pressione del tasto di accensione, e disattiva la sospensione. Il firmware o una pressione prolungata del tasto di accensione possono comunque fermare la cancellazione. Usi Interrompi la cancellazione e attenda il risultato prima di spegnere. Un’interruzione di corrente può lasciare il disco cancellato solo in parte e far perdere i rapporti non salvati; una cancellazione interrotta non riprende automaticamente.</p>
+      <p>La chiavetta USB Beamo chiede a Linux di non reagire alla chiusura del coperchio né a una breve pressione del tasto di accensione, e disattiva la sospensione. Il firmware o una pressione prolungata del tasto di accensione possono comunque fermare la cancellazione. Usi Interrompi la cancellazione e attenda il risultato prima di spegnere. Un’interruzione di corrente può lasciare il disco cancellato solo in parte e far perdere i rapporti non salvati; una cancellazione interrotta non riprende automaticamente.</p>
       <p>Questa guida offline non può leggere lo stato della batteria o dell’alimentazione di rete. La procedura guidata live mostra i valori segnalati quando disponibili; un valore sconosciuto non prova che l’alimentazione sia collegata o che durerà.</p>
       <p>Per PC Windows o Linux a 64 bit Intel/AMD che si avviano da questa chiavetta USB. <strong>Non per Mac con Apple Silicon. Non per Chromebook.</strong> Alcuni Mac con processore Intel potrebbero mostrare questa chiavetta USB; molti no.</p>
       <p class="small">Codice sorgente: <a href="https://github.com/BeamoTech/beamo-wipe">github.com/BeamoTech/beamo-wipe</a></p>
@@ -591,7 +591,7 @@
       <h2>Se il computer non si avvia dopo la cancellazione</h2>
       <p>Se il disco cancellato era quello da cui si avvia il computer, il computer potrebbe mostrare una schermata nera, un messaggio «nessun sistema operativo» o la riparazione all’avvio invece di avviarsi normalmente. È normale: la cancellazione ha rimosso il sistema operativo insieme a tutto il resto di quel disco.</p>
       <p>Per usare di nuovo quel computer, installi prima un sistema operativo, con un supporto di installazione o con il ripristino del produttore del computer. Se ha dubbi, chieda aiuto a una persona di fiducia prima di modificare qualsiasi cosa.</p>
-      <p>Se il disco cancellato era un’unità aggiuntiva, il computer dovrebbe avviarsi normalmente. L’unità cancellata apparirà vuota finché non verrà preparata per un nuovo uso.</p>
+      <p>Se il disco cancellato era un disco aggiuntivo, il computer dovrebbe avviarsi normalmente. Il disco cancellato apparirà vuoto finché non verrà preparato per un nuovo uso.</p>
     </div>
     <div class="card" id="saving-report">
       <h2>Salvataggio del rapporto</h2>
