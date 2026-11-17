@@ -772,7 +772,7 @@ STRINGS = {
         "GLANCE_FINISHING": "Wird abgeschlossen…",
         "GLANCE_TIME_LEFT": "Noch etwa {text}",
         "GLANCE_TIME_LEFT_SHORT": "Noch weniger als 1 Minute",
-        "GLANCE_STARTED_AGO": "Vor {text} gestartet",
+        "GLANCE_STARTED_AGO": "Laufzeit: {text}",
         "GLANCE_STARTED_AT": "Gestartet um {time}",
         "GLANCE_ABOUT_LEFT": "noch etwa {text}",
         "GLANCE_LESS_LEFT": "noch weniger als 1 Minute",
