@@ -6,6 +6,10 @@ of this one press: the key-up was sent only after the 1 s serial poll saw
 Working, which on slow runners landed after Working's own redraw. The driver
 now releases on the guest's acceptance marker, before Working, and still
 requires a fresh release acknowledgement without ever pressing again.
+
+The guest may report the accepted press as RETURN_RESULT_WORKING instead of
+RETURN_RESULT_CHECKING when the pre-erase check finishes inside the Return
+handler (main run 44068634926 attempt 1); either new marker is acceptance.
 """
 
 import os
@@ -29,11 +33,16 @@ report_marker_summary() { printf 'summary\n' >> "$MOCK_EVENTS"; }
 capture_guest_screen() { printf 'screen\n' >> "$MOCK_EVENTS"; }
 polls() { grep -c '^0\.1$' "$MOCK_SLEEPS" || true; }
 released() { grep -q '^key-up$' "$MOCK_EVENTS"; }
+accepted() { [[ "$MOCK_ACCEPT_AFTER" -ge 0 && "$(polls)" -ge "$MOCK_ACCEPT_AFTER" ]]; }
 marker_count() {
   case "$2" in
-    BEAMO_WIPE_RETURN_RESULT_CHECKING)
-      if [[ "$MOCK_ACCEPT_AFTER" -ge 0 && "$(polls)" -ge "$MOCK_ACCEPT_AFTER" ]]; then
-        printf '1\n'; else printf '0\n'; fi ;;
+    BEAMO_WIPE_RETURN_RESULT_CHECKING|BEAMO_WIPE_RETURN_RESULT_WORKING)
+      # MOCK_WORKING_BEFORE: RETURN_RESULT_WORKING results from earlier
+      # journeys, which must never count as acceptance of this press.
+      local base=0
+      if [[ "$2" == BEAMO_WIPE_RETURN_RESULT_WORKING ]]; then base="$MOCK_WORKING_BEFORE"; fi
+      if [[ "$2" == "$MOCK_ACCEPT_MARKER" ]] && accepted; then
+        printf '%s\n' "$((base + 1))"; else printf '%s\n' "$base"; fi ;;
     BEAMO_WIPE_KEY_RETURN_RELEASED)
       # Before the press there were two older releases; the guest adds one
       # only for a key-up that it actually received.
@@ -53,7 +62,13 @@ wait_for_new_marker() {
 """
 
 
-def _run(tmp_path, accept_after: int, release_ack: bool):
+def _run(
+    tmp_path,
+    accept_after: int,
+    release_ack: bool,
+    accept_marker: str = "BEAMO_WIPE_RETURN_RESULT_CHECKING",
+    working_before: int = 0,
+):
     source = QEMU.read_text(encoding="utf-8")
     sleeps = tmp_path / "sleeps"
     events = tmp_path / "events"
@@ -74,6 +89,8 @@ def _run(tmp_path, accept_after: int, release_ack: bool):
             MOCK_EVENTS=str(events),
             MOCK_ACCEPT_AFTER=str(accept_after),
             MOCK_RELEASE_ACK="1" if release_ack else "0",
+            MOCK_ACCEPT_MARKER=accept_marker,
+            MOCK_WORKING_BEFORE=str(working_before),
         ),
         capture_output=True,
         text=True,
@@ -112,7 +129,44 @@ def test_lost_release_stays_a_failure_and_is_never_repressed(tmp_path):
 def test_unaccepted_press_is_released_and_fails_closed(tmp_path):
     result, sleeps, events = _run(tmp_path, accept_after=-1, release_ack=True)
     assert result.returncode == 1
-    assert "never emitted a new exact marker BEAMO_WIPE_RETURN_RESULT_CHECKING" in result.stderr
+    assert (
+        "never emitted a new exact marker BEAMO_WIPE_RETURN_RESULT_CHECKING"
+        " or BEAMO_WIPE_RETURN_RESULT_WORKING" in result.stderr
+    )
+    assert sleeps == ["0.1"] * 200
+    assert events == ["key-down", "key-up", "summary", "screen"]
+
+
+def test_working_result_is_accepted_when_the_check_finishes_in_the_handler(tmp_path):
+    # Main run 44068634926 attempt 1: the guest drew Checking, then reported
+    # RETURN_RESULT_WORKING for the one press. That is acceptance.
+    result, sleeps, events = _run(
+        tmp_path,
+        accept_after=2,
+        release_ack=True,
+        accept_marker="BEAMO_WIPE_RETURN_RESULT_WORKING",
+        working_before=1,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "reached new marker BEAMO_WIPE_RETURN_RESULT_WORKING" in result.stderr
+    assert sleeps == ["0.1"] * 2
+    assert events == [
+        "key-down",
+        "key-up",
+        "await-new BEAMO_WIPE_SCREEN_WORKING",
+    ]
+
+
+def test_earlier_working_results_are_not_acceptance(tmp_path):
+    # An older RETURN_RESULT_WORKING count must not release the key early.
+    result, sleeps, events = _run(
+        tmp_path,
+        accept_after=-1,
+        release_ack=True,
+        accept_marker="BEAMO_WIPE_RETURN_RESULT_WORKING",
+        working_before=3,
+    )
+    assert result.returncode == 1
     assert sleeps == ["0.1"] * 200
     assert events == ["key-down", "key-up", "summary", "screen"]
 
