@@ -1452,27 +1452,40 @@ send_key_for_marker() {
 # advance, erase not launched yet), polled every 0.1 s, while the screen is
 # stable. The fresh release acknowledgement stays mandatory, Working must
 # still follow, and the press is never repeated.
+#
+# The guest names the screen it reached after handling the press. When the
+# pre-erase check finishes inside the Return handler it reports
+# RETURN_RESULT_WORKING instead of RETURN_RESULT_CHECKING (main run
+# 44068634926 attempt 1: Checking was drawn, then WORKING was reported, and
+# the erase completed). Either new marker proves the one press was accepted.
 start_erase_with_return() {
   local label="$1" qmp_socket="$2" limit="${3:-20}" release_limit="${4:-20}"
-  local accepted_marker=BEAMO_WIPE_RETURN_RESULT_CHECKING
+  local checking_marker=BEAMO_WIPE_RETURN_RESULT_CHECKING
+  local working_result_marker=BEAMO_WIPE_RETURN_RESULT_WORKING
   local release_marker=BEAMO_WIPE_KEY_RETURN_RELEASED
-  local accepted_prior working_prior release_prior accepted=0
-  accepted_prior="$(marker_count "$label" "$accepted_marker")"
+  local checking_prior working_result_prior working_prior release_prior
+  local accepted_marker=""
+  checking_prior="$(marker_count "$label" "$checking_marker")"
+  working_result_prior="$(marker_count "$label" "$working_result_marker")"
   working_prior="$(marker_count "$label" BEAMO_WIPE_SCREEN_WORKING)"
   qmp_request "$qmp_socket" key-down ret
   for _poll in $(seq 1 $((limit * 10))); do
-    if [[ "$(marker_count "$label" "$accepted_marker")" -gt "$accepted_prior" ]]; then
-      accepted=1
+    if [[ "$(marker_count "$label" "$checking_marker")" -gt "$checking_prior" ]]; then
+      accepted_marker="$checking_marker"
+      break
+    fi
+    if [[ "$(marker_count "$label" "$working_result_marker")" -gt "$working_result_prior" ]]; then
+      accepted_marker="$working_result_marker"
       break
     fi
     sleep 0.1
   done
   release_prior="$(marker_count "$label" "$release_marker")"
   qmp_request "$qmp_socket" key-up ret
-  if [[ "$accepted" != 1 ]]; then
+  if [[ -z "$accepted_marker" ]]; then
     report_marker_summary "$label"
     capture_guest_screen "$label"
-    echo "QEMU $label never emitted a new exact marker $accepted_marker" >&2
+    echo "QEMU $label never emitted a new exact marker $checking_marker or $working_result_marker" >&2
     return 1
   fi
   printf 'QEMU %s reached new marker %s\n' "$label" "$accepted_marker" >&2
