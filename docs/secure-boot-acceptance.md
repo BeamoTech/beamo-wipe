@@ -47,8 +47,12 @@ the USB's FAT32 EFI files are byte-identical. Their x64 path is:
 
 1. Firmware loads `EFI/boot/bootx64.efi`: Debian shim 16.1, signed by
    **Microsoft Windows UEFI Driver Publisher**, issued by **Microsoft
-   Corporation UEFI CA 2011**. There is one inspected signature; this shim
-   is not signed by the Microsoft UEFI CA 2023.
+   Corporation UEFI CA 2011**, and also signed by **Microsoft UEFI CA 2023
+   signer**, issued by **Microsoft UEFI CA 2023**. *Corrected 2026-11-15:* the
+   0.2.12 receipt listed only the first of the shim's two `WIN_CERTIFICATE`
+   entries and said it was not 2023-signed. These same shim bytes
+   (`0fc347af…`) carry both signatures; see the
+   [0.2.14 receipt](evidence/secure-boot-q12-0.2.14/README.md).
 2. Shim's embedded **Debian Secure Boot CA** verifies `grubx64.efi`, the
    signed Debian CD/removable-media GRUB (`gcdx64.efi.signed`), signed by
    **Debian Secure Boot Signer 2022 - grub2**. Shim's vendor denylist, firmware
@@ -60,17 +64,21 @@ the USB's FAT32 EFI files are byte-identical. Their x64 path is:
 Firmware `db` authorization must cover the actual shim signature or an
 accepted image hash; an entry in PK or KEK alone is not image authorization.
 Microsoft's Windows signing CAs are distinct from the third-party UEFI CA.
-A 2023-only trust store does not authenticate this 2011-only shim unless it
-has another applicable authorization. This is an inference from the inspected
-signatures, consistent with [Microsoft's Linux transition guidance](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/linux-distribution-guidance-handling-2023keys).
+Because the shim carries both signatures, a trust store holding either the
+2011 or the 2023 third-party UEFI CA in `db` can authorize it, unless `dbx`
+or another policy rejects it. This is an inference from the inspected
+signatures, not a firmware observation, consistent with [Microsoft's Linux transition guidance](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/linux-distribution-guidance-handling-2023keys).
 
-**Next image (not inspected):** Debian 12.15 replaced this shim with
-`shim-signed` `1.51~1+deb12u1` (shim `16.1-2~deb12u1`), which its changelog
-describes as dual-signed with the 2023 CA and NX-capable
-([Debian CA changes](https://wiki.debian.org/SecureBoot/CAChanges)). The QEMU
-gate refuses an older `shim-signed`. Until Q12 is repeated on that exact image,
-its signer list, SBAT entries and 2023-only behaviour are UNKNOWN; this
-section's 0.2.12 findings do not transfer to it. The QEMU gate now records
+**0.2.14 image (inspected 2026-11-15, not physically tested):** the
+[0.2.14 component receipt](evidence/secure-boot-q12-0.2.14/README.md) found
+the same shim, GRUB, SBAT entries and Debian CA as above. The only change is
+the kernel: `/live/vmlinuz-6.12.115+deb12-amd64`, signed by Debian Secure
+Boot Signer 2022 - linux under the same Debian CA. That receipt does not
+change Q12. Which image physical cases use is the owner's choice, and that
+image still needs its post-flash readback. Debian's
+[CA changes](https://wiki.debian.org/SecureBoot/CAChanges) describe later
+`shim-signed` packages. Any image built with a different shim or GRUB needs
+its own receipt. The QEMU gate now records
 every signature and SBAT entry of the built image's shim, GRUB and kernel in
 `secure-boot-signers.txt` (and fails if shim lacks a Microsoft UEFI CA
 signature or GRUB/kernel a Debian one); a person still has to compare that
