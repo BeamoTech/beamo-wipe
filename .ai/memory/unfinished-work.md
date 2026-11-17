@@ -1,6 +1,48 @@
 # Unfinished work
 
-## BW-GO-2026-6859-LAUNCHER-20261112 — PR OPEN (launcher Go 1.26.8 -> 1.26.11; blocks signed 0.2.14)
+## BW-GO-2026-6859-LAUNCHER-20261112 — DONE: MERGED AS aecf8456; SIGNED 0.2.14 PUBLISHED 2026-11-12 (all acceptance lines verified 2026-11-14; desktop-build.json read directly from the published ISO 14:46Z)
+
+- 2026-11-14 ~14:46Z DIRECT READ (Claude, WIN, 8:27 AM CST pass; no disk
+  space used beyond the 433-byte file, nothing deleted, no CI): read
+  desktop-build.json from the published v0.2.14 ISO asset
+  (github.com/BeamoTech/beamo-wipe/releases/download/v0.2.14/beamo-wipe-0.2.14-amd64.iso)
+  by HTTP Range requests: ISO9660 PVD sector 16, volume BEAMO_WIPE, root
+  dir LBA 35, entry desktop-build.json (DESKTOP_BUILD.JSON;1) LBA 6291,
+  433 bytes, sha256 5ebd5bc1...c61e43f. Contents: "go": "go1.26.11",
+  version 0.2.14, source_commit aecf84569b27..., source_dirty false,
+  source_sha256 bf7ac437...463663, Linux launcher d1ace5f7...2467f, exe
+  43e0c19c...c9239. Then streamed the whole ISO through SHA-256 in memory
+  (846200832 bytes): b3851439...82c2564 = the published
+  beamo-wipe-0.2.14-amd64.iso.sha256 sidecar, and the same 433-byte extent
+  taken from that stream matched the ranged bytes (True). Acceptance line
+  "the release's desktop-build.json says go1.26.11" now VERIFIED DIRECTLY.
+  Script: scratchpad iso_range_read.py; copy at
+  scratchpad\iso0214-read\desktop-build.json (session scratch, not durable).
+  Not read: the .img.gz (gzip, not range-readable); same staging source.
+
+- 2026-11-14 ~03:30Z verify sweep (Claude, from gh/git on this host; the
+  heading above said "PR OPEN" on this worktree and on origin/main):
+  PR #101 MERGED 2026-11-12T14:59:20Z by jallieson as aecf8456 (head
+  3cd70a0c); PR ci.yml 43233742236 SUCCESS, CodeQL 43233730684 SUCCESS;
+  independent reviews of first and final diff posted on the PR
+  (12:12Z, 13:52Z) plus the 43215418988 cause/fix note; main push ci.yml
+  43242919979 SUCCESS (16:28:53Z), CodeQL 43242918626 SUCCESS. Tag
+  v0.2.14 (annotated f7211d6a) now -> aecf8456. release.yml run
+  43259400038 (workflow_dispatch by jallieson, sha aecf8456) SUCCESS
+  18:05:39Z; release "Beamo Wipe 0.2.14" Latest, published
+  2026-11-12T18:05:27Z by github-actions, not draft; assets include
+  manifest.json.sig and release-downloads.json.sig. BUILD-RECEIPT.json
+  and manifest source_commit = aecf8456. Launcher gate receipt (from
+  verification-evidence.tar.gz, sha256 f75882e1... matches
+  RELEASE_COMPLETE.txt) run 43259400038, source aecf8456, 1 passed.
+  "desktop-build.json says go1.26.11": INDIRECT only - at aecf8456
+  scripts/build_desktop.py refuses to build unless `go version` reports
+  GO_VERSION "go1.26.11" (line 563) and writes "go": GO_VERSION into
+  desktop-build.json (line 780); fetch-ci-go.sh pins go1.26.11 with a
+  checksum; no go1.26.8 left in scripts/desktop go.mod/.github. Reading
+  the built desktop-build.json needs the 0.85-0.96 GB ISO/IMG (not
+  downloaded: C: ~11 GB free). Earlier cancelled release run 43157568393
+  (34c3ab30) matches line 9 below.
 
 - Date/author: 2026-11-12 / Claude, beamo-wipe-usb BWU-001 thread. Branch `fix/launcher-go1.26.11-20261112` from main
   `7681c53`, worktree `C:\Users\USERNAME\beamo-wipe-usb-work\20261109-bwu001\beamo-wipe-go1.26.11`.
@@ -1452,6 +1494,10 @@ verification.json and reviews.json. Raw evidence is C:/Users/USERNAME/beamo-rele
   records and current AGENTS; an isolated authorized worker is required.
 - Evidence/result: `docs/evidence/bug-audit-20261017-pass16/README.md`.
   All intermediate checkpoints preserved in `primary/checkpoint-history.md`.
+- UPDATE 2026-11-15 17:14Z (Claude): incident review WRITTEN -> see
+  BW-PASS16-INCIDENT-REVIEW-20261115 at the end of this file. Remaining
+  PASS16 acceptance: pass8 SIGTERM evidence and pass9 trace (Jack-gated),
+  publishing the review (local commit 86b39f76, not pushed).
 
 
 ## BW-BUG-AUDIT-20261016-PASS15 — BLOCKED (five new bugs fixed; local gates pass; historical acceptance evidence pending)
@@ -7153,7 +7199,7 @@ another very thorough and comprehensive pass of this." Repo
   2026-11-10); CodeQL "Push on main" 42885592138 SUCCESS (19:31:12Z).
   Code scanning on main: 0 open (11 dismissed, 25 fixed).
 
-## BW-USB-FIRST-ANSWER-20261112 — GTK result screen when the first report-USB answer arrives (TESTS ON BRANCH, PR 102; HOSTED GATE AND MERGE PENDING)
+## BW-USB-FIRST-ANSWER-20261112 — GTK result screen when the first report-USB answer arrives (DONE; PR 102 MERGED AS 7a8f7327 2026-11-12)
 
 - 2026-11-12, Claude (Opus 5.5). Branch
   `test/gtk-report-usb-first-answer-20261112` from main 7681c53d, worktree
@@ -7209,7 +7255,316 @@ another very thorough and comprehensive pass of this." Repo
     test_accessible_runtime and test_gtk_collapsed_expander_focus: 373
     passed / 0 failed (Orca test included). Gate ruff sets, ruff format on
     the file, git diff --check: clean.
-- NEXT: hosted ci.yml + CodeQL on the new head; merge is Jack's call.
+- Hosted on 8a11ac3c (2026-11-12, Claude): CodeQL run 43247063863 PASS
+  (4 analyses). ci.yml run 43247068297 attempt 1: Windows launcher tests
+  PASS 15:24:45Z; Linux image gate FAIL 16:47:33Z. Its step 7 (lint, types,
+  pytest, preview, launchers, negatives) PASSED in 64 min (usual 30-48);
+  ISO build PASSED; step 9 QEMU failed in bios-speech-usb only: "never
+  selected the speech boot entry". The default entry booted (32 Returns hit
+  the owner screen) - a menu-timing race in scripts/qemu-verify.sh
+  drive_speech_boot (S+Return loop on BIOS). Product/ISO source equals main,
+  which passed this check. Re-ran failed jobs only (attempt 2).
+  Follow-up candidate (not started, owner's call): harden the BIOS speech
+  entry selection in drive_speech_boot if this race recurs. Local review
+  (report-only): drive_speech_boot and drive_troubleshoot_boot both send
+  hotkey + Return blind from QEMU start; vesamenu has no MENU IMMEDIATE, so a
+  Return reaching the menu before its hotkey boots the default entry. After
+  that the loop keeps typing S/Return into the running Tk guide until
+  BOOT_WAIT_SECONDS. First occurrence in the last 60 ci.yml runs (the other
+  recent QEMU aborts were bios-sata-usb, bios-quick_zero and
+  uefi-troubleshoot-usb marker waits). Options: send Return only after the
+  QMP screendump shows vesamenu's graphics mode; fail fast once the default
+  UI starts; or (product, Jack's call) MENU IMMEDIATE so BIOS matches GRUB's
+  one-key S. Not reproducible here: local guests are not authorized.
+  This note is local in the worktree, not pushed (a push would rerun CI).
+- Attempt 2 (failed jobs only): Linux image gate PASS 18:05:57Z, CI gate
+  PASS 18:06:11Z; mergeStateStatus CLEAN on main aecf8456. Jack approved
+  the merge conditionally (Nov 12, 11:24 AM CST); merged with a merge commit
+  pinned to 8a11ac3c: 7a8f7327 at 2026-11-12T18:07:29Z.
+- Post-merge main 7a8f7327 (attempt 1, no re-runs): CodeQL 43276551623
+  SUCCESS 18:10:25Z (4 analyses); ci.yml 43276552410 SUCCESS: Windows
+  launcher tests 18:10:10Z, Linux image gate 19:40:14Z (speech probes
+  passed), CI gate 19:40:27Z. Open code-scanning alerts: 0.
+- STATUS: DONE (merged and verified green on main).
+- Re-confirmed 2026-11-13 07:53Z via gh: PR 102 state MERGED, head
+  8a11ac3c, merge commit 7a8f7327 at 2026-11-12T18:07:29Z; all 8 PR checks
+  SUCCESS (Linux image gate, Windows launcher tests, CI gate, CodeQL + 4
+  Analyze); all 7 check runs on 7a8f7327 completed success; 0 open alerts.
+- Remaining: this note and the speech-race review above are local to the
+  worktree (not in the merge); carry them to main with the next work item.
+  BIOS speech/troubleshoot entry race fix: candidate only, Jack's call.
+
+## BW-DONE-REBUILD-FOCUS-20261112 — GTK Done rebuild loses place in an expander or the open Help menu (DONE; PR #103 MERGED AS ec648899 2026-11-14, ALL PR AND POST-MERGE CHECKS GREEN)
+
+- 2026-11-14 ~04:00Z: Jack approved opening the PR only (Nov 13, 9:55 PM
+  CST); no merge approval. Opened
+  https://github.com/BeamoTech/beamo-wipe/pull/103 (base main, head
+  3d04f6a7, not draft, MERGEABLE) with the test evidence in the body.
+  It started ci.yml pull_request run 43554228658 (queued at open).
+  NEXT: record the hosted gate result for 3d04f6a7; merge is Jack's call.
+- 2026-11-14 ~04:10Z: Jack approved merging PR 103 on its current head
+  3d04f6a7 once hosted checks pass (Nov 13, 10:06 PM CST). If a check
+  fails: one failed-jobs-only rerun; a second failure -> no merge, fix
+  locally, report. State at approval: CodeQL + 4 Analyze PASS, Windows
+  launcher tests PASS, Linux image gate in progress since 03:57:40Z (run
+  43554228658 attempt 1); 0 comments/reviews. Watching the PR.
+- PR 103 hosted, head 3d04f6a7, attempt 1, no reruns: ci.yml 43554228658
+  SUCCESS (Windows launcher tests 03:58:54Z; Linux image gate 03:57:40Z ->
+  04:59:18Z, 1h01m; CI gate 04:59:30Z); CodeQL 43554227136 + 4 Analyze
+  PASS. mergeStateStatus CLEAN, 0 comments/reviews.
+- MERGED 2026-11-14T05:01:36Z (Claude via gh as jallieson, merge commit,
+  --match-head-commit 3d04f6a7): main = ec648899 (parents 7a8f7327,
+  3d04f6a7; tree identical to 3d04f6a7). Post-merge main at merge+~1 min:
+  CodeQL 43559493561 in progress, ci.yml push 43559494162 queued.
+  NEXT: record those two results. WSL staging dir done-focus-20261113
+  removed; bw-linux-20261107/dec holds main 7a8f7327 bytes.
+- Post-merge main ec648899, checked 2026-11-14 ~05:23Z (11:22 PM CST
+  pass): CodeQL 43559493561 attempt 1 COMPLETED SUCCESS 05:05:30Z (Analyze
+  actions, go, javascript-typescript, python all success). ci.yml push
+  43559494162 attempt 1 IN PROGRESS: Windows launcher tests SUCCESS
+  05:03:05Z; Linux image gate still running (started ~05:02Z, usually
+  ~1 h); CI gate not yet reported. NOT A PASS YET. Open code-scanning
+  alerts on main: 0. NEXT: record the final 43559494162 conclusion (Linux
+  image gate + CI gate); if it fails, failed-jobs-only rerun per the
+  standing rule.
+- FINAL (checked 2026-11-14 ~06:03Z, 12:03 AM CST pass): ci.yml push
+  43559494162 on ec648899, attempt 1, no reruns: COMPLETED SUCCESS
+  06:00:07Z - Windows launcher tests SUCCESS (05:01:59-05:03:05Z), Linux
+  image gate SUCCESS (05:01:45-05:59:54Z), CI gate SUCCESS
+  (06:00:01-06:00:06Z). With CodeQL 43559493561 SUCCESS, both post-merge
+  runs on main ec648899 are green; main still ec648899. PR 103
+  POST-MERGE RECORD CLOSED. Item BW-DONE-REBUILD-FOCUS-20261112: DONE.
+- SECOND-PASS DEEP REVIEW STATUS: DONE, nothing queued. Static half
+  2026-11-13 (PRs 99/100/102 + cf9c6c27, no defect); WSL runtime half
+  2026-11-14 02:20-02:38Z (repeats + 3 mutants on main 7a8f7327, no
+  defect); its one finding (per-render expander walk) was fixed in
+  3d04f6a7 and shipped in ec648899. Remaining items are owned elsewhere:
+  QEMU speech boot-entry race hardening (Jack), Notion posting
+  (supervising agent), direct read of 0.2.14 desktop-build.json (Mac /
+  host with space; DONE on WIN 2026-11-14 ~14:46Z by range read, see
+  BW-GO-2026-6859), docs push of this record to main (Jack's call).
+  LATER (2026-11-14 ~15:30Z): a further second-pass review of PRs 99-103
+  found D3 (open Keyboard shortcuts section in the Help menu collapsed by
+  the rebuild), a gap in this item's fix; fixed by PR #104 (5dcfa3f9). See
+  BW-REVIEW-PR99-103-20261114.
+- 2026-11-14 ~14:46Z live check: origin main still ec648899 (latest
+  commit 05:01:36Z, PR 103 merge); nothing new landed. C: 14 GB free.
+- Found 2026-11-12 (Claude) in the second-pass review of main 7a8f7327,
+  src/beamo_wipe/ui/accessible_wizard.py render() refocus (~565, ~1320).
+  Static reading only; runtime confirmation blocked (below).
+- D1: Done shows a "Technical details" expander (technical(), checklist
+  outcomes). _widget_text() returns "" for a Gtk.Expander, so focus on the
+  expander goes to the headline after a report-USB rebuild. If it was
+  expanded with focus on its text, the rebuild recreates it collapsed and
+  _find_by_text() (no visibility check) can return the now-hidden label.
+- D2: Help & settings is a modal popover on the footer MenuButton. A Done
+  rebuild destroys it; its items are not in the window child tree, so focus
+  falls to the headline (or a same-named button). render() already reopens
+  the menu via _help_reopen, but only after an item activation.
+- Candidate fix (not written): Expander text in _widget_text, is_visible()
+  in _find_by_text, carry expanded labels and an open menu (focused item
+  key) across a Done->Done rebuild; tests in
+  tests/test_gtk_report_usb_first_answer.py style.
+- Blocker: WSL stopped responding 2026-11-12 ~20:02Z (wsl -e true and wsl
+  --list time out; not restarted per host rules). GTK is not installed in
+  the Windows venv. Throwaway probe:
+  scratchpad probe/tests/test_zz_probe_expander_refocus.py (also copied
+  into the WSL dec tree only if the first transfer landed; delete it there
+  when WSL is back). One capped rerun 20:29:07Z-20:39:08Z: timeout exit 124,
+  no output; no wsl.exe left behind. Still unresponsive at 23:21:41Z
+  (wsl -e true, 30 s cap).
+- Windows-native precondition check (2026-11-12 ~23:25Z, main-equal src at
+  8a11ac3c, venv + scratch shim, evidence write/readback stubbed in the
+  scratch script only): the _done_wizard screen is a FAILED result (code
+  indeterminate), report save eligible (so the USB probe runs and
+  rebuilds), recovery technical "Result code: indeterminate" -> the
+  Technical details expander is on that screen. A success result has no
+  checklist and no recovery sections, so D1 needs a failed/interrupted
+  result: the outcome where a support report matters most. Help menu on
+  Done has enabled items text_size, sounds, high_contrast, shortcuts (D2
+  precondition). GTK focus behaviour itself not checkable natively.
+- BLOCKER: a WSL restart (owner/host action; agents must not restart it).
+  Rechecked 2026-11-13 00:09:02Z: wsl -e true still times out (30 s cap).
+  Two wsl.exe (PIDs 25744/17464, 00:09:30Z) are another agent's Codex
+  app-server launch into the same distro, also waiting; not ours, left alone.
+  Rechecked 2026-11-13 01:24:21Z: still times out (30 s cap); the other
+  agent's Codex launch retried at 01:24:35Z (PIDs 23336/23748), also stuck.
+  Jack reported WIN back online 2026-11-12 20:29 CST; rechecked 2026-11-13
+  02:35:19Z: wsl -e true still times out (30 s cap).
+- WSL recovery attempt 2026-11-13 (Jack's full permission for cleanup and
+  WSL/service restarts): C: 7.90 GB free at 03:05:47Z; RAM 15.78 GB, 4.99
+  GB free, commit 17.5/23.5 GB. Cleanup (temp/cache only): Recycle Bin
+  already empty; %TEMP% items >24 h old + speech-dispatcher WSL crash
+  dumps 1.11 GB; npm + go-build caches 1.38 GB. wsl --shutdown hung >120 s
+  (03:35:45Z). Restart-Service WSLService: access denied (not elevated;
+  service ACL gives users query/start only). One RunAs attempt: UAC prompt
+  unanswered in 90 s (03:38:18Z), step stopped. No other Linux env on WIN
+  (Git for Windows only; no MSYS2/Cygwin/conda/Docker/QEMU/VirtualBox;
+  one WSL distro). GTK3 via micromamba/conda-forge in
+  C:\Users\USERNAME\gtk-probe-20261113: downloads stalled/corrupt twice
+  (network degraded), folder removed. Probe script kept at scratchpad
+  native/gtk_probe.py (drives AccessibleWizard.render() directly).
+  04:12:01Z: C: 12.26 GB free; wsl -e true still times out.
+  Rechecked 04:23:46Z, 05:23:47Z, 05:51:33Z, 06:21:46Z, 07:28:01Z, 07:53:28Z, 08:22:01Z, 08:53:22Z, 09:22:31Z, 09:54:43Z, 10:21:48Z, 11:20:59Z, 12:23:35Z, 13:51:40Z, 14:26:18Z, 17:24:11Z, 18:24:39Z and 18:54:29Z: wsl -e true still
+  times out (30 s cap); no restart/reconfiguration attempted. C: free
+  10.16 GB (17:24:42Z), 10.86 GB (18:25:10Z), 10.95 GB (18:55:01Z).
+  2026-11-13 19:55:06Z standing by (no probe this pass; the Sync thread's
+  1:53 PM CST probe on this host timed out). Verified: branch
+  fix/gtk-done-rebuild-focus-20261113 at cf9c6c27, worktree clean, no
+  remote branch, no PR. D1/D2 runtime checks + 8 GTK tests still wait on
+  the admin WSLService restart; then run them, push the branch once, no
+  PR (Jack's call), report.
+  2026-11-13 20:28:37Z standing by again (no probe from this thread; the
+  Sync thread probes WSL this pass). Re-verified: cf9c6c27, worktree
+  clean, no remote branch, no PR. Same blocker and next step.
+  2026-11-13 21:27:39Z (3:28 PM CST pass, no probe from this thread):
+  re-verified cf9c6c27, clean, no remote branch, no PR; origin/main still
+  7a8f7327. Static second pass, report-only, nothing pushed:
+  - PR 99 (7681c53d, test-only): slow-sound test now proves cause:
+    discovery is held until the finally, so a blocking click/tick would
+    wait 30 s and fail on returned.is_set(); off-thread and ticket/status
+    asserted; finally releases and joins the worker. No defect.
+  - PR 100 (54303400, test-only): Orca nudge only after 1.5 s of log
+    quiet, max 2, reset after each nudge; the loop never ticks the app, so
+    the log settles. No defect.
+  - PR 102 (7a8f7327, test-only): re-read; no defect.
+  - cf9c6c27 re-read: no defect found. Residual edge for the runtime pass:
+    if a report-USB rebuild lands during the Help menu's closing
+    transition (popdown animation, popover still visible), the menu
+    reopens. CI's test_gtk_runtime_menu sees get_visible() False right
+    after Esc, so CI has no such transition; the live image may differ.
+    Add a "popdown then rebuild -> stays closed" GTK test in the WSL pass;
+    fix only if it fails.
+- 2026-11-13 23:34-23:50Z WIN recovery pass (Claude; Jack's standing
+  permission covers disk cleanup and WSL/service restarts). Start C: free
+  9.01 GB (23:34:29Z); end 11.24 GB (23:50:20Z), still below 12 GB.
+  Freed by cleanup: Recycle Bin already empty (0); stale pytest-of-Jack
+  basetemp + BIT916F.tmp ~0.77 GB; this session's own old scratchpad Go
+  cache 0.31 GB; TEMP items idle >24h only 0.04 GB (kept; one holds WSL
+  swap.vhdx). Top consumers: WSL distro ext4.vhdx 198.5 GB
+  (beamo-release-work\20261001-resume-01\wsl-qualification, not sparse,
+  last write 11/12 21:32 - not growing), .t3 39 GB (worktrees 30 GB, peer
+  worktrees from Oct/Nov), iCloud package 11.3 GB (iCloudDrive.db-wal
+  7.7-8.3 GB, rewritten every few minutes), .codex 8.2 GB, pagefile 7.75,
+  hiberfil 6.3. Active writers: iCloudDrive.exe WAL and T3 statev2.sqlite
+  (6.1-6.55 GB) swing by ~0.5 GB each; TEMP\claude session dirs grow;
+  SearchIndexer has written 326 GB since boot. C: swings +-0.4 GB/min.
+  WSL: `wsl --shutdown` timed out at 60 s (23:40:58Z, owned PID killed);
+  non-elevated Restart-Service WSLService refused ("Cannot open
+  WSLService"); no LxssManager service on this build; elevated request via
+  UAC auto-cancelled at 23:42Z with no one at the desktop; `wsl -l -v`
+  timed out at 25 s (23:42:37Z). GTK tests / D1-D2 not run; nothing pushed.
+- 2026-11-14 00:37Z verification pass (no WSL command, no elevation, no
+  cleanup): cf9c6c27 on fix/gtk-done-rebuild-focus-20261113, worktree clean,
+  no remote branch (ls-remote empty), no PR (gh: []); origin/main 7a8f7327.
+  C: free 11.06 GB at 00:37:34Z. Nothing pushed. Blocker unchanged.
+- 2026-11-14 00:43-00:46Z: Jack approved the Sync thread's UAC prompt;
+  WSLService restarted (PID 60788); Sync's probe answered. WSL BLOCKER
+  CLEARED. Step 5 started 00:48Z (C: 10.75 GB free; Step 5 writes only a
+  few MB into the existing WSL tree, pytest /tmp is tmpfs - not blocked by
+  space, nothing deleted to make room). Added uncommitted test
+  test_help_menu_closed_just_before_rebuild_stays_closed (rebuild(before=)
+  hook: popdown with no tick before the answer lands). WSL tree
+  bw-linux-20261107/dec reloaded from git archive 7a8f7327 (excl.
+  docs/evidence, md5 of accessible_wizard.py matches); branch files staged
+  in bw-linux-20261107/done-focus-20261113 (step5.sh). Runs via hrun.sh:
+  s5-main-related, s5-main-d1d2 (new tests vs main src), s5-fix-all.
+  Logs: bw-linux-20261107/out/s5-*.log.
+  Results (00:51-01:02Z): s5-main-related 465 passed / 0 failed.
+  s5-main-d1d2 (new tests vs main src): 7 failed, 3 passed - D1 CONFIRMED
+  AT RUNTIME (focus -> arrival; open details collapse), D2 CONFIRMED (open
+  Help popover gone after rebuild, text_size and shortcuts); the menu-
+  closing and closed-menu tests pass on main as expected. s5-fix-all:
+  474 passed, 1 FAILED - test_accessible_review_visible_pass16_ui::
+  test_accessible_first_review_frame_restarts_full_countdown: fake-Gtk
+  subprocess, `_expanders` isinstance(widget, Gtk.Expander) TypeError
+  (Expander is a factory there) because the restore loop walked on EVERY
+  render. FIX (uncommitted): guard the restore walk with
+  `if reopen_expanders:` (Done->Done with an open section only). ruff ok,
+  mypy at baseline 6. Rerun widened to all 76 tests/*.py using
+  accessible_wizard + 3 report-USB files: s5b-main-wide vs s5b-fix-wide.
+  Wide results (01:04-01:49Z, md5-verified trees): main 2148 passed,
+  1 failed; fix 2158 passed, 1 failed (= main + the 10 new tests). The
+  only failure, test_compat_story::test_iso_builder_copies_then_injects_
+  helper, fails identically on main (pre-existing, not this change);
+  non-pass diff main vs fix empty. All 10 new tests pass on the fix,
+  including test_help_menu_closed_just_before_rebuild_stays_closed (the
+  popdown-transition edge does not reopen the menu under Xvfb).
+  Committed 3d04f6a7 "fix: restore Done expanders only on a rebuild that
+  had one open" (explicit paths) on cf9c6c27. Workflows checked: ci.yml
+  runs only on main push/PR, agent-pr/release are dispatch-only. PUSHED
+  ONCE 2026-11-14 ~01:52Z: origin/fix/gtk-done-rebuild-focus-20261113 =
+  3d04f6a7 (upstream now that branch, not main); gh: no PR, no runs.
+- 2026-11-14 02:20-02:38Z SECOND-PASS DEEP REVIEW, WSL RUNTIME HALF
+  (Claude; Jack's 8:23 PM CST request; local only, nothing pushed). Tree
+  bw-linux-20261107/dec = main 7a8f7327 (all 781 src/tests .py sha256
+  identical to git archive). Repeats on main: Orca
+  test_orca_announces_every_result 5/5 passed (93-97 s each); slow-sound
+  test 5/5 (about 2 s); test_gtk_report_usb_first_answer.py 3x 8/8.
+  Mutants, each restored with sha256 check (RESTORED-OK): M1 PR 99
+  discovery inside the click -> slow-sound test FAILS (32 s, the held
+  discovery blocks); M2 PR 102 every scan counts as news -> 7/8 fail
+  (closing test passes, independent); M3 PR 102 rebuild forgets focus ->
+  3/8 fail (footer, panel-title, other stick; headline/panel-status/
+  pulled/error land on the same target via defaults). Static re-read of
+  the full 7a8f7327..3d04f6a7 src diff: no new defect. RESULT: no defect
+  in PRs 99/100/102 or the pushed fix; nothing to change.
+- NEXT: Jack decides whether to open a PR (would trigger the hosted
+  ci.yml gate on the PR). WSL scratch left at
+  bw-linux-20261107/done-focus-20261113 and dec tree now holds the fix
+  files (small; not deleted). Hosted GTK/Orca gate still unrun.
+- BLOCKER now: an elevated WSLService restart (approve the UAC prompt or
+  run `Restart-Service WSLService -Force` as admin on WIN).
+  SUPERSEDED (records pass 2026-11-15 01:05Z): Jack had the PR opened
+  (PR #103, merged as ec648899 with all PR and post-merge checks green);
+  that 2026-11-13 WSL blocker cleared when WSL answered again on
+  2026-11-14. The current WSL outage (since 2026-11-14 17:53Z) is
+  tracked in BW-REVIEW-PR99-103-20261114.
+- 2026-11-13 ~14:30Z static second pass (Claude, no WSL; Jack: stop
+  probing, the Sync thread probes WSL). Confirmed from code on main
+  7a8f7327: Done polls the report USB every 1.5 s (wizard.py
+  REPORT_USB_POLL_S) and rebuilds whenever the answer changes (first
+  answer, stick plugged/pulled/swapped), so both paths are reachable.
+  D1 certain: Gtk.Expander is not a Gtk.Button/Label, refocus_text "" ->
+  arrival. D2 certain: old shell destroy() takes the MenuButton and its
+  popover; popover children are not in window.get_children(), so focus ->
+  arrival and the menu closes. D1-inside (refocus onto the hidden details
+  label) likely; depends on GTK grab_focus on a hidden widget. Orca fix
+  (34c3ab30 _fold) re-read: no defect (help SHORTCUTS expander is folded
+  before box.show_all; no_show_all holds across window.show_all).
+- Fix written: branch fix/gtk-done-rebuild-focus-20261113, worktree
+  C:/Users/USERNAME/dev/BeamoTech/beamo-wipe-done-focus-20261113, commit
+  cf9c6c27 on 7a8f7327 (local only, NOT pushed). accessible_wizard.py:
+  _widget_text reads Expander labels; _find_by_text skips hidden
+  subtrees; new _expanders() + Done->Done reopen of expanded expanders
+  (label + ordinal); _open_help_key() reopens an open menu on the same
+  item (skips the headline grab); _help_activate sets _help_leaving so an
+  activated item keeps its own _help_reopen rule.
+  tests/test_gtk_done_rebuild_place.py: 1 source test (no GTK) + 8 GTK
+  runtime tests (expander focus; open details with focus inside and
+  elsewhere; closed stays closed; menu on text_size/shortcuts stays open
+  and popdown returns to the menu button; closed menu stays closed;
+  _find_by_text skips hidden content).
+- Local checks (Windows venv + scratch shim, no GTK, no Tk display): ruff
+  check src tests PASS; mypy --platform linux accessible_wizard.py 6
+  errors = main baseline; new file 1 passed, 8 skipped (no gi). Related
+  files (help_menu_175, gtk_collapsed_expander_focus,
+  gtk_report_usb_first_answer, report_panel_135): only Tk tests fail, on
+  both the fix and the main baseline (Tk cannot load init.tcl here); the
+  two differing FAILED lines are Tk-init flakes. GTK runtime tests NOT RUN.
+- NOT PUSHED on purpose: the 8 GTK tests have never run, and pushing now
+  risks a second push. ci.yml triggers are PR to main / push to main only,
+  so a branch push alone would start no hosted job.
+- NEXT: when WSL answers, run tests/test_gtk_done_rebuild_place.py plus
+  test_gtk_report_usb_first_answer.py, test_help_menu_175.py,
+  test_gtk_collapsed_expander_focus.py, test_report_panel_135.py and
+  test_accessible_runtime.py under Xvfb 72 DPI (wsl-linux-test-route),
+  amend locally if needed, then one push of the branch; PR/merge is
+  Jack's call. Delete the WSL-side probe copy then.
+  SUPERSEDED (records pass 2026-11-15 01:05Z): done - the GTK tests ran
+  under WSL Xvfb 72 DPI (fix 10/10), the branch was pushed once as
+  3d04f6a7, became PR #103 and merged as ec648899; the WSL staging dir
+  done-focus-20261113 was removed.
 
 ## BW-GTK-FOLD-20261110 — GTK: Tab and Orca reached content inside a collapsed Show more (DONE; MERGED AS 34c3ab30 2026-11-12)
 
@@ -7313,6 +7668,10 @@ another very thorough and comprehensive pass of this." Repo
   make Orca re-read or lose the headline on slow hardware. NEXT: a GTK test
   with an injected probe and written evidence; update in place if it
   rebuilds.
+  RESOLVED (re-check 2026-11-14 17:55Z): the GTK test was added by PR
+  #102 (tests/test_gtk_report_usb_first_answer.py, merged 7a8f7327; focus
+  kept on the same words); expanders and the open Help menu by PR #103
+  (ec648899); the open Keyboard shortcuts section by PR #104 (merged 93a7c9e9 2026-11-14, post-merge green).
 - PR 100 (Orca nudge + this entry, head 41553633): ci.yml 43164946125
   SUCCESS (06:59:42Z), CodeQL 43164943556 SUCCESS (06:00:23Z). Jack
   approved; merged by Claude 2026-11-12T14:02:17Z as 54303400 (merge
@@ -7326,3 +7685,1254 @@ another very thorough and comprehensive pass of this." Repo
   size 0, quiet timer starts normally; first wait has no app -> no nudge
   as before; at most 2 nudges, quiet timer restarts after each; same
   number of waits, so the 40 s / 300 s limits are unchanged. No defect.
+
+## BW-VERIFY-SWEEP-20261114 — Notion verify sweep for PRs 94-102 and the Done fix branch (VERIFIED FROM HOST EVIDENCE; NOTION WRITE NOT DONE - NO CONNECTOR HERE)
+
+- 2026-11-14 ~03:30Z (9:22 PM CST Nov 13 request), Claude (Opus 5.5).
+  Evidence: gh (pr view, run list per head/merge SHA, api), git ls-remote,
+  v0.2.14 release assets. Nothing pushed, no PR opened, no run started.
+- PRs (all MERGED, base main, merged by jallieson; PR ci.yml / CodeQL on
+  head, then main push ci.yml / CodeQL on the merge commit, all
+  completed/success, attempt 1 unless noted):
+  - #94 f00e55ca -> d1c85087 2026-11-10T02:28:47Z; PR 42602052511 /
+    42602047015; main 42743060857 / 42743047731.
+  - #95 7c6090a9 -> 33442561 03:56:44Z; PR 42743109639 / 42743106755;
+    main 42752675238 / 42752674664.
+  - #96 7ede2971 -> 66082da4 14:44:07Z; PR 42764265308 / 42764260902;
+    main 42837098193 / 42837096613.
+  - #97 d9e8a43f -> f2b2dea6 19:28:19Z; PR 42837426086 / 42837414434;
+    main 42885593888 / 42885592138 (+ CodeQL 42983657096).
+  - #98 4e27df61 -> 34c3ab30 2026-11-12T01:24:57Z; PR 42974761411 /
+    42974758546; main 43134359902 / 43134358581. Also release.yml
+    43157568393 on 34c3ab30 CANCELLED (go1.26.8, recorded at top).
+  - #99 98753cfc -> 7681c53d 04:55:16Z; PR 43142155673 / 43142151742;
+    main 43157910972 / 43157910342.
+  - #100 41553633 -> 54303400 14:02:17Z; PR 43164946125 / 43164943556;
+    main 43233086778 / 43233083625.
+  - #101 3cd70a0c -> aecf8456 14:59:20Z; PR 43233742236 / 43233730684;
+    main 43242919979 / 43242918626; release.yml 43259400038 SUCCESS ->
+    v0.2.14 published (see BW-GO-2026-6859 at top).
+  - #102 8a11ac3c -> 7a8f7327 18:07:29Z; PR 43247068297 (attempt 2 after
+    the QEMU speech-entry race) / 43247063863; main 43276552410 /
+    43276551623.
+- Open code-scanning alerts on refs/heads/main: 0 (api, 2026-11-14).
+- Fix branch fix/gtk-done-rebuild-focus-20261113: origin = 3d04f6a7, local
+  clean and tracking it, 0 PRs, 0 runs. Counts already recorded in
+  BW-DONE-REBUILD-FOCUS-20261112 (D1/D2 runtime 7 failed/3 passed on main
+  src; fix 10/10; wide 79 files main 2148/1 vs fix 2158/1, same failure).
+  SUPERSEDED (re-check 2026-11-14 17:55Z): that branch became PR #103,
+  merged as ec648899 with all PR and post-merge checks green (see
+  BW-DONE-REBUILD-FOCUS-20261112).
+- GAP FOUND AND FIXED IN THIS RECORD: BW-GO-2026-6859 heading said "PR
+  OPEN" (also on origin/main's copy) though #101 merged and 0.2.14 is
+  published; heading and a verify bullet updated here (local, not pushed).
+  origin/main's copy stays stale until the next docs push (Jack's call /
+  next work item).
+- STILL UNVERIFIED:
+  - Notion itself: no Notion connector in this session (ToolSearch: only
+    a Claude Docs "notion" export format). Ready-to-paste notes:
+    C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261114.md
+    OWNER: the supervising agent with its signed-in Notion connector (as
+    on 2026-11-09), or Jack.
+  - The built desktop-build.json inside the 0.2.14 image (go1.26.11):
+    indirect only; a direct read needs the ~0.9 GB ISO/IMG download (C:
+    ~11 GB free; not done) - OWNER: Mac / any host with space.
+    RESOLVED 2026-11-14 ~14:46Z: read directly from the published ISO by
+    HTTP range requests (no download to disk), ISO stream hash matched the
+    published sidecar; says go1.26.11. See BW-GO-2026-6859 at top.
+  - Hosted CI for 3d04f6a7: none (branch push starts no run); needs a PR
+    - JACK'S DECISION, untouched.
+    SUPERSEDED: PR #103 run 43554228658 and post-merge 43559494162 /
+    CodeQL 43559493561 all SUCCESS.
+- JACK DECISIONS, OPEN AND UNTOUCHED: (1) open a PR for
+  fix/gtk-done-rebuild-focus-20261113 at 3d04f6a7; (2) harden the hosted
+  QEMU BIOS speech/troubleshoot boot-entry race. Also seen, not in scope:
+  open PR #93 (fix/security-audit-handoff-20261027), untouched.
+  RE-CHECK 2026-11-14 17:55Z: (1) DONE (PR #103 opened and merged on
+  Jack's approval). (2) still open, Jack's call. PR #93 still open,
+  untouched. NEW open decision: merge PR #104 (see
+  BW-REVIEW-PR99-103-20261114). DONE 18:25Z: merged as 93a7c9e9 on
+  Jack's approval; post-merge ci.yml 43626527611 + CodeQL 43626527284 green.
+- Notion sweep status (17:55Z): still not posted (no Notion connector in
+  this session); paste-ready updates refreshed in
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-notes-20261114.md
+  section "READY TO POST (2026-11-14 17:55Z)".
+
+## BW-REVIEW-PR99-103-20261114 — DONE; D3 FIX PR #104 MERGED AS 93a7c9e9 2026-11-14, ALL PR AND POST-MERGE CHECKS GREEN
+
+- Date/author: 2026-11-14 ~15:00-16:00Z / Claude (WIN), 9:22 AM CST pass.
+  Scope: merged PRs 99-103 reviewed against main ec648899 (origin main
+  unchanged). Report-only except D3. No PR, no push, no hosted CI, no
+  full suite.
+- WSL probe: `wsl.exe -d BeamoComboQualification-20261001 -u beamo-qual`
+  answered in 0.29 s (kernel 6.6.87.2, / 746 GB free inside the distro).
+- PR 99 (7681c53d, test-only): slow sound discovery proved by cause
+  (worker thread id, held Event, ticket still pending after tick). Clean.
+- PR 100 (54303400, test-only): Orca nudges only after 1.5 s of quiet
+  log, max 2. Clean.
+- PR 101 (aecf8456): every non-doc Go pin is 1.26.11 (ci.yml setup-go +
+  GOVERSION check, desktop/go.mod, build_desktop.py GO_VERSION,
+  fetch-ci-go.sh); dev.py doctor reads desktop/go.mod; fetch-ci-go.sh
+  checksum 9849f4e0...c710ec equals go.dev's published sha256 for
+  go1.26.11.linux-amd64.tar.gz. Old 1.26.8 only in historical docs. Clean.
+- PR 102 (7a8f7327, test-only): still consistent with ec648899's render
+  (instance-level render wrap). Clean.
+- PR 103 (ec648899): independent subagent review (unanchored; I wrote
+  PR 103) + my verification:
+  - D3 CONFIRMED (runtime, WSL Xvfb 72 DPI, ec648899 src sha
+    7ba28b61...): on Done, Help & settings open, Keyboard shortcuts
+    section expanded, focus on its text; a report-USB rebuild reopens the
+    menu but the section comes back COLLAPSED and focus goes to its header
+    (probe: before (menu, expanded, focus_on_text)=(True,True,True); after
+    menu_visible True, shortcuts_expanded False, focus_is_header True,
+    text_visible False). Cause: _expanders(self.window) walks
+    get_children(); GTK3 popovers are not window children.
+  - P-A (menu just closed with Esc/F10/Close could reopen if GTK keeps it
+    visible during the close animation): NOT REPRODUCED. Probe with
+    gtk-enable-animations=True: popover.get_visible() is False right after
+    popdown(); rebuild at 0/20/60/120/250 ms never reopened it. May differ
+    under a compositor; not shown on the kiosk. No change made.
+  - Test-gap notes (no action): test_help_menu_closed_just_before_rebuild
+    and the closed-stays-closed tests pass with the fix reverted (guards
+    only); no test pins _help_leaving; source-order test is textual.
+- D3 FIX (LOCAL ONLY): worktree
+  C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-done-focus-20261113, branch
+  fix/gtk-help-shortcuts-rebuild-20261114 from ec648899 (no upstream).
+  render() also records open menu sections and whether focus was inside
+  one when keep_menu is set; new _reopen_help_sections() reopens them and
+  returns focus to the text after _show_help_menu(keep_menu). Tests:
+  test_open_shortcuts_section_stays_open[True/False] + closed shortcuts
+  stays closed assertion. accessible_wizard.py sha 6176077b...bdd43.
+  - New tests on ec648899 src: 2 failed / 10 passed (both new fail).
+  - On fix: test_gtk_done_rebuild_place + probes 18/18 passed; probe P1
+    after = expanded True, focus on text, text visible.
+  - ruff clean; mypy file errors identical to main (2, gi stubs).
+  - Wide 80-file UI run: see result bullet below.
+- [SUPERSEDED 15:53Z: pushed and opened as PR #104, see below]
+  NEXT ACTION / BLOCKER: Jack's decision whether to open a PR for
+  fix/gtk-help-shortcuts-rebuild-20261114 (push + PR start hosted CI).
+  Not pushed. Probe file tests/test_zz_review_probe_20261114.py exists
+  only in the WSL scratch tree (not in git).
+- Wide 80-file UI run on the fix (15:32-15:43Z, tag
+  shortcuts-fix-wide-20261114, src 6176077b..., test 447ce870...): 2160
+  passed, 1 failed vs baseline s5b-fix-wide (ec648899-identical src) 2158
+  passed, 1 failed. Only difference: the 2 new tests. Same single failure
+  test_compat_story::test_iso_builder_copies_then_injects_helper (git
+  check-ignore in a non-git tar copy; pre-existing).
+- Committed LOCALLY as 5dcfa3f9 on fix/gtk-help-shortcuts-rebuild-20261114
+  (parent ec648899). NOT pushed, no PR, no hosted CI. [SUPERSEDED 15:53Z:
+  pushed once, PR #104; remaining Jack item is now the MERGE of #104.]
+- Verification backlog: no agent-actionable item remains. Remaining items
+  belong to others: Jack (PR for 5dcfa3f9; QEMU speech boot-entry race
+  hardening; docs push of this record), supervising agent (Notion posting
+  from agent-tasks-20261108\notion-notes-20261114.md).
+- 2026-11-14 ~15:53Z (9:52 AM CST pass, Jack approved one push + open
+  PR, NOT merge): pushed 5dcfa3f9 once to
+  origin/fix/gtk-help-shortcuts-rebuild-20261114 (local branch now tracks
+  it) and opened PR #104
+  https://github.com/BeamoTech/beamo-wipe/pull/104 (base main ec648899,
+  MERGEABLE). Hosted runs on head 5dcfa3f9: ci.yml "Beamo Wipe CI"
+  pull_request 43612558330 (Windows launcher tests + Linux image gate +
+  CI gate) and CodeQL 43612554836, both in progress at 15:53Z.
+  NEXT: collect both results (Linux gate ~1 h); if all green, merging
+  needs a SEPARATE Jack approval. If a job fails: failed-job-only rerun
+  once at most, per standing rule.
+- 2026-11-14 16:26Z (10:25 AM CST pass): PR #104 head still 5dcfa3f9,
+  OPEN, not merged. CodeQL 43612554836 COMPLETED SUCCESS (actions, go,
+  javascript-typescript, python; 15:53:06-15:54:24Z). ci.yml 43612558330
+  attempt 1 IN PROGRESS: Windows launcher tests SUCCESS
+  (15:53:41-15:54:47Z); Linux image gate in progress since 15:53:10Z (~33
+  min in; usually ~1 h); CI gate waits on it. No failed job, so no rerun.
+  WSL: answered in 0.6 s as beamo-qual; only distro listed, Running. The
+  kernel load average read 1907/1897/1871 on 2 vCPUs, but inside the
+  distro only ~8 processes exist (init etime 00:48, so the distro instance
+  had just started), 4.7 GB RAM available, nothing of mine running. The
+  load is not visible from the distro namespace; source unknown, not
+  investigated, nothing changed.
+  NEXT: collect ci.yml 43612558330 final result; merge needs separate
+  Jack approval.
+- 2026-11-14 16:55Z (10:54 AM CST pass) FINAL PR CHECKS, from live run
+  data (gh run view), matching the PR panel: ci.yml 43612558330 attempt 1
+  COMPLETED SUCCESS on 5dcfa3f9 - Windows launcher tests SUCCESS
+  (15:53:41-15:54:47Z), Linux image gate SUCCESS (15:53:10-16:47:55Z),
+  CI gate SUCCESS (16:48:02-16:48:07Z). CodeQL 43612554836 SUCCESS (all
+  4 analyses). No reruns. PR #104 OPEN, head 5dcfa3f9, MERGEABLE/CLEAN;
+  main still ec648899. NOT MERGED - merge needs Jack's separate approval.
+  WSL: answered in 2.6 s as beamo-qual; kernel loadavg 1984/1974/1946,
+  5575 tasks kernel-wide (cause outside the distro, still not
+  investigated).
+- 2026-11-14 17:53-17:58Z (11:53 AM CST pass), live re-verify: PR #104
+  OPEN, head 5dcfa3f985dc... (= origin branch), MERGEABLE/CLEAN, review
+  decision none; statusCheckRollup 8/8 COMPLETED/SUCCESS; ci.yml
+  43612558330 and CodeQL 43612554836 still completed/success attempt 1;
+  no new runs on the head. main still ec648899. Open PRs: #104, #93.
+  NOT MERGED (needs Jack's separate approval).
+- WSL BLOCKER (NEW, 17:53Z): `wsl.exe -d BeamoComboQualification-20261001
+  -u beamo-qual -e sh -c ...` hit a 60 s timeout; retry at 17:54:31Z
+  failed after 38 s with "Wsl/Service/CreateInstance/HCS_E_CONNECTION_TIMEOUT"
+  ("a response was not received from the virtual machine or container");
+  `wsl -l -v` now shows the distro STOPPED. Host side (read-only):
+  vmmemWSL pid 22472 alive, 3142 MB working set; vmcompute, vmwp,
+  wslservice running; C: 13.74 GB free; host RAM 4.4 of 15.8 GB free;
+  no Hyper-V-Compute-Admin events in the last 2 h. Preceded by the kernel
+  load average climbing 1871 -> 1984 (5575 tasks) from 16:26Z. Same
+  class as the 2026-11-13 outage. NOT restarted: wsl --shutdown /
+  service restart need elevation (UAC) - OWNER: Jack / Sync runbook. No
+  WSL command was run beyond the 3 probes above.
+- Second-pass re-read of the PR #104 diff (5dcfa3f9): no new defect.
+  menu_inside is False when focus is on an item itself or the menu's
+  Close button (keep_menu ""); an expanded shortcuts section with focus on
+  another item reopens expanded with focus on that item. Observation, no
+  change: when a STAYS_OPEN item (text size, sounds) is activated, the
+  _help_reopen path rebuilds the menu and an expanded shortcuts section
+  collapses; pre-existing #175 behaviour (also before #103), focus stays
+  on the activated item.
+- WSL scratch tree state (for the next run): bw-linux-20261107/dec =
+  ec648899 + 5dcfa3f9's accessible_wizard.py and
+  test_gtk_done_rebuild_place.py + probe tests/test_zz_review_probe_20261114.py
+  (not in git). Restore main bytes before using it as a main baseline.
+- 2026-11-14 18:22Z (12:21 PM CST pass):
+  - PR #102 outcome (live gh): MERGED 2026-11-12T18:07:29Z by jallieson;
+    head 8a11ac3c0aa0... (test/gtk-report-usb-first-answer-20261112);
+    merge commit 7a8f732791f6... (matches BW-USB-FIRST-ANSWER-20261112).
+  - PR #104 before merge: OPEN, head 5dcfa3f9, MERGEABLE/CLEAN, 8/8
+    checks SUCCESS, ci.yml 43612558330 and CodeQL 43612554836 attempt 1;
+    main ec648899.
+  - WSL still DOWN: probe at 18:22:20Z failed after 42 s with
+    HCS_E_CONNECTION_TIMEOUT; distro Stopped. Not restarted (UAC; Jack /
+    Sync runbook). So the PR #104 second-pass review had no runtime half.
+  - PR #104 SECOND-PASS REVIEW (5dcfa3f9), report-only:
+    - ruff (CI command `ruff check src/beamo_wipe tests` + the S-rule
+      pass) clean, ruff 0.9.2 in the Windows venv
+      C:\Users\USERNAME\dev\BeamoTech\.venv-qr127-20261101; mypy 2.1.0
+      `--platform linux --ignore-missing-imports src/beamo_wipe`: "no issues
+      found in 61 source files" on 5dcfa3f9 and on ec648899 (same).
+    - Independent subagent review (I wrote #104): NO CONFIRMED DEFECT.
+      Checked every focus case (item, shortcuts text, Close/no focus ->
+      first item, another item with shortcuts expanded, disabled label),
+      _help_activate/_help_leaving path (new branch never runs there),
+      generation/closed handler, Done->other screen, stand-in Gtk (new
+      isinstance only reachable after _expanders' existing one). Both
+      new tests fail without the fix.
+    - Unconfirmed (not fixed): Orca may hear "Keyboard shortcuts,
+      collapsed" then "expanded" before the text, because
+      _show_help_menu focuses the collapsed header before
+      _reopen_help_sections expands it (Technical details expands before
+      focusing). Needs a real Orca run to judge; candidate polish only.
+    - Test gaps (no action): no test for shortcuts expanded + focus on
+      another item / Close / disabled label; source-order test does not
+      cover _reopen_help_sections.
+    - VERDICT: no genuine defect remains; nothing changed locally.
+  - MERGE (Jack approved 2026-11-14 ~12:24 PM CST, "merge it now"): `gh
+    pr merge 104 --merge --match-head-commit 5dcfa3f9...` -> MERGED
+    2026-11-14T18:25:30Z (merged-by shows jallieson, the gh account),
+    merge commit 93a7c9e9a7fe7887705d55b72f1e84b9695edfa8; origin main =
+    93a7c9e9. Post-merge runs: ci.yml push 43626527611 and CodeQL
+    43626527284, both in progress at 18:26Z.
+    NEXT: collect both results (Linux gate ~55 min); if a job fails,
+    failed-job-only rerun once. Then item BW-REVIEW-PR99-103-20261114 and
+    D3 are DONE.
+- 2026-11-14 18:52Z (12:48 PM CST pass), live: main = 93a7c9e9.
+  CodeQL 43626527284 COMPLETED SUCCESS attempt 1 - actions
+  (18:25:37-18:26:26Z), javascript-typescript (-18:26:53Z), go
+  (18:25:36-18:26:48Z), python (-18:29:04Z). ci.yml 43626527611 attempt
+  1 IN PROGRESS: Windows launcher tests SUCCESS (18:25:51-18:26:54Z);
+  Linux image gate in progress since 18:25:38Z (~27 min; ~55 min usual);
+  CI gate waits on it. No failed job, no rerun. Background `gh run watch`
+  (task brwxkgk4g) still waiting on 43626527611.
+  WSL: still DOWN - distro Stopped; probe 18:52:34Z failed with the same
+  Wsl/Service/CreateInstance/HCS_E_CONNECTION_TIMEOUT (60 s here). Not
+  restarted (UAC; Jack / Sync runbook).
+- 2026-11-14 19:21Z FINAL (post-merge, live gh): ci.yml push 43626527611
+  on 93a7c9e9 attempt 1 COMPLETED SUCCESS - Windows launcher tests
+  (18:25:51-18:26:54Z), Linux image gate (18:25:38-19:20:05Z), CI gate
+  (19:20:11-19:20:16Z). CodeQL 43626527284 COMPLETED SUCCESS (4/4
+  analyses, 18:25:36-18:29:04Z). No reruns. Open code-scanning alerts on
+  main: 0. main = 93a7c9e9. PR #104 POST-MERGE RECORD CLOSED; D3 DONE;
+  item BW-REVIEW-PR99-103-20261114 DONE.
+- Open after this item (owners elsewhere): unconfirmed Orca
+  "collapsed/expanded" chatter when the shortcuts section is restored
+  (candidate polish, needs a real Orca run - Jack decides if wanted);
+  WSL outage since 17:53Z (elevated restart: Jack / Sync runbook); QEMU
+  speech boot-entry race hardening (Jack); docs push of this record to
+  main (Jack); Notion posting (supervising agent / Jack); PR #93
+  (untouched, out of scope). Local branches fix/gtk-done-rebuild-focus-
+  20261113 and fix/gtk-help-shortcuts-rebuild-20261114 are merged; left
+  in place (no cleanup requested).
+- 2026-11-14 19:22:56Z (1:22 PM CST pass) WSL re-check: distro Stopped;
+  probe failed at 19:23:56Z (60 s) with
+  Wsl/Service/CreateInstance/HCS_E_CONNECTION_TIMEOUT, exit 127.
+  BLOCKED ON WIN WSL - owner Jack / host-side elevated WSL restart. The
+  queued second-pass deep review of the settled release code waits on
+  it. PRs 102 and 104 are settled (merged, green); no new merges.
+- 2026-11-14 20:22:38Z (2:21 PM CST pass) WSL re-probe, no restart
+  attempted: `wsl -l -v` printed nothing within 30 s; the beamo-qual
+  probe printed nothing and hit the 90 s bound at 20:24:09Z (exit 124).
+  Worse than earlier (no HCS error returned). Still BLOCKED ON WIN WSL -
+  owner Jack / host restart. main still 93a7c9e9.
+  WSL-independent backlog: two stale sections of
+  agent-tasks-20261108\notion-notes-20261114.md ("In progress", and the
+  15:45Z "Second-pass review" saying PRs 103/104 await a PR) relabelled
+  "SUPERSEDED - DO NOT POST"; the READY TO POST block is current. No
+  other WSL-independent verification item remains; the queued deep
+  review of the settled release code needs WSL.
+- 2026-11-14 21:35:25Z (3:35 PM CST pass) WSL re-probe, no restart
+  attempted: `wsl -l -v` printed nothing and hit the 30 s bound at
+  21:35:56Z (exit 124); the beamo-qual probe printed nothing and hit the
+  90 s bound at 21:37:26Z (exit 124). Same hang as 20:22Z. Still BLOCKED
+  ON WIN WSL - owner Jack / host-side elevated WSL restart. main still
+  93a7c9e9 (ls-remote). Notion notes row 7 (WSL) updated with the latest
+  probe time. No other WSL-independent verification item remains; the
+  queued deep review of the settled release code needs WSL.
+- 2026-11-14 22:27:27Z (4:27 PM CST pass) WSL re-probe, no restart
+  attempted: `wsl -l -v` printed nothing and hit the 30 s bound at
+  22:27:58Z (exit 124); the beamo-qual probe printed nothing and hit the
+  90 s bound at 22:29:28Z (exit 124). Same hang as 20:22Z and 21:35Z.
+  Still BLOCKED ON WIN WSL - owner Jack / host-side elevated WSL restart.
+  main still 93a7c9e9 (ls-remote). No WSL-independent verification item
+  remains; the queued deep review of the settled release code needs WSL.
+- 2026-11-14 23:23:50Z (5:23 PM CST pass) WSL re-probe, no restart
+  attempted: `wsl -l -v` printed nothing and hit the 30 s bound at
+  23:24:20Z (exit 124); the beamo-qual probe printed nothing and hit the
+  90 s bound at 23:25:51Z (exit 124). Same hang since 20:22Z. Still
+  BLOCKED ON WIN WSL - owner Jack / host-side elevated WSL restart. main
+  still 93a7c9e9 (ls-remote). No WSL-independent verification item
+  remains; the queued deep review of the settled release code needs WSL.
+- 2026-11-14 23:54Z (5:54 PM CST pass) post-merge verify only, WSL not
+  probed (as instructed): main = 93a7c9e9. PRs #102 (7a8f7327), #103
+  (ec648899), #104 (93a7c9e9) MERGED, every check SUCCESS. Latest merge
+  still #104 at 18:25:30Z (no new merges). Main runs on 93a7c9e9: ci.yml
+  43626527611 and CodeQL 43626527284 success; 0 open code-scanning
+  alerts. Open PRs: 1, not 0 - #93 (opened 2026-10-27, "safety: harden
+  audit boundaries and preserve resumable verification"), long-standing,
+  untouched, out of scope. Second-pass review stays parked on WIN WSL
+  (owner Jack / host restart). No WSL-independent item remains.
+- 2026-11-15 00:32Z (6:32 PM CST pass) post-merge verify only, WSL not
+  probed: unchanged since 23:54Z. main = 93a7c9e9; #102/#103/#104 MERGED,
+  8/8 checks SUCCESS each; latest merge still #104 (18:25:30Z); open PRs:
+  #93 only (last updated 2026-10-27, head bf2b4909, untouched); main
+  ci.yml 43626527611 and CodeQL 43626527284 success; 0 open alerts.
+  Second-pass review parked on WIN WSL (Jack / host). No WSL-independent
+  item remains.
+- 2026-11-15 01:05Z (7:04 PM CST pass) post-merge verify + records step,
+  WSL not probed: unchanged since 00:32Z. main = 93a7c9e9; #102 (7a8f7327),
+  #103 (ec648899), #104 (93a7c9e9) MERGED, 8/8 checks SUCCESS each;
+  latest merge still #104 (18:25:30Z); open PRs: #93 only (updated
+  2026-10-27, head bf2b4909, untouched); main ci.yml 43626527611 and
+  CodeQL 43626527284 success; 0 open alerts.
+  Records: notion-notes row 2 (PR #104) already read Status Done with
+  both post-merge runs; READY TO POST header now notes this re-check.
+  Flipped two stale NEXT lines in BW-DONE-REBUILD-FOCUS-20261112 (open
+  a PR; run GTK tests then push) to SUPERSEDED - both conditions met by
+  PR #103. No other record has a met-but-unflipped condition; still open
+  by design: Notion posting (no connector), QEMU race hardening and the
+  docs push (Jack), second-pass review (parked on WIN WSL, Jack/host).
+
+## BW-DEEP-REVIEW-PREP-93a7c9e9-20261115 — Prep pack for the second-pass deep review of main 93a7c9e9 (DONE 2026-11-15 05:39Z; RUNTIME HALF RUN AFTER WSL RESTORED; NO DEFECT; NO PUSH)
+
+- 2026-11-15 ~02:00Z (7:57 PM CST pass), Claude (Opus 5.5). WSL not
+  probed, no UAC, no merge, no push, no Notion post. Source read from
+  worktree beamo-wipe-done-focus-20261113 (HEAD 5dcfa3f9); tree of
+  93a7c9e9 == tree of 5dcfa3f9 (cf8247a4), so its bytes are main's.
+- SCOPE (merged PRs; diffs are merge^1..merge):
+  - #102 7a8f7327: tests/test_gtk_report_usb_first_answer.py (+237, new)
+    and this record. No src change.
+  - #103 ec648899: src/beamo_wipe/ui/accessible_wizard.py (+70/-4:
+    _widget_text takes Gtk.Expander; _find_by_text skips hidden subtrees
+    (l.122); new _expanders (l.144); render() captures open expanders and
+    the open Help item (l.590-610) and restores them (l.1362-1392);
+    _open_help_key (l.1511); _help_activate sets _help_leaving (l.1550));
+    tests/test_gtk_done_rebuild_place.py (+269, new).
+  - #104 93a7c9e9: accessible_wizard.py +27 (menu_sections/menu_inside
+    capture l.592-610; call l.1392; _reopen_help_sections l.1496);
+    tests/test_gtk_done_rebuild_place.py +34.
+- WINDOWS-SIDE CHECKS RUN NOW (venv .venv-qr127-20261101, ruff 0.9.2,
+  mypy 2.1.0 = CI pins; scripts/ci-hosted.sh l.125-129 commands):
+  `ruff check src/beamo_wipe tests` PASS; S-rule pass on src PASS and on
+  tests PASS; `mypy --ignore-missing-imports --platform linux
+  src/beamo_wipe` "no issues found in 61 source files" (2 informational
+  annotation-unchecked notes, l.592 and l.612 in untyped render()). Worktree
+  still clean after the runs.
+- READ-ONLY RE-READ OF THE PR 104 DIFF: NO DEFECT.
+  - menu_inside (l.610) is True only when focus sits under the item but
+    not on it, i.e. on the shortcuts text; on the header it is False, so
+    the header keeps focus. keep_menu "" (focus on title / Close) gives
+    False, so sections reopen without moving focus.
+  - Order is safe: _show_help_menu focuses the header, then set_expanded
+    fires _fold's notify::expanded handler (l.211-213) synchronously, so
+    the child is visible before child.grab_focus(). The text label is
+    can_focus (l.1440).
+  - Keys come from the old _help_items and are looked up in the new dict
+    built by _help_menu_button (l.1432-1461), so no destroyed widget is
+    touched after the rebuild.
+  - SHORTCUTS is in help_menu.STAYS_OPEN (help_menu.py l.32), but in GTK
+    the shortcuts item is an Expander with no clicked handler, so
+    _help_activate never runs for it; no _help_reopen path for it.
+  - Known, not new: if text size / sounds / high contrast is activated
+    while the shortcuts section is open, the #175 _help_reopen branch
+    (l.1387-1389) reopens the menu on that item with the section
+    collapsed (pre-existing #175 behaviour, recorded 2026-11-14, Jack's
+    call). Unconfirmed Orca "collapsed/expanded" chatter on restore needs
+    a real Orca run (not available in WSL; stays NOT TESTED).
+- RUNTIME HALF - RUN WHEN WSL ANSWERS (one pytest session at a time):
+  1. Preflight (Git Bash, MSYS_NO_PATHCONV=1): C: free >= 12 GB (do not
+     delete to make room); `timeout 30 wsl.exe -d
+     BeamoComboQualification-20261001 -u beamo-qual -e sh -c 'cat
+     /proc/loadavg; df -h /home; free -g'`. If loadavg is in the
+     hundreds or more, stop early (outage warning sign).
+  2. Tree check: dec tree (bw-linux-20261107/dec) holds ec648899 + the
+     two 5dcfa3f9 files = main's bytes, plus the untracked probe
+     tests/test_zz_review_probe_20261114.py. Make a sha256 manifest of
+     `git archive 93a7c9e9 src tests pyproject.toml` extracted into the
+     scratchpad, pipe it in and run `sha256sum -c --quiet` in dec; expect
+     no mismatch. Pass `--ignore=tests/test_zz_review_probe_20261114.py`
+     to every run (rm inside WSL was refused by the safety check earlier).
+  3. Focused (tag deep-focused-93a7c9e9): `BW_TREE=$R/dec sh $R/hrun.sh
+     deep-focused-93a7c9e9 --ignore=tests/test_zz_review_probe_20261114.py
+     tests/test_gtk_done_rebuild_place.py
+     tests/test_gtk_report_usb_first_answer.py tests/test_help_menu_175.py
+     tests/test_gtk_collapsed_expander_focus.py
+     tests/test_report_panel_135.py` (R=/home/beamo-qual/bw-linux-20261107).
+     Expect all pass (rebuild_place 12/12).
+  4. Wide (tag deep-wide-93a7c9e9): the 80-file list in scratchpad
+     stage/wide-shortcuts.sh, same --ignore. Baseline: 2160 passed / 1
+     failed, the one failure
+     test_compat_story::test_iso_builder_copies_then_injects_helper
+     (git check-ignore in a non-git copy). Any other FAILED line is a
+     finding; re-run it once alone before calling it a defect.
+  5. Reverse mutants (swap one file into dec, run rebuild_place, restore
+     main's file by tar, re-check sha): (a) drop the l.1392 call -> both
+     test_open_shortcuts_section_stays_open cases fail; (b) force
+     menu_inside False -> the inside=True case fails; (c) drop
+     _find_by_text's visibility skip (l.131) -> a PR 103 collapsed-
+     expander test fails. A mutant that still passes = test gap.
+  6. Runtime probes (Xvfb 72 DPI, private XDG): rebuild with the
+     shortcuts section open and focus on text / header / Close; rebuild
+     during the menu's close animation (0-250 ms); text size activated
+     with shortcuts open (confirm the known #175 collapse only).
+- EVIDENCE TO COLLECT: preflight output with UTC times; manifest check
+  result; out/status.txt START/END lines and exit per tag; per-tag
+  `^PASSED` / `^FAILED` counts from out/<tag>.log (-rA, not -q); full
+  FAILED lines; mutant results; probe outputs; dec sha256 restored to
+  main after mutants. Report-only; a genuine defect gets a local fix and
+  one batched push only, PR/merge Jack's call.
+- NEXT: when WSL answers (Jack / host restart), run steps 1-6 and record
+  results here. Until then: PARKED ON WIN WSL.
+- 2026-11-15 02:09-02:20Z WSL elevated restart (Jack un-parked it, at
+  WIN): prompt 1 fired 02:09:02Z, UAC timed out unanswered 02:11:09Z.
+  Prompt 2 fired 02:14:52Z, Jack approved (elevated=True 02:15:00Z);
+  `Restart-Service WSLService -Force` did not finish in 180 s; service
+  WSLService stuck StopPending (pid 60788) through 02:20:14Z; vmwp 24152 /
+  vmmemWSL 22472 still up. Two wsl.exe (35424, 64044) started 02:18:19Z,
+  not mine. Log: scratchpad wsl-restart\restart-wslservice.log. NEXT
+  (needs Jack's OK - ends a non-owned system process by PID): elevated
+  scratchpad wsl-restart\finish-stuck-wslservice.ps1 -ExpectedPid 60788
+  (ends only that PID if still StopPending, then Start-Service). Host not
+  restarted.
+- 2026-11-15 03:00Z (8:59 PM CST pass), no UAC fired, Jack not asked,
+  nothing marked in Notion. WSL read-only: WSLService still Stop Pending,
+  pid 60788 (wslservice) alive; vmwp 24152 / vmmemWSL 22472 up; wsl.exe
+  53920 + 60792 started 03:00:02Z (not mine; same hh:00 pattern as
+  02:18Z). Bounded probe 03:00:42Z hit 20 s, exit 124. Third-prompt
+  proposal (finish-stuck-wslservice.ps1 -ExpectedPid 60788) PARKED.
+  Fallback done: merge records for #102/#103/#104 reconciled live (merge
+  commits, parents, first-parent ancestry, PR and post-merge ci.yml +
+  CodeQL run IDs, every job success, PR #102 CI attempt 2 only) - all
+  match this record and notion-notes; no correction needed. PR #104
+  Notion verify-and-mark evidence pack written (NOT MARKED):
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\notion-pr104-evidence-20261115.md
+- 2026-11-15 04:23Z (10:23 PM CST pass), no UAC, no WSL restart or
+  probe, Jack not asked. Live: main 93a7c9e9; #102/#103/#104 MERGED 8/8
+  SUCCESS each; latest merge #104; open PRs #93 only; no new workflow
+  runs since 03:00Z; 0 open alerts; notion-pr104-evidence-20261115.md
+  unchanged since 03:02Z, NOT MARKED. Unchanged since the 9:02 PM pass.
+  Notion sweep prep: notion-notes row 7 (WSL) updated with the 02:14Z
+  restart attempt and Stop Pending state (as last read 03:00Z); row 2
+  now points to the evidence pack. Nothing posted.
+- 2026-11-15 05:06:58Z third UAC prompt (Jack approved firing it, at WIN,
+  ~11:05 PM CST): Jack's Yes REGISTERED - finish-stuck-wslservice.log:
+  23:07:05.14-06:00 "before pid=60788 state=Stop Pending expected=60788";
+  23:07:05.20 "stopped pid 60788"; 23:07:07.29 "after kill status=Stopped";
+  23:07:07.61 "start requested"; 23:07:08.10 "final pid=44696
+  state=Running". 05:07:16Z: WSLService Running pid 44696, pid 60788
+  gone; old vmwp 24152 / vmmemWSL 22472 gone. Probe 05:07:23Z answered
+  "ok" at 05:07:41Z (exit 0); loadavg 0.53, 7 GB RAM free, /home 746 GB
+  free. C: 11.7 GB free (runs use tmpfs /tmp; only small logs written).
+  WSL OUTAGE (17:53Z Nov 14 - 05:07Z Nov 15) RESOLVED. Host not restarted.
+- 05:08Z PR #104 Notion re-check commands (evidence pack): main
+  93a7c9e9; #104 MERGED merge 93a7c9e9 head 5dcfa3f9; 43626527611
+  success [3/3 success]; 43626527284 success [4/4 success]; alerts 0.
+  All match. Notion still NOT MARKED (no connector here).
+- 05:08Z deep review step 2: manifest of `git archive 93a7c9e9 src tests
+  pyproject.toml` (845 files) `sha256sum -c` in dec: exit 0, all match.
+  Extras: tests/test_zz_review_probe_20261114.py (--ignore'd) + 58
+  __pycache__ files (neutralised with PYTHONPYCACHEPREFIX=/tmp/pyc).
+  Step 3 focused run started (tag deep-focused-93a7c9e9).
+- 05:11Z step 3 focused (deep-focused-93a7c9e9, 05:09:12-05:11:23Z,
+  rc=0): 177 passed / 0 failed / 0 error / 0 skipped.
+- 05:25Z (11:24 PM CST check): WSLService Running pid 44696; pid 60788
+  gone; WSL probe 05:25:06Z answered ok (loadavg 0.96). Step 4 wide
+  (deep-wide-93a7c9e9) started 05:11:35Z, at 49% at 05:25Z; one F so far
+  at ~23% (expected position of the known test_compat_story failure;
+  confirm at END). Mutant script ready: scratchpad
+  stage\run-mutants.sh (a: drop l.1392 call; b: menu_inside=False;
+  c: drop _find_by_text visibility skip l.131-132), runs after wide ends,
+  restores main's file and re-checks the 845-file manifest.
+- 05:37Z step 4 wide (deep-wide-93a7c9e9, 05:11:35-05:37:09Z, rc=1):
+  2160 passed / 1 failed / 0 error / 0 skipped. Only failure:
+  test_compat_story::test_iso_builder_copies_then_injects_helper (known
+  non-git-copy failure). Identical to the PR 104 fix run (2160/1).
+- 05:37-05:38Z step 5 reverse mutants (tests/test_gtk_done_rebuild_place.py;
+  c also test_gtk_collapsed_expander_focus.py), each restored to main and
+  sha-checked after:
+  (a) drop l.1392 _reopen_help_sections call: 10 passed / 2 FAILED -
+      test_open_shortcuts_section_stays_open[True] and [False]. CAUGHT.
+  (b) menu_inside = False: 11 passed / 1 FAILED - [True]. CAUGHT.
+  (c) drop _find_by_text visibility skip l.131-132: 21 passed / 1 FAILED -
+      test_find_by_text_skips_hidden_content. CAUGHT.
+  Final 845-file manifest sha256 -c on dec: exit 0 (main bytes restored).
+- 05:39Z step 6 runtime probes (deep-probe-93a7c9e9, 7 passed; the probe
+  file tests/test_zz_review_probe_20261114.py was overwritten in place
+  with the 2026-11-15 probe; still untracked, still --ignore'd):
+  P3 focus on Close with shortcuts open -> after rebuild menu open,
+     section stays expanded and visible, focus goes to the FIRST menu item
+     (Button), not Close. By design (_open_help_key returns "" for focus
+     outside items -> first item; PR #103 docstring). Candidate polish
+     only (an Orca user on Close moves to the first item) - Jack decides.
+  P4 text size activated with shortcuts open -> menu reopens on text size,
+     section COLLAPSED. Confirms the known pre-existing #175 behaviour.
+  P5 rebuild 0/20/60/120/250 ms into the menu's close -> popover hidden
+     at popdown, never reopened, focus on the MenuButton. No reopen bug.
+  Focus-on-text and focus-on-header cases are covered by the merged
+  tests (focused run 177/0).
+- RESULT: runtime half of the second-pass review of main 93a7c9e9: NO
+  GENUINE DEFECT. No fix, no commit, no push, no PR. Still open, owned
+  elsewhere: P3 / P4 / Orca chatter polish (Jack decides; Orca chatter
+  needs a real Orca run, NOT TESTED); QEMU race hardening (Jack); Notion
+  posting (no connector here; evidence pack re-checked 05:08Z); docs push
+  of this record (Jack).
+- 2026-11-15 06:22Z (12:22 AM CST pass), no UAC, no WSL restart, no
+  Notion marking. Live: main 93a7c9e9 (did not move; no main runs since
+  the 93a7c9e9 pair). #102 MERGED 2026-11-12T18:07:29Z as 7a8f7327
+  (head 8a11ac3c); #104 MERGED 2026-11-14T18:25:30Z as 93a7c9e9 (head
+  5dcfa3f9). Post-merge: 7a8f7327 ci.yml 43276552410 attempt 1 success
+  3/3, CodeQL 43276551623 success 4/4; 93a7c9e9 ci.yml 43626527611
+  attempt 1 success 3/3, CodeQL 43626527284 success 4/4. Open PRs #93
+  only; 0 alerts. WSL probe 06:22:48Z ok (exit 0) BUT loadavg
+  120.09/108.59/81.32 (444 tasks) and rising - same warning pattern
+  that preceded the Nov 14 outage; nothing of mine running.
+  Notion sweep for #102/#104: evidence ready (notion-notes READY TO POST
+  rows 2 and 5 + Merged PRs #102 line; notion-pr104-evidence-20261115.md
+  re-checked 05:08Z and again now - all match). NOT runnable here: no
+  Notion connector in this session; posting needs the supervising
+  agent's signed-in Notion session or Jack, and a go-ahead to mark.
+- 2026-11-15 06:51Z (12:52 AM CST pass), non-WSL only (no probe, no UAC,
+  no Notion marking): unchanged since 06:22Z. main 93a7c9e9; #102
+  7a8f7327 / #104 93a7c9e9 MERGED; post-merge 43276552410, 43276551623,
+  43626527611, 43626527284 all attempt 1 success, every job; 0 new main
+  runs; open PRs #93 only; 0 alerts. Notion evidence files unchanged
+  since 05:40Z and every live merge SHA / run ID appears in them - still
+  match. Not marked.
+
+## BW-PR93-REVIEW-20261115 — Read-only review of open PR #93 (REPORT-ONLY; NO REBASE, NO RERUN, NO CHANGE; RUNTIME PARTS NEED WSL; NEXT STEP JACK'S CALL)
+
+- 2026-11-15 ~09:56-10:30Z (3:55 AM CST pass), Claude (Opus 5.5) + two
+  independent read-only reviewer subagents. Read-only git object commands
+  on worktree beamo-wipe-done-focus-20261113 (no worktree created, no
+  checkout/fetch of PR refs, no file changed); gh API reads. Other agent's
+  uncommitted work in C:\Users\USERNAME\dev\BeamoTech\beamo-wipe
+  (fix/windows-development-setup-20261022) not touched.
+- Live at 09:56Z: main 93a7c9e9; #102/#104 MERGED; #93 only open PR.
+- PR #93 "safety: harden audit boundaries and preserve resumable
+  verification" (jallieson, opened 2026-10-27, not draft, no review),
+  branch fix/security-audit-handoff-20261027, base 58c677f7, head bf2b4909
+  (commits 7f2f2a48, bf2b4909). 168 files +30564/-1156, no binaries: 63
+  docs/evidence, 61 tests, 20 src, 11 developer_tests, 5 scripts, 2
+  packaging/live, 2 desktop. 295 behind / 2 ahead of main.
+- Checks (2026-10-27, never rerun): ci.yml 40433850969 Linux image gate +
+  CI gate FAILED; Windows launcher tests + CodeQL 40433846351 (4/4) passed.
+  CAUSE (gate log): main pytest session SEGFAULTED at 01:43:10Z during
+  garbage collection in discover.py:1201 (_content_evidence), under
+  tests/test_accessible_runtime.py:277
+  (test_last_chance_enter_without_erase_focus_never_erases); tests.xml was
+  never written, so check-gtk-test-results.py then raised
+  FileNotFoundError '/proc/self/fd/3/tests.xml' (consequence only). The
+  PR did NOT change ci_evidence.py's pinned-junit fd handling (earlier
+  guess withdrawn). Segfault root cause needs a Linux/WSL reproduction.
+- SAFETY-CRITICAL FILES: no defect.
+  - safety.py l.785-854 (+ call l.873) _assert_local_nvme_subsystem:
+    fallback when /sys/class/nvme/<ctrl>/transport is unreadable; checks
+    every subsystem controller is PCIe, double scan, refuses on any
+    error/change; fails closed; test tests/test_nvme_surviving_transport.py.
+  - discover.py l.2165-2186, 2283-2343: raw whole disk with unexpected
+    parent/PKNAME never listed; if boot itself -> no selectable disks,
+    IDENTIFY_ERROR, boot_identified False; fails closed; test
+    tests/test_raw_disk_ancestry_refusal.py. Minor: a skipped non-boot disk
+    vanishes with no diagnostic.
+  - nwipe_runner.py: argv/flags/--autonuke/--exclude/--force/boot and log
+    guards untouched. Low, fails safe (CONFIRMED by reviewer): l.1734-1830
+    / 1840-1905 a close() error after a good read returns "" so a real
+    success reads as unverifiable, never a false pass. Pre-existing
+    PLAUSIBLE: l.1569-1587 engine-fd close error after Popen raises from
+    start() while nwipe runs (lock still held).
+  - ci_evidence.py: no defect; minor PLAUSIBLE l.126-197 optional image
+    unlinked mid-read reported as never present (inventory only).
+- OTHER 16 FILES:
+  - DECISION FOR JACK: wizard.py:1330 shutdown_still_safe now uses
+    _session_store_busy() (l.1144, no longer checks store.invalid) instead
+    of _new_session_store_blocked(); an INVALID evidence store no longer
+    blocks poweroff (condition change verified by Claude). Reviewer: with
+    no report requested, poweroff can proceed without the discard prompt
+    the PR comment promises -> /tmp evidence lost (consequence not
+    independently verified). Disks stay protected.
+  - Low: wizard.py:2469/2478 brief "evidence failed" status on a save
+    racing wipe end (cosmetic); session_recovery.py:193 leaked
+    .recovery-<hex> temp (pre-existing); evidence.py:1021 a close error
+    after successful fsync reports a good export as failed (fails safe);
+    evidence.py:816 leftover hidden .tmp copy on the report USB may hold
+    disk identity data (pre-existing).
+  - Removed helpers (_require_nonempty, _int_text, _maybe_withhold,
+    _kind_chip, _CheckRow._wraplength) have no callers; sound.
+- REBASE CONFLICT MAP (base-line hunk overlap, 26 shared files):
+  likely textual conflicts in tests/test_accessible_runtime.py (22),
+  nwipe_runner.py (6), ui/accessible_wizard.py, tests/
+  test_helper_boot_guidance.py, app.py, .ai/memory/unfinished-work.md;
+  reviewer also rates ui/tk_wizard.py high. SAFETY-RELEVANT: main added
+  self._target_fd to the "A wipe is already running" / cleanup guards and
+  _reserve_target_under_lock / _release_wipe_lock handling (main l.~1486);
+  PR rewrote the same blocks - a rebase MUST keep main's _target_fd checks.
+  Main's completion-scan PRNG patterns vs PR re-indent: certain conflict
+  (retained_bytes += len(raw) -> line_bytes). wizard.py: no hunk overlap
+  but ~1,300 main lines changed - re-test after rebase. Other 20 shared
+  files likely clean textually.
+- SECRETS / PERSONAL DATA (added lines): no keys, tokens, passwords or
+  service-account JSON; 2 emails are test fixtures (.invalid / example).
+  REPO IS PUBLIC: PR adds the owner's Windows user path (C:/Users/<owner>)
+  172 times (141 docs/evidence, 31 .ai/memory; main has 11) and the WIN
+  machine hostname 6 times in docs/evidence/bug-audit-20261025-pass5/ and
+  -pass7/verification.json (main has 0). PR branch already public;
+  scrubbing before any merge is Jack's call.
+- NEEDS WSL: segfault reproduction; runtime check of the wizard.py
+  shutdown change; Linux tests before any push.
+- NEXT (Jack decides): whether to rebase/scrub/rerun PR #93 or close it.
+  No rebase, rerun, push or comment made.
+
+## BW-PR93-PREP-20261115 — PR #93 scrubbed, rebased and fake-fixed LOCALLY (NOT PUSHED; PUSH/MERGE JACK'S CALL; LINUX SUITE NOT RUN)
+
+- 2026-11-15 ~15:51-17:00Z, Claude (Opus 5.5), on Jack's drive-to-completion
+  instruction ("prepare PR 93 for merge, do not merge"). Main re-confirmed
+  live as 93a7c9e9 at 16:06Z before rebasing.
+- Worktree C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-pr93-prep-20261115 (of the
+  readiness clone; full checkout, sparse off for this worktree only), branch
+  prep/pr93-scrub-rebase-20261115, head 4c44ce48:
+  053a8583 (PR commit 1) / bf73b6bf (PR commit 2) / b344e9d7 (redaction
+  record) / 4c44ce48 (test fakes). Base 93a7c9e9. GitHub branch
+  fix/security-audit-handoff-20261027 is unchanged at bf2b4909.
+- Scrub: 54 files, 308 mentions (172 C:/Users/<owner>, 130 JSON-escaped,
+  6 hostname) -> C:/Users/USERNAME, JSON-escaped USERNAME, HOSTNAME, folded
+  into both PR commits (authors/dates/messages kept). The 2026-11-15 review
+  counted only the 172 forward-slash forms. Checks: 0 mentions in lines the
+  PR adds; 281/281 edited lines are byte-identical apart from the
+  substitution; 35/35 changed JSON files still parse. 18 canonical_hashes
+  entries describe pre-redaction bytes, left unchanged, listed in
+  docs/evidence/security-main-handoff-20261027/redaction-20261115.md.
+- Rebase conflict choices: nwipe_runner.py keeps main's _target_fd busy
+  guards (all 7 _target_fd lines identical to main) and adds the PR's
+  close-with-error; PR's _scan_completion_log plus main's display-only
+  generator-records clause; app.py keeps both sides' locals; helper test
+  keeps the PR's strict host allowlist (drops now-unused urllib.parse import);
+  slow-sound GTK test = main's version; record file keeps both sides.
+- 4c44ce48: 49 PR tests failed after the rebase only because their fakes
+  lacked attributes main added (_target_fd/_reserve_target_under_lock,
+  high_contrast/take_handoff, owner_source, wall_clock_trusted); added with
+  main's defaults. No product code or assertion changed.
+- Local checks on 4c44ce48 (Windows; venv .venv-qr127-20261101, ruff 0.9.2,
+  mypy 2.1.0): compileall, ruff check/format (CI paths), both S-rule sets,
+  ruff check src tests, mypy --platform linux: all pass. shellcheck not
+  installed. Native pytest: the PR's 11 developer test files 439/0. The PR's
+  60 tests/ files, original head: 868 passed / 359 failed / 95 errors (POSIX
+  and GTK only on Windows). Rebased head: 49 extra failures before the fake
+  fix, 0 after (those 5 files 129/129 on both trees).
+- NOT RUN: Linux suite / discover.py:1201 GC segfault check. WSL load was
+  ~1738 (4728 tasks) at ~16:05Z, the pattern that preceded the 11-14
+  outage; recovery would need UAC, which is not allowed without Jack.
+- NEXT (agent): when WSL load is normal, run the full Linux suite on
+  4c44ce48 (wsl-linux-test-route) and record whether the segfault recurs.
+- JACK: (1) force-push 4c44ce48 to fix/security-audit-handoff-20261027
+  (starts ci.yml on Blacksmith + CodeQL); (2) wizard.py shutdown_still_safe
+  behaviour change; (3) ask GitHub Support to purge the old unscrubbed
+  commits 7f2f2a48/bf2b4909 (still reachable by SHA after a force-push)?;
+  (4) merge; (5) scrub main's own 142 mentions in 5 files (separate PR)?
+- Completion ledger for every open item (130 rows: this thread's 18 + 112
+  older sections): C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\
+  wipe-completion-ledger-20261115.md. Nothing marked in Notion.
+
+## BW-PASS16-INCIDENT-REVIEW-20261115 — PASS16 loop-probe incident review WRITTEN (LOCAL COMMIT 86b39f76; NOT PUSHED; PUSH JACK'S CALL)
+
+- 2026-11-15 17:10:53Z-17:14:06Z, Claude (Opus 5.5), paused-item fallback
+  (non-WSL; no WSL probe, UAC, push, merge or Notion). Read-only from
+  evidence on main 93a7c9e9; nothing re-run, no losetup/loop/host command.
+- File: docs/evidence/bug-audit-20261017-pass16/incident-review-loop-probes-20261115.md
+  (158 lines; addendum, not added to artifacts-sha256.txt; no original
+  evidence file changed). Commit 86b39f76 on local branch
+  docs/pass16-incident-review-20261115 (parent 93a7c9e9), sparse worktree
+  C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-pass16-incident-20261115 (only that
+  evidence dir checked out).
+- Findings: root cause = fake losetup shebang `#!{sys.executable}` with the
+  space-bearing interpreter `/root/dev/Beamo Wipe/.venv-linux/bin/python3`
+  -> ENOENT -> PATH fallback to /usr/sbin/losetup as root in the failed run
+  (pytest phase 03:00:28-03:12:46Z 2026-10-17, 23 failed). Three real probe
+  runs (scripts/check-ci-kvm.sh block, identical at 35107a8d and 93a7c9e9):
+  at most 24 read-only attachments of private 1 MiB regular files, all
+  BACK-FILE-checked and detached (rc 0 in all three); read-only follow-up
+  03:27:32Z found nothing left. No block device/physical disk/wipe engine.
+  Loop numbers unrecoverable. 12 cited evidence files re-hashed: all match
+  artifacts-sha256.txt.
+- Residual (main 93a7c9e9): tests/test_blacksmith_ci.py l.103-149 still
+  writes the fake with #!{sys.executable} and appends the inherited PATH, so
+  the same fallback recurs when the interpreter path is not a valid shebang
+  and pytest runs as root with loop devices. Hosted CI exposure judged low
+  (unprivileged container, /usr/bin/python3), not verified.
+  test_qemu_bus_journeys_20261028.py and test_runbook.py use the same fake
+  pattern (fallback targets not reviewed).
+- NEXT: (agent, needs Jack to push) a fail-closed fix for fake-tool tests
+  (fake-only PATH or rejecting stubs, or skip when sys.executable is not a
+  valid shebang). JACK: push/PR the review commit (starts hosted CI on a
+  PR); pass8 SIGTERM / pass9 trace closure (unchanged).
+- Still parked, unchanged: PR 93 Linux suite + discover.py:1201 segfault
+  check (needs WSL at normal load; prep head 4c44ce48 not pushed); QEMU
+  speech boot-entry race hardening (Jack); BW-168 QEMU screen-awake probe
+  and BW-187 QEMU/Linux erase-another run (QEMU/Linux, not this pass).
+- UPDATE 2026-11-15 17:16:19Z-17:19:10Z (Claude): fail-closed follow-up
+  WRITTEN, local commit f663b8a4 on docs/pass16-incident-review-20261115
+  (parent 86b39f76; not pushed; sparse worktree now also checks out /tests/).
+  - New tests/fake_tool_shebang.py: python_shebang() returns "#!<python>\n"
+    only for an absolute interpreter with no blank and <= 127 bytes incl.
+    "#!"; otherwise pytest.fail (never skip).
+  - All six `#!{sys.executable}` fakes on main now use it:
+    test_blacksmith_ci.py (docker, sudo, losetup, dbus-run-session),
+    test_qemu_iso_inspection.py (xorriso), test_usb_download_verification.py
+    (curl). Loop-probe test now runs the shipped probe with PATH = fake dir
+    only (cannot reach /usr/sbin/losetup).
+  - New tests/test_fake_tool_shebang.py: 9 portable cases.
+  - Checked as asked: test_qemu_bus_journeys_20261028.py (runs
+    `#!/usr/bin/env bash` scripts via explicit bash; asserts losetup absent)
+    and test_runbook.py (reads docs/runbook.md only) do NOT use the fake
+    pattern. 86b39f76's review wrongly said they did; corrected in f663b8a4.
+  - Checks (Windows, venv ruff 0.9.2): ruff check + S-rule set on the 5
+    test files pass; compileall OK; test_fake_tool_shebang.py 9/9 passed
+    (--noconftest; sparse tree has no src); the loop test on Windows now
+    fails at python_shebang ("refusing to write a fake tool") before any
+    fake is written. NOT RUN: the changed Linux tests (no WSL/Linux this
+    pass) - run tests/test_blacksmith_ci.py, test_qemu_iso_inspection.py,
+    test_usb_download_verification.py, test_fake_tool_shebang.py on Linux
+    before any push.
+  - JACK: push/PR of 86b39f76 + f663b8a4 (starts hosted CI); pass8 SIGTERM /
+    pass9 trace closure. Unchanged parked items as listed above.
+
+## BW-Q12-PR94-BW168-20261115 — Q12 receipt for v0.2.14 + independent PR #94 review RECORDED (LOCAL COMMITS 3d4a7227, a66b22a5; NOT PUSHED); BW-168 probe PLAN written
+
+- 2026-11-15 17:26:59Z-17:50:02Z, Claude (Opus 5.5). Local-only fallback; no
+  push, merge, WSL, UAC, QEMU or Notion. Worktree
+  C:\Users\USERNAME\dev\BeamoTech\beamo-wipe-pass16-incident-20261115 (sparse),
+  new local branch docs/q12-v0.2.14-20261115 from main 93a7c9e9 (no upstream;
+  `git ls-remote` shows no such remote branch). The PASS16 branch
+  docs/pass16-incident-review-20261115 (f663b8a4) is unchanged.
+- Q12 (BW-FIN-SB-Q12) - commit 3d4a7227: docs/evidence/secure-boot-q12-0.2.14/
+  (README, components.json, raw inspector outputs, UEFI grub.cfg, inspector
+  code) + docs/secure-boot-acceptance.md correction.
+  - Identities: ISO 846200832 B sha256 b3851439...2c2564 = published
+    SHA256SUMS (full stream; every ranged extent = streamed bytes); USB gz
+    956902680 B 5ccad10c...0911 and img 2147483648 B 10ce123e...7d02 =
+    published .sha256 files (one active FAT32 partition at 2048).
+  - Chain: shim 0fc347af... (shim 16.1; 2 WIN_CERTIFICATEs: MS Windows UEFI
+    Driver Publisher <- MS Corporation UEFI CA 2011, and MS UEFI CA 2023
+    signer <- MS UEFI CA 2023); GRUB f0cf6c34... (2.06-13+deb12u2, Debian
+    Secure Boot Signer 2022 - grub2); kernel 6.12.115+deb12-amd64 02f73dc8...
+    (Debian Secure Boot Signer 2022 - linux). All 4 signatures: PE digest =
+    signed digest, messageDigest ok, RSA signature ok; each signer directly
+    issued by MS CA 2011/2023 (fetched from Microsoft PKI; 2011 DER sha256 =
+    0.2.12 receipt) or by the Debian CA in shim .vendor_cert (079646...).
+    Files byte-identical in ISO tree, El Torito/ESP efi.img and USB FAT32.
+    All 3 UEFI GRUB entries boot the inspected kernel.
+  - SBAT: shim,4 / shim.debian,1; shim .sbatlevel automatic 2025021800
+    (shim,4 grub,5), latest 2025051000 (+grub.proxmox,2); grub,5 /
+    grub.debian,5 / grub.debian12,1. Vendor dbx 45e89b4a... (= 0.2.12).
+  - CORRECTION: shim bytes are identical to 0.2.12's but carry both 2011 and
+    2023 signatures; the 0.2.12 receipt (osslsigncode, "Signature Index: 0")
+    said not 2023-signed. Doc corrected; 0.2.12 evidence left untouched.
+  - Q12 table NOT switched to 0.2.14 (pinned by tests; choosing the physical
+    test image is the owner's call). Physical cases stay NOT TESTED.
+    Publisher Ed25519 signatures not re-verified this pass.
+  - Checks (native Windows, sparse tree, --noconftest):
+    test_secure_boot_expectations 21 passed / 1 failed / 10 skipped both
+    with and without the edit (the failure is a cp1252 decode artifact,
+    identical on main); test_physical_acceptance_116 +
+    test_qemu_secure_boot_signers_20261028 7 failed / 16 passed both before
+    and after (no new failures). Committed tools reproduce raw output
+    byte-for-byte.
+- PR #94 independent review - commit a66b22a5:
+  docs/evidence/pr94-review-20261115/README.md. Fresh reviewer agent,
+  read-only: CRITICAL 0, HIGH 0, MEDIUM 0, LOW 4 (Confirm "why more
+  characters" wording; synchronous xset up to 5 s under the wizard lock;
+  codeload nwipe source tarball bound only by its pax comment; "Ready to
+  pass on" shown for SSD/NVMe, owner-approved wording). Claude spot-checked
+  LOW-2 and LOW-3 against main: both confirmed. Not reviewed: tests/,
+  docs/, helper pages, translations beyond spot checks, gallery/demo, most
+  drawing code. Nothing fixed.
+- BW-168 plan (steps only, nothing run):
+  C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\bw168-screen-awake-probe-plan-20261115.md
+  (opt-in QEMU journey QEMU_SCREEN_AWAKE=1; target sized for >=11 min erase;
+  no input after Working; screendumps at +30 s / +9:30 / +10:45; blanking back
+  10:45 after DONE; shift_l wake; optional negative control on f3e6b72;
+  ~25 min per run; needs a Linux KVM worker = hosted QEMU gate dispatch,
+  Jack's call). NEEDS LINUX/KVM to run - not attempted.
+- NEXT: (agent) implement the BW-168 probe in scripts/qemu-verify.sh locally
+  (no run). JACK: push/PR of docs/q12-v0.2.14-20261115 and
+  docs/pass16-incident-review-20261115; choose the physical Q12 image; decide
+  whether to fix PR #94 LOW-1..4; dispatch the BW-168 probe.
+
+## BW-PR93-PUSH-20261115 — PR #93 force-pushed to 4c44ce48 on Jack's approval; HOSTED GATE FAILED (9 tests); NOT MERGED
+
+- 2026-11-15 18:51:31Z-19:35Z, Claude (Opus 5.5), Jack approved push +
+  merge-if-green. Verified live first: #93 only open PR, branch
+  fix/security-audit-handoff-20261027 at bf2b4909, main 93a7c9e9, prep
+  4c44ce48 (base 93a7c9e9). Required check on main: "CI gate" (strict).
+- 18:51:42Z `git push --force-with-lease=...:bf2b4909 origin
+  4c44ce48:refs/heads/fix/security-audit-handoff-20261027` -> forced update
+  bf2b4909...4c44ce48, rc 0. PR head = 4c44ce48 (API + refs/pull/93/head).
+- Runs on 4c44ce48: ci.yml 43749135479 FAILURE (Windows launcher tests
+  success; Linux image gate failure 18:51:57-19:33:46Z; CI gate failure);
+  CodeQL 43749131282 success (4/4). NOT MERGED (rule: any required failure
+  -> stop). main unchanged 93a7c9e9.
+- Linux pytest: 9 failed, 17239 passed, 16 skipped (40:48). No segfault
+  (0 "Segmentation fault"/"Fatal Python error" in the log) - the
+  discover.py:1201 crash did not recur.
+  - tests/test_runner_inhibitor_identity_order.py x4 ([boot_serial],
+    [mounted], [target_serial], unchanged_inventory): "Unexpected native
+    device/inventory access: /dev/sda" - likely main's
+    _reserve_target_under_lock opening the target inside the PR's fake.
+  - tests/test_storage_io_recovery.py::test_report_bundle_close_error_still_closes_all_directories[write|verify]:
+    5 closes vs expected 3.
+  - tests/test_report_panel_135.py::test_saving_disables_both_footer_actions_with_a_reason:
+    gets "Erase another disk is not available because this erase may still
+    be running." where '' expected.
+  - tests/test_progress_timing.py::test_method_gates_estimate_on_final_operation[extra-verifying-True]:
+    remaining None ("Estimate unavailable until the last step.").
+  - tests/test_ui_system.py::test_gallery_and_tk_share_plain_titles_and_more_detail:
+    'kind_label' not in tk_wizard source (PR removed _kind_chip).
+  - The Blacksmith comment's 10th item
+    (test_boot_guard_rejects_false_identity_with_otherwise_selectable_target)
+    is the designed negative gate (runs against a broken safety copy; log:
+    "negative test PASS: safety gate blocks bypass") - not a real failure.
+- These are post-rebase semantic conflicts (PR #93 code/tests vs main's
+  #135/#167/#179/#187 and _target_fd work) that the Windows-native checks
+  could not reach. Log saved: scratchpad pr93prep/ci-43749135479-failed.log.
+- NEXT: (agent, local) reproduce and fix the 9 on the PR branch (Linux run
+  needed to verify - WSL or hosted); JACK: approve any further push/rerun.
+  Old commits 7f2f2a48/bf2b4909 stay reachable by SHA (purge = Jack).
+
+## BW-SCRUB-MAIN-20261115 — PR #105 opened (docs-only owner-path scrub of main); CHECKS RUNNING; MERGE = JACK [now: MERGED 2026-11-15 as d72403d5; branch deleted 2026-11-16, see BW-MERGED-BRANCH-CLEANUP-20261116]
+
+- 2026-11-15 19:36:52Z-19:40:20Z, Claude (Opus 5.5), on Jack's approval.
+  Live first: main 93a7c9e9; 142 mentions in 5 files (unfinished-work.md 80,
+  windows-local-checks.json 54, windows-test-results.json 6,
+  windows-20261001.md 1, sole-maintainer-policy-20261001.md 1; forms 71
+  backslash / 60 JSON-escaped / 11 forward-slash; no hostname).
+- Branch docs/scrub-owner-path-main-20261115 (from 93a7c9e9), ONE commit
+  2113ac51 (docs-only: 5 files 142/142 lines + new
+  docs/evidence/redaction-main-20261115.md). Every changed line = original
+  with only the placeholder (0 mismatches); JSONs parse; tree at 2113ac51
+  has 0 mentions. windows-20261001.md's recorded sha256 (in
+  windows-test-results.json and windows-reference-inventory.tsv) left as
+  pre-redaction values, documented. Pushed (new branch, no force).
+- PR https://github.com/BeamoTech/beamo-wipe/pull/105, MERGEABLE, BLOCKED
+  pending checks: ci.yml 43753716601 + CodeQL 43753713461 queued/running at
+  19:40:20Z. NOT merged (needs green + Jack). Note: PR #93 also edits
+  .ai/memory/unfinished-work.md - whichever merges second needs a rebase.
+- UPDATE 2026-11-15 20:27:46Z (Claude): PR #105 ALL CHECKS GREEN on 2113ac51 -
+  ci.yml 43753716601 a1 success (Linux image gate 19:40:23-20:27:02Z,
+  Windows launcher tests, CI gate 20:27:08-20:27:13Z); CodeQL 43753713461
+  success 4/4. MERGEABLE/CLEAN, NOT merged (merge = Jack). PR #93 still
+  4c44ce48, CI gate failed, unmerged. main 93a7c9e9.
+
+## BW-MERGE-EVERYTHING-20261115 — PR #105 MERGED; PR #93 rebased + 9 fixes pushed (1e04d3cf), CI running [now: PR #93 MERGED 2026-11-16 00:13:58Z as 1f826129, see BW-PR93-MERGED-20261116]
+
+- 2026-11-15 21:37Z Claude (Opus 5.5) on Jack's "merge everything" order.
+- PR #105 merged 21:37:16Z by jallieson as d72403d5 (parents 93a7c9e9 +
+  2113ac51). main = d72403d5. Post-merge: CodeQL 43764697231 success;
+  ci.yml 43764697720 in progress at 21:44Z [later: success, completed 2026-11-15 22:31:35Z, rechecked live 2026-11-16].
+- PR #93: rebased 4c44ce48 -> onto d72403d5 cleanly (unfinished-work.md: PR
+  only adds, 0 deletions; tree 0 owner-path mentions). Fix commit 1e04d3cf
+  (tests only; ruff/format/mypy pass; portable tests pass natively; the
+  inhibitor and storage tests need Linux). Choices (keep PR 93 behaviour):
+  inhibitor fake reserves a private regular file for main's target hold;
+  storage test isolates PR 93's cleanup diagnostic and requires it; report
+  panel fixture stubs "no engine running" (PR 93 probes on every live
+  session); progress test uses real "pass N of N" counters + new
+  contradicting-counters case (PR 93 never guesses); ui_system asserts
+  identity.kind_chip path (dead _kind_chip removed).
+- 21:44:29Z one batched push: force-with-lease 4c44ce48...1e04d3cf. PR #93
+  head 1e04d3cf. Runs: CodeQL 43765369096 (in progress); ci.yml pending.
+- Rule: if the Linux gate fails, re-run only that job once; merge only on
+  all-green; else stop and report.
+- QUEUED after PR #93 merges: (A) Notion mark-off of verified-done rows
+  (needs a Notion connection; else record evidence text per item);
+  (B) translation review pass + automatable probes + residue list.
+- UPDATE 2026-11-15 22:29Z (Claude): PR #93 run 43765377861 on 1e04d3cf:
+  ALL TESTS PASS (17249 passed, 16 skipped, 179 subtests; lint, preview,
+  negative, launchers PASS; CodeQL 43765369096 4/4 success) but the Linux
+  image gate failed at the evidence step: "CI evidence failed: junit report
+  has inconsistent testsuite counts" -> CI gate failed. Cause (reproduced
+  locally with pytest 9.0.3): PR #93 adds 35 unittest subTest() calls (7
+  files; main has 0); pytest 9 counts each subtest in the junit tests=
+  attribute without a <testcase> (developer_tests/test_session_entry_cleanup.py:
+  tests=21 vs 4 testcases) and verification_evidence.parse_junit_xml rejects
+  that. DETERMINISTIC: not re-run (a re-run would fail identically), NOT
+  merged. Fix needs a push: convert the subTest loops to
+  pytest.mark.parametrize (preferred) or teach the validator subtest counts.
+- UPDATE 2026-11-15 23:05:46Z (Claude): LOCAL FIX READY, NOT PUSHED. Commit
+  1366866d on prep/pr93-scrub-rebase-20261115 (parent 1e04d3cf = PR #93's
+  current GitHub head; worktree beamo-wipe-pr93-prep-20261115, clean).
+  Converted all 35 unittest subTest() calls in 7 files to
+  pytest.mark.parametrize: developer_tests/test_build_identity_cleanup.py,
+  test_optional_helper_cleanup.py, test_session_entry_cleanup.py,
+  test_session_recovery_cleanup.py; tests/test_kiosk_identity_guard.py,
+  test_progress_plan_estimate.py, test_sound_partial_state.py. TestCase
+  classes -> plain pytest classes with a unittest-assertion mixin
+  (setUp/setUpClass via setup_method/setup_class); small files -> plain
+  asserts. Case accounting exact per file (old junit tests= minus loop
+  containers plus split-out tests): 26/37/19/58/11/41/14 = 206 cases;
+  JUnit tests == testcases in every file; parse_junit_xml accepts the
+  combined report (it raised before). Gates on Windows: compileall, ruff
+  check/format (developer_tests formatted), both S-rule sets, ruff
+  src+tests, mypy --platform linux (61 files) all pass; 206/206 pass.
+  NOT RUN: full Linux suite. NEXT (Jack): one push of 1366866d to
+  fix/security-audit-handoff-20261027 (force-with-lease 1e04d3cf), hosted
+  CI, merge on green. Queued A (Notion) and B (review automation) held
+  until PR #93 merges.
+- UPDATE 2026-11-15 23:07:07Z (Claude): Jack ordered finish. Pushed
+  1e04d3cf..1366866d (fast-forward) to fix/security-audit-handoff-20261027;
+  PR #93 hosted CI + CodeQL running; merge only on all-green.
+- Queued A (Notion) started 23:08Z: NO Notion connector in this session
+  (ToolSearch finds none) - nothing read or marked; Notion state UNKNOWN.
+  Evidence pack written: agent-tasks-20261108/notion-wipe-markoff-evidence-20261115.md
+  (59 mark-Done rows: 9 thread + 50 older, plus new PR #105 row; HOLD: the
+  2 PR #93 local-only rows until PR #93 merges; duplicates noted).
+
+## BW-CLEANUP-PHASE-QUEUED-20261115 — Jack's final-phase directive: behavior-preserving codebase cleanup (QUEUED; DO NOT START YET)
+
+- Recorded 2026-11-15 ~23:10Z by Claude (Opus 5.5) on Jack's directive.
+- START CONDITION: only when this project's Claude-doable queue is fully
+  done (all merges landed, review/approval backlog cleared, Notion marking
+  in order). Jack-only residue (hardware tests, purchases, publishing) does
+  not block. One phase at a time on the same checkout. Order ahead of it:
+  (1) PR #93 merge on green, (2) item A Notion, (3) item B translation
+  review / probes BW-168, BW-187, PASS16, BW-FIN-SB-Q12 / residue list.
+- GOAL: beamo-wipe works EXACTLY the same, but is much more readable and
+  easier to work with. No behavior, API, claims-copy or feature changes.
+- METHOD: parallel subagent workstreams per module/area (naming,
+  structure, dead code, comments/docs, duplication, complexity hotspots);
+  this thread coordinates and reviews every subagent diff; small batched
+  PRs, one area per PR, never mixing areas.
+- SAFETY: full local suite + project gate green BEFORE the first change
+  (baseline recorded) and after EVERY batch; a batch that changes any test
+  outcome does not push. Hosted CI light (local-first, batched pushes,
+  failed-job-only reruns). Merge each cleanup PR on green under Jack's
+  merge-everything order. Anything not cleanable without behavior risk is
+  left and noted with the reason.
+- MODEL: Opus 5.5 High on this thread and every subagent (srv safeguard
+  unchanged: drop to Medium only if a srv thread fails at provider start /
+  MCP registration).
+- END STATE: all cleanup PRs merged; full suite green on final main; short
+  summary for Jack (areas cleaned, lines/files touched, zero behavior
+  changes); Notion/records updated to match.
+
+## BW-PR93-MERGED-20261116 — PR #93 MERGED as 1f826129 on all-green (Jack's merge-everything order)
+
+- 2026-11-16 00:13:58Z merged by jallieson with --match-head-commit
+  1366866d; merge commit 1f8261295286dbeccdea8fe07ea20f71a768b2f1
+  (parents d72403d5 + 1366866d). main = 1f826129. No open PRs.
+- Head 1366866d checks: ci.yml 43773065886 success (Linux image gate
+  23:07:32Z-00:11:33Z, Windows launcher tests, CI gate 00:11:39-00:11:43Z);
+  CodeQL 43773057127 success 4/4. Merge state CLEAN.
+- Post-merge on 1f826129: ci.yml 43779139862 queued, CodeQL 43779139237 in
+  progress at 00:14:03Z - result to collect.
+- Still Jack's: GitHub Support purge of old unscrubbed commits
+  7f2f2a48/bf2b4909 (and main history before 2113ac51); wizard.py
+  shutdown_still_safe change shipped as PR #93 intended (invalid evidence
+  store no longer blocks poweroff) - recorded as merged on Jack's order.
+- NEXT in order: collect post-merge CI; item A Notion (no connector here;
+  pack ready, PR #93 rows now mark-ready); item B (translation review,
+  probes, residue list); then the queued cleanup phase.
+- UPDATE 2026-11-16 01:02Z (Claude): main post-merge GREEN on 1f826129 -
+  ci.yml 43779139862 success (Linux image gate 00:14:07-01:02:10Z, Windows
+  launcher tests, CI gate 01:02:17-01:02:22Z); CodeQL 43779139237 success.
+  PR #93 rows are now mark-ready in the Notion evidence pack.
+
+## BW-L10N-REVIEW-20261116 — Item B translation review: PR #106 opened (228 fixes), CI running; merge on green (Jack's order) [now: MERGED 2026-11-16 03:59:11Z as ea02106d on all-green; main post-merge ci.yml 43801325379 + CodeQL 43801324763 success]
+
+- 2026-11-16 ~00:20-02:46Z, Claude (Opus 5.5) + 4 independent per-language
+  reviewer agents (read-only). Reports + edit lists:
+  scratchpad l10n/review-{fr,de,es,it}.md, edits-*.json.
+- Findings: FR 4H/11M/40L, DE 1H/17M/38L, ES 1H/5M/38L, IT 2H/4M/40L.
+  Applied 228 DEFECT edits (FR 46, DE 87, ES 45, IT 50) on branch
+  l10n/native-review-fixes-20261116 commit 5277dd06 (base main 1f826129):
+  8 files, locales/{fr,de,es,it}.py + helper/{fr,de,es,it}.html. Each "old"
+  verified unique; tables parse/load; ruff/compileall pass.
+- Native check: 114 locale-related test files before/after: no new
+  failures (one FR helper heading edit reverted because
+  test_export_stages checks step order in that card; canvas size4 fails
+  identically on main natively).
+- PR https://github.com/BeamoTech/beamo-wipe/pull/106 opened 02:46Z.
+- ESCALATED to Jack (product wording, not applied): DE GLANCE_STARTED_AGO
+  (test pins ungrammatical "Vor {text} gestartet" vs guide "Laufzeit:");
+  FR/DE save-code label; DE Standard vs Normal; DE offenlegen; IT
+  TITLE_BLOCKED; helper language note quoting "Check your keyboard";
+  code-side key-token regex for localized "1, 2 oder 3"/"any key".
+- Probes: Q12 covered (release QEMU secureboot_usb=pass + local receipt
+  3d4a7227); BW-168 needs hosted QEMU dispatch; BW-187 needs Linux (no WSL
+  this pass); PASS16 native loop probes = residue (isolated worker only).
+- UPDATE 2026-11-16 03:05Z (Claude): independent second pass of PR #106
+  (all 229 lines): 0 HIGH, 2 MEDIUM, 10 LOW, no safety meaning changed.
+  Applied 9 lines (both MEDIUM + 6 LOW) as eb97b0d5; skipped DE ESTIMATE_*
+  (test pin), DE BADGE_BATTERY/REFRESH_UTILITY_NOTE (UI fit), DE receipt
+  leads (separate change). Native affected tests: no new failures vs
+  baseline (keyboard fineprint Tk flakes identical on pure main). Pushed
+  5277dd06..eb97b0d5 to PR #106 (CI restarts); merge on green.
+- UPDATE 2026-11-16 03:59:11Z (Claude): PR #106 MERGED on all-green as
+  ea02106d (parents 1f826129 + eb97b0d5): ci.yml 43796064400 + CodeQL
+  43796059535 success on eb97b0d5. main = ea02106d; post-merge ci.yml
+  43801325379 / CodeQL 43801324763 queued. No open PRs.
+- Ledger refreshed: 30 native-review-only rows -> VERIFIED DONE (evidence
+  PR #106; noted it was a Claude review, not a human native speaker);
+  BW-153/167/180 stay Jack-gated on their escalations; BW-181 -> STILL
+  OPEN (helper/screen-reader paraphrase follow-up); 9 hardware rows keep
+  only their physical gates. PR #93/#105 rows -> VERIFIED DONE. Totals:
+  131 rows = 96 VERIFIED DONE, 30 JACK-GATED, 3 STILL OPEN, 2 SUPERSEDED.
+  Notion pack regenerated (still no connector; nothing marked).
+- UPDATE 2026-11-16 ~04:50Z (Claude): main post-merge after PR #106 on
+  ea02106d: CodeQL 43801324763 success (4/4); ci.yml 43801325379 success
+  (Linux image gate 03:59:19-04:58:29Z, Windows launcher tests, CI gate
+  04:58:36-04:58:41Z). main green after PR #106.
+
+## BW-181-HELPER-PR107-20261116 (Claude Opus 5.5, 2026-11-16)
+
+- Status: DONE. PR #107 MERGED 2026-11-16 07:30:12Z as 9b9102e6; main post-merge green; branch deleted 2026-11-16 (see BW-MERGED-BRANCH-CLEANUP-20261116). Was: PR OPEN, hosted CI pending.
+- Repo/branch: BeamoTech/beamo-wipe `docs/reading-level-paraphrase-181-20261116`, commit d3e86654 on main ea02106d. Worktree beamo-wipe-pr93-prep-20261115. PR https://github.com/BeamoTech/beamo-wipe/pull/107
+- Change: helper/{index,fr,de,es,it}.html, ten lines. The USB-removal "unsure" step now matches copy.MEDIA_STEP_UNSURE, and the power-cut tail is split like copy.POWER_EVENTS. docs/screen-reader.md needed no change.
+- Local evidence, native Windows (no WSL): 23 test files run one at a time, fix vs unchanged ea02106d.
+  - Fix: 629 passed / 40 failed. Main: 628 / 42.
+  - No new failures. Every failure on both sides is a known Windows gap (Tk geometry, Linux mounts and build tools).
+  - tests/test_accessible_boot_option.py was excluded except test_docs_teach_the_speech_entry, which passed. Its bash tests hang natively. Two earlier full runs hung there, and their own PIDs were stopped.
+  - Not run locally: the Linux suite. The hosted CI gate covers it.
+- Next action: wait for ci.yml (CI gate) and CodeQL on d3e86654. Merge with a merge commit and --match-head-commit only if all required checks pass. Then check post-merge main CI, and set the ledger BW-181 row (l.6253) to VERIFIED DONE.
+- Unchanged: the two docs branches stay unpushed (Jack's call). Notion, BW-187, PASS16 and the escalated wording choices are untouched.
+
+## BW-WSL-PROBE-20261116 (Claude Opus 5.5, 2026-11-16 ~06:57Z)
+
+- Status: BLOCKED. WSL is unresponsive to non-elevated status and list commands.
+- Probe: `wsl.exe --status` and `wsl.exe --list --verbose`, each capped at 20 s, run from PowerShell. Both TIMED OUT. Their own PIDs 30548 and 60584 were stopped and are confirmed gone. No elevation, no UAC, no restart, no distro start, no `wsl --shutdown`.
+- Finding: native test runs can call WSL by mistake. `tests/test_accessible_boot_option.py` runs `bash`, and on Windows that finds `C:\Windows\System32\bash.exe`, the WSL launcher. That is why both BW-181 full comparison runs hung there.
+  - Stopped (positively mine): bash 31776 / wsl 13232. They started 2026-11-15 22:36:30 local; parent 28916 was my recorded pytest.
+  - Left running, ownership not proven:
+    - bash 4932 / wsl 30300: started 2026-11-16 00:15:44 local, one second before my fix-pass timeout, so probably mine, but the parent 50004 was never recorded.
+    - bash 47780 + 72580 / wsl 69356 + 33940: started 2026-11-15 19:39 local; parents 4084 and 60812 are gone and unrecorded.
+  - Not mine, untouched: Codex/ChatGPT-owned `wsl -d BeamoComboQualification-20261001` (36572/54764), and wslservice 44696.
+- Next action: if the owner confirms 4932/30300 and 47780/72580 are leftovers from this session's runs, stop them by PID. Otherwise leave them. A WSL recovery needs the owner (restart/elevation is forbidden here).
+- Parked while WSL is unresponsive:
+  - BW-187 (needs Linux).
+  - The local Linux/Xvfb/GTK/Orca suites and `test_accessible_boot_option.py` bash tests; the hosted CI gate covers these.
+  - PASS16 loop probes (authorized isolated worker only).
+  - BW-168 (hosted QEMU dispatch).
+  - The lab `doctor`/`fixtures` WSL-backed runs.
+- UPDATE 2026-11-16 07:31Z (Claude) to BW-181-HELPER-PR107-20261116: PR #107 MERGED at 07:30:12Z as 9b9102e6 (parents ea02106d + d3e86654), by `gh pr merge --merge --match-head-commit d3e86654`.
+  - PR checks on d3e86654, all pass: ci.yml 43816928529 (Linux image gate, Windows launcher tests, CI gate) and CodeQL 43816924578.
+  - Main post-merge on 9b9102e6: ci.yml 43824321691 and CodeQL 43824321681 in progress.
+  - Ledger BW-181 is now VERIFIED DONE.
+  - Next: confirm post-merge success.
+
+## BW-SECOND-PASS-PREP-20261116 (Claude Opus 5.5, 2026-11-16 ~07:55Z)
+
+- Status: PREP DONE, nothing pushed. Full notes in agent-tasks-20261108/docs-branches-and-jack-gated-prep-20261116.md.
+- docs/pass16-incident-review-20261115 (86b39f76, f663b8a4):
+  - Clean merge onto main 9b9102e6.
+  - ruff passes; test_fake_tool_shebang passes 9/9; the 3 edited test files collect.
+  - The Linux run is not done (WSL down).
+  - Ready to push on Jack's approval.
+- docs/q12-v0.2.14-20261115 (3d4a7227, a66b22a5):
+  - Clean merge onto main 9b9102e6.
+  - ruff passes; the Secure Boot doc tests match main (same 6 native failures on both sides).
+  - Needs one refresh before push: the PR #94 review's LOW-2 cites nwipe_runner.py:1548, now :1571 on 9b9102e6. LOW-1..4 still apply; record "rechecked on 9b9102e6".
+- The 30 Jack-gated items are sorted into ready-on-yes (5), one-word decisions (9), spending/legal/authority (3) and physical (13).
+- Main post-merge on 9b9102e6: CodeQL 43824321681 success; ci.yml 43824321691 still running at 07:5xZ.
+- UPDATE 2026-11-16 ~08:27Z (Claude) to BW-SECOND-PASS-PREP-20261116:
+  - Ledger reconciled: live facts re-read (main 9b9102e6, 0 open PRs, 0 alerts, latest release v0.2.14). PR #104 "current main" text fixed. The QEMU race row notes 7 first-attempt passes. A new JACK-GATED row records the 2026-11-16 WSL outage. Section B counts recounted.
+  - Totals: 133 rows = 98 VERIFIED DONE, 31 JACK-GATED, 2 STILL OPEN, 2 SUPERSEDED. The Notion pack was regenerated; nothing is marked.
+  - docs/q12-v0.2.14-20261115: PR #94 review recheck committed LOCALLY as 967b1719 (not pushed). PR #93 moved sleep_inhibit.start() before the final recheck/reservation, so LOW-2's start-side text and anchors were updated. LOW-1/3/4 are unchanged.
+  - Merged branches docs/reading-level-paraphrase-181-20261116 and docs/scrub-owner-path-main-20261115 were still on the remote at 08:27Z. [Superseded: both DELETED, remote and local, ~08:55Z; see BW-MERGED-BRANCH-CLEANUP-20261116.]
+- UPDATE 2026-11-16 08:38Z (Claude) to BW-181-HELPER-PR107-20261116: main post-merge on 9b9102e6 is GREEN. ci.yml 43824321691 success (Windows launcher tests 07:31:32Z; Linux image gate 08:36:12Z; CI gate 08:36:33Z). CodeQL 43824321681 success. 0 open PRs. BW-181 is fully closed.
+
+## BW-MERGED-BRANCH-CLEANUP-20261116 (Claude Opus 5.5, 2026-11-16 ~08:55Z): DONE
+
+- Verified before deleting: each remote tip was an ancestor of main 9b9102e6 with 0 unique commits, and its PR was MERGED.
+  - docs/reading-level-paraphrase-181-20261116 at d3e86654 (PR #107).
+  - docs/scrub-owner-path-main-20261115 at 2113ac51 (PR #105).
+- Remote deletion: `git push --force-with-lease=<ref>:<sha> origin :<ref>` for each. ls-remote then showed 0 matches. No workflow triggers on non-main branch deletion (ci.yml: push/PR to main + dispatch only).
+- Local: worktrees beamo-wipe-pr93-prep-20261115 and beamo-wipe-pass16-incident-20261115 were clean, so I detached both at origin/main 9b9102e6. Then `git branch -d` on both branches (safe delete).
+- Untouched: the Jack-gated local branches docs/pass16-incident-review-20261115 (f663b8a4) and docs/q12-v0.2.14-20261115 (967b1719) still exist and are still unpushed. Other agents' branches were not touched, and I did not prune remote-tracking refs.
+- Main still 9b9102e6, 0 open PRs.
+
+## BW-END-STATE-20261116 (Claude Opus 5.5, 2026-11-16 10:31Z): non-WSL fallback EXHAUSTED; waiting on Jack
+
+- Live state:
+  - PR #102 merged as 7a8f7327; PR #106 as ea02106d; PR #107 as 9b9102e6.
+  - main = 9b9102e6, with post-merge ci.yml 43824321691 and CodeQL 43824321681 success.
+  - 0 open PRs; 0 open code-scanning alerts.
+- Local only, unpushed (Jack's call): docs/pass16-incident-review-20261115 (f663b8a4) and docs/q12-v0.2.14-20261115 (967b1719).
+- Records reconciled: ledger 133 rows = 98 VERIFIED DONE, 31 JACK-GATED, 2 STILL OPEN, 2 SUPERSEDED. The Notion pack is current (98 rows); nothing is marked.
+- The only remaining Claude-writable item is BW-168: implementing the opt-in QEMU_SCREEN_AWAKE journey in scripts/qemu-verify.sh. It is held because it could not be run or validated (it needs Linux/KVM; WSL is down; hosted QEMU is Jack's call).
+- BW-CLEANUP-PHASE-QUEUED-20261115 has not started; it waits for an explicit go-ahead.
+- Leftover bash/wsl processes of unproven ownership are still alive: 4932/30300 and 47780+72580/69356+33940. Left for Jack's word.
+
+## BW-DOCS-BRANCHES-PUSHED-20261116 (Claude, 2026-11-16 ~15:56Z)
+
+- Status: PUSHED (branches only). Jack approved pushing both docs branches. The approval covers only these two pushes: no PR, merge or Notion change, and none of the 31 JACK-GATED ledger decisions.
+- `docs/pass16-incident-review-20261115` -> origin at `f663b8a4` (2 commits ahead of main `9b9102e6`, 14 behind; merge-tree clean, tree 81dca94b).
+- `docs/q12-v0.2.14-20261115` -> origin at `967b1719` (3 commits ahead, 14 behind; merge-tree clean, tree 17c5b544). Its line-number fix was already in 967b1719. I rechecked it on main `9b9102e6` before pushing: `nwipe_runner.py:1571` start(), `:1588` _reserve_target_under_lock, `:2198` stop().
+- Pre-push checks:
+  - No owner path, hostname or email in either diff.
+  - The commit author identity matches existing main commits.
+  - The workflow triggers allow this: ci.yml runs only on pull_request/push to main plus dispatch, and agent-pr/release run only on dispatch.
+- After the push: no workflow run started, main is still 9b9102e6, 0 open PRs.
+- Not run: hosted CI. Branch 1's fake-tool test fix (f663b8a4) has still never run on Linux.
+- Next action (needs Jack's word): open a PR per branch into main. That starts the hosted CI gate (~60 min Linux/ISO/QEMU) and is branch 1's first Linux run. Merge only on all-green, with --match-head-commit.
+- Stray: one mistyped push command (abbreviated SHA as the refspec) failed with "src refspec does not match"; nothing was pushed by it.
+
+## BW-DEEP-REVIEW-9b9102e6-STATIC-20261116 (Claude, 2026-11-16 ~17:20Z): code-reading half DONE, NO GENUINE DEFECT; runtime half BLOCKED on WSL
+
+- Go-ahead: Jack, code-reading half only, report-only. Nothing was edited, committed, pushed or opened, and no test ran. I read with git only, from the read-only clone. No WSL, no UAC, no Notion change.
+- Scope: code merged after 93a7c9e9 and up to main 9b9102e6.
+- PR #93 (1f826129; diff d72403d5..1f826129, unchanged by #106/#107): nwipe_runner.py, safety.py, ui/accessible_wizard.py. One independent reviewer, plus my spot check.
+  - No defect. These are intact: the nwipe argv and boot exclusion, the reservation fd lifecycle, the flock acquire/release, the pinned engine fd, every sleep-inhibitor start->stop path, and the safety.py NVMe transport fallback.
+  - Note 1 (confirmed by me): `_read_log_tail` (nwipe_runner.py:1927-1937). If `os.close` fails after a good read, the result is `""`, so a finished wipe could show as completion_missing. Fails closed; very unlikely.
+  - Note 2: the damaged-progress-record rule (:65, :1028-1042) clears a 100% sample when a later target line contains %/round/pass/eta. It is fail-closed. The full set of nwipe 0.42 log lines was not verified.
+  - Note 3: a busy-skip log that also has a damaged record reports indeterminate, not occupied. This is the conservative direction.
+  - Note 4 (pre-existing): `_release_wipe_lock` -> `stop()` catches only OSError/TimeoutExpired/AttributeError. A BaseException there would skip the flock release. The uncertain-spawn path deliberately keeps the lock.
+  - Not verifiable statically: the nwipe 0.42 log format and kernel NVMe instance reuse.
+- PR #106 (ea02106d; diff 1f826129..ea02106d): translations. One independent reviewer, ast-only parse; I confirmed notes 1-2.
+  - 187 changed strings (FR 37, DE 74, ES 34, IT 42) plus helper paragraphs.
+  - Clean: placeholders, HTML, key names, typed tokens and keys. Quoted button names match their labels. The safety meaning is kept.
+  - Notes: FR still says "deuxième clé USB" where DE/ES/IT now say report USB (fr.py:179, :198, helper/fr.html:581; consistent within FR). IT EXTRA_WORK_DOD (it.py:693) "Non è un certificato del DoD" is vaguer than before. IT REASON_PROTECTED gives a double colon. DE CON_REPORT_CHOICE drops "redacted". Plus minor DE/ES/IT style.
+- PR #107 (9b9102e6; diff ea02106d..9b9102e6): helper/{index,fr,de,es,it}.html. Reviewed by me.
+  - The MEDIA_STEP_UNSURE and POWER_EVENTS tail now match the app string in each locale exactly.
+  - Note (pre-existing, not from #107): the helper says "Use Stop erase and wait..." where the app says "Use Stop erase to stop; wait..." in all 5 languages. The meaning is the same.
+- Out of scope, not reviewed: PR #93's other files (ci_evidence, release_manifest, support_export, report_intent, evidence, etc.).
+- Remaining: the runtime half needs Linux (WSL down; Jack/host). Whether to act on any note is Jack's call; no change is proposed.
+
+## BW-DOCS-PRS-108-109-20261116 (Claude, 2026-11-16 ~17:45Z): PRs OPEN; merge on green (Jack approved)
+
+- Jack approved opening PRs for both docs branches and merging each on green. Nothing else is approved: WSL stays parked, no other merges or decisions.
+- main requires `CI gate` and is strict (up to date). Both branches were 14 behind, so main 9b9102e6 was merged into each (no-ff).
+  - pass16: f663b8a4 -> bfee0259 (tree 81dca94b).
+  - q12: 967b1719 -> 9f9da80f (tree 17c5b544).
+  - Both were fast-forward pushes; the trees equal the earlier merge-tree results.
+- Local verification (native Windows):
+  - ruff clean on all changed .py files: 5 in pass16; 6 tools in q12, checked via a git-archive export because the shared clone is sparse and excludes docs/evidence.
+  - pass16: tests/test_fake_tool_shebang.py 9 passed. Its three edited files collect: 7 in test_qemu_iso_inspection, 31 in test_usb_download_verification, plus test_blacksmith_ci. Their Linux run was not done locally.
+  - q12: three SB test files run on the export and on a main 9b9102e6 export. Identical FAILED sets, 6 each; no new failure.
+  - SLIP: tests/test_qemu_secure_boot_signers_20261028.py calls subprocess `bash` (the System32 WSL launcher). My bash grep ran in the same command as the tests, so it did not gate them. Up to 5 bash calls per run (30 s cap each) ran in 2 runs. Afterwards no new bash/wsl process existed: only the old unproven pairs and a peer's BeamoComboQualification distro. Exclude this file natively in future.
+- PR #108: docs/pass16-incident-review-20261115 -> main, head bfee0259. ci.yml 43920534790 and CodeQL 43920527525 were started by the PR.
+- PR #109: docs/q12-v0.2.14-20261115 with base docs/pass16-incident-review-20261115 (stacked on purpose, so no wasted strict-rerun hosted run). Head 9f9da80f; 0 checks.
+- Next:
+  1. When #108's required checks are green, run `gh pr merge 108 --merge --match-head-commit bfee0259`.
+  2. Then change #109's base to main.
+  3. Merge the new main into q12 and push; that starts #109's CI.
+  4. Merge #109 on green with --match-head-commit.
+  5. Confirm the post-merge main runs.
+- On a failure, rerun only the failed jobs, and only for a clear infrastructure flake. Otherwise fix it.
+- Scratch worktrees (mine): scratchpad/wt-pass16 and scratchpad/wt-q12, registered in the beamo-wipe-readiness-20261026 clone.
+
+## BW-BLANKET-APPROVAL-20261116 (Claude, 2026-11-16 ~18:20Z): records commit queued behind PR #109
+
+- Jack's blanket approval (Nov 16, main chat) covers committing and merging finished, locally verified Wipe work that is waiting on approval. It is subject to the standing rules: local verification first, batched, failed-job-only reruns. WSL stays parked. Signing purchase, physical tests and publishing stay Jack's.
+- Candidates triaged:
+  - QUALIFIES: ledger row 57, "Records on main are stale". A 3-way merge of this local record onto main's copy (base = this worktree's HEAD copy, 8a11ac3c) is clean, with 0 conflicts.
+    - It replaces only the 3 stale lines (BW-GO-2026-6859 "PR OPEN"; BW-USB-FIRST-ANSWER heading and "NEXT" line) and adds ~1529 lines.
+    - Owner paths are redacted to USERNAME per docs/evidence/redaction-main-20261115.md (13 lines).
+    - 0 hostname, 0 email, 0 secret patterns.
+    - No test or CI reads .ai/memory.
+    - Builder: scratchpad/rec/build_record.sh <main-ref>.
+  - NOT eligible:
+    - 08887bdc (fix/owner-decisions-20261110): already carried to main via docs/record-pr96-merge-20261110.
+    - 279b092a (docs/physical-acceptance-116-20261101): v0.2.13 physical prep, superseded by the v0.2.14 packet on main (c7adb3ee); physical tests are Jack's.
+    - BW-153: 696af15 is already on main; the remaining localized-hint change is a decision, with no code written.
+- Plan (strict up-to-date main means everything is serial):
+  1. Merge #108 on green.
+  2. Move #109 onto main, update it, and merge it on green.
+  3. Then rebuild the record on the final main, commit it on docs/records-20261116, and open the PR. Its CI is the only run.
+  4. Merge on green and confirm the post-merge main runs.
+- UPDATE 2026-11-16 ~18:05Z (Claude):
+  - PR #108 ci.yml 43920534790 is still in progress: Windows launcher tests success, Linux image gate running. CodeQL 43920527525 success 4/4.
+  - #108 mergeStateStatus is BLOCKED (waiting on CI gate). #109 is unchanged (9f9da80f, base = #108's branch).
+  - Ledger: rows 57 and 744 moved to STILL OPEN; rows 2272/2384 noted. Totals: 98/29/4/2.
+  - The Notion pack's counts were updated; its 98 rows are unchanged.
+- UPDATE 2026-11-16 18:54Z (Claude): PR #108 ci.yml 43920534790 is still in progress.
+  - Linux image gate job 133486292241: step 7 (lint/types/tests/preview/launchers) took 17:38:56→18:45:49, 67 min. On main 9b9102e6 (job 133154406782) it took 46 min.
+  - ISO build: 18:45:49→18:53:39. KVM verify started 18:53:39; it took ~12 min on main, so the expected finish is ~19:06Z. The job timeout is 120 min (19:38Z).
+  - Check after completion: whether f663b8a4's fail-closed fakes caused the +21 min in step 7, or whether it was runner variance.
+  - Records dry run on current main: clean (3 stale lines replaced, +1554); no owner path, hostname, email or secret.
+- UPDATE 2026-11-16 19:05Z (Claude): PR #108 ci.yml 43920534790 attempt 1 FAILED. CodeQL 43920527525 success. Windows launcher tests success.
+  - Linux image gate (job 133486292241): pytest 17406 passed / 16 skipped (65:44); ISO built; QEMU step 9 failed at 19:01:13Z. bios-quick_zero "never emitted a new exact marker BEAMO_WIPE_KEY_RETURN_RELEASED" (qemu-verify.sh:1435, send_key_for_marker release wait). After Return the erase reached WORKING/DONE, but the guest never acknowledged the release. This is the same symptom as run 41528619370 (bios-sata-usb, 2026-11-02, see the BW-129 section).
+  - The PR changes 0 files under scripts/packaging/src/helper, so the ISO source is identical to main 9b9102e6, which passed QEMU.
+  - Blacksmith's comment "test_boot_guard_rejects_false_identity_with_otherwise_selectable_target failed" is the gate's intentional NEGATIVE test (the beamo-wipe-negative copy, log line 1691, an expected failure), not a real failure.
+  - Action: `gh run rerun 43920534790 --failed` at 19:04:56Z (attempt 2: Linux image gate + CI gate).
+  - Step 7 at 67 min vs 31-46 min in the 5 prior runs: f663b8a4's helper is string checks only (4 test files), so this is runner variance.
+  - Not yet decided: the release-ack race has now been seen twice; hardening qemu-verify.sh is a separate item (sits with the QEMU race hardening row, Jack's decision).
+- UPDATE 2026-11-16 20:22Z (Claude): PR #108 attempt 2 (Linux image gate job 133539147963).
+  - Step 7 succeeded, 19:05:21→20:14:14 (69 min); step 8 (ISO) succeeded, 20:14:14→20:21:34; step 9 (QEMU) started 20:21:34.
+  - SLOW PYTEST, NOW SEEN TWICE (67 and 69 min, vs 31-46 min on the 5 prior runs; main 9b9102e6 was 45:24 for 17397 tests, attempt 1 was 65:44 for 17406). "Runner variance" is less likely.
+  - The +9 tests come from test_fake_tool_shebang. Its helper only does string checks, and the CI log has no per-file durations (quiet progress lines cover only the small sub-runs), so the cause is not attributed.
+  - OPEN NOTE, non-blocking: if it persists on main after merge, compare with `--durations=50` in a dispatch or locally on Linux (WSL down).
+- UPDATE 2026-11-16 20:26Z (Claude): PR #108 ci.yml 43920534790 attempt 2 FAILED with the SAME QEMU glitch. NOT retried (Jack's instruction: do not retry blindly). PR #108 stays open, unmerged.
+  - Linux image gate job 133539147963: pytest 17406 passed / 16 skipped (1:07:05); ISO built. Step 9 failed at 20:26:18Z: bios-everyday-repeat "never emitted a new exact marker BEAMO_WIPE_KEY_RETURN_RELEASED" (qemu-verify.sh:1435). Sequence: Return on LAST_CHANCE -> WORKING -> DONE, then no release ack within 20 s (key-up re-sent at 5 s and 10 s).
+  - Occurrences of this release-ack glitch, all with no product change behind them:
+    - run 41528619370 (2026-11-02, bios-sata-usb)
+    - this run, attempt 1 (bios-quick_zero)
+    - this run, attempt 2 (bios-everyday-repeat)
+  - Main 9b9102e6 passed QEMU with identical ISO source (the PR changes 0 files in src/scripts/packaging/helper).
+  - Hypothesis (unproven): both PR #108 attempts also ran pytest ~20 min slower than any recent run, so a slower runner class may widen the release-ack timing window.
+  - #109 and the records PR are serialized behind #108 (strict up-to-date main), so they are blocked too.
+  - DECISION FOR JACK, pick one:
+    (a) one more failed-job rerun of 43920534790;
+    (b) approve harness hardening in scripts/qemu-verify.sh (send_key_for_marker release wait), its own reviewed change and hosted run, under the QEMU race-hardening row;
+    (c) leave #108 open.
+- UPDATE 2026-11-16 ~20:55Z (Claude): review prep for the PR #108 decision WRITTEN at agent-tasks-20261108/qemu-release-ack-prep-20261116.md. Code and CI-evidence reading only; nothing run or rerun.
+  - The serial logs show that the passing journeys emit one KEY_RETURN_RELEASED after WORKING, while the failing ones emit none, and QMP accepted every key-up.
+  - The only KeyRelease bindings are on the root window, so no widget swallows the event.
+  - tests.xml shows a median per-test slowdown of x1.48 vs main across unrelated Tk suites: the slow pytest was the runner, not #108.
+  - Options (a)/(b1-3)/(c) are listed with risks. Claude recommends (a) once more; if it fails, (b1) plus a key-state diagnostic. Still Jack's decision.
+- UPDATE 2026-11-16 21:28Z (Claude): Jack's decision: fix the QEMU harness first, do not just rerun. DONE as d52a25b0 on docs/pass16-incident-review-20261115 (PR #108, one push; bfee0259..d52a25b0).
+  - ROOT CAUSE, from serial evidence across 15 journeys: every passing journey acknowledged Erase now's Return release between the first Working draw and Working's redraw once the erase launched. The failures sent key-up only after the 1 s poll saw Working; on slow runners (x1.48) it landed after that redraw and was never acknowledged. The key-up retries are no-ops, because the guest kernel drops a release for a key already up. The exact drop point inside X/Tk was not observed directly.
+  - FIX: scripts/qemu-verify.sh start_erase_with_return. It releases on a new BEAMO_WIPE_RETURN_RESULT_CHECKING (0.1 s polling), keeps the release ack mandatory, still requires Working, never re-presses, and fails closed with a screendump. drive_report_export uses it. tests/test_audit_20260908_boot.py updated; tests/test_qemu_erase_start_release.py is new (6).
+  - LOCAL CHECKS (Git Bash via a scratch pytest redirect plugin; WSL and System32 bash refused):
+    - bash -n ok; ruff ok.
+    - New tests 6/6. Break-the-fix: 5 fail on the old script.
+    - The related files (audit_boot, diagnostic_markers, method_journeys, report_release_bound, usb_report_workflow) have identical failing sets vs bfee0259: 32 native-env failures in usb_report_workflow.
+  - New PR run: ci.yml 43960441551 + CodeQL 43960430438 (head d52a25b0).
+  - DISK: C: hit ~0.5 MB free at ~15:10 local. With the user's approval I deleted my own scratch exports (l10n, docsbranches, base108, sb-q12, sb-main), leaving ~5.4 GB free. Two l10n/de-review subfolders were "busy" and are left. The main consumer of C: is not identified (511 GB used).
+- UPDATE 2026-11-16 22:27Z (Claude): PR #108 run 43960441551 (head d52a25b0) still IN PROGRESS. Windows launcher tests passed; CodeQL 43960430438 passed. Linux image gate is in step 7 (parallel lint/tests), running since 21:28:49Z (58 min; prior step 7 took 41-69 min). ISO build and QEMU (step 9) have NOT run yet, and the job timeout is 120 min. NEXT: on green, merge #108 pinned to d52a25b0, rebase #109 onto main and merge on green, open the records PR. Nothing merged yet.
+- UPDATE 2026-11-16 23:07Z (Claude): run 43960441551 still IN PROGRESS. Step 7 passed (21:28:49-22:44:52Z, 76 min). Step 8 ISO build passed (22:44:52-22:54:22Z). Step 9 KVM/QEMU has been running since 22:54:22Z; at 13 min it is already past the point where attempts 1 and 2 failed (~4m44s). Expect the result ~23:12-23:17Z. Nothing merged yet. PR #102 was already MERGED, so no action is needed for it. C: free is 58.25 GB; I did not free that space.
+- UPDATE 2026-11-16 23:13Z (Claude): PR #108 DONE.
+  - Run 43960441551 passed every job: Windows launcher, the Linux image gate (step 9 KVM/QEMU 22:54:22-23:10:39Z) and the CI gate. CodeQL passed.
+  - Step 12 (cache save) was skipped by its rule (push to main only).
+  - Merged with --merge --match-head-commit d52a25b0569cd596f7172077d33cdd2b6cc5ed6c, giving merge commit 804caa28 (23:12:22Z).
+- PR #109 is IN PROGRESS.
+  - Base changed to main. Main 804caa28 merged cleanly into docs/q12-v0.2.14-20261115, and the push 9f9da80f..7eae40b0 contains only docs/ files.
+  - New runs: ci.yml 43977365443 and CodeQL 43977358080.
+  - NEXT: on all-green, merge with --merge --match-head-commit 7eae40b0b62eed127937f239587ea18d6a727843. Then open the records PR (item BW-BLANKET-APPROVAL-20261116).
+  - PR #102 was already merged earlier; no action needed.
+- UPDATE 2026-11-17 00:28Z (Claude): PR #109 run 43977365443 (head 7eae40b0) is still IN PROGRESS.
+  - Passed so far: step 7 (23:13:36-00:16:50Z, 63 min), step 8 ISO (00:16:50-00:26:23Z), Windows launcher tests, and CodeQL.
+  - Step 9 KVM/QEMU has been running since 00:26:23Z; expect the result ~00:39-00:44Z.
+  - Not merged yet. NEXT: on green, merge #109 --match-head-commit 7eae40b0b62eed127937f239587ea18d6a727843, then open the records PR.
