@@ -1701,6 +1701,101 @@ drive_troubleshoot_boot() {
   log "$label troubleshoot entry booted with safe video settings"
 }
 
+# BW-168 screen-awake probe, opt-in only (QEMU_SCREEN_AWAKE=1). The kiosk's X
+# screensaver blanks after 600 s without input; #168 turns that off while an
+# erase runs and restores it afterwards. Frames are judged by
+# scripts/qemu_frame_check.py. After Working, no key or pointer event is sent
+# until the single wake key: any input resets the X idle timer and would void
+# the check.
+screen_awake_capture() {
+  local qmp_socket="$1" name="$2"
+  qmp_request "$qmp_socket" screendump "$EVIDENCE_DIR/screen-awake-${name}.png"
+}
+
+# Wait, sending no guest input, until epoch second $2. Fails if the guest exits.
+screen_awake_wait_until() {
+  local label="$1" until="$2" pid now
+  pid="$(guest_pid "$label")"
+  while now="$(date +%s)" && [[ "$now" -lt "$until" ]]; do
+    if ! kill -0 "$pid" 2>/dev/null; then
+      echo "QEMU $label exited during the screen-awake wait" >&2
+      report_marker_summary "$label"
+      return 1
+    fi
+    sleep "$(( until - now < 5 ? until - now : 5 ))"
+  done
+}
+
+screen_marker_total() {
+  local serial="$EVIDENCE_DIR/${1}-serial.txt"
+  [[ -f "$serial" ]] || { printf '0\n'; return 0; }
+  awk '{ sub(/\r$/, "", $0); if ($0 ~ /^BEAMO_WIPE_SCREEN_[A-Z_]+$/) count++ } END { print count + 0 }' "$serial"
+}
+
+drive_screen_awake() {
+  local label="$1" qmp_socket="$2" method_key="$3" token="$4" done_limit="$5"
+  local t0 t1="" offset done_prior done_early=0 before=0 after=0 failed status=0
+  send_key_for_marker "$label" "$qmp_socket" spc BEAMO_WIPE_OWNER_CHECKED 20
+  send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_PICK 20
+  send_key_for_marker "$label" "$qmp_socket" down BEAMO_WIPE_SCREEN_PICK 20
+  send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_CONFIRM 20
+  wait_for_marker "$label" BEAMO_WIPE_CONFIRM_FOCUSED 20
+  type_token_for_marker "$label" "$qmp_socket" "$token" BEAMO_WIPE_CONFIRM_MATCHED 20
+  send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_METHOD 20
+  send_key_for_marker "$label" "$qmp_socket" "$method_key" BEAMO_WIPE_SCREEN_METHOD 20
+  send_key_for_marker "$label" "$qmp_socket" ret BEAMO_WIPE_SCREEN_LAST_CHANCE 20
+  sleep 6
+  send_key "$qmp_socket" tab
+  done_prior="$(marker_count "$label" BEAMO_WIPE_SCREEN_DONE)"
+  start_erase_with_return "$label" "$qmp_socket" 20
+  t0="$(date +%s)"
+  # No guest input from here until the wake key.
+  for offset in 30 570 645; do
+    screen_awake_wait_until "$label" "$((t0 + offset))"
+    screen_awake_capture "$qmp_socket" "erase-$(printf '%03d' "$offset")"
+  done
+  if [[ "$(marker_count "$label" BEAMO_WIPE_SCREEN_DONE)" -gt "$done_prior" ]]; then
+    done_early=1
+  else
+    wait_for_new_marker "$label" BEAMO_WIPE_SCREEN_DONE "$done_prior" "$done_limit"
+    t1="$(date +%s)"
+    for offset in 30 645; do
+      screen_awake_wait_until "$label" "$((t1 + offset))"
+      screen_awake_capture "$qmp_socket" "after-$(printf '%03d' "$offset")"
+    done
+    before="$(screen_marker_total "$label")"
+    # One harmless key: left Shift wakes the screen and is not a wizard key.
+    send_key "$qmp_socket" shift
+    sleep 2
+    screen_awake_capture "$qmp_socket" wake
+    after="$(screen_marker_total "$label")"
+  fi
+  # Only what reaches the serial log is visible here; the guest's own log
+  # under /tmp/beamo-wipe/ is not exported by this journey.
+  failed="$(grep -c 'display_blanking_change_failed' "$EVIDENCE_DIR/${label}-serial.txt" 2>/dev/null || true)"
+  failed="${failed:-0}"
+  python3 "$ROOT/scripts/qemu_frame_check.py" "$EVIDENCE_DIR" "$EVIDENCE_DIR/screen-awake-verdict.json" \
+    --observation "t0_epoch=$t0" --observation "t1_epoch=${t1:-none}" \
+    --observation "target_bytes=${QEMU_TARGET_BYTES:-}" \
+    --observation "target_write_bps=${QEMU_TARGET_WRITE_BPS:-}" \
+    --observation "done_before_last_erase_frame=$done_early" \
+    --observation "screen_markers_before_wake=$before" \
+    --observation "screen_markers_after_wake=$after" \
+    --observation "blanking_change_failed=$failed" \
+    >&2 || status=$?
+  # The probe's evidence is the flat screen-awake-*.png frames and
+  # screen-awake-verdict.json; the checker's verdict lines carry no serial
+  # content, so they go to the log. None of it is in the release publisher's
+  # inventory: a release gate never sets QEMU_SCREEN_AWAKE.
+  report_marker_summary "$label"
+  case "$status" in
+    0) return 0 ;;
+    3) echo "QEMU $label screen-awake probe was INCONCLUSIVE (never a pass); see screen-awake-verdict.json" >&2 ;;
+    *) echo "QEMU $label screen-awake probe FAILED; see screen-awake-verdict.json" >&2 ;;
+  esac
+  return 1
+}
+
 qemu_machine() {
   local acceleration=kvm:tcg
   # Blacksmith validation requires actual KVM, with no silent TCG fallback.
@@ -1751,13 +1846,32 @@ boot_probe() {
     *) echo "ABORT: unknown QEMU target bus $QEMU_TARGET_BUS" >&2; return 1 ;;
   esac
   confirmation_token="$(guest_confirmation_token "$boot_media" "$HOST_METHOD_BYTES" "$token")"
+  # Only the opt-in screen-awake journey (BW-168) boots a larger target; its
+  # Confirm characters follow that target's real size.
+  if [[ -n "${QEMU_TARGET_BYTES:-}" ]]; then
+    confirmation_token="$(guest_confirmation_token "$boot_media" "$QEMU_TARGET_BYTES" "$token")"
+  fi
+  # Only the screen-awake journey throttles target writes, so its erase
+  # outlasts the kiosk's 600 s blank timeout without a huge disk image.
+  local target_format_node=beamo-target target_throttle_group=() target_throttle_node=()
+  if [[ -n "${QEMU_TARGET_WRITE_BPS:-}" ]]; then
+    [[ "$QEMU_TARGET_WRITE_BPS" =~ ^[1-9][0-9]*$ ]] || {
+      echo "ABORT: QEMU target write limit is not a positive byte rate" >&2
+      return 1
+    }
+    target_format_node=beamo-target-qcow2
+    target_throttle_group=(-object "throttle-group,id=beamo-target-throttle,x-bps-write=$QEMU_TARGET_WRITE_BPS")
+    target_throttle_node=(-blockdev "driver=throttle,node-name=beamo-target,throttle-group=beamo-target-throttle,file=beamo-target-qcow2")
+  fi
   # shellcheck disable=SC2054 # commas are inside QEMU values, not separators
   local qemu_args=(
     qemu-system-x86_64 -machine "$machine" -m 1024 -nic none
     -device qemu-xhci,id=beamo-xhci
     "$@" "${media_args[@]}"
+    "${target_throttle_group[@]}"
     -blockdev "driver=file,node-name=beamo-target-file,filename=$target_img"
-    -blockdev "driver=qcow2,node-name=beamo-target,file=beamo-target-file"
+    -blockdev "driver=qcow2,node-name=$target_format_node,file=beamo-target-file"
+    "${target_throttle_node[@]}"
     "${target_devices[@]}"
     -display none -serial "file:$EVIDENCE_DIR/${label}-serial.txt"
     -qmp "unix:$qmp_socket,server=on,wait=off"
@@ -1793,6 +1907,8 @@ boot_probe() {
   fi
   if [[ "$exercise_export" == yes ]]; then
     drive_report_export "$label" "$qmp_socket" "$method_key" "$confirmation_token" "$done_limit" "$report_img"
+  elif [[ "$exercise_export" == screen-awake ]]; then
+    drive_screen_awake "$label" "$qmp_socket" "$method_key" "$confirmation_token" "$done_limit"
   elif [[ "$label" == *-usb ]]; then
     # A visible welcome screen alone does not prove the new FAT32 layout is
     # recognized as protected boot media. Reach the disposable target's exact
@@ -1816,6 +1932,8 @@ boot_probe() {
   report_marker_summary "$label"
   if [[ "$exercise_export" == yes ]]; then
     log "$label boot completed the shipped Wizard report export"
+  elif [[ "$exercise_export" == screen-awake ]]; then
+    log "$label kept the screen lit through the erase and restored blanking after it"
   else
     log "$label boot reached the shipped Tk owner screen"
   fi
@@ -2299,6 +2417,39 @@ QEMU_TARGET_SERIAL="$troubleshoot_uefi_serial"
 REPORT_RAW="$troubleshoot_uefi_report"
 uefi_boot_probe uefi-troubleshoot-usb ovmf-troubleshoot-vars.fd
 
+# BW-168: opt-in only, never on a PR or main push. It takes about 30 minutes:
+# an erase that outlasts the 600 s blank timeout, then 11 idle minutes.
+# A sparse target with throttled writes keeps the runner's disk use small.
+run_screen_awake_journey() {
+  local target="$RUN_ROOT/target-screen-awake.qcow2" serial=7008
+  local bytes="${QEMU_SCREEN_AWAKE_TARGET_BYTES:-4294967296}"
+  local bps="${QEMU_SCREEN_AWAKE_WRITE_BPS:-4194304}"
+  [[ "$bytes" =~ ^[1-9][0-9]*$ && "$bps" =~ ^[1-9][0-9]*$ ]] || {
+    echo "ABORT: screen-awake target size and write rate must be positive integers" >&2
+    return 1
+  }
+  # The erase must last past the last in-erase frame (645 s) with a 60 s margin.
+  (( bytes / bps >= 705 )) || {
+    echo "ABORT: screen-awake erase would last $(( bytes / bps )) s; it needs at least 705 s" >&2
+    return 1
+  }
+  qemu-img create -f qcow2 "$target" "$bytes" >>"$EVIDENCE_DIR/qemu-img.txt" 2>&1
+  TARGET="$target"
+  QEMU_TARGET_SERIAL="$serial"
+  QEMU_TARGET_BYTES="$bytes"
+  QEMU_TARGET_WRITE_BPS="$bps"
+  boot_probe bios-screen-awake screen-awake 3 "$serial" "$target" "$(( bytes / bps * 2 + 600 ))"
+  unset QEMU_TARGET_BYTES QEMU_TARGET_WRITE_BPS
+  rm -f -- "$target"
+}
+
+SCREEN_AWAKE_RAN=0
+case "${QEMU_SCREEN_AWAKE:-0}" in
+  0) ;;
+  1) run_screen_awake_journey; SCREEN_AWAKE_RAN=1 ;;
+  *) echo "ABORT: QEMU_SCREEN_AWAKE must be 0 or 1" >&2; exit 2 ;;
+esac
+
 if [[ "$(sha256sum "$USB_IMAGE" | awk '{print $1}')" != "$QEMU_USB_SHA" ]]; then
   echo 'ABORT: USB image changed during QEMU verification' >&2
   exit 2
@@ -2309,4 +2460,5 @@ printf 'iso_sha256=%s\nusb_image_sha256=%s\nnwipe_sha256=%s\nsource_commit=%s\nb
   "$(tr -d '\n' <"$EVIDENCE_DIR/source-commit.txt")" \
   "${BUILD_ID:-local}" "${EXECUTED_CASES}" \
   >"$EVIDENCE_DIR/summary.txt"
+[[ "$SCREEN_AWAKE_RAN" != 1 ]] || printf 'screen_awake=pass\n' >>"$EVIDENCE_DIR/summary.txt"
 log "PASS; evidence=$EVIDENCE_DIR cases=$EXECUTED_CASES"
