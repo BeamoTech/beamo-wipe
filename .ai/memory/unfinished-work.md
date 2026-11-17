@@ -8367,7 +8367,7 @@ another very thorough and comprehensive pass of this." Repo
   older sections): C:\Users\USERNAME\dev\BeamoTech\agent-tasks-20261108\
   wipe-completion-ledger-20261115.md. Nothing marked in Notion.
 
-## BW-PASS16-INCIDENT-REVIEW-20261115 — PASS16 loop-probe incident review WRITTEN (LOCAL COMMIT 86b39f76; NOT PUSHED; PUSH JACK'S CALL)
+## BW-PASS16-INCIDENT-REVIEW-20261115 — PASS16 loop-probe incident review WRITTEN (LOCAL COMMIT 86b39f76; NOT PUSHED; PUSH JACK'S CALL) — UPDATE 2026-11-17: MERGED via PR #108 (merge 804caa28)
 
 - 2026-11-15 17:10:53Z-17:14:06Z, Claude (Opus 5.5), paused-item fallback
   (non-WSL; no WSL probe, UAC, push, merge or Notion). Read-only from
@@ -8430,7 +8430,7 @@ another very thorough and comprehensive pass of this." Repo
   - JACK: push/PR of 86b39f76 + f663b8a4 (starts hosted CI); pass8 SIGTERM /
     pass9 trace closure. Unchanged parked items as listed above.
 
-## BW-Q12-PR94-BW168-20261115 — Q12 receipt for v0.2.14 + independent PR #94 review RECORDED (LOCAL COMMITS 3d4a7227, a66b22a5; NOT PUSHED); BW-168 probe PLAN written
+## BW-Q12-PR94-BW168-20261115 — Q12 receipt for v0.2.14 + independent PR #94 review RECORDED (LOCAL COMMITS 3d4a7227, a66b22a5; NOT PUSHED); BW-168 probe PLAN written — UPDATE 2026-11-17: receipt and review MERGED via PR #109 (merge 212921e0); BW-168 probe implemented locally (see BW-168-PROBE-IMPL-20261117)
 
 - 2026-11-15 17:26:59Z-17:50:02Z, Claude (Opus 5.5). Local-only fallback; no
   push, merge, WSL, UAC, QEMU or Notion. Worktree
@@ -8830,7 +8830,7 @@ another very thorough and comprehensive pass of this." Repo
 - Out of scope, not reviewed: PR #93's other files (ci_evidence, release_manifest, support_export, report_intent, evidence, etc.).
 - Remaining: the runtime half needs Linux (WSL down; Jack/host). Whether to act on any note is Jack's call; no change is proposed.
 
-## BW-DOCS-PRS-108-109-20261116 (Claude, 2026-11-16 ~17:45Z): PRs OPEN; merge on green (Jack approved)
+## BW-DOCS-PRS-108-109-20261116 (Claude, 2026-11-16 ~17:45Z): PRs OPEN; merge on green (Jack approved) — UPDATE 2026-11-17: BOTH MERGED (#108 804caa28, #109 212921e0)
 
 - Jack approved opening PRs for both docs branches and merging each on green. Nothing else is approved: WSL stays parked, no other merges or decisions.
 - main requires `CI gate` and is strict (up to date). Both branches were 14 behind, so main 9b9102e6 was merged into each (no-ff).
@@ -8853,7 +8853,7 @@ another very thorough and comprehensive pass of this." Repo
 - On a failure, rerun only the failed jobs, and only for a clear infrastructure flake. Otherwise fix it.
 - Scratch worktrees (mine): scratchpad/wt-pass16 and scratchpad/wt-q12, registered in the beamo-wipe-readiness-20261026 clone.
 
-## BW-BLANKET-APPROVAL-20261116 (Claude, 2026-11-16 ~18:20Z): records commit queued behind PR #109
+## BW-BLANKET-APPROVAL-20261116 (Claude, 2026-11-16 ~18:20Z): records commit queued behind PR #109 — UPDATE 2026-11-17: DONE as PR #110 (merge c63c8a7e)
 
 - Jack's blanket approval (Nov 16, main chat) covers committing and merging finished, locally verified Wipe work that is waiting on approval. It is subject to the standing rules: local verification first, batched, failed-job-only reruns. WSL stays parked. Signing purchase, physical tests and publishing stay Jack's.
 - Candidates triaged:
@@ -8936,3 +8936,78 @@ another very thorough and comprehensive pass of this." Repo
   - Passed so far: step 7 (23:13:36-00:16:50Z, 63 min), step 8 ISO (00:16:50-00:26:23Z), Windows launcher tests, and CodeQL.
   - Step 9 KVM/QEMU has been running since 00:26:23Z; expect the result ~00:39-00:44Z.
   - Not merged yet. NEXT: on green, merge #109 --match-head-commit 7eae40b0b62eed127937f239587ea18d6a727843, then open the records PR.
+- UPDATE 2026-11-17 00:45Z (Claude): PR #109 DONE.
+  - Run 43977365443 passed every job: the Linux gate including QEMU, Windows launcher tests, the CI gate and CodeQL.
+  - Merged with --merge --match-head-commit 7eae40b0b62eed127937f239587ea18d6a727843, giving merge commit 212921e0 (00:43:03Z).
+- Records PR #110 OPEN: branch docs/records-20261116, commit 69de0615, worktree scratchpad/wt-records.
+  - The record was rebuilt on main 212921e0: 3 lines replaced, 1613 added, 0 conflicts, owner paths redacted.
+  - NEXT: on green, merge #110 --match-head-commit 69de0615, then confirm the post-merge main runs (plan step 4).
+  - Entries in this record written after the 00:4xZ rebuild are not in #110; they get carried by the next records PR.
+- UPDATE 2026-11-17 00:52Z (Claude): Jack approved PR #110 at 6:52 PM CST: commit and merge on green. If a job fails, rerun only the failed jobs; no duplicate full rerun.
+- UPDATE 2026-11-17 02:06Z (Claude): PR #110 DONE.
+  - Run 43989987799 passed every job. Merged under Jack's 6:52 PM approval with --merge --match-head-commit 69de06154a7eac01e6cc4328e32ab37ae47aa4ea, giving merge commit c63c8a7e (02:06:34Z).
+  - Main 212921e0 (#109) push run 43989868309 SUCCESS (all jobs, including the cache save); CodeQL 43989868098 SUCCESS.
+  - Main c63c8a7e (#110) push runs were started by the merge; their conclusion is not yet observed.
+  - The local-only worktree scratchpad/wt-records can be removed now that #110 is merged.
+- UPDATE 2026-11-17 03:17Z (Claude): post-merge main c63c8a7e is GREEN.
+  - CI 44000539670 passed every job: Windows launcher tests, the Linux image gate (QEMU step 9 03:03:09-03:15:43Z, cache save success) and the CI gate. CodeQL 44000539422 also passed.
+  - The #108 -> #109 -> #110 plan is complete. No reruns were needed.
+
+## BW-168-PROBE-IMPL-20261117 (Claude Opus 5.5, 2026-11-17 ~04:30-06:00Z): screen-awake probe IMPLEMENTED LOCALLY; NOT PUSHED; RUN IS JACK'S CALL
+
+- Trigger: Jack's 10:00 PM CST queue-ahead. Next item in the ledger: row 5042 BW-168, "implement the opt-in QEMU_SCREEN_AWAKE journey locally (no run)". It needs neither WSL nor a Jack decision. Others: BW-187 needs Linux (WSL); BW-CLEANUP needs an explicit go; PR #93 is Jack's call.
+- Local commit 88b36ed3 on feat/bw168-screen-awake-probe-20261117, base main c63c8a7e. Worktree: scratchpad/wt-bw168 (readiness clone; sparse, docs/evidence excluded). NOT pushed.
+  - scripts/qemu-verify.sh:
+    - drive_screen_awake plus helpers, run_screen_awake_journey, and a case on QEMU_SCREEN_AWAKE (0 by default, 1 runs the probe, anything else aborts).
+    - boot_probe takes an optional QEMU_TARGET_BYTES (the Confirm token is recomputed for it) and an optional QEMU_TARGET_WRITE_BPS (throttle-group + throttle node). Without them the target argv is unchanged.
+    - summary.txt gets screen_awake=pass only if the probe ran.
+  - scripts/qemu_frame_check.py (new): stdlib PNG decoder and PASS-1/2/3 judge. Exits 0 PASS, 1 FAIL, 3 INCONCLUSIVE; writes screen-awake-verdict.json.
+  - tests/test_qemu_screen_awake_probe_168.py (new, 29 tests): PNG filters, blank detection, each failure path, INCONCLUSIVE, a driver run against a fake guest and clock (no input between Working and the single Shift; frame times), runner sizing and validation, opt-in wiring (no workflow sets it), and the default target chain.
+- Design versus the 2026-11-15 plan:
+  - Target: sparse 4 GiB qcow2 throttled to 4 MiB/s, about 1024 s of erase. This replaces calibrating from timings, because the evidence serial logs carry no timestamps.
+  - Not done:
+    - Negative control (step 7, needs an f3e6b72 image).
+    - LOW-2 redraw-latency observation (no serial timestamps).
+    - power/display_blanking_change_failed is counted from the serial log only; the guest log isn't exported.
+  - Frame-change check uses the whole frame, not just the progress area.
+  - PASS-3 counts new BEAMO_WIPE_SCREEN_* markers. Unknown: whether the Done screen emits a screen marker on its own (that would be a false FAIL); a first run will show it.
+- Found while testing (fixed before commit):
+  - Release inventory test (pass20): a flat screen-awake-verdict.txt was not in publish_release_gcs._qemu_evidence_names. The verdict now goes to stderr. Probe evidence is flat .png/.json only, because ci-hosted.sh rejects subdirectories.
+  - Accepted gap: bios-screen-awake-{serial,cmdline,qemu}.txt exist only in opt-in runs and are not in the publisher inventory (the indented boot_probe call is outside that test's scan). A release never sets QEMU_SCREEN_AWAKE.
+- Checks (native Windows, Git Bash, scratch plugins; no WSL):
+  - Passed: bash -n; ruff check.
+  - New tests: 29/29 on the worktree and on a full-tree copy.
+  - Related tests on a full tree (live_session_power, pass29, pass20, keyboard_layout, ci_hosted): bw168 fails 30 ⊂ main c63c8a7e fails 31. These are native-environment failures (os.O_CLOEXEC, Tk, not a git repo).
+  - The wider run over all 44 qemu-verify test files showed only the pass20 difference (now fixed) plus sparse or flaky ones.
+  - NOT RUN: any real QEMU/KVM run.
+- NEXT (Jack):
+  1. Approve pushing a PR. A PR to main starts the full ci.yml; the probe is not exercised there.
+  2. Decide how to run it: the dispatch input or job in ci.yml is a workflow change. Note that the probe adds ~30 min, and the Linux job already runs ~100 min of its 120-min limit on slow runners, so it likely needs its own job. Hosted minutes are Jack's call.
+- Ledger row 5042 (agent-tasks-20261108/wipe-completion-ledger-20261115.md) is effectively JACK-GATED now; I have not edited the ledger table.
+- UPDATE 2026-11-17 05:23Z (Claude): rechecked main c63c8a7e.
+  - CI 44000539670: completed success. Windows launcher tests, the Linux image gate (steps 7-12, including the trusted download cache save) and the CI gate all passed.
+  - CodeQL 44000539422: success. 0 open PRs.
+  - Ledger updated: rows 57 and 744 VERIFIED DONE; 5042 JACK-GATED; 5741 BW-187 is the only STILL OPEN row (it needs Linux/WSL).
+  - No unblocked non-WSL, non-Jack item remains.
+
+## BW-SECOND-PASS-C63-20261117 (Claude Opus 5.5, 2026-11-17 ~05:55-06:30Z): report-only review of main c63c8a7e (#108, #109, #110)
+
+- Scope: reading only plus read-only GitHub API/asset reads (a ~1 MB ISO range read for the shim; three small checksum files). No fix, push, PR or rerun.
+- Main CI after each merge was green: 804caa28 push 43977229529 (not in the record before now), 212921e0 push 43989868309, c63c8a7e push 44000539670. All three completed success.
+- Q12 receipt (#109) matches the published release:
+  - Tag v0.2.14 (annotated f7211d6a) peels to aecf8456. Published 2026-11-12T18:05:27Z by run 43259400038 (release, workflow_dispatch, success).
+  - ISO and img.gz sizes and digests equal the GitHub asset digests. SHA256SUMS, .img.sha256 and .img.gz.sha256 equal the receipt.
+  - Every 64-hex value in the README is in components.json or raw/. The grub.cfg hash matches.
+  - Range-read shim from the published ISO: sha256 0fc347af..., security dir 19368 bytes = two WIN_CERTIFICATEs of 9792 and 9576 bytes. This matches the README's correction, which raw/ did not record.
+  - Shim, GRUB, Debian CA and vendor dbx hashes equal the 0.2.12 receipt (docs/evidence/secure-boot-119/components.json).
+- PR #94 review: the LOW-2 anchors (nwipe_runner.py:1571/1588/2198; sleep_inhibit.py:83/122/149) match the main source lines.
+- Every SHA cited in the records and PR bodies is an ancestor of c63c8a7e.
+- Redaction: the new files contain no owner path, hostname or email. The beamosupport.com mention at record line 79 is pre-existing (product support card).
+- Findings, none fixed:
+  - F1 (LOW, doc consistency): docs/secure-boot-acceptance.md:157 SB-NO-ANCHOR still gives "2023-only with no other authorization" as a no-anchor example. #109 corrected the shim to be signed under Microsoft UEFI CA 2023 too, so a db holding the 2023 third-party UEFI CA authorizes it. A tester could expect REJECT where accept is inferred. Suggest "Windows-only (no third-party UEFI CA 2011 or 2023)" in a later docs PR; Jack's call.
+  - F2 (records staleness, expected): main's record ends at the 00:28Z entry (#109 "not merged yet"). It lacks the #109/#110 merges and main runs. The section headings BW-PASS16-INCIDENT-REVIEW and BW-Q12-PR94-BW168 still say "NOT PUSHED". The next records PR carries it.
+  - F3 (PR text): #108's Summary says "Docs and tests only; no product code changes", but d52a25b0 also changed scripts/qemu-verify.sh (CI harness, not shipped). The added section discloses it. #109's stacking note is out of date after the rebase. Merged PRs; no action.
+- Genuine product/code defect found: none.
+- UPDATE 2026-11-17 ~06:40Z (Claude): Jack asked at 00:22 CST for a second records PR. It uses branch docs/records-20261117 off main c63c8a7e.
+  - It carries the #109 and #110 merges, the main runs after them, BW-168-PROBE-IMPL (local only, unpushed) and the BW-SECOND-PASS-C63 findings.
+  - It also updates the stale "NOT PUSHED" / "PRs OPEN" section headings.
