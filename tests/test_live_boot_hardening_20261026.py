@@ -160,7 +160,8 @@ def _helper(name: str) -> str:
 
 
 @pytest.mark.parametrize("label,keys", [
-    ("bios-troubleshoot-usb", ["key=t", "key=ret"]),
+    # BIOS gets T and Return together in one QMP command (send_boot_hotkey).
+    ("bios-troubleshoot-usb", ["sequence=t,ret"]),
     ("uefi-troubleshoot-usb", ["key=t"]),
 ])
 def test_troubleshoot_probe_uses_hotkey_until_safe_video_marker(label, keys):
@@ -170,12 +171,15 @@ BOOT_WAIT_SECONDS=120
 presses=0
 marker_count() { [[ "$2" == BEAMO_WIPE_SAFE_VIDEO=1 && $presses -ge 2 ]] && echo 1 || echo 0; }
 send_key() { printf 'key=%s\\n' "$2"; [[ "$2" == t ]] && presses=$((presses + 1)); return 0; }
+qmp_request() { printf 'sequence=%s\\n' "$3"; [[ "$2" == key-sequence && "$3" == t,ret ]] && presses=$((presses + 1)); return 0; }
 sleep() { :; }
 report_marker_summary() { :; }
 log() { printf 'log=%s\\n' "$*"; }
 '''
+    helpers = _helper("send_boot_hotkey") + _helper("booted_other_entry")
     result = subprocess.run(
-        ["bash", "-c", harness + _helper("drive_troubleshoot_boot") + f"\ndrive_troubleshoot_boot {label} /fake/qmp"],
+        ["bash", "-c", harness + helpers + _helper("drive_troubleshoot_boot")
+         + f"\ndrive_troubleshoot_boot {label} /fake/qmp"],
         capture_output=True, text=True, timeout=10,
     )
     assert result.returncode == 0, result.stderr
