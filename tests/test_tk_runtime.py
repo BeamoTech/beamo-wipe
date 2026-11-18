@@ -2141,6 +2141,44 @@ def test_split_repeat_does_not_skip_method(ui):
     assert wiz.screen == Screen.METHOD
 
 
+def test_return_release_diagnostics_name_the_layer(ui, monkeypatch):
+    """BW-QEMU-FLAKES part a: RECEIVED proves Tk routed the X11 release;
+    KEY_RETURN_RELEASED follows only at idle; SUPERSEDED names a press that
+    cancelled a pending acknowledgement. The markers never change keys."""
+    markers = []
+    monkeypatch.setattr(
+        "beamo_wipe.ui.tk_wizard.emit_serial_marker", lambda m: markers.append(m) or True
+    )
+    wiz, app = ui()
+    _drive_to(wiz, app, Screen.CONFIRM)
+    app._confirm_var.set(wiz.confirm.token)
+    app.root.update()
+    app._on_return(SimpleNamespace(time=100))
+    assert wiz.screen == Screen.METHOD
+    keys = lambda: [m for m in markers if "KEY_RETURN" in m]  # noqa: E731
+    markers.clear()
+    app._on_return_release(SimpleNamespace(time=200))
+    assert keys() == ["BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED"]
+    assert app._return_held
+    app.root.update_idletasks()
+    assert keys() == [
+        "BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED", "BEAMO_WIPE_KEY_RETURN_RELEASED",
+    ]
+    assert not app._return_held
+    # An X11 repeat pair: the press cancels the pending acknowledgement.
+    app._on_return(SimpleNamespace(time=300))
+    before = wiz.screen
+    markers.clear()
+    app._on_return_release(SimpleNamespace(time=400))
+    app._on_return(SimpleNamespace(time=400))
+    app.root.update_idletasks()
+    assert keys() == [
+        "BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED", "BEAMO_WIPE_KEY_RETURN_RELEASE_SUPERSEDED",
+    ]
+    assert app._return_held
+    assert wiz.screen == before  # the repeat press advanced nothing
+
+
 def test_split_repeat_cannot_erase_after_countdown(ui, tmp_path, monkeypatch):
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     wiz, app = ui()
