@@ -7219,6 +7219,10 @@ class TkWizard:
         # X11 autorepeat is a queued KeyRelease/KeyPress pair. Defer clearing
         # until idle for queued pairs. _on_return also recognizes split pairs
         # by server timestamp if this callback has already run.
+        # Diagnostic only: proves Tk routed this release here. A QEMU run
+        # that sees RECEIVED but no KEY_RETURN_RELEASED lost the idle
+        # acknowledgement, not the X11 event (BW-QEMU-FLAKES part a).
+        emit_serial_marker("BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED")
         if self._return_release_after is not None:
             try:
                 self.root.after_cancel(self._return_release_after)
@@ -7342,6 +7346,9 @@ class TkWizard:
             except tk.TclError:
                 pass
             self._return_release_after = None
+            # Diagnostic only: a press cancelled a pending release
+            # acknowledgement (an X11 repeat pair, or a new press).
+            emit_serial_marker("BEAMO_WIPE_KEY_RETURN_RELEASE_SUPERSEDED")
         # X11 repeat Release/Press events have the same server timestamp.
         # They can arrive in separate event-loop batches: after_idle alone
         # then clears the hold too early. Retain that timestamp across idle
