@@ -158,12 +158,13 @@ and unverified App/environment dependencies remain in the
 The manual `.github/workflows/screen-awake.yml` runs the BW-168 screen-awake
 probe (#168): the screen stays lit through an erase longer than the 600 s
 blank timeout and blanks again after Done. It is `workflow_dispatch` only, so
-it is not a required check, a PR or main gate, or a release gate. It builds
-the launchers and the ISO, runs every QEMU journey, then the probe with
+it is not a required check, a PR or main gate, or a release gate. It runs the
+same source gates as `ci.yml` (the QEMU gate's provenance step needs every
+gate's receipt), builds the ISO, runs every QEMU journey, then the probe with
 `QEMU_SCREEN_AWAKE=1`, and keeps `qemu-evidence/` (frames and
 `screen-awake-verdict.json`) as a 7-day artifact. Run it with
 `gh workflow run screen-awake.yml --repo BeamoTech/beamo-wipe --ref main`; it
-takes about an hour of Blacksmith time.
+takes about two hours of Blacksmith time.
 
 At the initial CI migration audit, GitHub reported no classic protection or
 ruleset on `main`, and no custom Actions workflow. By 2026-09-28, classic

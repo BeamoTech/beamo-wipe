@@ -102,8 +102,6 @@ case "${1:-}" in
     done
     exit "$failed"
     ;;
-  # desktop-launchers alone serves the manual screen-awake workflow, which
-  # needs the launchers the ISO embeds but not the rest of the source gates.
-  desktop-launchers|iso|qemu) phase "$1" ;;
-  *) echo "usage: $0 {sources|desktop-launchers|iso|qemu}" >&2; exit 2 ;;
+  iso|qemu) phase "$1" ;;
+  *) echo "usage: $0 {sources|iso|qemu}" >&2; exit 2 ;;
 esac
