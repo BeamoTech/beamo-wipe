@@ -1,0 +1,52 @@
+name: BW-168 screen-awake probe
+
+# Manual only. It never runs on a pull request or a main push, and it is not
+# a required check or a release gate. It builds the launchers and the ISO,
+# runs the full QEMU journeys, and then the opt-in screen-awake journey
+# (about 30 extra minutes). No secrets; read-only token.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: beamo-screen-awake-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    name: Screen-awake probe
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Check KVM and image-mount capabilities before building
+        run: bash scripts/check-ci-kvm.sh
+      - name: Build the desktop launchers the ISO embeds
+        run: bash scripts/ci-blacksmith.sh desktop-launchers
+      - name: Build and inspect ISO
+        run: bash scripts/ci-blacksmith.sh iso
+      - name: QEMU journeys plus the screen-awake probe
+        env:
+          QEMU_SCREEN_AWAKE: "1"
+        run: bash scripts/ci-blacksmith.sh qemu
+      - name: Make evidence readable
+        if: always()
+        run: |
+          for path in dist qemu-evidence .ci-cache; do
+            if [ -d "$path" ]; then sudo chown -R "$(id -u):$(id -g)" "$path"; fi
+          done
+      - name: Retain probe evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: screen-awake-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            qemu-evidence/
+            !qemu-evidence/PATH
+          if-no-files-found: error
+          retention-days: 7

@@ -43,6 +43,7 @@ phase() {
     -e BUILD_ID -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_REPOSITORY \
     -e BEAMO_CI_RUNNER=blacksmith -e BEAMO_WIPE_DRY_RUN=1 \
     -e SKIP_ISO=false -e SKIP_QEMU=false -e ALLOW_DIRTY=0 \
+    -e QEMU_SCREEN_AWAKE \
     -e PIP_CACHE_DIR="$ROOT/.ci-cache/pip/$gate" \
     -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0="$ROOT" \
     "$IMAGE" bash -ceu '
@@ -101,6 +102,8 @@ case "${1:-}" in
     done
     exit "$failed"
     ;;
-  iso|qemu) phase "$1" ;;
-  *) echo "usage: $0 {sources|iso|qemu}" >&2; exit 2 ;;
+  # desktop-launchers alone serves the manual screen-awake workflow, which
+  # needs the launchers the ISO embeds but not the rest of the source gates.
+  desktop-launchers|iso|qemu) phase "$1" ;;
+  *) echo "usage: $0 {sources|desktop-launchers|iso|qemu}" >&2; exit 2 ;;
 esac
