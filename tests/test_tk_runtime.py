@@ -2226,14 +2226,19 @@ def test_done_scans_x_input_warnings_once(ui, monkeypatch):
         "beamo_wipe.ui.tk_wizard.emit_x_input_markers", lambda: calls.append(1) or []
     )
     wiz, app = ui()
-    _drive_to(wiz, app, Screen.CONFIRM)
+    _drive_to(wiz, app, Screen.OWNER)
     app._draw()
     assert calls == []
-    _drive_to(wiz, app, Screen.DONE)
-    assert wiz.screen == Screen.DONE
+    wiz.screen = Screen.DONE  # preview only; never starts a runner
     app._draw()
     app._draw()
     assert calls == [1]
+    # Leaving Done re-arms the scan for the next journey's Done.
+    wiz.screen = Screen.OWNER
+    app._draw()
+    wiz.screen = Screen.DONE
+    app._draw()
+    assert calls == [1, 1]
 
 
 def test_split_repeat_cannot_erase_after_countdown(ui, tmp_path, monkeypatch):
