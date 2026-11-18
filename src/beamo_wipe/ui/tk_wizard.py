@@ -6816,7 +6816,7 @@ class TkWizard:
         self._link_btn(row, C.SOUND_HEAR, self.w.request_hear_both_sounds)
         self._refresh_working()
 
-    def _finish_sound_toggle(self, row: tk.Frame) -> "_CheckRow":
+    def _finish_sound_toggle(self, row: tk.Frame) -> _CheckRow:
         """"Play a sound when it's finished" (#133): the session sound
         setting, on by default for each erase, greyed without an output."""
         enabled = self.w.finish_sound_toggle_enabled
@@ -7060,12 +7060,12 @@ class TkWizard:
             self._done_focus_key = self._button_key(chosen)
 
     @staticmethod
-    def _button_key(button: "_Button") -> str:
+    def _button_key(button: _Button) -> str:
         text = str(button.itemcget(button._label, "text"))
         # The sounds toggle changes its words when pressed; match it by role.
         return "\x00sounds" if text in (C.SOUND_TOGGLE_ON, C.SOUND_TOGGLE_OFF) else text
 
-    def _find_done_button(self, key: str) -> Optional["_Button"]:
+    def _find_done_button(self, key: str) -> Optional[_Button]:
         if not key:
             return None
         stack: list[tk.Misc] = [self.root]
