@@ -1,9 +1,12 @@
 name: BW-168 screen-awake probe
 
 # Manual only. It never runs on a pull request or a main push, and it is not
-# a required check or a release gate. It builds the launchers and the ISO,
-# runs the full QEMU journeys, and then the opt-in screen-awake journey
-# (about 30 extra minutes). No secrets; read-only token.
+# a required check or a release gate. It runs the same source gates as ci.yml,
+# builds the ISO, runs the full QEMU journeys, and then the opt-in
+# screen-awake journey (about 30 extra minutes). The source gates are needed:
+# after a passing QEMU gate, ci_evidence finalizes provenance and requires a
+# receipt from every gate (run 44313547521 failed there with only the
+# launchers gate). No secrets; read-only token.
 on:
   workflow_dispatch:
 
@@ -18,7 +21,7 @@ jobs:
   probe:
     name: Screen-awake probe
     runs-on: blacksmith-4vcpu-ubuntu-2404
-    timeout-minutes: 150
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -26,8 +29,14 @@ jobs:
           persist-credentials: false
       - name: Check KVM and image-mount capabilities before building
         run: bash scripts/check-ci-kvm.sh
-      - name: Build the desktop launchers the ISO embeds
-        run: bash scripts/ci-blacksmith.sh desktop-launchers
+      - name: Restore download cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .ci-cache/pip
+          key: pip-bookworm-amd64-${{ hashFiles('scripts/ci-hosted.sh', 'pyproject.toml') }}
+          restore-keys: pip-bookworm-amd64-
+      - name: Parallel lint, types, tests, preview, launchers and negative test
+        run: bash scripts/ci-blacksmith.sh sources
       - name: Build and inspect ISO
         run: bash scripts/ci-blacksmith.sh iso
       - name: QEMU journeys plus the screen-awake probe
