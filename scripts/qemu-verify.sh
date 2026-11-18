@@ -2438,7 +2438,7 @@ run_screen_awake_journey() {
   QEMU_TARGET_SERIAL="$serial"
   QEMU_TARGET_BYTES="$bytes"
   QEMU_TARGET_WRITE_BPS="$bps"
-  boot_probe bios-screen-awake screen-awake 3 "$serial" "$target" "$(( bytes / bps * 2 + 600 ))"
+  boot_probe bios-screen-awake screen-awake 3 "$serial" "$target" "$(( bytes * 2 / bps + 600 ))"
   unset QEMU_TARGET_BYTES QEMU_TARGET_WRITE_BPS
   rm -f -- "$target"
 }
