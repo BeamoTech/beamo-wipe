@@ -112,7 +112,7 @@ Rows: PHY-DELL-01 to PHY-GIGA-04 and PHY-MAC-01. The canonical boot steps are
 Secure Boot rows follow the [Secure Boot cases](../../secure-boot-acceptance.md).
 
 **Image rule for Secure Boot.** The Secure Boot receipt (Q12) covers only the
-0.2.12 image. Images built after 0.2.14 start a newer kernel. A newer image
+0.2.12 image. Images from 0.2.14 on start a newer kernel. A newer image
 needs its own component inspection first. Without it, every `-03` row is
 BLOCKED (SB-INSPECTION). Do not judge it from the boot alone.
 

@@ -81,10 +81,12 @@ miss. Never use a customer's computer.
 
 ### The image
 
-1. Use one release image named by the owner for the session. Today the UI
-   work from PR #94 (#127 to #187) is not in tag `v0.2.14`. Rows that test
-   it (#133, #135, #179, #183, #184, #185, #187) need a later qualified
-   release image. Until one exists, those rows are BLOCKED.
+1. Use one release image named by the owner for the session. The published
+   release `v0.2.14` contains the UI work from PR #94 (#127 to #187): its
+   signed manifest names source commit `aecf8456`, which includes the #94
+   merge `d1c85087`. Rows that test that work (#133, #135, #179, #183, #184,
+   #185, #187) can use it. Work merged after `v0.2.14` needs a later
+   qualified release image.
 2. Get it from the published, signed GitHub release. Verify it as in
    [release verification](../../release-verification.md#usb-image-download-verification).
    Never use a CI artifact, a draft, a local build or a re-compressed copy.
@@ -202,7 +204,7 @@ All of the following remain NOT TESTED or BLOCKED today:
 
 - Every row in this matrix (121) and every row in the #111 sheets.
 - Physical Secure Boot acceptance and refusal on any firmware; for images
-  after 0.2.14 also the new component inspection (SB-INSPECTION).
+  from 0.2.14 on also the new component inspection (SB-INSPECTION).
 - The boot-menu key for each brand on a real model (#184).
 - Restart to boot options on real Windows 10 and 11, the "EFI USB Device"
   name, BitLocker prompts, a vetoed restart and a removed shut down right
@@ -218,7 +220,6 @@ All of the following remain NOT TESTED or BLOCKED today:
   startup on real Intel, AMD and NVIDIA graphics.
 - Physical keyboard layouts and kiosk recovery on a real console.
 - Manufacturing readback and boot QA of a real produced stick.
-- A release image that contains the PR #94 UI work.
 
 ## Related pages
 

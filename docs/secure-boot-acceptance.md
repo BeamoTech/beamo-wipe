@@ -23,7 +23,7 @@ in [the component receipt](evidence/secure-boot-119/README.md). Record the actua
 flashed image in [BUILD-IDENTITY](evidence/physical-acceptance-111/BUILD-IDENTITY.md)
 before a case. A different image requires its own signature inspection and
 receipt; neither a version string nor a source-only build transfers this one.
-Images built after 0.2.14 boot Debian's signed Linux 6.12 kernel from
+Images from 0.2.14 on boot Debian's signed Linux 6.12 kernel from
 `bookworm-security` (`linux-image-6.12-amd64`, Debian LTS) instead of 6.1, so
 their chain needs that new inspection.
 Q12 identifies test inputs, not authorization to overwrite a USB or disk.
