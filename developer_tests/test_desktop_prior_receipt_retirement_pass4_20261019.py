@@ -140,7 +140,7 @@ def test_prior_receipt_metadata_spans_each_retirement_read(
             assert (output / name).read_bytes() == b"prior compiled launcher"
     else:
         builder.build(output)
-        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.14", False)
+        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
     assert reads >= ordinal
     assert not (output / ".build.lock").exists()
 
@@ -156,7 +156,7 @@ def test_unchanged_prior_or_absent_receipt_remains_rebuildable(
 ):
     output = _setup(builder, tmp_path, monkeypatch, host, prior)
     builder.build(output)
-    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.14", False)
+    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
     builder.build(output)
     assert not (output / ".build.lock").exists()
 

@@ -45,7 +45,7 @@ def _bundle(builder, tmp_path):
         (output / name).write_bytes(payload)
         files[name] = hashlib.sha256(payload).hexdigest()
     manifest = {
-        "version": "0.2.14",
+        "version": "0.2.15",
         "source_commit": "a" * 40,
         "source_sha256": builder.desktop_source_digest(tmp_path),
         "source_dirty": False,
@@ -136,7 +136,7 @@ def test_verifier_refuses_artifact_changed_during_bounded_read(
         monkeypatch.setattr(Path, "open", path_open)
 
     with pytest.raises(RuntimeError, match="manifest|checksum"):
-        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.14", False)
+        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
     assert changed
 
 
@@ -147,4 +147,4 @@ def test_verifier_accepts_unchanged_bounded_bundle(
     output = _bundle(builder, tmp_path)
     if host == "nt":
         monkeypatch.setattr(builder, "os", WindowsOSProxy())
-    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.14", False)
+    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)

@@ -9113,3 +9113,25 @@ another very thorough and comprehensive pass of this." Repo
   - Acceptance criteria: guest evidence names the layer that loses the release, and a fix keeps the one-press, mandatory-release and no-repress requirements. The hosted gate passes.
   - Next action: add a diagnostic BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED marker in _on_return_release, so a recurrence shows whether Tk received the release. It touches the safety-sensitive key handling, so it gets its own PR and tests.
   - Blocker/owner: Claude (approved). Needs hosted KVM runs; there is no local QEMU (WSL parked by Jack). Until then, handle a recurrence with a failed-job-only rerun.
+- UPDATE 2026-11-18 (Claude): the #119 diagnostics merged as 0804a418. Part (a) recurred on main b0fe7c59: ci.yml run 44331845385, bios-extra, "never emitted a new exact marker BEAMO_WIPE_KEY_RETURN_RELEASED" after RETURN_RESULT_CHECKING on the Erase now press.
+  - Counts for that boot: KEY_RETURN_RELEASE_RECEIVED=49, KEY_RETURN_RELEASE_SUPERSEDED=44, KEY_RETURN_RELEASED=5. RECEIVED equals SUPERSEDED plus RELEASED, so no release was pending: the KeyRelease for this press never reached the root `<KeyRelease-Return>` binding.
+  - This rules out the after_idle candidate. The release is lost below Tk's binding: QEMU input, the guest kernel or X server, or X focus delivery during the Checking transition.
+  - Not rerun (status-only instruction). The next main push (0b78aa85, the #122 merge) runs the gate again.
+  - Next action: a follow-up harness/UI PR that keeps the one-press, mandatory-release and no-repress requirements, after the 0.2.15 prep PR unless Jack reorders.
+
+## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS; physical rows NOT TESTED
+
+- ID/status: BW-168. QEMU probe done; physical acceptance is Jack's.
+- Date/author: 2026-11-18 / Claude. PR #120 merged as a5e7b0c1 (probe, manual screen-awake.yml); PR #122 merged as 0b78aa85 (the workflow runs the full source gates).
+- Evidence: screen-awake.yml run 44313547521 on a5e7b0c1. screen-awake-verdict.json: pass1, pass2 and pass3 true. The erase ran 13:46:48-14:04:00 UTC; erase frames stayed lit (61% at 645 s), the after-645 frame was fully black, and the wake frame equals after-030.
+  - The job itself ended "failure" at the final CI-evidence step: it ran only the launchers source gate, and ci_evidence requires a receipt from every gate. PR #122 fixes that. The probe verdict was produced before that step and is unaffected.
+- Remaining: physical #168 rows stay NOT TESTED (Jack, real PC). Re-dispatching the fixed screen-awake.yml for a fully green run is Jack's call.
+
+## BW-RELEASE-0.2.15-PREP-20261118 — version bump and notes (PR OPEN; NOT RELEASED)
+
+- ID/status: BW-RELEASE-0.2.15-PREP. Branch release/prep-0.2.15-20261118 off main 0b78aa85.
+- Date/author: 2026-11-18 / Claude.
+- Content: 0.2.14 -> 0.2.15 in pyproject.toml, __init__.py, release.yml's default, README, cloudbuild.yaml, script defaults, helper pages, qemu-verify/vm-test docs, result-summary goldens and the two version tests; compatibility matrix v1.17 and runbook 1.15; new docs/release-0.2.15.md covering #93 and #102-#122.
+  - Kept as history: physical acceptance and Secure Boot receipt references to 0.2.14, docs/boot-exclusion-signals.md status, manufacturing/release-verification examples, tag and arbitrary-version fixtures.
+- Acceptance: the PR's CI gate passes on its head and it merges pinned.
+- Not done and not agent-authorized: dispatching release.yml, creating the v0.2.15 tag or draft, publishing, changing the v0.2.11 rollback target. Those are Jack's.
