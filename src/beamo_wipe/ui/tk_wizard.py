@@ -28,7 +28,7 @@ from beamo_wipe import copy as C
 from beamo_wipe.disk_order import pick_order
 from beamo_wipe import diagnostic_report as D
 from beamo_wipe.outcomes import may_have_erased
-from beamo_wipe.diagnostics import emit_serial_marker
+from beamo_wipe.diagnostics import emit_serial_marker, emit_x_input_markers
 from beamo_wipe.methods import DEFAULT_METHOD
 from beamo_wipe import storage_limits as limits
 from beamo_wipe import inventory
@@ -1999,6 +1999,12 @@ class TkWizard:
             self._report_space_release_pending = False
             self._f5_held = False
             self._f5_release_time: Optional[int] = None
+            # BW-QEMU-FLAKES part a diagnostics: whether Tk believed the
+            # application had lost the keyboard focus, and one X input
+            # warning scan per arrival at Done.
+            self._app_focus_lost = False
+            self._focus_check_after: Optional[str] = None
+            self._x_input_scanned = False
             self._escape_held = False
             self._escape_release_time: Optional[int] = None
             self._fatal_ui = False
@@ -2054,6 +2060,8 @@ class TkWizard:
             for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>"):
                 self.root.bind(sequence, self._on_body_wheel)
             self.root.bind("<FocusIn>", self._on_body_focus)
+            self.root.bind("<FocusIn>", self._on_app_focus_in, add="+")
+            self.root.bind("<FocusOut>", self._on_app_focus_out, add="+")
             self.root.protocol("WM_DELETE_WINDOW", self._close)
             self._draw()
             self._after_id = self.root.after(100, self._tick)
@@ -2792,6 +2800,7 @@ class TkWizard:
             self._comparison_opener = None
             for attr in (
                 "_return_release_after",
+                "_focus_check_after",
                 "_space_release_after",
                 "_after_id",
             ):
@@ -3049,6 +3058,13 @@ class TkWizard:
         # bounded markers let the isolated QEMU gate synchronize with the real
         # shipped Tk workflow without exposing disk identifiers or log data.
         emit_serial_marker(f"BEAMO_WIPE_SCREEN_{screen.name}")
+        if screen != Screen.DONE:
+            self._x_input_scanned = False
+        elif not getattr(self, "_x_input_scanned", False):
+            # QEMU gate only (the function checks the firmware vendor): once
+            # per arrival at Done, name any X input drop or lag so far.
+            self._x_input_scanned = True
+            emit_x_input_markers()
         if screen == Screen.PICK_BLOCKED:
             # Diagnostics may contain identifiers; only established code
             # values may cross the serial/hosted-log boundary.
@@ -7231,6 +7247,35 @@ class TkWizard:
         self._return_release_time = self._key_event_time(_event)
         self._return_release_after = self.root.after_idle(self._release_return)
         return "break"
+
+    def _on_app_focus_out(self, _event=None) -> None:
+        # Diagnostic only (BW-QEMU-FLAKES part a). Without a window manager,
+        # Tk drops key events while it believes the application has no
+        # keyboard focus. A focus move between our own widgets is a
+        # FocusOut/FocusIn pair, so decide at idle, once the pair has landed.
+        if getattr(self, "_focus_check_after", None) is None:
+            try:
+                self._focus_check_after = self.root.after_idle(self._check_app_focus)
+            except tk.TclError:
+                self._focus_check_after = None
+
+    def _check_app_focus(self) -> None:
+        self._focus_check_after = None
+        try:
+            focused = self.root.focus_get()
+        except (KeyError, tk.TclError):
+            return
+        if focused is not None or getattr(self, "_app_focus_lost", False):
+            return
+        self._app_focus_lost = True
+        emit_serial_marker("BEAMO_WIPE_APP_FOCUS_LOST")
+        if getattr(self, "_return_held", False):
+            emit_serial_marker("BEAMO_WIPE_APP_FOCUS_LOST_RETURN_HELD")
+
+    def _on_app_focus_in(self, _event=None) -> None:
+        if getattr(self, "_app_focus_lost", False):
+            self._app_focus_lost = False
+            emit_serial_marker("BEAMO_WIPE_APP_FOCUS_REGAINED")
 
     def _release_return(self) -> None:
         self._return_release_after = None

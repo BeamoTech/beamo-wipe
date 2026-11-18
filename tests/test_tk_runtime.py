@@ -2179,6 +2179,63 @@ def test_return_release_diagnostics_name_the_layer(ui, monkeypatch):
     assert wiz.screen == before  # the repeat press advanced nothing
 
 
+def test_focus_diagnostics_name_an_application_focus_loss(ui, monkeypatch):
+    """BW-QEMU-FLAKES part a: APP_FOCUS_LOST is emitted only when, once a
+    FocusOut has settled at idle, Tk reports no focus in the application.
+    A move between our own widgets emits nothing. The markers never change
+    the key state or the screen."""
+    markers = []
+    monkeypatch.setattr(
+        "beamo_wipe.ui.tk_wizard.emit_serial_marker", lambda m: markers.append(m) or True
+    )
+    wiz, app = ui()
+    _drive_to(wiz, app, Screen.CONFIRM)
+    focus = lambda: [m for m in markers if "APP_FOCUS" in m]  # noqa: E731
+    screen = wiz.screen
+    markers.clear()
+    # An internal FocusOut/FocusIn pair: focus is still ours at idle.
+    app._on_app_focus_out(SimpleNamespace())
+    app._on_app_focus_out(SimpleNamespace())  # one pending check at a time
+    app.root.update_idletasks()
+    assert focus() == []
+    # The application lost the X focus while a Return press is still held.
+    monkeypatch.setattr(app.root, "focus_get", lambda: None)
+    app._return_held = True
+    app._on_app_focus_out(SimpleNamespace())
+    app.root.update_idletasks()
+    assert focus() == [
+        "BEAMO_WIPE_APP_FOCUS_LOST", "BEAMO_WIPE_APP_FOCUS_LOST_RETURN_HELD",
+    ]
+    app._on_app_focus_out(SimpleNamespace())
+    app.root.update_idletasks()
+    assert len(focus()) == 2  # reported once per loss
+    app._on_app_focus_in(SimpleNamespace())
+    app._on_app_focus_in(SimpleNamespace())
+    assert focus()[-1] == "BEAMO_WIPE_APP_FOCUS_REGAINED"
+    assert focus().count("BEAMO_WIPE_APP_FOCUS_REGAINED") == 1
+    assert app._return_held  # diagnostics never release a key
+    assert wiz.screen == screen
+    # A pending check is cancelled with the interface.
+    app._on_app_focus_out(SimpleNamespace())
+    assert app._focus_check_after is not None
+
+
+def test_done_scans_x_input_warnings_once(ui, monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "beamo_wipe.ui.tk_wizard.emit_x_input_markers", lambda: calls.append(1) or []
+    )
+    wiz, app = ui()
+    _drive_to(wiz, app, Screen.CONFIRM)
+    app._draw()
+    assert calls == []
+    _drive_to(wiz, app, Screen.DONE)
+    assert wiz.screen == Screen.DONE
+    app._draw()
+    app._draw()
+    assert calls == [1]
+
+
 def test_split_repeat_cannot_erase_after_countdown(ui, tmp_path, monkeypatch):
     monkeypatch.setattr("beamo_wipe.safety.default_log_dir", lambda: tmp_path)
     wiz, app = ui()

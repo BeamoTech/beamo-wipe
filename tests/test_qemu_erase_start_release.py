@@ -52,6 +52,11 @@ marker_count() {
       # Working only appears after the key-up: the driver must not wait for
       # Working while the key is still held.
       if released; then printf '1\n'; else printf '0\n'; fi ;;
+    BEAMO_WIPE_SCREEN_DONE)
+      # MOCK_DONE_AFTER_RELEASE: the erase reaches Done although the guest
+      # never acknowledged the release (the BW-QEMU-FLAKES part a shape).
+      if [[ "$MOCK_DONE_AFTER_RELEASE" == 1 ]] && released; then
+        printf '1\n'; else printf '0\n'; fi ;;
     *) printf '0\n' ;;
   esac
 }
@@ -68,6 +73,7 @@ def _run(
     release_ack: bool,
     accept_marker: str = "BEAMO_WIPE_RETURN_RESULT_CHECKING",
     working_before: int = 0,
+    done_after_release: bool = False,
 ):
     source = QEMU.read_text(encoding="utf-8")
     sleeps = tmp_path / "sleeps"
@@ -91,6 +97,7 @@ def _run(
             MOCK_RELEASE_ACK="1" if release_ack else "0",
             MOCK_ACCEPT_MARKER=accept_marker,
             MOCK_WORKING_BEFORE=str(working_before),
+            MOCK_DONE_AFTER_RELEASE="1" if done_after_release else "0",
         ),
         capture_output=True,
         text=True,
@@ -114,7 +121,8 @@ def test_release_follows_acceptance_before_working(tmp_path):
 def test_lost_release_stays_a_failure_and_is_never_repressed(tmp_path):
     result, sleeps, events = _run(tmp_path, accept_after=1, release_ack=False)
     assert result.returncode == 1
-    assert sleeps == ["0.1"] + ["1"] * 20
+    # 20 release polls, then at most 60 s for Done (diagnostics only).
+    assert sleeps == ["0.1"] + ["1"] * 20 + ["1"] * 60
     assert events == [
         "key-down",
         "key-up",
@@ -124,6 +132,19 @@ def test_lost_release_stays_a_failure_and_is_never_repressed(tmp_path):
         "screen",
     ]
     assert events.count("key-down") == 1
+
+
+def test_lost_release_waits_for_done_diagnostics_and_still_fails(tmp_path):
+    """The bounded wait ends one second after Done so the guest's focus and
+    X input markers land in the summary. Nothing is pressed and the journey
+    still fails without a fresh release acknowledgement."""
+    result, sleeps, events = _run(
+        tmp_path, accept_after=1, release_ack=False, done_after_release=True
+    )
+    assert result.returncode == 1
+    assert sleeps == ["0.1"] + ["1"] * 20 + ["1"]
+    assert events.count("key-down") == 1
+    assert events[-2:] == ["await-new BEAMO_WIPE_KEY_RETURN_RELEASED", "screen"]
 
 
 def test_unaccepted_press_is_released_and_fails_closed(tmp_path):

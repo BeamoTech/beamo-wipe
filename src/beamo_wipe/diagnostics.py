@@ -107,6 +107,81 @@ def emit_serial_marker(marker: str) -> bool:
         return False
 
 
+# BW-QEMU-FLAKES part a: the X server's libinput layer logs these fixed
+# warnings when it drops or lags behind input. Only the fixed marker for each
+# class crosses the serial boundary, never log text or device names.
+X_LOG_CANDIDATES = ("/var/log/Xorg.0.log", "/root/.local/share/xorg/Xorg.0.log")
+X_INPUT_WARNINGS = (
+    ("event processing lagging behind", "BEAMO_WIPE_XINPUT_LAGGING"),
+    ("SYN_DROPPED", "BEAMO_WIPE_XINPUT_SYN_DROPPED"),
+    ("client bug", "BEAMO_WIPE_XINPUT_CLIENT_BUG"),
+    ("kernel bug", "BEAMO_WIPE_XINPUT_KERNEL_BUG"),
+)
+X_LOG_TAIL_BYTES = 1024 * 1024
+DMI_VENDOR = "/sys/class/dmi/id/sys_vendor"
+
+
+def _read_bounded(path: str, limit: int, *, tail: bool = False) -> Optional[bytes]:
+    """Read at most ``limit`` bytes of one regular file (its end when ``tail``).
+
+    sysfs attributes report a fixed 4096-byte size, so only a growing log
+    is read from its end; everything else is read from the start.
+    """
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+    except OSError:
+        return None
+    try:
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            return None
+        if tail and info.st_size > limit:
+            os.lseek(fd, info.st_size - limit, os.SEEK_SET)
+        chunks = []
+        remaining = limit
+        while remaining > 0:
+            chunk = os.read(fd, min(remaining, 65536))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        return b"".join(chunks)
+    except OSError:
+        return None
+    finally:
+        os.close(fd)
+
+
+def emit_x_input_markers(
+    candidates: tuple[str, ...] = X_LOG_CANDIDATES, vendor_path: str = DMI_VENDOR
+) -> list[str]:
+    """QEMU gate only: name the X input warning classes the X log contains.
+
+    A virtual machine whose firmware names itself QEMU (never a customer PC)
+    reports SCANNED or LOG_MISSING, then one fixed marker per warning class
+    found. Returns the markers it emitted.
+    """
+    vendor = _read_bounded(vendor_path, 64)
+    if vendor is None or vendor.strip() != b"QEMU":
+        return []
+    emitted: list[str] = []
+    text = None
+    for candidate in candidates:
+        data = _read_bounded(candidate, X_LOG_TAIL_BYTES, tail=True)
+        if data is not None:
+            text = data.decode("ascii", "replace")
+            break
+    if text is None:
+        markers = ["BEAMO_WIPE_XINPUT_LOG_MISSING"]
+    else:
+        markers = ["BEAMO_WIPE_XINPUT_LOG_SCANNED"]
+        markers += [marker for needle, marker in X_INPUT_WARNINGS if needle in text]
+    for marker in markers:
+        if emit_serial_marker(marker):
+            emitted.append(marker)
+    return emitted
+
+
 def _sanitize_detail(text: str) -> str:
     # Safe: strip control chars, truncate, no secrets
     if not text:
