@@ -389,10 +389,28 @@ def test_probe_is_opt_in_and_the_gate_workflows_never_enable_it():
     source = QEMU.read_text(encoding="utf-8")
     assert 'case "${QEMU_SCREEN_AWAKE:-0}" in' in source
     assert "1) run_screen_awake_journey; SCREEN_AWAKE_RAN=1 ;;" in source
+    manual = "screen-awake.yml"
     for workflow in (ROOT / ".github/workflows").glob("*.yml"):
+        if workflow.name == manual:
+            continue
         assert "QEMU_SCREEN_AWAKE" not in workflow.read_text(encoding="utf-8"), (
             workflow.name
         )
+    # Only the manual workflow enables it, on its QEMU step, and it has no
+    # automatic trigger, no write permission and no secrets.
+    text = (ROOT / ".github/workflows" / manual).read_text(encoding="utf-8")
+    on_block = text.split("\non:\n", 1)[1].split("\n\n", 1)[0]
+    assert on_block.strip() == "workflow_dispatch:"
+    assert "permissions:\n  contents: read\n" in text
+    assert "secrets." not in text and "write" not in text.split("jobs:", 1)[0]
+    assert text.count("QEMU_SCREEN_AWAKE") == 1
+    qemu_step = text.split("- name: QEMU journeys plus the screen-awake probe", 1)[1]
+    qemu_step = qemu_step.split("- name:", 1)[0]
+    assert 'QEMU_SCREEN_AWAKE: "1"' in qemu_step
+    assert "run: bash scripts/ci-blacksmith.sh qemu" in qemu_step
+    # The container receives the flag only when the host step sets it.
+    blacksmith = (ROOT / "scripts/ci-blacksmith.sh").read_text(encoding="utf-8")
+    assert "    -e QEMU_SCREEN_AWAKE \\\n" in blacksmith
 
 
 def test_default_boot_keeps_the_unthrottled_target_chain():
