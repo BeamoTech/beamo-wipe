@@ -1078,6 +1078,16 @@ with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
             },
             action,
         )
+    elif action == "key-sequence":
+        # One QMP command queues every press and release in order, so the
+        # guest receives the whole sequence or (before its keyboard is
+        # ready) none of it, never a later key without an earlier one.
+        events = []
+        for name in value.split(","):
+            key = {"type": "qcode", "data": name}
+            for down in (True, False):
+                events.append({"type": "key", "data": {"down": down, "key": key}})
+        execute("input-send-event", {"events": events}, action)
     elif action == "screendump":
         execute("screendump", {"filename": value, "format": "png"}, "screendump")
     elif action == "hotplug-report":
@@ -1404,6 +1414,36 @@ send_key() {
   sleep 0.4
 }
 
+# Choose a boot-menu entry by its shipped hotkey. BIOS (isolinux) selects
+# the entry with the hotkey and boots it with Return; GRUB's hotkey boots it
+# directly, so UEFI never gets a Return.
+#
+# On BIOS the hotkey and Return go to the guest together in one QMP command.
+# Sent as two taps 0.4 s apart, the hotkey could be dropped before the guest
+# keyboard was ready while the Return arrived just after it was, and the
+# Return then booted the menu's normal default (main run 44120735113 attempt 2
+# and PR #113 run 44120852587 attempt 1: bios-troubleshoot-usb booted the
+# normal entry).
+send_boot_hotkey() {
+  local label="$1" qmp_socket="$2" key="$3"
+  if [[ "$label" == bios* ]]; then
+    qmp_request "$qmp_socket" key-sequence "$key,ret"
+    sleep 0.4
+  else
+    send_key "$qmp_socket" "$key"
+  fi
+}
+
+# The kiosk prints KIOSK_READY and then, on the requested entry, its mode
+# marker. KIOSK_READY that is still alone a second later means another entry
+# booted: stop sending boot keys before they reach the running wizard.
+booted_other_entry() {
+  local label="$1" mode_marker="$2"
+  [[ "$(marker_count "$label" BEAMO_WIPE_KIOSK_READY)" != 0 ]] || return 1
+  sleep 1
+  [[ "$(marker_count "$label" "$mode_marker")" == 0 ]]
+}
+
 send_key_for_marker() {
   local label="$1" qmp_socket="$2" key="$3" marker="$4" limit="$5" release_limit="${6:-20}"
   local prior release_marker="" release_prior=0
@@ -1624,19 +1664,17 @@ drive_report_export() {
 drive_speech_boot() {
   local label="$1" qmp_socket="$2" deadline
   deadline=$((SECONDS + BOOT_WAIT_SECONDS))
-  # Exercise the shipped menu hotkey. BIOS selects the entry with S and
-  # activates it with Return; GRUB's S hotkey activates it directly. On
-  # UEFI, a Return after an early S can reach GRUB just as its menu appears
-  # and boot the normal default before the next S has a chance to select speech.
+  # Exercise the shipped menu hotkey (see send_boot_hotkey). On UEFI, a
+  # Return after an early S can reach GRUB just as its menu appears and boot
+  # the normal default before the next S has a chance to select speech.
   # Stop sending keys before X starts, at the supervisor's mode marker.
   while [[ "$(marker_count "$label" BEAMO_WIPE_UI_MODE=accessible)" == 0 ]]; do
-    if (( SECONDS >= deadline )); then
+    if (( SECONDS >= deadline )) || booted_other_entry "$label" BEAMO_WIPE_UI_MODE=accessible; then
       report_marker_summary "$label"
       echo "QEMU $label never selected the speech boot entry" >&2
       return 1
     fi
-    send_key "$qmp_socket" s
-    if [[ "$label" == bios* ]]; then send_key "$qmp_socket" ret; fi
+    send_boot_hotkey "$label" "$qmp_socket" s
     sleep 1
   done
   wait_for_marker "$label" BEAMO_WIPE_STAGE_DONE "$BOOT_WAIT_SECONDS" || return 1
@@ -1647,16 +1685,15 @@ drive_speech_boot() {
 drive_troubleshoot_boot() {
   local label="$1" qmp_socket="$2" deadline
   deadline=$((SECONDS + BOOT_WAIT_SECONDS))
-  # Same shipped hotkey pattern as speech: T, plus Return on BIOS. Stop
+  # Same shipped hotkey pattern as speech (see send_boot_hotkey). Stop
   # sending keys at the supervisor's safe-video marker, before X starts.
   while [[ "$(marker_count "$label" BEAMO_WIPE_SAFE_VIDEO=1)" == 0 ]]; do
-    if (( SECONDS >= deadline )); then
+    if (( SECONDS >= deadline )) || booted_other_entry "$label" BEAMO_WIPE_SAFE_VIDEO=1; then
       report_marker_summary "$label"
       echo "QEMU $label never selected the troubleshoot boot entry" >&2
       return 1
     fi
-    send_key "$qmp_socket" t
-    if [[ "$label" == bios* ]]; then send_key "$qmp_socket" ret; fi
+    send_boot_hotkey "$label" "$qmp_socket" t
     sleep 1
   done
   log "$label troubleshoot entry booted with safe video settings"

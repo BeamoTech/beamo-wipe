@@ -434,6 +434,14 @@ log() { :; }
         ]
 
 
+def _boot_key_helpers(source: str) -> str:
+    """The boot-key helpers the speech driver calls (send_key stays mocked)."""
+    return "".join(
+        re.search(rf"{name}\(\) \{{\n.*?\n\}}\n", source, re.S).group(0)
+        for name in ("send_boot_hotkey", "booted_other_entry")
+    )
+
+
 def test_uefi_speech_hotkey_cannot_boot_default_when_menu_appears_between_keys():
     """A Return after an early, dropped S can boot GRUB's normal default."""
     source = QEMU_VERIFY.read_text()
@@ -460,7 +468,8 @@ wait_for_marker() { [[ "$state" == speech ]]; }
 log() { :; }
 '''
     result = subprocess.run(
-        ["bash", "-c", harness + helper.group(0) + "\ndrive_speech_boot uefi-speech-usb /fake/qmp"],
+        ["bash", "-c", harness + _boot_key_helpers(source) + helper.group(0)
+         + "\ndrive_speech_boot uefi-speech-usb /fake/qmp"],
         capture_output=True, text=True,
     )
     assert result.returncode == 0, result.stderr
