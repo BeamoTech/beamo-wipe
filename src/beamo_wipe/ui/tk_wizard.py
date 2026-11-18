@@ -7570,11 +7570,6 @@ class TkWizard:
         self._sync_layout()
         self._draw()
 
-    def _cycle_text_size(self) -> None:
-        self.w.cycle_text_size()
-        self._sync_layout()
-        self._draw()
-
     def _click_refresh(self) -> None:
         if self.w.screen != Screen.REFRESH_CONFIRM:
             if not self.w.open_refresh_confirm():
