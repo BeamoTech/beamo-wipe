@@ -64,7 +64,13 @@ def test_no_elapsed_note_beside_the_new_line():
 
 def test_language_formats():
     lang.set_language("de")
-    assert view().glance_time == "Vor 12 Minuten gestartet · noch etwa 50 Minuten"
+    # DE uses the label "Laufzeit:" (docs/translations.md): "Vor {text}"
+    # would need the dative ("vor 2 Tagen"), which duration() cannot give.
+    assert view().glance_time == "Laufzeit: 12 Minuten · noch etwa 50 Minuten"
+    assert view(elapsed=2 * 86400 + 3 * 3600, remaining=None).glance_time == (
+        "Laufzeit: 2 Tage 3 Stunden"
+    )
+    assert view(elapsed=30, remaining=None).glance_time == "Laufzeit: weniger als 1 Minute"
     assert view(trusted=True).glance_time == "Gestartet um 14:02 · voraussichtlich fertig gegen 15:05"
     lang.set_language("fr")
     assert view(trusted=True).glance_time == "Commencé à 14:02 · fin prévue vers 15:05"
