@@ -1193,10 +1193,7 @@ def _require_replaceable_manifest_outputs(
                 raise RuntimeError("prior manifest does not match this ISO")
             prior_is_verified = True
 
-        if prior is None:
-            if prior_sidecar not in (None, intended_manifest_sidecar):
-                raise RuntimeError("incomplete prior manifest bundle")
-        elif prior_is_intended:
+        if prior is None or prior_is_intended:
             if prior_sidecar not in (None, intended_manifest_sidecar):
                 raise RuntimeError("incomplete prior manifest bundle")
         elif prior_is_verified:

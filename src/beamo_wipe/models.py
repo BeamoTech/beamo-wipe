@@ -217,7 +217,7 @@ class ExcludedDevice:
     parent_path: str = ""
     kind_label: str = ""
     summary: str = ""
-    children: Tuple["ExcludedDevice", ...] = ()
+    children: Tuple[ExcludedDevice, ...] = ()
     # Display-only partition facts (#147); None for synthetic entries.
     volume: Optional[VolumeFacts] = None
 

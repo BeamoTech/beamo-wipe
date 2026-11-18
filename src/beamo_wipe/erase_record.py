@@ -114,7 +114,7 @@ def check_text(code: str, *, quick_zero: bool, method: str, preview: bool) -> st
 
 
 def build_card(
-    record: "EraseRecord | None",
+    record: EraseRecord | None,
     facts: tuple[str, str, str, str],
     method: str,
     check: str,

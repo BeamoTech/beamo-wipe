@@ -121,7 +121,7 @@ class Hint:
 
 
 def _read_text(path: str) -> str:
-    with open(path, "r", encoding="ascii") as fh:
+    with open(path, encoding="ascii") as fh:
         return fh.read(64)
 
 

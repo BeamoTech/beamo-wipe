@@ -1968,7 +1968,7 @@ def _bundle_files(
             f"{README_LOG.format(status=log_status)}\r\n"
             f"{README_COMPLETE}\r\n"
             f"{README_SUPPORT}\r\n"
-        ).encode("utf-8")
+        ).encode()
     else:
         readme = (
             f"{result_view.announcement}\r\n"
@@ -1977,7 +1977,7 @@ def _bundle_files(
             f"{README_LOG_SIMPLE.format(status=log_status)}\r\n"
             f"{README_COMPLETE}\r\n"
             f"{README_SUPPORT}\r\n"
-        ).encode("utf-8")
+        ).encode()
     if isinstance(payload, dict) and isinstance(payload.get("checks"), list):
         from beamo_wipe import engine_checks as checks
 
