@@ -543,7 +543,9 @@ def token_matches(typed: str, spec: ConfirmSpec) -> bool:
     want = (spec.token or "").strip()
     if not got or not want:
         return False
-    return got.casefold() == want.casefold()
+    # Tokens are ASCII. Ignore case only: casefold() would also accept
+    # look-alikes such as "ß" for "ss" or the Kelvin sign for "K".
+    return got.isascii() and want.isascii() and got.lower() == want.lower()
 
 
 BOOT_APPEARED_SELECTABLE = "The Beamo USB appeared as a selectable disk. Refusing to continue."
