@@ -382,7 +382,7 @@ def verify_release_acceptance(
     return {**result, "beamo_wipe_version": version}
 
 
-_FILE_METADATA_FIELDS = (
+_FILE_METADATA_FIELDS: tuple[str, ...] = (
     "st_dev",
     "st_ino",
     "st_size",
@@ -392,6 +392,11 @@ _FILE_METADATA_FIELDS = (
     "st_mtime_ns",
     "st_ctime_ns",
 )
+if os.name != "posix":
+    # Windows st_ctime is NTFS ChangeTime: a handle and its directory entry can
+    # report persistently different values for an unchanged file, so binding on
+    # it rejects valid inputs. Size, mtime and file identity still bind it.
+    _FILE_METADATA_FIELDS = _FILE_METADATA_FIELDS[:-1]
 _PARENT_IDENTITY_FIELDS = ("st_dev", "st_ino", "st_mode", "st_uid")
 
 

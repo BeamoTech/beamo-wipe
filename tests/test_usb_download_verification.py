@@ -159,6 +159,16 @@ def test_raw_corruption_and_wrong_directory_stop(release, verifier, tmp_path):
     assert verifier.main(["extract", *args]) == 1
 
 
+@pytest.mark.parametrize("schema, accepted", [(2, True), (3, False), (True, False)])
+def test_stick_check_metadata_schema_is_accepted(release, verifier, schema, accepted):
+    # Schema 2 only adds the per-file list read by check-beamo-stick.py.
+    *_rest, meta, resign, args = release
+    meta["schema_version"] = schema
+    meta["files"] = [{"path": "EFI/boot/bootx64.efi", "bytes": 1, "sha256": "0" * 64}]
+    resign()
+    assert (verifier.main(["metadata", *args]) == 0) is accepted
+
+
 def test_symlink_input_is_not_followed(release, verifier, tmp_path):
     directory, *_rest, args = release
     packed = directory / (STEM + ".img.gz")

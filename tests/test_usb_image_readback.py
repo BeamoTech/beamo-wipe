@@ -1,6 +1,7 @@
 """Run the image builder's readback step on regular-file FAT32 fixtures only."""
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -10,6 +11,8 @@ import sys
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
+# The builder runs this step with PYTHONPATH="$ROOT/src" for usb_media_files.
+VERIFIER_ENV = {**os.environ, 'PYTHONPATH': str(ROOT / 'src')}
 
 
 def verifier():
@@ -28,7 +31,7 @@ def test_incomplete_manifest_cannot_become_success_bundle(tmp_path, files):
     iso = tmp_path / 'source.iso'
     iso.write_bytes(b'fixture')
     result = subprocess.run([sys.executable, '-c', verifier(), str(tree), str(image), str(iso), str(tmp_path / 'missing-reference')],
-                            capture_output=True, text=True, check=False)
+                            capture_output=True, text=True, check=False, env=VERIFIER_ENV)
     assert result.returncode != 0
     assert 'exactly both desktop launchers' in result.stderr
     assert not image.with_suffix('.img.sha256').exists()
@@ -153,7 +156,8 @@ def test_regular_file_fat32_roundtrip(tmp_path, damage):
     iso = tmp_path / 'source.iso'
     iso.write_bytes(b'fixture ISO binding; no boot claim')
     result = subprocess.run([sys.executable, '-c', verifier(), str(tree), str(image), str(iso), str(reference)],
-                            capture_output=True, text=True, check=False, timeout=30)
+                            capture_output=True, text=True, check=False, timeout=30,
+                            env=VERIFIER_ENV)
     if damage:
         assert result.returncode != 0
         if damage == 'installer-module':
@@ -167,6 +171,18 @@ def test_regular_file_fat32_roundtrip(tmp_path, damage):
         receipt = json.loads(image.with_suffix('.img.json').read_text())
         assert receipt['sha256'] == hashlib.sha256(image.read_bytes()).hexdigest()
         assert receipt['iso_sha256'] == hashlib.sha256(iso.read_bytes()).hexdigest()
+        # Schema 2 lists the final image's files for the stick check: the copied
+        # tree, the installer-owned module and the installer's BIOS loader.
+        assert receipt['schema_version'] == 2
+        listed = {entry['path']: entry for entry in receipt['files']}
+        assert [entry['path'] for entry in receipt['files']] == sorted(listed)
+        assert set(listed) == {*boot_files, 'desktop-build.json', 'isolinux/ldlinux.sys'}
+        for name, data in boot_files.items():
+            if name != 'isolinux/ldlinux.c32':
+                assert listed[name] == {'path': name, 'bytes': len(data),
+                                        'sha256': hashlib.sha256(data).hexdigest()}
+        assert listed['isolinux/ldlinux.c32']['sha256'] == hashlib.sha256(module.read_bytes()).hexdigest()
+        assert listed['isolinux/ldlinux.sys']['sha256'] == hashlib.sha256(loader.read_bytes()).hexdigest()
 
 
 @pytest.mark.parametrize('suffix', ['.img.sha256', '.img.json'])
