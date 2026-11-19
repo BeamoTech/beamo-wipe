@@ -181,3 +181,18 @@ def test_confirm_token_disambiguates_boot_usb_same_size():
     assert same_size_conflict(shown)
     assert token_matches("al99", spec)
     assert not token_matches("16", spec)
+
+
+def test_token_ignores_case_only_not_unicode_look_alikes():
+    """Bug hunt 2026-11-19: casefold() let "ß" stand for "ss" and the Kelvin
+    sign for "K". The gate and its feedback accept ASCII case changes only."""
+    from beamo_wipe.safety import ConfirmSpec, token_matches
+    from beamo_wipe.token_feedback import feedback
+
+    spec = ConfirmSpec(token="A1SS", prompt="x")
+    assert token_matches("a1ss", spec)
+    assert token_matches(" A1sS ", spec)
+    assert not token_matches("a1ß", spec)
+    assert not token_matches("K", ConfirmSpec(token="K", prompt="x"))
+    assert not token_matches("Ｋ", ConfirmSpec(token="K", prompt="x"))
+    assert feedback("K", "K").wrong == (0,)

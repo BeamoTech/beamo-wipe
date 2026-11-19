@@ -38,7 +38,8 @@ class TokenFeedback:
 
 
 def _same(a: str, b: str) -> bool:
-    return a.casefold() == b.casefold()
+    # Same rule as safety.token_matches: ASCII, case ignored, nothing else.
+    return a.isascii() and b.isascii() and a.lower() == b.lower()
 
 
 def _ordinals(positions: tuple[int, ...]) -> str:
