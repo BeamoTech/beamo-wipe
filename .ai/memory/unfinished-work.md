@@ -9098,7 +9098,7 @@ another very thorough and comprehensive pass of this." Repo
   - Jack-only items, staged and not done: the code-signing purchase (#182), real-PC and physical acceptance (121 rows NOT TESTED), and publishing 0.2.15.
   - Blocked: Notion mark-off (no Notion connector in the agent session); rows 2272/2384 (Jack's decisions).
 
-## BW-QEMU-FLAKES-20261117 — two intermittent QEMU harness races (PART B DONE; PART A OPEN)
+## BW-QEMU-FLAKES-20261117 — two intermittent QEMU harness races (PART B DONE; PART A OPEN, DIAGNOSTICS MERGED)
 
 - ID/status: BW-QEMU-FLAKES-20261117. Harness defects, intermittent; not product defects.
 - Date/author: 2026-11-17 / Claude. Repo BeamoTech/beamo-wipe, file scripts/qemu-verify.sh.
@@ -9118,16 +9118,23 @@ another very thorough and comprehensive pass of this." Repo
   - This rules out the after_idle candidate. The release is lost below Tk's binding: QEMU input, the guest kernel or X server, or X focus delivery during the Checking transition.
   - Not rerun (status-only instruction). The next main push (0b78aa85, the #122 merge) runs the gate again.
   - Next action: a follow-up harness/UI PR that keeps the one-press, mandatory-release and no-repress requirements, after the 0.2.15 prep PR unless Jack reorders.
+- UPDATE 2026-11-19 (Claude): layer diagnostics merged. PR #124 (branch diag/return-release-focus-xinput-20261118, head b8227b2a) merged pinned as 85a880cd at 01:16:19Z after its PR run 44424656881 and CodeQL passed. The first head f4aa4136 failed one new test only (run 44414805423: _drive_to stops at Last chance for Done); b8227b2a fixed the test.
+  - Guest: the kiosk logs BEAMO_WIPE_APP_FOCUS_LOST (plus _RETURN_HELD while Return is held) when Tk's focus leaves the application, and BEAMO_WIPE_APP_FOCUS_REGAINED. On Done, only when sys_vendor is QEMU, it scans the bounded tail of the Xorg log and emits XINPUT_LOG_SCANNED or XINPUT_LOG_MISSING, plus XINPUT_LAGGING, _SYN_DROPPED, _CLIENT_BUG and _KERNEL_BUG per warning class found. No log text leaves the guest; a customer PC never reads the log.
+  - Host: the QEMU marker summary lists every new marker. On a lost release, start_erase_with_return waits up to 60 s for Done, sending no key, so those markers are captured; the journey still fails.
+  - Main CI on 85a880cd (44435632796) was in progress when this was written.
+  - Next action: on the next recurrence, read the APP_FOCUS_* and XINPUT_* counts in the failed case's summary, then fix the named layer without weakening one press, mandatory release or no repress. Blocker: needs a recurrence on hosted KVM runs; no local QEMU (WSL parked by Jack).
 
-## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS; physical rows NOT TESTED
+## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
 - ID/status: BW-168. QEMU probe done; physical acceptance is Jack's.
 - Date/author: 2026-11-18 / Claude. PR #120 merged as a5e7b0c1 (probe, manual screen-awake.yml); PR #122 merged as 0b78aa85 (the workflow runs the full source gates).
 - Evidence: screen-awake.yml run 44313547521 on a5e7b0c1. screen-awake-verdict.json: pass1, pass2 and pass3 true. The erase ran 13:46:48-14:04:00 UTC; erase frames stayed lit (61% at 645 s), the after-645 frame was fully black, and the wake frame equals after-030.
   - The job itself ended "failure" at the final CI-evidence step: it ran only the launchers source gate, and ci_evidence requires a receipt from every gate. PR #122 fixes that. The probe verdict was produced before that step and is unaffected.
 - Remaining: physical #168 rows stay NOT TESTED (Jack, real PC). Re-dispatching the fixed screen-awake.yml for a fully green run is Jack's call.
+- UPDATE 2026-11-18 (Claude): re-dispatched under Jack's blanket approval. screen-awake.yml run 44379454698 on main 9ba5f0b8 completed success (19:20-21:22Z), every job green, verdict PASS: pass1, pass2 and pass3 true. Erase frames stayed lit, the after-645 frame was black, the wake frame equals after-030, and no new screen markers appeared after the wake. Every other QEMU case in that run also passed.
+  - This is QEMU evidence only. The physical #168 rows stay NOT TESTED (Jack, real PC).
 
-## BW-RELEASE-0.2.15-PREP-20261118 — version bump and notes (PR OPEN; NOT RELEASED)
+## BW-RELEASE-0.2.15-PREP-20261118 — DONE: MERGED AS 9ba5f0b8; 0.2.15 PUBLISHED AND VERIFIED 2026-11-18
 
 - ID/status: BW-RELEASE-0.2.15-PREP. Branch release/prep-0.2.15-20261118 off main 0b78aa85.
 - Date/author: 2026-11-18 / Claude.
@@ -9135,3 +9142,18 @@ another very thorough and comprehensive pass of this." Repo
   - Kept as history: physical acceptance and Secure Boot receipt references to 0.2.14, docs/boot-exclusion-signals.md status, manufacturing/release-verification examples, tag and arbitrary-version fixtures.
 - Acceptance: the PR's CI gate passes on its head and it merges pinned.
 - Not done and not agent-authorized: dispatching release.yml, creating the v0.2.15 tag or draft, publishing, changing the v0.2.11 rollback target. Those are Jack's.
+- UPDATE 2026-11-18 (Claude): released under Jack's blanket approval ("I approve everything to get merged and approved and all that now continue and finish it all up"). The rollback target was not changed.
+  - PR #123 merged pinned as 9ba5f0b8 after its run on head 853aa6a6 passed. Head 851afafb had failed on version-bound fixtures: 17 developer_tests desktop versions, the tag test and the share golden checksum; 853aa6a6 fixed them.
+  - Main ci.yml 44379309748 on 9ba5f0b8: success.
+  - Annotated tag v0.2.15 (object 4557d2f9, message "Beamo Wipe 0.2.15") peels to 9ba5f0b8.
+  - release.yml run 44396104185 on main 9ba5f0b8: success. Verify 20:55:45-22:35:59Z (readiness check, source gates, ISO, QEMU, transfer pack); publish 22:36:11-22:42:53Z (signing, publishing, the workflow's own asset verification).
+  - GitHub release "Beamo Wipe 0.2.15": published 22:42:45Z, Latest, not a draft, 16 assets. ISO 846200832 bytes, sha256 2f9e47d7...; img.gz 957069101 bytes, sha256 0181dfc7....
+  - Agent checks after publication:
+    - every small downloaded asset matches GitHub's digest;
+    - SHA256SUMS and the .sha256 sidecars agree with GitHub's digests for the ISO, manifest and img.gz;
+    - the published keys.json equals packaging/release-keys/keys.json;
+    - the manifest and release-downloads.json signatures verify with pinned key 93caaf7ca93eff4d via release_signing;
+    - the manifest says version 0.2.15, source.commit 9ba5f0b8, dirty false, tag v0.2.15, nwipe 0.42, with every gate's source_commit 9ba5f0b8;
+    - prior_stable is 0.2.11 at 662cf470, the v0.2.11 peel.
+  - Not checked locally: the ISO and img.gz bytes were not downloaded. They are covered by GitHub's digests matching SHA256SUMS and the signed manifest.
+  - Still open: physical and real-PC acceptance rows (Jack); the code-signing certificate purchase stays fenced.
