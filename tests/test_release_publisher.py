@@ -228,7 +228,8 @@ def test_usb_release_binding_accepts_only_valid_schema_2_file_lists(tmp_path, da
     # Trailing whitespace keeps valid JSON, so only the size bound can reject it.
     padding = ' ' * PUBLISHER.MAX_USB_METADATA_BYTES if damage == 'oversized' else ''
     metadata.write_text(json.dumps(meta, indent=2, sort_keys=True) + padding)
-    assert len(metadata.read_bytes()) > 4096
+    if damage != 'no-files':
+        assert len(metadata.read_bytes()) > 4096
     if damage:
         with pytest.raises(PUBLISHER.PublishError):
             PUBLISHER._verify_usb_image(tmp_path, version)

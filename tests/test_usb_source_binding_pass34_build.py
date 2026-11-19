@@ -52,6 +52,10 @@ def test_usb_builder_rejects_changed_iso_or_linked_extraction(tmp_path, damage):
         "    if hashlib.sha256(iso.read_bytes()).hexdigest() != expected:\n"
         "        raise RuntimeError('ISO checksum mismatch')\n"
     )
+    # The builder lists the image with the real stdlib-only file-list module.
+    (package / "usb_media_files.py").write_bytes(
+        (Path(__file__).resolve().parents[1] / "src/beamo_wipe/usb_media_files.py").read_bytes()
+    )
     dist = tmp_path / "dist"
     dist.mkdir()
     iso = dist / "beamo-wipe-0.2.9-amd64.iso"
