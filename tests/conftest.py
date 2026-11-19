@@ -19,6 +19,17 @@ def _never_a_live_wipe_session(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _reset_serial_marker_drops():
+    # A real /dev/ttyS0 write that fails in one test must not prefix a
+    # dropped-marker line to another test's exact serial output.
+    from beamo_wipe import diagnostics
+
+    diagnostics._take_serial_drops()
+    yield
+    diagnostics._take_serial_drops()
+
+
+@pytest.fixture(autouse=True)
 def _reset_ui_language():
     yield
     from beamo_wipe import lang
