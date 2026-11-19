@@ -14,7 +14,7 @@ Each release publishes a machine-readable manifest that links the ISO to its sou
 | `SHA256SUMS` | `sha256sum` of ISO + manifest | same | `dist/` |
 | `beamo-wipe-<version>-amd64.img` | Desktop-readable FAT32 USB image with BIOS/UEFI boot | same | `dist/` after the USB-image builder |
 | `beamo-wipe-<version>-amd64.img.sha256` | USB image checksum | same | alongside image |
-| `beamo-wipe-<version>-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum | same | alongside image |
+| `beamo-wipe-<version>-amd64.img.json` | USB image size, layout, checksum, and source ISO checksum; from `schema_version` 2, also every file on the stick (path, bytes, SHA256) for the [stick check](#check-a-beamo-usb-stick) | same | alongside image |
 | `beamo-wipe-<version>-amd64.img.gz` | Actual compressed USB download; reconstructs the raw `.img` | same | published release assets |
 | `beamo-wipe-<version>-amd64.img.gz.sha256` | Compressed-download corruption checksum; alone does not authenticate the publisher | same | alongside compressed download |
 | `release-downloads.json` + `release-downloads.json.sig` | Inventory of exact filenames, sizes and hashes, with a detached publisher signature; includes both compressed and raw USB identities | same | published release assets |
@@ -353,6 +353,77 @@ git status --porcelain  # should be clean for a release
 `verify_manifest` requires the manifest to record only the canonical bare ISO filename, resolves that file beside the manifest, hashes the actual bytes, checks its size, and validates both exact sidecar lines. This makes the release directory relocatable without accepting an embedded absolute path or traversal. If any check fails, do not use the ISO.
 It does not verify a publisher signature; the preceding detached-signature
 checks are required for authentication.
+
+## Check a Beamo USB stick
+
+Use this to check a stick you already have, such as one you bought or one
+that was out of your hands. `scripts/check-beamo-stick.py` compares the files
+on the stick with the signed release, file for file. It only reads files in
+the stick's folder. It never opens a raw disk, needs no administrator rights,
+and never writes to, repairs or deletes anything on the stick.
+
+You need:
+
+- an independently trusted checkout, Python 3.10 or newer with the pinned
+  `cryptography==50.0.1` package, and the full key fingerprint confirmed as
+  described in [consumer verification](#consumer-verification). On macOS and
+  Linux the development setup provides this Python. On Windows, create a
+  private environment with `py -3 -m venv .venv-stick-check` and run
+  `.\.venv-stick-check\Scripts\python.exe -m pip install cryptography==50.0.1`;
+- the release's `release-downloads.json`, `release-downloads.json.sig` and
+  `beamo-wipe-<version>-amd64.img.json`, saved together in one folder;
+- the stick plugged in and opened as a normal drive or folder.
+
+Windows (the stick is `E:` in this example):
+
+```powershell
+cd C:\path\to\trusted\beamo-wipe
+.\.venv-stick-check\Scripts\python.exe scripts\check-beamo-stick.py E:\ `
+  --directory C:\path\to\release-files `
+  --registry packaging\release-keys\keys.json `
+  --trusted-key-sha256 <confirmed full key fingerprint> --version <version>
+```
+
+macOS or Linux (the stick folder is usually under `/Volumes` or `/media`):
+
+```sh
+cd /path/to/trusted/beamo-wipe
+.venv-darwin/bin/python scripts/check-beamo-stick.py /Volumes/BEAMO_WIPE \
+  --directory /path/to/release-files \
+  --registry packaging/release-keys/keys.json \
+  --trusted-key-sha256 '<confirmed full key fingerprint>' --version '<version>'
+```
+
+On Linux use `.venv-linux/bin/python`. Add `--expected-source <commit>` to
+also require the signed source commit. Add `--json` for a machine-readable
+receipt printed to the screen.
+
+What the result means:
+
+| Result | Exit | Meaning |
+| --- | --- | --- |
+| `GENUINE AND UNMODIFIED` | 0 | Every file on the stick matches the signed Beamo Wipe release, with nothing missing, changed or added. |
+| `MODIFIED` | 1 | Something differs. The report lists each `CHANGED`, `MISSING` and `EXTRA` file. Do not use the stick; make a new one from a verified download. |
+| `NOT VERIFIABLE` | 2 | The stick was not judged: a bad or missing signature, the wrong key or version, release files that do not match the signed list, an unreadable stick, or a release too old for this check. |
+
+Files that an operating system adds by itself are ignored and listed
+separately: `System Volume Information`, `$RECYCLE.BIN`, `.Spotlight-V100`,
+`.fseventsd`, `.Trashes`, `.TemporaryItems`, `.Trash-<user>` and
+`.DocumentRevisions-V100` folders at the top of the stick, and `._*`,
+`.DS_Store`, `Thumbs.db` and `desktop.ini` files anywhere. Their contents
+are not checked. A link where a release file should be counts as changed.
+
+Limits:
+
+- It finds changed, added and removed files compared with the signed release.
+  It does not check the stick's boot sectors or space outside its files.
+- It does not prove the stick hardware is genuine or new, and says nothing
+  about any computer.
+- It cannot tell an exact copy from the original. Copying Beamo Wipe is
+  allowed under its GPL licence, so an exact copy also passes.
+- Only releases whose `.img.json` has `schema_version` 2 or later list the
+  stick's files. Older releases give `NOT VERIFIABLE`; use the
+  [USB image download verification](#usb-image-download-verification) for them.
 
 ## Build failure (fail-closed)
 

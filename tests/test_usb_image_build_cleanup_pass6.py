@@ -55,6 +55,10 @@ def test_image_output_published_only_after_readback(tmp_path, failure):
     (package / "release_manifest.py").write_text(
         "def verify_build_manifest(*args, **kwargs):\n    return None\n"
     )
+    # The builder lists the image with the real stdlib-only file-list module.
+    (package / "usb_media_files.py").write_bytes(
+        (Path(__file__).resolve().parents[1] / "src/beamo_wipe/usb_media_files.py").read_bytes()
+    )
     dist = tmp_path / "dist"
     dist.mkdir()
     (dist / "beamo-wipe-0.2.9-amd64.iso").write_bytes(b"fake ISO fixture")

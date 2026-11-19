@@ -28,6 +28,7 @@ CHUNK_SIZE = 8 * 1024 * 1024
 MAX_RESPONSE_BYTES = 1024 * 1024
 MAX_QEMU_LOG_LINE_BYTES = 1024 * 1024
 MAX_KEY_REGISTRY_BYTES = 1024 * 1024
+MAX_USB_METADATA_BYTES = 4 * 1024 * 1024
 _REGULAR_BIND_FIELDS = (
     "st_dev",
     "st_ino",
@@ -601,14 +602,38 @@ def _verify_sha256sums(dist: Path, version: str) -> None:
             raise PublishError(f"SHA256SUMS mismatch for {name}")
 
 
+def _usb_media_files(value: Any) -> list[dict[str, Any]]:
+    """Shape-check the schema 2 stick file list; the builder computed it."""
+    previous = ""
+    if not isinstance(value, list) or not value:
+        raise PublishError("USB image metadata has no file list")
+    for entry in value:
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != {"path", "bytes", "sha256"}
+            or not isinstance(entry["path"], str)
+            or not re.fullmatch(r"[^/\x00-\x1f\"*:<>?\\|]+(?:/[^/\x00-\x1f\"*:<>?\\|]+)*", entry["path"])
+            or {".", ".."} & set(entry["path"].split("/"))
+            or entry["path"] <= previous
+            or type(entry["bytes"]) is not int
+            or entry["bytes"] < 0
+            or not isinstance(entry["sha256"], str)
+            or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"])
+        ):
+            raise PublishError("USB image metadata has an invalid file list")
+        previous = entry["path"]
+    return value
+
+
 def _verify_usb_image(dist: Path, version: str) -> tuple[str, str]:
     """Bind the desktop-readable image to the verified ISO before uploading."""
     image = dist / f"beamo-wipe-{version}-amd64.img"
     iso = dist / f"beamo-wipe-{version}-amd64.iso"
     try:
+        # Schema 2 lists every file on the stick, so allow more than a page.
         with _open_owned_file(Path(f"{image}.json")) as stream:
-            raw = stream.read(4097)
-        if len(raw) > 4096:
+            raw = stream.read(MAX_USB_METADATA_BYTES + 1)
+        if len(raw) > MAX_USB_METADATA_BYTES:
             raise PublishError("USB image metadata exceeded the safety limit")
         metadata = json.loads(raw, object_pairs_hook=_unique_json_fields)
         with _open_owned_file(Path(f"{image}.sha256")) as stream:
@@ -627,6 +652,9 @@ def _verify_usb_image(dist: Path, version: str) -> tuple[str, str]:
         "layout": "MBR, one active FAT32 partition at sector 2048",
         "size": size,
     }
+    if isinstance(metadata, dict) and metadata.get("schema_version") == 2:
+        expected["schema_version"] = 2
+        expected["files"] = _usb_media_files(metadata.get("files"))
     if (
         not isinstance(metadata, dict)
         or metadata != expected

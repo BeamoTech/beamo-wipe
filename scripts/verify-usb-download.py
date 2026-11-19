@@ -106,7 +106,9 @@ def authenticate(directory, registry_path, fingerprint, version, source):
     meta = json.loads(meta_bytes, object_pairs_hook=_unique_json_fields)
     raw, compressed = record(inventory, stem + ".img"), record(inventory, stem + ".img.gz")
     iso = record(inventory, stem + ".iso")
-    if (meta["schema_version"] != 1 or meta["image"] != stem + ".img"
+    # Schema 2 only adds the per-file list used by check-beamo-stick.py.
+    if (meta["schema_version"] not in (1, 2) or type(meta["schema_version"]) is not int
+            or meta["image"] != stem + ".img"
             or meta["size"] != raw["bytes"] or meta["sha256"] != raw["sha256"]
             or meta["iso"] != stem + ".iso" or meta["iso_sha256"] != iso["sha256"]
             or manifest["artifact"]["iso_name"] != stem + ".iso"

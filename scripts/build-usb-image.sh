@@ -154,8 +154,10 @@ with out.open('xb') as dest,fat.open('rb') as source:
 PY
 # Read the packaged files through the final MBR image, including its partition
 # offset. Verify before writing success sidecars; a failed image is not a bundle.
-python3 - "$TREE" "$STAGED_OUT" "$ISO" "$REFERENCE_FAT" <<'PYVERIFY'
+# The readback also yields the per-file list that the stick check compares.
+PYTHONPATH="$ROOT/src" python3 - "$TREE" "$STAGED_OUT" "$ISO" "$REFERENCE_FAT" <<'PYVERIFY'
 import hashlib,json,pathlib,struct,subprocess,sys
+from beamo_wipe.usb_media_files import list_media_files,validate_media_files
 root,out,iso,reference=map(pathlib.Path,sys.argv[1:])
 source_manifest=(root/'desktop-build.json').read_bytes()
 manifest=json.loads(source_manifest)
@@ -194,13 +196,17 @@ def readback_digest(name, image=out, partition_offset=offset):
     if process.wait()!=0:
         raise SystemExit(f'USB file readback failed: {name}')
     return h.hexdigest(),length
+# Refuse links/special files before rglob's is_file() could follow one.
+listed=list_media_files(root)
 readback_hashes={}
+readback_sizes={}
 for source in sorted(root.rglob('*')):
     if not source.is_file():
         continue
     name=source.relative_to(root).as_posix()
     actual,size=readback_digest(name)
     readback_hashes[name]=actual
+    readback_sizes[name]=size
     if name=='isolinux/ldlinux.c32':
         # The installer owns this file. Compare the installed bytes in the
         # final image with a second install, not with the displaced ISO file.
@@ -215,12 +221,19 @@ for name in sorted(names):
         raise SystemExit(f'USB launcher readback mismatch: {name}')
 # The Syslinux installer writes ldlinux.sys after the ISO tree is copied, so
 # source-file readback alone cannot prove that BIOS loader reached the image.
-_,loader_size=readback_digest('isolinux/ldlinux.sys')
+loader_hash,loader_size=readback_digest('isolinux/ldlinux.sys')
 if loader_size<512:
     raise SystemExit('USB Syslinux loader readback is empty or too short')
+# Record what the final image holds: the readback bytes of every copied file
+# (including the installer-owned ldlinux.c32) plus the installer's ldlinux.sys.
+if {entry['path'] for entry in listed}!=set(readback_hashes):
+    raise SystemExit('USB file list differs from the readback set')
+final={name:{'path':name,'bytes':readback_sizes[name],'sha256':readback_hashes[name]} for name in readback_hashes}
+final['isolinux/ldlinux.sys']={'path':'isolinux/ldlinux.sys','bytes':loader_size,'sha256':loader_hash}
+media_files=validate_media_files(sorted(final.values(),key=lambda entry:entry['path']))
 sha=digest(out)
 out.with_suffix('.img.sha256').write_text(f'{sha}  {out.name}\n')
-out.with_suffix('.img.json').write_text(json.dumps({'schema_version':1,'image':out.name,'sha256':sha,'iso':iso.name,'iso_sha256':digest(iso),'layout':'MBR, one active FAT32 partition at sector 2048','size':out.stat().st_size},sort_keys=True,indent=2)+'\n')
+out.with_suffix('.img.json').write_text(json.dumps({'schema_version':2,'image':out.name,'sha256':sha,'iso':iso.name,'iso_sha256':digest(iso),'layout':'MBR, one active FAT32 partition at sector 2048','size':out.stat().st_size,'files':media_files},sort_keys=True,indent=2)+'\n')
 PYVERIFY
 # Verify the live ISO still matches the manifest and both source paths match
 # the snapshot digest. This also catches a source changed only while copied,

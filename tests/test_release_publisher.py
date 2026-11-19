@@ -193,3 +193,45 @@ def test_usb_release_binding_rejects_changed_artifacts(tmp_path, damage):
             PUBLISHER._verify_usb_image(tmp_path, version)
     else:
         PUBLISHER._verify_usb_image(tmp_path, version)
+
+
+@pytest.mark.parametrize('damage', ['', 'no-files', 'unsorted', 'traversal', 'extra-field', 'oversized'])
+def test_usb_release_binding_accepts_only_valid_schema_2_file_lists(tmp_path, damage):
+    import hashlib
+    import json
+
+    version = '0.2.15'
+    iso = tmp_path / f'beamo-wipe-{version}-amd64.iso'
+    image = tmp_path / f'beamo-wipe-{version}-amd64.img'
+    iso.write_bytes(b'fixture ISO')
+    image.write_bytes(b'fixture USB' * 64)
+
+    def digest(path):
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    # Hundreds of entries are normal for a real ISO tree: beyond the old 4 KiB cap.
+    files = [{'path': f'boot/grub/x86_64-efi/module{index:04d}.mod', 'bytes': index,
+              'sha256': hashlib.sha256(b'%d' % index).hexdigest()} for index in range(400)]
+    meta = {'schema_version': 2, 'image': image.name, 'sha256': digest(image),
+            'iso': iso.name, 'iso_sha256': digest(iso), 'size': image.stat().st_size,
+            'layout': 'MBR, one active FAT32 partition at sector 2048', 'files': files}
+    if damage == 'no-files':
+        del meta['files']
+    elif damage == 'unsorted':
+        files.reverse()
+    elif damage == 'traversal':
+        files[0]['path'] = '../outside'
+    elif damage == 'extra-field':
+        files[0]['mode'] = 0o644
+    image.with_suffix('.img.sha256').write_text(f'{digest(image)}  {image.name}\n')
+    metadata = image.with_suffix('.img.json')
+    # Trailing whitespace keeps valid JSON, so only the size bound can reject it.
+    padding = ' ' * PUBLISHER.MAX_USB_METADATA_BYTES if damage == 'oversized' else ''
+    metadata.write_text(json.dumps(meta, indent=2, sort_keys=True) + padding)
+    if damage != 'no-files':
+        assert len(metadata.read_bytes()) > 4096
+    if damage:
+        with pytest.raises(PUBLISHER.PublishError):
+            PUBLISHER._verify_usb_image(tmp_path, version)
+    else:
+        assert PUBLISHER._verify_usb_image(tmp_path, version)[0] == digest(image)
