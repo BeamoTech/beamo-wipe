@@ -1320,6 +1320,15 @@ report_marker_summary() {
     BEAMO_WIPE_KEY_RETURN_RELEASED \
     BEAMO_WIPE_KEY_RETURN_RELEASE_RECEIVED \
     BEAMO_WIPE_KEY_RETURN_RELEASE_SUPERSEDED \
+    BEAMO_WIPE_APP_FOCUS_LOST \
+    BEAMO_WIPE_APP_FOCUS_LOST_RETURN_HELD \
+    BEAMO_WIPE_APP_FOCUS_REGAINED \
+    BEAMO_WIPE_XINPUT_LOG_SCANNED \
+    BEAMO_WIPE_XINPUT_LOG_MISSING \
+    BEAMO_WIPE_XINPUT_LAGGING \
+    BEAMO_WIPE_XINPUT_SYN_DROPPED \
+    BEAMO_WIPE_XINPUT_CLIENT_BUG \
+    BEAMO_WIPE_XINPUT_KERNEL_BUG \
     BEAMO_WIPE_KEY_SPACE_RELEASED
   do
     count="$(marker_count "$label" "$marker")"
@@ -1505,11 +1514,12 @@ start_erase_with_return() {
   local checking_marker=BEAMO_WIPE_RETURN_RESULT_CHECKING
   local working_result_marker=BEAMO_WIPE_RETURN_RESULT_WORKING
   local release_marker=BEAMO_WIPE_KEY_RETURN_RELEASED
-  local checking_prior working_result_prior working_prior release_prior
+  local checking_prior working_result_prior working_prior release_prior done_prior
   local accepted_marker=""
   checking_prior="$(marker_count "$label" "$checking_marker")"
   working_result_prior="$(marker_count "$label" "$working_result_marker")"
   working_prior="$(marker_count "$label" BEAMO_WIPE_SCREEN_WORKING)"
+  done_prior="$(marker_count "$label" BEAMO_WIPE_SCREEN_DONE)"
   qmp_request "$qmp_socket" key-down ret
   for _poll in $(seq 1 $((limit * 10))); do
     if [[ "$(marker_count "$label" "$checking_marker")" -gt "$checking_prior" ]]; then
@@ -1541,6 +1551,19 @@ start_erase_with_return() {
     fi
     sleep 1
   done
+  if [[ "$(marker_count "$label" "$release_marker")" -le "$release_prior" ]]; then
+    # Diagnostic only (BW-QEMU-FLAKES part a): give the guest up to 60 s to
+    # reach Done, where it reports its focus and X input markers, so the
+    # summary below names the layer. The release is still missing and this
+    # journey still fails; no key is sent while waiting.
+    for _done_wait in $(seq 1 60); do
+      if [[ "$(marker_count "$label" BEAMO_WIPE_SCREEN_DONE)" -gt "$done_prior" ]]; then
+        sleep 1
+        break
+      fi
+      sleep 1
+    done
+  fi
   if ! wait_for_new_marker "$label" "$release_marker" "$release_prior" 1; then
     capture_guest_screen "$label"
     return 1
