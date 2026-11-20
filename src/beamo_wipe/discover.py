@@ -714,10 +714,13 @@ def _cover_shared_filesystem_members(
     lsblk records a multi-device filesystem mount on one member. The other
     member keeps the UUID and an empty mount list, and it may not have filled
     in fstype yet. An empty UUID is not an identity. A different fstype is a
-    different filesystem and must not be glued on.
+    different filesystem and must not be glued on. The mounted row itself
+    may also lack fstype; then no member with that UUID is proven to be a
+    different filesystem, whatever fstype the member reports.
     """
     mounted: Dict[Tuple[str, str], List[str]] = {}
     mounted_uuid: Dict[str, List[str]] = {}
+    untyped_mounted_uuid: Dict[str, List[str]] = {}
     for node, _parent in flat_nodes:
         fs = _clean(node.get("fstype")).casefold()
         uuid = _clean(node.get("uuid")).casefold()
@@ -726,6 +729,8 @@ def _cover_shared_filesystem_members(
             continue
         if fs:
             mounted.setdefault((fs, uuid), []).extend(mounts)
+        else:
+            untyped_mounted_uuid.setdefault(uuid, []).extend(mounts)
         mounted_uuid.setdefault(uuid, []).extend(mounts)
     if not mounted and not mounted_uuid:
         return
@@ -734,9 +739,14 @@ def _cover_shared_filesystem_members(
         uuid = _clean(node.get("uuid")).casefold()
         if not uuid:
             continue
-        shared_mounts = mounted.get((fs, uuid)) if fs else None
-        if not shared_mounts and not fs:
-            shared_mounts = mounted_uuid.get(uuid)
+        shared_mounts: List[str]
+        if fs:
+            shared_mounts = [
+                *mounted.get((fs, uuid), ()),
+                *untyped_mounted_uuid.get(uuid, ()),
+            ]
+        else:
+            shared_mounts = mounted_uuid.get(uuid, [])
         if not shared_mounts:
             continue
         owner = _owner_disk_name(node, parent, by_name)
@@ -1953,6 +1963,11 @@ def parse_lsblk_json(
         _identity_text(node.get("name"), "name")
         for node in disk_nodes(blockdevices)
     }
+    btrfs_uuids = {
+        _clean(node.get("uuid")).casefold()
+        for node, _parent in flat_nodes
+        if _clean(node.get("fstype")).casefold() == "btrfs" and _clean(node.get("uuid"))
+    }
     for candidate, parent in flat_nodes:
         kind = _node_type(candidate)
         mounts = _node_mountpoints(candidate)
@@ -2026,10 +2041,19 @@ def parse_lsblk_json(
                 if mounts:
                     raise ValueError("lsblk mounted ancestry is unresolved")
                 raise ValueError("lsblk filesystem ancestry is unresolved")
-        if mounts and _clean(candidate.get("fstype")).casefold() == "btrfs":
+        mounted_fstype = _clean(candidate.get("fstype")).casefold()
+        if mounts and (
+            mounted_fstype == "btrfs"
+            or (
+                not mounted_fstype
+                and _clean(candidate.get("uuid")).casefold() in btrfs_uuids
+            )
+        ):
             # lsblk may show a mount on only one Btrfs member. A second
             # member can have an empty or stale UUID/fstype, so the inventory
             # alone cannot prove any other disk is outside that filesystem.
+            # The mounted row may itself lack fstype while another row with
+            # its UUID says Btrfs.
             raise ValueError("mounted Btrfs membership is unresolved")
         if mounts and _clean(candidate.get("name")).casefold().startswith("bcache"):
             # A mounted bcache holder names its backing device in PKNAME, but
