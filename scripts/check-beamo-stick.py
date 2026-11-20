@@ -203,6 +203,7 @@ def check_stick(root, files):
         expected_dirs.update("/".join(parts[:depth]) for depth in range(1, len(parts)))
     seen, to_hash = set(), []
     changed, extra, ignored = [], [], []
+    unexpected_dirs = []
     pending = [(root, "")]
     while pending:
         directory, prefix = pending.pop()
@@ -249,9 +250,17 @@ def check_stick(root, files):
                 else:
                     changed.append({"path": rel + "/", "reason": "expected a folder"})
             elif is_dir:
+                unexpected_dirs.append(rel + "/")
                 pending.append((child.path, rel + "/"))  # Report the files inside.
             else:
                 extra.append(rel)
+    # A folder the release does not have is a difference even when it is
+    # empty or holds only names skipped as OS files: live-boot can layer an
+    # added live/*.dir folder over the system. Name the deepest such folder
+    # that has no other reported entry inside it.
+    for folder in sorted(unexpected_dirs, key=lambda item: item.count("/"), reverse=True):
+        if not any(item.startswith(folder) for item in extra):
+            extra.append(folder)
     for entry, path, metadata in sorted(to_hash, key=lambda item: item[0]["path"]):
         try:
             reason = _same_file(path, entry, metadata)

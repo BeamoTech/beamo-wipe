@@ -411,7 +411,9 @@ separately: `System Volume Information`, `$RECYCLE.BIN`, `.Spotlight-V100`,
 `.fseventsd`, `.Trashes`, `.TemporaryItems`, `.Trash-<user>` and
 `.DocumentRevisions-V100` folders at the top of the stick, and `._*`,
 `.DS_Store`, `Thumbs.db` and `desktop.ini` files anywhere. Their contents
-are not checked. A link where a release file should be counts as changed.
+are not checked. A folder that the release does not have is always `EXTRA`,
+even when it is empty or holds only such files. A link where a release file
+should be counts as changed.
 
 Limits:
 
