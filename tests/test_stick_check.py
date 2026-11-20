@@ -398,6 +398,41 @@ def test_os_folder_names_below_the_root_are_not_ignored(checker, release, capsys
     assert code == 1 and receipt["extra"] == ["live/System Volume Information/payload"]
 
 
+def test_an_added_empty_folder_is_reported(checker, release, capsys):
+    # An empty added folder can still change what the system loads, for
+    # example a live-boot layer that hides a file.
+    stick, *_rest, args = release
+    (stick / "live/zz.dir/usr/bin/nwipe").mkdir(parents=True)
+    code, receipt = _run(checker, capsys, stick, args)
+    assert code == 1 and receipt["verdict"] == "MODIFIED"
+    assert receipt["extra"] == ["live/zz.dir/usr/bin/nwipe/"]
+    assert receipt["missing"] == receipt["changed"] == []
+
+
+def test_an_added_folder_holding_only_os_file_names_is_reported(checker, release, capsys):
+    stick, *_rest, args = release
+    (stick / "live/zz.dir/etc").mkdir(parents=True)
+    (stick / "live/zz.dir/etc/desktop.ini").write_bytes(b"payload")
+    (stick / "live/zz.dir/etc/._payload.conf").write_bytes(b"payload")
+    code, receipt = _run(checker, capsys, stick, args)
+    assert code == 1 and receipt["verdict"] == "MODIFIED"
+    assert receipt["extra"] == ["live/zz.dir/etc/"]
+    assert receipt["ignored"] == [
+        "live/zz.dir/etc/._payload.conf",
+        "live/zz.dir/etc/desktop.ini",
+    ]
+
+
+def test_an_added_folder_is_named_once_beside_its_other_entries(checker, release, capsys):
+    stick, *_rest, args = release
+    (stick / "new/empty").mkdir(parents=True)
+    (stick / "new/payload.sh").write_bytes(b"#!/bin/sh\n")
+    code, receipt = _run(checker, capsys, stick, args)
+    assert code == 1
+    # The file names "new/" already; only the empty folder needs its own line.
+    assert receipt["extra"] == ["new/empty/", "new/payload.sh"]
+
+
 def test_symlink_where_a_file_is_expected_is_changed(
     checker, release, capsys, tmp_path
 ):

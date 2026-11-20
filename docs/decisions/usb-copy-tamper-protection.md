@@ -115,6 +115,8 @@ you trust, with Beamo's published key fingerprint confirmed separately.
 |---|---|
 | Signed / unsigned / wrong key / bad signature | Tested (test keys, temp files) |
 | Altered, missing, extra, truncated files | Tested |
+| Added empty folder, or one holding only OS-file names | Tested: reported as `EXTRA` (2026-11-20 review) |
+| FAT 8.3 short-name alias of a skipped OS-file name | **Open**: a hand-built FAT folder could hold a skipped long name whose 8.3 short name is a release file's name; the computer's FAT driver may then open that entry for the check while GRUB reads the real one. Not reproduced (needs a crafted FAT image). Closing it needs either no name-based skipping or an entry-identity check; owner decision with the false-alarm trade-off for sticks browsed on a Mac or Windows |
 | `img.json` mismatch vs signed list; old schema | Tested |
 | Revoked/rotated key | Existing `release_signing` tests; stick check uses the same registry |
 | Replay/rollback | Check reports the release version; no minimum-version rule yet |
