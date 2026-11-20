@@ -5548,7 +5548,26 @@ class TkWizard:
         self._help_view = "shortcuts"
         self._help_direct = True
         self._help_screen = self.w.screen
+        self._hold_review_for_help()
         self._build_help_menu("back")
+
+    def _hold_review_for_help(self) -> None:
+        """The open menu covers part of the final review: suspend its
+        countdown (and Erase now) until the menu closes."""
+        if getattr(self, "_help_review_hold", False):
+            return
+        self._help_review_hold = bool(self.w.begin_review_overlay())
+        if self._help_review_hold:
+            self._refresh_last_chance()
+
+    def _release_review_for_help(self) -> None:
+        """Closing the menu restarts a fresh, fully visible countdown."""
+        if not getattr(self, "_help_review_hold", False):
+            return
+        self._help_review_hold = False
+        self.w.end_review_overlay()
+        if self.w.screen == Screen.LAST_CHANCE:
+            self._refresh_last_chance()
 
     def _toggle_help_menu(self) -> None:
         if getattr(self, "_help_open", False):
@@ -5564,6 +5583,7 @@ class TkWizard:
         self._help_view = "menu"
         self._help_direct = False
         self._help_screen = self.w.screen
+        self._hold_review_for_help()
         self._build_help_menu(focus_key)
 
     def _close_help_menu(self, *, refocus: bool = True) -> None:
@@ -5580,6 +5600,7 @@ class TkWizard:
                 popup.destroy()
             except tk.TclError:
                 pass
+        self._release_review_for_help()
         if refocus:
             # Focus returns to the control that opened the menu.
             button = getattr(self, "_shortcuts_button" if direct else "_help_button", None)
