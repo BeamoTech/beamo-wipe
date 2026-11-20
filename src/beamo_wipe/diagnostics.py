@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import errno
 import json
 import os
 import re
 import stat
+import threading
 import time
 import unicodedata
 from pathlib import Path
@@ -19,6 +21,30 @@ DIAG_LOG_MAX_BYTES = 256 * 1024
 DIAG_DETAIL_MAX = 300
 SERIAL_MARKER_RE = re.compile(r"^BEAMO_WIPE_[A-Z0-9_]{1,64}$")
 SERIAL_DEVICE = "/dev/ttyS0"
+# BW-QEMU-FLAKES part c: a marker write that fails after the serial port
+# opened is otherwise lost without trace. Count those failures by class and
+# report them, as fixed markers, ahead of the next marker that gets through.
+SERIAL_DROP_MARKERS = {
+    "eagain": "BEAMO_WIPE_SERIAL_MARKER_DROPPED_EAGAIN",
+    "other": "BEAMO_WIPE_SERIAL_MARKER_DROPPED_OTHER",
+}
+_serial_drop_lock = threading.Lock()
+_serial_drops = {"eagain": 0, "other": 0}
+
+
+def _take_serial_drops() -> dict[str, int]:
+    """Return and clear the pending dropped-marker counts."""
+    with _serial_drop_lock:
+        taken = dict(_serial_drops)
+        for kind in _serial_drops:
+            _serial_drops[kind] = 0
+    return taken
+
+
+def _restore_serial_drops(counts: dict[str, int]) -> None:
+    with _serial_drop_lock:
+        for kind, count in counts.items():
+            _serial_drops[kind] += count
 
 
 def _close_diagnostic_fds(
@@ -96,7 +122,16 @@ def emit_serial_marker(marker: str) -> bool:
             fd = owned["serial"]
             if not stat.S_ISCHR(os.fstat(fd).st_mode):
                 return False
-            _write_all(fd, (marker + "\n").encode("ascii"))
+            pending = _take_serial_drops()
+            lines = [SERIAL_DROP_MARKERS[kind] for kind in ("eagain", "other") if pending[kind]]
+            lines.append(marker)
+            try:
+                _write_all(fd, "".join(line + "\n" for line in lines).encode("ascii"))
+            except OSError as exc:
+                blocked = exc.errno in (errno.EAGAIN, errno.EWOULDBLOCK)
+                pending["eagain" if blocked else "other"] += 1
+                _restore_serial_drops(pending)
+                raise
         except BaseException as exc:
             primary = exc
             raise

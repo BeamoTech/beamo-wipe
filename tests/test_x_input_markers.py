@@ -101,6 +101,7 @@ def test_qemu_summary_lists_every_new_marker():
         "BEAMO_WIPE_APP_FOCUS_LOST_RETURN_HELD",
         "BEAMO_WIPE_APP_FOCUS_REGAINED",
     }
+    markers |= set(diagnostics.SERIAL_DROP_MARKERS.values())
     for marker in markers:
         assert f"    {marker} \\\n" in summary, marker
 

@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import ast
 import builtins
+import errno
 import io
 import json
 import posixpath
 import re
 import stat
 import sys
+import threading
 import unittest
 
 import pytest
@@ -167,6 +169,8 @@ class TestDiagnosticCleanup(_UnittestAssertions):
             json=json,
             unicodedata=unicodedata,
             time=SimpleNamespace(monotonic=lambda: 1),
+            errno=errno,
+            threading=threading,
         )
         tree = ast.parse(_DIAG_SOURCE.read_bytes(), filename=str(_DIAG_SOURCE))
         body = [n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.Assign))]
