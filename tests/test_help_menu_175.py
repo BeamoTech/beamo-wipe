@@ -27,6 +27,7 @@ from beamo_wipe import lang
 from beamo_wipe.demo import make_demo_wizard
 from beamo_wipe.models import Screen
 from beamo_wipe.ui import console_wizard as console
+from beamo_wipe.wizard import COUNTDOWN_S
 from preview_page import inline_script
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -613,3 +614,176 @@ if (screen !== 'advanced') throw Error('advanced from method');
     # On stdin: the payload is longer than a Windows command line allows.
     result = subprocess.run([node], input=program, capture_output=True, text=True, encoding="utf-8")
     assert result.returncode == 0, result.stderr
+
+
+# --- The menu over the final review suspends its 5 s countdown ---------------
+# The menu covers the review (all of it in the console, part of it in Tk).
+# While it is open, Erase now stays unavailable, and after it closes the five
+# seconds start again, so the owner has the full review in view for the whole
+# delay.
+
+
+def _at_last_chance_with_clock():
+    clock = {"t": 1000.0}
+    wiz = _wizard_at("last")
+    wiz._clock = lambda: clock["t"]
+    wiz.restart_review_countdown()
+    return wiz, clock
+
+
+def _drive_curses(monkeypatch, wiz, clock, before, in_menu, after):
+    """Run the curses loop; steps are keys or callables run on an idle read."""
+    starts = []
+    monkeypatch.setattr(wiz, "confirm_erase", lambda: starts.append((clock["t"], wiz.screen)))
+    monkeypatch.setattr(console, "time", SimpleNamespace(
+        monotonic=lambda: clock["t"], sleep=lambda *_: None, time=real_time.time))
+    monkeypatch.setattr(console.curses, "curs_set", lambda *a: None, raising=False)
+    monkeypatch.setattr(console.curses, "use_default_colors", lambda: None, raising=False)
+    state = {"menu": False}
+    queue, menu_queue = list(before), list(in_menu)
+    seen = []
+    original = console._help_menu
+
+    def menu(stdscr, w):
+        state["menu"] = True
+        seen.append(("open", w.erase_enabled))
+        try:
+            return original(stdscr, w)
+        finally:
+            state["menu"] = False
+            seen.append(("closed", w.erase_enabled))
+            queue.extend(after)
+
+    monkeypatch.setattr(console, "_help_menu", menu)
+
+    class Terminal:
+        def getmaxyx(self):
+            return (60, 120)
+
+        def addstr(self, *args):
+            pass
+
+        def getch(self):
+            source = menu_queue if state["menu"] else queue
+            if not source:
+                wiz.wants_shutdown = True
+                return -1
+            step = source.pop(0)
+            if callable(step):
+                step(wiz)
+                return -1
+            return step
+
+        def __getattr__(self, name):
+            return lambda *args, **kwargs: None
+
+    console._loop(Terminal(), wiz)
+    return starts, seen
+
+
+def _wait(clock, seconds, log=None):
+    def step(wiz):
+        clock["t"] += seconds
+        if log is not None:
+            log.append((clock["t"], wiz.erase_enabled))
+    return step
+
+
+def test_curses_menu_over_the_review_stops_its_countdown(monkeypatch):
+    wiz, clock = _at_last_chance_with_clock()
+    inside = []
+    # The review is painted, F10 opens the menu at once, 6 s pass inside it.
+    starts, seen = _drive_curses(
+        monkeypatch, wiz, clock,
+        before=[-1, console.curses.KEY_F10],
+        in_menu=[_wait(clock, 6.0, inside), -1, ESC],
+        # Straight after closing: Tab to Erase now and Enter must not erase.
+        after=[_wait(clock, 0.6), -1, _wait(clock, 0.6), -1, TAB, _wait(clock, 0.6), -1, ENTER, -1],
+    )
+    assert inside and not any(enabled for _t, enabled in inside)
+    assert seen == [("open", False), ("closed", False)]
+    # Erase now cannot take focus yet, so Enter stays on the safe Back.
+    assert starts == [] and wiz.screen in (Screen.LAST_CHANCE, Screen.METHOD)
+
+
+def test_curses_review_is_available_again_a_full_delay_after_the_menu(monkeypatch):
+    wiz, clock = _at_last_chance_with_clock()
+    starts, _seen = _drive_curses(
+        monkeypatch, wiz, clock,
+        before=[-1, console.curses.KEY_F10],
+        in_menu=[_wait(clock, 6.0), -1, ESC],
+        after=[-1, -1, _wait(clock, COUNTDOWN_S + 0.5), -1, -1, TAB, -1, ENTER, -1],
+    )
+    assert [screen for _t, screen in starts] == [Screen.LAST_CHANCE]
+    assert wiz._review_overlay_depth == 0
+
+
+def test_curses_menu_elsewhere_leaves_no_review_hold(monkeypatch):
+    wiz = _wizard_at("method")
+    clock = {"t": 1000.0}
+    wiz._clock = lambda: clock["t"]
+    starts, seen = _drive_curses(
+        monkeypatch, wiz, clock,
+        before=[-1, console.curses.KEY_F10], in_menu=[-1, ESC], after=[-1],
+    )
+    assert starts == [] and seen == [("open", False), ("closed", False)]
+    assert wiz._review_overlay_depth == 0 and wiz.screen == Screen.METHOD
+
+
+def _ready_review(tk_at):
+    wiz, app = tk_at("last")
+    starts = []
+    wiz.begin_erase = lambda: starts.append(wiz.screen)  # type: ignore[method-assign]
+    wiz._erase_until = 0
+    app._refresh_last_chance()
+    app.root.update()
+    assert wiz.erase_enabled and app._primary._enabled
+    return wiz, app, starts
+
+
+def test_tk_menu_over_a_ready_review_disables_erase_until_a_fresh_delay(tk_at):
+    wiz, app, starts = _ready_review(tk_at)
+    app._open_help_menu()
+    app.root.update()
+    assert not wiz.erase_enabled and not app._primary._enabled
+    wiz._erase_until = 0  # time passing behind the menu does not help
+    assert not wiz.erase_enabled
+    app._close_help_menu()
+    app.root.update()
+    assert wiz._review_overlay_depth == 0
+    assert not wiz.erase_enabled and not app._primary._enabled
+    assert COUNTDOWN_S - 1.0 < wiz.countdown_left <= COUNTDOWN_S
+    assert starts == []
+
+
+def test_tk_shortcuts_page_also_holds_the_review(tk_at):
+    wiz, app, _starts = _ready_review(tk_at)
+    app._open_shortcuts()
+    app.root.update()
+    assert not wiz.erase_enabled
+    app._open_shortcuts()  # the same footer item closes it
+    app.root.update()
+    assert wiz._review_overlay_depth == 0 and wiz.countdown_left > 0
+
+
+def test_tk_text_size_change_in_the_menu_keeps_the_hold(tk_at):
+    wiz, app, _starts = _ready_review(tk_at)
+    app._open_help_menu(M.TEXT_SIZE)
+    app._help_activate(M.TEXT_SIZE)
+    for _ in range(4):
+        app.root.update()
+    # Text size may be locked on the final check; either way the review
+    # stays suspended while the menu is open and restarts after it.
+    assert app._help_open and not wiz.erase_enabled
+    app._close_help_menu()
+    assert wiz._review_overlay_depth == 0 and wiz.countdown_left > 0
+
+
+def test_tk_leaving_the_review_with_the_menu_open_releases_the_hold(tk_at):
+    wiz, app, _starts = _ready_review(tk_at)
+    app._open_help_menu()
+    wiz.back()
+    app._draw()
+    app.root.update()
+    assert not app._help_open
+    assert wiz.screen == Screen.METHOD and wiz._review_overlay_depth == 0

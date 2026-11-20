@@ -2334,7 +2334,21 @@ def _loop(stdscr, wizard: Wizard) -> int:
         if ch == curses.KEY_F10:
             # #175: Help & settings on every screen. Its Enter or Esc stays
             # held, so the same press cannot act on the screen behind it.
-            closed_by = _help_menu(stdscr, wizard)
+            # The menu covers the whole final review: suspend its countdown
+            # while open, and afterwards restart it only once every page of
+            # the review has been painted again.
+            menu_hold = wizard.begin_review_overlay()
+            try:
+                closed_by = _help_menu(stdscr, wizard)
+            finally:
+                if wizard.screen == Screen.LAST_CHANCE:
+                    review_seen.clear()
+                    review_lines = ()
+                    if not review_overlay_held:
+                        review_overlay_held = wizard.begin_review_overlay()
+                    review_focus = "back"
+                if menu_hold:
+                    wizard.end_review_overlay()
             enter_held, escape_held = _help_menu_holds(closed_by, enter_held, escape_held)
             enter_quiet_since = escape_quiet_since = None
             inventory_open = False
