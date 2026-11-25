@@ -9462,3 +9462,31 @@ another very thorough and comprehensive pass of this." Repo
     CI.
   - Remaining acceptance: push, PR and the hosted gate (Jack). The hosted
     gate's 3.11 run is the real-interpreter check.
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-RUNBOOK DONE LOCALLY.
+  - New `docs/local-test-runbook-ubuntu.md` on `docs/records-20261124`
+    (local, NOT PUSHED), linked from `docs/development.md` Troubleshooting.
+  - It covers:
+    - `/tmp` tmpfs per-user quota (about 2.1 GB per full suite; shared
+      parent folder; clean only your own idle pytest-N); keep logs off
+      `/tmp`;
+    - no `--basetemp` off `/tmp` (22 by-design failures);
+    - CI pins (pytest 9.0.3) with the venv first on `PATH`;
+    - no `PYTHONPATH` override;
+    - the standard `dev.py setup/test` route (GTK runtime tests skip in a
+      plain venv), plus a GTK-inclusive route: pre-create `.venv-linux`
+      with `--system-site-packages`, then `dev.py setup`;
+    - the expected host-only failures (Orca: owner OK; decode-depth: fixed
+      by b17b77c6; the nested fixture line is not a failure).
+  - Checks completed:
+    - Each statement was checked against the 2026-11-25 targeted reruns
+      and against dev.py: setup reuses an existing `.venv-linux`, pins
+      pytest==9.0.3, and `test` adds the venv to the child PATH under
+      dbus-run-session + xvfb-run at 72 DPI.
+    - `git diff --check` is clean.
+  - Not done:
+    - A full-suite run with the runbook's commands; `dev.py setup` would
+      pip-install and the owner said install nothing.
+    - The pyopenssl/cryptography warning with system site packages was not
+      examined.
+  - Next action: run the GTK-inclusive route once installs are allowed,
+    then replace the derived table in §5 with observed results.
