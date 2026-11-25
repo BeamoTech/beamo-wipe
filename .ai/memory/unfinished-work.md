@@ -9168,7 +9168,7 @@ another very thorough and comprehensive pass of this." Repo
   jobs, annotations, PR reviews and comments). `gh` is not signed in on this
   checkout, so job logs and artifacts (HTTP 403) were not read.
 - Scope: Refs 184-208 only. The merges #126, #127 (Ref 183), #132, #134 and
-  #138 since the Nov 18 entry are not recorded here yet.
+  #138 since the Nov 18 entry are in BW-NON-NOTION-MERGES-20261124 below.
 - Definitions:
   - "Record DONE" means the design record is merged to main and the post-merge
     main `ci.yml` and CodeQL ("Push on main", dynamic) runs passed, attempt 1.
@@ -9241,3 +9241,71 @@ another very thorough and comprehensive pass of this." Repo
 - Repo/branch: this entry is on `docs/records-20261124` from main 9ae7f8cf
   (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`). The
   commit is local and NOT PUSHED.
+
+## BW-NON-NOTION-MERGES-20261124 — merges #126, #127, #132, #134 and #138 reconciled from git and GitHub (5 MERGED AND GREEN; 3 LEAVE FOLLOW-UPS OPEN)
+
+- Date/author: 2026-11-24 / Claude (Opus 5.5), Linux checkout
+  `/home/beamo/dev/BeamoTech/beamo-wipe`. This continues the takeover from
+  the stranded Windows thread and does not rely on it.
+- Evidence: git at origin/main `9ae7f8cf`, plus GitHub's public REST API (PR,
+  runs, reviews and comments). `gh` is not signed in on this checkout; no job
+  log was needed, because every run passed.
+- Scope: the five merges since the Nov 18 entry that are not Notion Refs
+  184-208.
+  - #125 (39d0ce5c) is the records PR that added the Nov 18 entry itself
+    (a008043f).
+  - With BW-NOTION-REFS-184-208-20261124, every main merge from #125 to #145
+    is now recorded.
+- Definitions:
+  - "Merged and green" means the PR head's `ci.yml` (pull_request) and CodeQL
+    ("PR #N", dynamic) passed, and the merge commit's post-merge main
+    `ci.yml` (push) and CodeQL ("Push on main") passed.
+  - All runs are attempt 1. Jack (jallieson) merged each PR.
+
+| PR | Branch / head | Merge | What it changed | PR head ci.yml / CodeQL | Post-merge main ci.yml / CodeQL | State | Open follow-up |
+|---|---|---|---|---|---|---|---|
+| #126 | safety/token-ascii-only-20261119 / b3c54dba | 7ae9b836 | safety: the confirm token ignores ASCII case only (`lower()`, not `casefold()`), so "ß"→"ss" and the Kelvin sign no longer match; typing feedback uses the same rule. Test: `tests/test_confirm_token.py` (+15 lines) | 44486701578 OK / 44486694821 OK | 44496493614 OK / 44496493469 OK | DONE | None |
+| #127 | feat/ref183-stick-check-20261119 / 675af6c5 | 1db531e8 | Notion Ref 183 first increment: read-only offline stick check `scripts/check-beamo-stick.py`, img.json schema 2 file list, `usb_media_files.py`; Windows-only `st_ctime_ns` change in release_signing; record `usb-copy-tamper-protection.md`. Tests: `tests/test_stick_check.py` and others | 44509477881 OK / 44509468060 OK | 44519947818 OK / 44519945749 OK | Stick check DONE (detection only); rest of Ref 183 GATED | Ref 183 hardware and trusted-boot options need owner decisions (the record's status). The check runs only from a release that ships img.json schema 2 (0.2.15 was cut before this) |
+| #132 | diag/serial-marker-drops-20261119 / 0e0e25dc | 809cc11e | diag: counts lost serial markers after the port opened (`..._DROPPED_EAGAIN` / `_OTHER`). BW-QEMU-FLAKES part (c), from PR #130's first hosted run. No wipe, selection or flag change. Test: `tests/test_serial_marker_drops.py` | 44615920470 OK / 44615911491 OK | 44660666047 OK / 44660665032 OK | Diagnostics DONE; root cause OPEN | BW-QEMU-FLAKES: read the DROPPED counts on the next recurrence. Part (a) stays OPEN (entry above) |
+| #134 | fix/bughunt-20261120 / d0b81380 | b616e744 | safety: an untyped mounted UUID now covers typed members with that UUID, and the Btrfs refusal fires for untyped mounted rows (`discover.py`). Stick check reports added folders even when empty (Ref 183 follow-up). Tests: `tests/test_untyped_mounted_filesystem_members.py` (11), `tests/test_stick_check.py` (+3) | 44671114490 OK / 44671110516 OK | 44678212654 OK / 44678212184 OK | DONE | Ref 183 record §9 (test coverage): the FAT 8.3 short-name alias case is OPEN (owner decision, false-alarm trade-off; not reproduced) |
+| #138 | fix/help-menu-review-hold-20261120 / f8fc6dc7 | a0f7e236 | safety: Help & settings (console F10 and Tk menu, plus the Keyboard shortcuts page) over the final review holds the 5 s countdown and restarts it fresh on close. Test: `tests/test_help_menu_175.py` (7 new) | 44678304878 OK / 44678302683 OK | 44684219908 OK / 44684218968 OK | Console and Tk DONE; GTK OPEN | GTK's modal popover is not changed; it needs a Linux GTK runtime check (commit f8fc6dc7) |
+
+- Checks completed (2026-11-24):
+  - Each PR's head and merge commit were listed by head_sha, and the PR
+    record gave merged_at and merged_by.
+  - Each SHA has exactly one `ci.yml` run and one CodeQL run, all attempt 1
+    and all success.
+  - Each PR's diff was read with `git diff --stat` over the merge, and its
+    commit messages were read in full.
+- Not checked:
+  - The code was not re-reviewed.
+  - No local tests were run for this records entry, and none read
+    `.ai/memory`.
+  - Notion and the Ref 183 row were not checked (no connector here).
+- Review gap, as for #128-#145: #126, #127, #132, #134 and #138 have no
+  GitHub reviews and no Greptile comment (public API: 0 reviews; only a
+  Blacksmith bot comment on #127).
+  - Three of them carry `safety:` commits (#126, #134, #138). Their tests are
+    in the diffs, but none of these PRs records an independent review of its
+    final diff.
+  - The cause is unknown.
+- Follow-ups opened or linked:
+  1. BW-138-GTK-HOLD: give GTK's help popover the same review hold.
+     - Acceptance: Erase now is unavailable while the popover is open, a
+       fresh full delay follows closing it, and there is a test plus a Linux
+       GTK runtime check.
+     - Next action: implement on a `safety:` branch; local pytest under
+       Xvfb at 72 DPI.
+     - Blocker: none known for the source change. Not started.
+  2. BW-183-FAT-ALIAS: the FAT 8.3 alias case in the Ref 183 record.
+     - Owner decision (Jack): no name-based skipping, or an entry-identity
+       check.
+     - The agent takes no action until Jack decides.
+  3. BW-QEMU-FLAKES parts (a) and (c): no change. The next hosted recurrence
+     supplies the counts.
+     - BW-MAIN-CI-0813339F (entry above) may be such a recurrence. Not
+       established; it needs the log.
+- Repo/branch: this entry is on `docs/records-20261124` (worktree
+  `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`), after 754d438e.
+  It is local and NOT PUSHED. Whether to push, and whether to open a PR, is
+  parked for Jack.
