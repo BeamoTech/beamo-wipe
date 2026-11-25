@@ -9157,3 +9157,87 @@ another very thorough and comprehensive pass of this." Repo
     - prior_stable is 0.2.11 at 662cf470, the v0.2.11 peel.
   - Not checked locally: the ISO and img.gz bytes were not downloaded. They are covered by GitHub's digests matching SHA256SUMS and the signed manifest.
   - Still open: physical and real-PC acceptance rows (Jack); the code-signing certificate purchase stays fenced.
+
+## BW-NOTION-REFS-184-208-20261124 — Notion Refs 184-208 reconciled from git and GitHub (16 RECORDS DONE, NOTHING BUILT; 0 IN PROGRESS; 9 NOT STARTED)
+
+- Date/author: 2026-11-24 / Claude (Opus 5.5), Linux checkout
+  `/home/beamo/dev/BeamoTech/beamo-wipe`. This replaces the stranded Windows
+  thread "USB Release Readiness for PR 94". Its workspace path no longer exists,
+  and this entry does not rely on it.
+- Evidence: git at origin/main `9ae7f8cf`, plus GitHub's public REST API (runs,
+  jobs, annotations, PR reviews and comments). `gh` is not signed in on this
+  checkout, so job logs and artifacts (HTTP 403) were not read.
+- Scope: Refs 184-208 only. The merges #126, #127 (Ref 183), #132, #134 and
+  #138 since the Nov 18 entry are not recorded here yet.
+- Definitions:
+  - "Record DONE" means the design record is merged to main and the post-merge
+    main `ci.yml` and CodeQL ("Push on main", dynamic) runs passed, attempt 1.
+  - Every record is a PROPOSAL. Nothing is adopted or built.
+  - "Ref N" is the Notion row, not a repository issue number.
+- Gate: everything here depends on Ref 184 Phase 0, Jack's §4 approvals and §6
+  D1-D11 (the D-decisions packet). The agent takes no action on it, or on
+  BW-182, until Jack acts.
+
+| Ref | Topic / record | Merge (PR) | Post-merge main ci.yml / CodeQL | State | Waits on |
+|---|---|---|---|---|---|
+| 184 | Three modes and safety model, `three-mode-architecture.md` | 62cdd345 (#128) | 44531093492 OK / 44531093376 OK | Record DONE; decision OPEN | Jack: §4 (L3, L6, N1-N5) and D1-D11 |
+| 185 | 16 GB USB layout, `usb-16gb-layout.md` | a8c5854b (#129) | 44544516375 OK / 44544516044 OK | Record DONE; build GATED | Ref 184 (L3 amendment), D185-1..4 |
+| 186 | Network setup, `network-setup.md` | 15513086 (#130) | 44579693040 OK / 44579691097 OK | Record DONE; build GATED | Ref 184 Phase 2, D186-1..6, size (Ref 202) |
+| 187 | Network hardening, `network-hardening.md` | 384331fc (#131) | 44594970979 OK / 44594969981 OK | Record DONE; build GATED | Ref 184 Phase 2, D187-1..5 |
+| 188 | OS catalog and downloader, `os-catalog-downloader.md` | 1d727981 (#133) | 44669409187 OK / 44669408610 OK | Record DONE; build GATED | Ref 184 Phase 2, D1, D188-1..6, size (Ref 202) |
+| 189 | Computer check (read-only), `computer-check.md` | c6cba2c7 (#135) | 44691906162 OK / 44691905988 OK | Record DONE; build GATED | Ref 184 decision (Phase 1, no rule change), D189-1..5 |
+| 190 | Plan / Help me choose, `help-me-choose.md` | 0a387796 (#136) | 44700123272 OK / 44700122013 OK | Record DONE; build GATED | Ref 184 Phase 3, D190-1..5 |
+| 191 | Multi-disk session, `multi-disk-session.md` | 4564493f (#137) | 44709252333 OK / 44709251725 OK | Record DONE; build GATED | L6 amendment, D191-1..5 |
+| 192 | Keep my OS, `keep-my-os.md` | 5047b825 (#139) | 44719370635 OK / 44719370647 OK | Record DONE; build GATED | Ref 184 Phase 4, D4, D192-1..5 |
+| 193 | Journey journal and resume, `journey-journal.md` | bd372558 (#140) | 44730930545 OK / 44730929147 OK | Record DONE; build GATED | L3 amendment (Ref 185), D193-1..5 |
+| 194 | Linux install, `linux-install.md` | d2150bd8 (#141) | 44740127204 OK / 44740126105 OK | Record DONE; build GATED | Phase 4 (N1, N3-N5, D1-D4, D7, D8, D11), D194-1..5 |
+| 195 | Windows 11 install, `windows-install.md` | 3c80741f (#142) | 44750101593 OK / 44750100950 OK | Record DONE; build GATED | D1 first, then Phase 4, D195-1..5 |
+| 196 | First boot and hand-off, `first-boot-handoff.md` | 6602ba53 (#143) | 44760967855 OK / 44760966919 OK | Record DONE; build GATED | Phase 4 (N4, D7, D8, D11), D196-1..5 |
+| 197 | Shares the #143 record with Ref 196 | 6602ba53 (#143) | as Ref 196 | Record DONE (joint); split UNCONFIRMED | D196-5: confirm the 196/197 split from Notion |
+| 198 | Backup before erase, `backup-before-erase.md` | 0813339f (#144) | **44773974948 FAILURE** / 44773972331 OK | Record DONE; build GATED; CI follow-up OPEN (below) | N2, D198-1..5 |
+| 199 | Journey timeline, `journey-timeline.md` | 9ae7f8cf (#145) | 44963235181 OK / 44963234482 OK | Record DONE; build GATED | Ref 184 Phase 3, D199-1..4 |
+| 200 | Report (write and read-back) | none | none | NOT STARTED | Phase 5; D6, D10 |
+| 201 | Firmware sanitize evaluation | none | none | NOT STARTED | Phase 1; D5 (recommendation: keep Option A, evaluate only) |
+| 202 | Image size budget study | none | none | NOT STARTED | Phase 1 study, Phase 5 review; Notion scope not in repo |
+| 203 | QEMU harness for the new journeys | none | none | NOT STARTED | Phase 1 harness, Phase 5 gate; Notion scope not in repo |
+| 204 | Offline staged media | none | none | NOT STARTED | Ref 184 Phase 2 |
+| 205 | Unknown: not mentioned anywhere in the repository | none | none | NOT STARTED / UNKNOWN | The Notion row text |
+| 206 | Self-update | none | none | NOT STARTED | D9 (Phase 2) |
+| 207 | `docs/claims.md` review | none | none | NOT STARTED | Verified features (Phase 5) |
+| 208 | Physical acceptance | none | none | NOT STARTED / BLOCKED | Jack's physical authorization; this PC's no-physical constraint (AGENTS.md) |
+
+- Checks completed (2026-11-24):
+  - Each merge's runs were listed by head_sha. Each merge has exactly one
+    `ci.yml` run and one CodeQL run, both attempt 1. All passed except
+    44773974948.
+  - Refs 200-208 have no `docs/decisions/` record, no remote branch and no
+    merge on main. Searched with `git grep` and the remote branch list.
+- Not checked: Notion itself (no connector here), the full Notion row texts
+  (the records say they were unavailable), and job logs or artifacts (no `gh`
+  sign-in).
+- Review gap: none of PRs #128-#145 has a GitHub review or a Greptile comment
+  (public API: 0 reviews; the only comment is a Blacksmith bot comment on
+  #145). Jack (jallieson) merged them all. The cause is unknown, and none of
+  these PRs records an independent review of its final diff.
+- Open follow-up BW-MAIN-CI-0813339F:
+  - Failure: main `ci.yml` 44773974948 on 0813339f (#144, adds only
+    `backup-before-erase.md`). The Linux image gate step "Verify image,
+    vulnerabilities and BIOS/UEFI with KVM" exited 1 (annotation at line 928),
+    so the CI gate failed. Windows launcher tests passed.
+  - Context: PR #144's head c0be039c passed `ci.yml` 44761094863. The next main
+    9ae7f8cf adds only `journey-timeline.md` on top, and it passed 44963235181.
+  - Cause: unknown. A known QEMU flake (BW-QEMU-FLAKES part A) is possible, but
+    that is a hypothesis, not a finding. Artifact
+    `ci-evidence-0813339f…-44773974948-1` was unexpired on 2026-11-24.
+  - Next action: with an authenticated `gh`, read the failed step's log and
+    the ci-evidence artifact. Classify the failure and record it here. Do not
+    rerun it blindly.
+- Next actions:
+  1. Jack: the D-decisions packet (Ref 184 §4/§6 and each record's D-items).
+     The agent takes no action.
+  2. Agent, after Jack decides: build in Ref 184 phase order.
+  3. Agent, now: confirm the Ref 197 split and the Ref 205 topic once Notion
+     access exists.
+- Repo/branch: this entry is on `docs/records-20261124` from main 9ae7f8cf
+  (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`). The
+  commit is local and NOT PUSHED.
