@@ -251,6 +251,10 @@ names and commands. They describe those runs, not today's onboarding route.
   work. Use isolated Xvfb at 72 DPI for Linux layout tests.
 - Test failure: keep the output and exact SHA; reproduce the failing case before
   editing. A skip is not a pass. Native tooling tests are not the full suite.
+- Full suite on the Ubuntu 26.04 / Python 3.14 development host: follow
+  [local-test-runbook-ubuntu.md](local-test-runbook-ubuntu.md) (keep pytest's
+  temp folder on `/tmp`, use the CI pins first on `PATH`, no `PYTHONPATH`
+  override; expected host-only failures are listed there).
 - Wrong Go version: install the pinned version or point `BEAMO_GO_BIN` at it.
   Do not change the project's Go pin merely to match your machine.
 - Local prerequisite failure: select the relevant doctor operation and repair

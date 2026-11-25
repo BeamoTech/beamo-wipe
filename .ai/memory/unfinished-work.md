@@ -9157,3 +9157,336 @@ another very thorough and comprehensive pass of this." Repo
     - prior_stable is 0.2.11 at 662cf470, the v0.2.11 peel.
   - Not checked locally: the ISO and img.gz bytes were not downloaded. They are covered by GitHub's digests matching SHA256SUMS and the signed manifest.
   - Still open: physical and real-PC acceptance rows (Jack); the code-signing certificate purchase stays fenced.
+
+## BW-NOTION-REFS-184-208-20261124 — Notion Refs 184-208 reconciled from git and GitHub (16 RECORDS DONE, NOTHING BUILT; 0 IN PROGRESS; 9 NOT STARTED)
+
+- Date/author: 2026-11-24 / Claude (Opus 5.5), Linux checkout
+  `/home/beamo/dev/BeamoTech/beamo-wipe`. This replaces the stranded Windows
+  thread "USB Release Readiness for PR 94". Its workspace path no longer exists,
+  and this entry does not rely on it.
+- Evidence: git at origin/main `9ae7f8cf`, plus GitHub's public REST API (runs,
+  jobs, annotations, PR reviews and comments). `gh` is not signed in on this
+  checkout, so job logs and artifacts (HTTP 403) were not read.
+- Scope: Refs 184-208 only. The merges #126, #127 (Ref 183), #132, #134 and
+  #138 since the Nov 18 entry are in BW-NON-NOTION-MERGES-20261124 below.
+- Definitions:
+  - "Record DONE" means the design record is merged to main and the post-merge
+    main `ci.yml` and CodeQL ("Push on main", dynamic) runs passed, attempt 1.
+  - Every record is a PROPOSAL. Nothing is adopted or built.
+  - "Ref N" is the Notion row, not a repository issue number.
+- Gate: everything here depends on Ref 184 Phase 0, Jack's §4 approvals and §6
+  D1-D11 (the D-decisions packet). The agent takes no action on it, or on
+  BW-182, until Jack acts.
+
+| Ref | Topic / record | Merge (PR) | Post-merge main ci.yml / CodeQL | State | Waits on |
+|---|---|---|---|---|---|
+| 184 | Three modes and safety model, `three-mode-architecture.md` | 62cdd345 (#128) | 44531093492 OK / 44531093376 OK | Record DONE; decision OPEN | Jack: §4 (L3, L6, N1-N5) and D1-D11 |
+| 185 | 16 GB USB layout, `usb-16gb-layout.md` | a8c5854b (#129) | 44544516375 OK / 44544516044 OK | Record DONE; build GATED | Ref 184 (L3 amendment), D185-1..4 |
+| 186 | Network setup, `network-setup.md` | 15513086 (#130) | 44579693040 OK / 44579691097 OK | Record DONE; build GATED | Ref 184 Phase 2, D186-1..6, size (Ref 202) |
+| 187 | Network hardening, `network-hardening.md` | 384331fc (#131) | 44594970979 OK / 44594969981 OK | Record DONE; build GATED | Ref 184 Phase 2, D187-1..5 |
+| 188 | OS catalog and downloader, `os-catalog-downloader.md` | 1d727981 (#133) | 44669409187 OK / 44669408610 OK | Record DONE; build GATED | Ref 184 Phase 2, D1, D188-1..6, size (Ref 202) |
+| 189 | Computer check (read-only), `computer-check.md` | c6cba2c7 (#135) | 44691906162 OK / 44691905988 OK | Record DONE; build GATED | Ref 184 decision (Phase 1, no rule change), D189-1..5 |
+| 190 | Plan / Help me choose, `help-me-choose.md` | 0a387796 (#136) | 44700123272 OK / 44700122013 OK | Record DONE; build GATED | Ref 184 Phase 3, D190-1..5 |
+| 191 | Multi-disk session, `multi-disk-session.md` | 4564493f (#137) | 44709252333 OK / 44709251725 OK | Record DONE; build GATED | L6 amendment, D191-1..5 |
+| 192 | Keep my OS, `keep-my-os.md` | 5047b825 (#139) | 44719370635 OK / 44719370647 OK | Record DONE; build GATED | Ref 184 Phase 4, D4, D192-1..5 |
+| 193 | Journey journal and resume, `journey-journal.md` | bd372558 (#140) | 44730930545 OK / 44730929147 OK | Record DONE; build GATED | L3 amendment (Ref 185), D193-1..5 |
+| 194 | Linux install, `linux-install.md` | d2150bd8 (#141) | 44740127204 OK / 44740126105 OK | Record DONE; build GATED | Phase 4 (N1, N3-N5, D1-D4, D7, D8, D11), D194-1..5 |
+| 195 | Windows 11 install, `windows-install.md` | 3c80741f (#142) | 44750101593 OK / 44750100950 OK | Record DONE; build GATED | D1 first, then Phase 4, D195-1..5 |
+| 196 | First boot and hand-off, `first-boot-handoff.md` | 6602ba53 (#143) | 44760967855 OK / 44760966919 OK | Record DONE; build GATED | Phase 4 (N4, D7, D8, D11), D196-1..5 |
+| 197 | Shares the #143 record with Ref 196 | 6602ba53 (#143) | as Ref 196 | Record DONE (joint); split UNCONFIRMED | D196-5: confirm the 196/197 split from Notion |
+| 198 | Backup before erase, `backup-before-erase.md` | 0813339f (#144) | **44773974948 FAILURE** / 44773972331 OK | Record DONE; build GATED; CI follow-up OPEN (below) | N2, D198-1..5 |
+| 199 | Journey timeline, `journey-timeline.md` | 9ae7f8cf (#145) | 44963235181 OK / 44963234482 OK | Record DONE; build GATED | Ref 184 Phase 3, D199-1..4 |
+| 200 | Report (write and read-back) | none | none | NOT STARTED | Phase 5; D6, D10 |
+| 201 | Firmware sanitize evaluation | none | none | NOT STARTED | Phase 1; D5 (recommendation: keep Option A, evaluate only) |
+| 202 | Image size budget study | none | none | NOT STARTED | Phase 1 study, Phase 5 review; Notion scope not in repo |
+| 203 | QEMU harness for the new journeys | none | none | NOT STARTED | Phase 1 harness, Phase 5 gate; Notion scope not in repo |
+| 204 | Offline staged media | none | none | NOT STARTED | Ref 184 Phase 2 |
+| 205 | Unknown: not mentioned anywhere in the repository | none | none | NOT STARTED / UNKNOWN | The Notion row text |
+| 206 | Self-update | none | none | NOT STARTED | D9 (Phase 2) |
+| 207 | `docs/claims.md` review | none | none | NOT STARTED | Verified features (Phase 5) |
+| 208 | Physical acceptance | none | none | NOT STARTED / BLOCKED | Jack's physical authorization; this PC's no-physical constraint (AGENTS.md) |
+
+- Checks completed (2026-11-24):
+  - Each merge's runs were listed by head_sha. Each merge has exactly one
+    `ci.yml` run and one CodeQL run, both attempt 1. All passed except
+    44773974948.
+  - Refs 200-208 have no `docs/decisions/` record, no remote branch and no
+    merge on main. Searched with `git grep` and the remote branch list.
+- Not checked: Notion itself (no connector here), the full Notion row texts
+  (the records say they were unavailable), and job logs or artifacts (no `gh`
+  sign-in).
+- Review gap: none of PRs #128-#145 has a GitHub review or a Greptile comment
+  (public API: 0 reviews; the only comment is a Blacksmith bot comment on
+  #145). Jack (jallieson) merged them all. The cause is unknown, and none of
+  these PRs records an independent review of its final diff.
+- Open follow-up BW-MAIN-CI-0813339F:
+  - Failure: main `ci.yml` 44773974948 on 0813339f (#144, adds only
+    `backup-before-erase.md`). The Linux image gate step "Verify image,
+    vulnerabilities and BIOS/UEFI with KVM" exited 1 (annotation at line 928),
+    so the CI gate failed. Windows launcher tests passed.
+  - Context: PR #144's head c0be039c passed `ci.yml` 44761094863. The next main
+    9ae7f8cf adds only `journey-timeline.md` on top, and it passed 44963235181.
+  - Cause: unknown. A known QEMU flake (BW-QEMU-FLAKES part A) is possible, but
+    that is a hypothesis, not a finding. Artifact
+    `ci-evidence-0813339f…-44773974948-1` was unexpired on 2026-11-24.
+  - Next action: with an authenticated `gh`, read the failed step's log and
+    the ci-evidence artifact. Classify the failure and record it here. Do not
+    rerun it blindly.
+- Next actions:
+  1. Jack: the D-decisions packet (Ref 184 §4/§6 and each record's D-items).
+     The agent takes no action.
+  2. Agent, after Jack decides: build in Ref 184 phase order.
+  3. Agent, now: confirm the Ref 197 split and the Ref 205 topic once Notion
+     access exists.
+- Repo/branch: this entry is on `docs/records-20261124` from main 9ae7f8cf
+  (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`). The
+  commit is local and NOT PUSHED.
+
+## BW-NON-NOTION-MERGES-20261124 — merges #126, #127, #132, #134 and #138 reconciled from git and GitHub (5 MERGED AND GREEN; 3 LEAVE FOLLOW-UPS OPEN)
+
+- Date/author: 2026-11-24 / Claude (Opus 5.5), Linux checkout
+  `/home/beamo/dev/BeamoTech/beamo-wipe`. This continues the takeover from
+  the stranded Windows thread and does not rely on it.
+- Evidence: git at origin/main `9ae7f8cf`, plus GitHub's public REST API (PR,
+  runs, reviews and comments). `gh` is not signed in on this checkout; no job
+  log was needed, because every run passed.
+- Scope: the five merges since the Nov 18 entry that are not Notion Refs
+  184-208.
+  - #125 (39d0ce5c) is the records PR that added the Nov 18 entry itself
+    (a008043f).
+  - With BW-NOTION-REFS-184-208-20261124, every main merge from #125 to #145
+    is now recorded.
+- Definitions:
+  - "Merged and green" means the PR head's `ci.yml` (pull_request) and CodeQL
+    ("PR #N", dynamic) passed, and the merge commit's post-merge main
+    `ci.yml` (push) and CodeQL ("Push on main") passed.
+  - All runs are attempt 1. Jack (jallieson) merged each PR.
+
+| PR | Branch / head | Merge | What it changed | PR head ci.yml / CodeQL | Post-merge main ci.yml / CodeQL | State | Open follow-up |
+|---|---|---|---|---|---|---|---|
+| #126 | safety/token-ascii-only-20261119 / b3c54dba | 7ae9b836 | safety: the confirm token ignores ASCII case only (`lower()`, not `casefold()`), so "ß"→"ss" and the Kelvin sign no longer match; typing feedback uses the same rule. Test: `tests/test_confirm_token.py` (+15 lines) | 44486701578 OK / 44486694821 OK | 44496493614 OK / 44496493469 OK | DONE | None |
+| #127 | feat/ref183-stick-check-20261119 / 675af6c5 | 1db531e8 | Notion Ref 183 first increment: read-only offline stick check `scripts/check-beamo-stick.py`, img.json schema 2 file list, `usb_media_files.py`; Windows-only `st_ctime_ns` change in release_signing; record `usb-copy-tamper-protection.md`. Tests: `tests/test_stick_check.py` and others | 44509477881 OK / 44509468060 OK | 44519947818 OK / 44519945749 OK | Stick check DONE (detection only); rest of Ref 183 GATED | Ref 183 hardware and trusted-boot options need owner decisions (the record's status). The check runs only from a release that ships img.json schema 2 (0.2.15 was cut before this) |
+| #132 | diag/serial-marker-drops-20261119 / 0e0e25dc | 809cc11e | diag: counts lost serial markers after the port opened (`..._DROPPED_EAGAIN` / `_OTHER`). BW-QEMU-FLAKES part (c), from PR #130's first hosted run. No wipe, selection or flag change. Test: `tests/test_serial_marker_drops.py` | 44615920470 OK / 44615911491 OK | 44660666047 OK / 44660665032 OK | Diagnostics DONE; root cause OPEN | BW-QEMU-FLAKES: read the DROPPED counts on the next recurrence. Part (a) stays OPEN (entry above) |
+| #134 | fix/bughunt-20261120 / d0b81380 | b616e744 | safety: an untyped mounted UUID now covers typed members with that UUID, and the Btrfs refusal fires for untyped mounted rows (`discover.py`). Stick check reports added folders even when empty (Ref 183 follow-up). Tests: `tests/test_untyped_mounted_filesystem_members.py` (11), `tests/test_stick_check.py` (+3) | 44671114490 OK / 44671110516 OK | 44678212654 OK / 44678212184 OK | DONE | Ref 183 record §9 (test coverage): the FAT 8.3 short-name alias case is OPEN (owner decision, false-alarm trade-off; not reproduced) |
+| #138 | fix/help-menu-review-hold-20261120 / f8fc6dc7 | a0f7e236 | safety: Help & settings (console F10 and Tk menu, plus the Keyboard shortcuts page) over the final review holds the 5 s countdown and restarts it fresh on close. Test: `tests/test_help_menu_175.py` (7 new) | 44678304878 OK / 44678302683 OK | 44684219908 OK / 44684218968 OK | Console and Tk DONE; GTK OPEN | GTK's modal popover is not changed; it needs a Linux GTK runtime check (commit f8fc6dc7) |
+
+- Checks completed (2026-11-24):
+  - Each PR's head and merge commit were listed by head_sha, and the PR
+    record gave merged_at and merged_by.
+  - Each SHA has exactly one `ci.yml` run and one CodeQL run, all attempt 1
+    and all success.
+  - Each PR's diff was read with `git diff --stat` over the merge, and its
+    commit messages were read in full.
+- Not checked:
+  - The code was not re-reviewed.
+  - No local tests were run for this records entry, and none read
+    `.ai/memory`.
+  - Notion and the Ref 183 row were not checked (no connector here).
+- Review gap, as for #128-#145: #126, #127, #132, #134 and #138 have no
+  GitHub reviews and no Greptile comment (public API: 0 reviews; only a
+  Blacksmith bot comment on #127).
+  - Three of them carry `safety:` commits (#126, #134, #138). Their tests are
+    in the diffs, but none of these PRs records an independent review of its
+    final diff.
+  - The cause is unknown.
+- Follow-ups opened or linked:
+  1. BW-138-GTK-HOLD: give GTK's help popover the same review hold.
+     - Acceptance: Erase now is unavailable while the popover is open, a
+       fresh full delay follows closing it, and there is a test plus a Linux
+       GTK runtime check.
+     - Next action: implement on a `safety:` branch; local pytest under
+       Xvfb at 72 DPI.
+     - Blocker: none known for the source change. Not started.
+     - UPDATE 2026-11-25 (Claude Opus 5.5): IMPLEMENTED LOCALLY, NOT PUSHED,
+       RUNTIME CHECK BLOCKED.
+       - Before the change, `accessible_wizard.py` on main 9ae7f8cf had no
+         review hold, and no branch, stash or worktree held this work.
+       - Work: commit 4e07d7ef on `safety/gtk-help-review-hold-20261124` from
+         main 9ae7f8cf (worktree
+         `/home/beamo/dev/BeamoTech/beamo-wipe-gtk-hold-20261124`).
+       - Change: the popover's "show" takes `begin_review_overlay`; "hide"
+         or "closed" from the same popover releases it. render() and
+         close() also release it. The commit also adds one line to the
+         `docs/screens.md` #175 row.
+       - Checks passed locally (Ubuntu 26.04, Python 3.14, scratch venv):
+         - The six new no-GTK tests pass, and fail with the source change
+           reverted.
+         - `ruff` and `mypy` pass with the gate's own options.
+         - 91 test files that reference `accessible_wizard`, `help_menu`,
+           `review_overlay` or `screens.md` show no difference from main,
+           apart from the new tests. Three plain-console flush timing cases
+           failed once under host load; they passed 3/3 on both trees in
+           isolation.
+       - Not run here: the three GTK runtime tests, and Tk and Orca. This
+         host has no GTK 3 typelib, Xvfb or tkinter, so 52 test modules
+         cannot collect. The full suite did not finish within 55 min, on
+         this branch or on main.
+       - Remaining acceptance: the three runtime tests pass under
+         `dbus-run-session -- xvfb-run` (72 DPI) with GTK 3. Then push, PR,
+         review and the hosted gate.
+       - Blocker: a GTK 3 + Xvfb runtime. Either install `python3-gi
+         gir1.2-gtk-3.0 xvfb python3-tk` here (system packages; needs
+         owner OK) or use the hosted gate (final candidate only).
+       - Push/PR: not authorized yet (parked for Jack).
+     - UPDATE 2026-11-25 (Claude Opus 5.5): GTK RUNTIME CHECK PASS (local).
+       - Jack approved installing system packages on this host. Installed
+         python3-gi 3.56.2-1, gir1.2-gtk-3.0 3.24.52-0ubuntu1, xvfb
+         2:21.1.22-1ubuntu1.3 and python3-tk 3.14.3-0ubuntu2 (plus apt's
+         automatic dependencies). Nothing was restarted.
+       - On 4e07d7ef, under
+         `dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72"`
+         with the scratch venv plus /usr/lib/python3/dist-packages:
+         - The three new GTK runtime tests (F10/Esc fresh delay; text size
+           keeps the hold; leaving the review releases it) PASSED.
+         - The existing test_gtk_runtime_menu PASSED: 4 passed in 1.20 s.
+       - Control: with main 9ae7f8cf's `accessible_wizard.py` in place, the
+         three new runtime tests FAILED. The file was restored afterwards,
+         and the worktree was clean at 4e07d7ef.
+       - Still not run: an Orca speech check, and the full suite with
+         GTK and Tk.
+       - Remaining acceptance: push, PR, review and the hosted gate. Not
+         authorized; parked for Jack.
+     - UPDATE 2026-11-25 (Claude Opus 5.5): FULL LOCAL SUITE, NO REGRESSION.
+       - Branch 4e07d7ef and main 9ae7f8cf ran side by side on this host:
+         Ubuntu 26.04, Python 3.14, scratch venv plus system python3-gi and
+         python3-tk.
+         - Command: `dbus-run-session -- xvfb-run -s "-screen 0 1600x1000x24
+           -dpi 72" pytest -rA --continue-on-collection-errors`, with
+           `--basetemp` on /home.
+         - Logs: `/home/beamo/.cache/beamo-wipe-fullsuite-20261125/`
+           (`branch.txt`, `main.txt`, per-test `*-res.txt`,
+           `shared-failures.txt`).
+       - Per-test results:
+         - branch: 17019 passed, 31 failed, 6 errors.
+         - main: 17010 passed, 31 failed, 6 errors.
+         - The +9 passes are exactly the nine new GTK-hold tests, all PASSED.
+         - The failed and errored tests are identical on both trees. The
+           only textual difference is one nested-pytest fixture path that
+           contains the basetemp name.
+       - The 37 shared failures and errors are host baseline, not this
+         change. They fail on main too, in files including
+         test_cancel_observed_exit (10), test_audit_20260905_wizard (6),
+         test_serial_marker_drops (6 errors),
+         test_recovery_boot_alias_pass3 (3) and test_gtk_dependency_handling
+         (2). This host is not the Debian bookworm CI image. They are not
+         diagnosed here (separate item).
+       - An earlier attempt (2026-11-25 ~07:23-08:25 local) finished, but
+         its logs were cut off. The `/tmp` tmpfs per-user quota filled up
+         with this session's own pytest temp folders. Those folders
+         (pytest-10, -27, -28, all beamo-wipe tests and idle) were deleted,
+         and the run was repeated with temp on /home.
+       - BW-138-GTK-HOLD local acceptance is now complete. Remaining: push,
+         PR, review and the hosted gate (Jack). An Orca speech check needs
+         Orca installed (owner OK).
+  2. BW-183-FAT-ALIAS: the FAT 8.3 alias case in the Ref 183 record.
+     - Owner decision (Jack): no name-based skipping, or an entry-identity
+       check.
+     - The agent takes no action until Jack decides.
+  3. BW-QEMU-FLAKES parts (a) and (c): no change. The next hosted recurrence
+     supplies the counts.
+     - BW-MAIN-CI-0813339F (entry above) may be such a recurrence. Not
+       established; it needs the log.
+- Repo/branch: this entry is on `docs/records-20261124` (worktree
+  `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`), after 754d438e.
+  It is local and NOT PUSHED. Whether to push, and whether to open a PR, is
+  parked for Jack.
+
+## BW-HOST-TEST-BASELINE-20261125 — 37 host-only test failures explained (DONE: FINDINGS RECORDED; 3 FOLLOW-UPS NOT STARTED, 1 NEEDS OWNER OK)
+
+- Date/author: 2026-11-25 / Claude (Opus 5.5), Linux host (Ubuntu 26.04.1,
+  Python 3.14.4). Design record:
+  `docs/decisions/local-test-baseline-ubuntu-26-04.md` on
+  `docs/records-20261124` (local, NOT PUSHED).
+- Scope: the 31 failed + 6 errored results that were identical on main
+  9ae7f8cf and on 4e07d7ef in the 2026-11-25 full local suite.
+- Finding: none is a product defect, and none comes from 4e07d7ef.
+  - 24 come from how the run was set up (`--basetemp` on /home trips the
+    safety rule that keeps logs and recovery on /tmp; a `PYTHONPATH`
+    override defeats a missing-GTK simulation).
+  - 10 come from tooling that differs from CI's (pytest 9.2.0 vs the 9.0.3
+    pin; system `python3` without qrcode/pytest).
+  - 1 needs the screen-reader stack (x11-utils, Orca).
+  - 1 is Python 3.14 decoding deep JSON without RecursionError.
+  - 1 is nested-test output; the outer test passed.
+- Checks: each cause was isolated by a focused rerun that changes only that
+  factor (record §3). Logs are in
+  `/home/beamo/.cache/beamo-wipe-fullsuite-20261125/` (host-local).
+- Follow-ups, not started:
+  - BW-HOST-PYTEST-FSTAT, BW-HOST-JSON-DEPTH and BW-HOST-RUNBOOK: agent,
+    not Jack-gated.
+  - BW-HOST-A11Y-PKGS: needs the owner's OK to install packages.
+- Push/PR: parked for Jack, like the rest of this branch.
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-PYTEST-FSTAT DONE LOCALLY.
+  - Commit e7f80384 on `test/host-pytest-fstat-20261125` from main 9ae7f8cf
+    (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-pytest-fstat-20261125`).
+    Not pushed; no PR.
+  - Change, tests only:
+    - test_serial_marker_drops and test_accountable_audit_2026_09_03 fake
+      `os.fstat` for the fake port fd 41 only.
+    - test_external_boundaries returns a real `os.stat_result` with only
+      `st_uid` changed.
+    - No product code changes.
+  - Checks completed:
+    - The 8 tests pass on pytest 9.2.0 and on the pinned 9.0.3, and the
+      three files pass in full on both.
+    - Mutation: inverting the S_ISCHR check in `emit_serial_marker` and
+      removing the uid check in `default_log_dir` made all 8 fail on both
+      versions. The sources were restored.
+    - ruff (full and S-rules) is clean.
+  - Not run: the full suite on this branch (scope is these 3 files), and
+    hosted CI.
+  - Remaining acceptance: push, PR and the hosted gate (Jack).
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-JSON-DEPTH DONE LOCALLY.
+  - Commit b17b77c6 on `test/host-json-depth-20261125` from main 9ae7f8cf
+    (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-json-depth-20261125`).
+    Not pushed; no PR. Test only:
+    `developer_tests/test_doctor_decode_depth_pass12_20261021.py`;
+    `dev.py` unchanged.
+  - Change:
+    - The deep-payload expectation follows whether this interpreter's
+      json.loads raises RecursionError. If it raises, the probe is blocked.
+      If it decodes, only deep-object + desktop is accepted.
+    - On Python <3.12 the deep payloads must raise.
+    - New forced-recursion case: RecursionError handling is tested on every
+      version.
+  - Checks completed:
+    - 24/24 pass on Python 3.14.4 with pytest 9.2.0 and 9.0.3.
+    - 24/24 pass with a test-only plugin simulating 3.11's RecursionError
+      (the plugin is in the session scratchpad, not committed). The
+      original test passes under it too.
+    - Dropping RecursionError from dev.py's except clause fails the 4
+      forced-recursion cases (dev.py restored).
+    - ruff check and ruff format --check (0.9.2) are clean.
+  - Not run: a real Python 3.11-3.13 interpreter (none installed; the
+    owner said install nothing), the full suite on this branch, and hosted
+    CI.
+  - Remaining acceptance: push, PR and the hosted gate (Jack). The hosted
+    gate's 3.11 run is the real-interpreter check.
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-RUNBOOK DONE LOCALLY.
+  - New `docs/local-test-runbook-ubuntu.md` on `docs/records-20261124`
+    (local, NOT PUSHED), linked from `docs/development.md` Troubleshooting.
+  - It covers:
+    - `/tmp` tmpfs per-user quota (about 2.1 GB per full suite; shared
+      parent folder; clean only your own idle pytest-N); keep logs off
+      `/tmp`;
+    - no `--basetemp` off `/tmp` (22 by-design failures);
+    - CI pins (pytest 9.0.3) with the venv first on `PATH`;
+    - no `PYTHONPATH` override;
+    - the standard `dev.py setup/test` route (GTK runtime tests skip in a
+      plain venv), plus a GTK-inclusive route: pre-create `.venv-linux`
+      with `--system-site-packages`, then `dev.py setup`;
+    - the expected host-only failures (Orca: owner OK; decode-depth: fixed
+      by b17b77c6; the nested fixture line is not a failure).
+  - Checks completed:
+    - Each statement was checked against the 2026-11-25 targeted reruns
+      and against dev.py: setup reuses an existing `.venv-linux`, pins
+      pytest==9.0.3, and `test` adds the venv to the child PATH under
+      dbus-run-session + xvfb-run at 72 DPI.
+    - `git diff --check` is clean.
+  - Not done:
+    - A full-suite run with the runbook's commands; `dev.py setup` would
+      pip-install and the owner said install nothing.
+    - The pyopenssl/cryptography warning with system site packages was not
+      examined.
+  - Next action: run the GTK-inclusive route once installs are allowed,
+    then replace the derived table in §5 with observed results.
