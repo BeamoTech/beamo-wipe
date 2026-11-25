@@ -26,8 +26,18 @@ def serial(monkeypatch):
         state.written.extend(bytes(data))
         return len(data)
 
+    real_fstat = diagnostics.os.fstat
+
+    def fake_fstat(fd):
+        # Only the fake port is faked. diagnostics.os is the process-wide os
+        # module, so other callers (pytest's own output capture reads
+        # st_size since pytest 9.2) must keep the real result.
+        if fd == 41:
+            return SimpleNamespace(st_mode=state.mode)
+        return real_fstat(fd)
+
     monkeypatch.setattr(diagnostics.os, "open", lambda *_args, **_kwargs: 41)
-    monkeypatch.setattr(diagnostics.os, "fstat", lambda _fd: SimpleNamespace(st_mode=state.mode))
+    monkeypatch.setattr(diagnostics.os, "fstat", fake_fstat)
     monkeypatch.setattr(diagnostics.os, "write", fake_write)
     monkeypatch.setattr(diagnostics.os, "close", state.closed.append)
     return state

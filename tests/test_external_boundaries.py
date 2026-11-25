@@ -7,6 +7,7 @@ isolated x86_64 VM."""
 from __future__ import annotations
 
 import os
+import stat
 import subprocess
 import threading
 import time
@@ -169,12 +170,12 @@ def test_default_log_dir_wrong_owner_or_perms(tmp_path, monkeypatch):
 
     def fake_fstat(fd):
         st = real_fstat(fd)
-        # Pretend uid is 99999 not current
-        class FakeStat:
-            st_mode = st.st_mode
-            st_uid = 99999 if orig_getuid != 99999 else 99998
-            st_dev = st.st_dev
-        return FakeStat()  # type: ignore[return-value]
+        # Pretend uid is 99999 not current. Keep every other field real: this
+        # patch is process-wide, and pytest 9.2's output capture reads
+        # st_size from os.fstat.
+        fields = list(st)
+        fields[stat.ST_UID] = 99999 if orig_getuid != 99999 else 99998
+        return os.stat_result(fields)
 
     monkeypatch.setattr("os.fstat", fake_fstat)
     monkeypatch.setattr("os.getuid", lambda: orig_getuid + 1)  # ensure mismatch without recursion
