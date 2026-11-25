@@ -9436,3 +9436,29 @@ another very thorough and comprehensive pass of this." Repo
   - Not run: the full suite on this branch (scope is these 3 files), and
     hosted CI.
   - Remaining acceptance: push, PR and the hosted gate (Jack).
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-JSON-DEPTH DONE LOCALLY.
+  - Commit b17b77c6 on `test/host-json-depth-20261125` from main 9ae7f8cf
+    (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-json-depth-20261125`).
+    Not pushed; no PR. Test only:
+    `developer_tests/test_doctor_decode_depth_pass12_20261021.py`;
+    `dev.py` unchanged.
+  - Change:
+    - The deep-payload expectation follows whether this interpreter's
+      json.loads raises RecursionError. If it raises, the probe is blocked.
+      If it decodes, only deep-object + desktop is accepted.
+    - On Python <3.12 the deep payloads must raise.
+    - New forced-recursion case: RecursionError handling is tested on every
+      version.
+  - Checks completed:
+    - 24/24 pass on Python 3.14.4 with pytest 9.2.0 and 9.0.3.
+    - 24/24 pass with a test-only plugin simulating 3.11's RecursionError
+      (the plugin is in the session scratchpad, not committed). The
+      original test passes under it too.
+    - Dropping RecursionError from dev.py's except clause fails the 4
+      forced-recursion cases (dev.py restored).
+    - ruff check and ruff format --check (0.9.2) are clean.
+  - Not run: a real Python 3.11-3.13 interpreter (none installed; the
+    owner said install nothing), the full suite on this branch, and hosted
+    CI.
+  - Remaining acceptance: push, PR and the hosted gate (Jack). The hosted
+    gate's 3.11 run is the real-interpreter check.
