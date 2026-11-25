@@ -79,7 +79,7 @@ Total: 22 + 2 + 8 + 2 + 1 + 1 + 1 = 37.
 
 | ID | Item | Next action |
 |---|---|---|
-| BW-HOST-PYTEST-FSTAT | Make the eight `os.fstat` stand-ins pytest-9.2-safe | Add `st_size` to the stand-ins, or scope the patch to the module under test. Prove it with pytest 9.0.3 and 9.2.0 |
+| BW-HOST-PYTEST-FSTAT | Make the eight `os.fstat` stand-ins pytest-9.2-safe | **DONE LOCALLY 2026-11-25** as `e7f80384` on `test/host-pytest-fstat-20261125` (not pushed). Each stand-in now fakes only the test's own fd, or returns a real `os.stat_result` with only `st_uid` changed. A fake `st_size` was rejected: pytest would read its capture file as empty and drop captured output. 8/8 pass on pytest 9.2.0 and 9.0.3, and all 8 fail on both when the product checks they guard are broken. Remaining: push, PR and the hosted gate (Jack) |
 | BW-HOST-JSON-DEPTH | Make the decode-depth test version-aware | Assert the doctor's documented outcome per Python version, or add a depth guard to the doctor. A design choice, not a defect |
 | BW-HOST-RUNBOOK | Document a clean local run on this host | Default `/tmp` basetemp, a `--system-site-packages` venv with the CI pins first on `PATH`, and the quota note. Belongs in `docs/remote-development.md` or `docs/development.md` |
 | BW-HOST-A11Y-PKGS | Run the Orca test locally | **Owner OK needed:** install `x11-utils orca python3-pyatspi at-spi2-core speech-dispatcher speech-dispatcher-espeak-ng` |

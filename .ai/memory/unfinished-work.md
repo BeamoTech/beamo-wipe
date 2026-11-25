@@ -9416,3 +9416,23 @@ another very thorough and comprehensive pass of this." Repo
     not Jack-gated.
   - BW-HOST-A11Y-PKGS: needs the owner's OK to install packages.
 - Push/PR: parked for Jack, like the rest of this branch.
+- UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-PYTEST-FSTAT DONE LOCALLY.
+  - Commit e7f80384 on `test/host-pytest-fstat-20261125` from main 9ae7f8cf
+    (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-pytest-fstat-20261125`).
+    Not pushed; no PR.
+  - Change, tests only:
+    - test_serial_marker_drops and test_accountable_audit_2026_09_03 fake
+      `os.fstat` for the fake port fd 41 only.
+    - test_external_boundaries returns a real `os.stat_result` with only
+      `st_uid` changed.
+    - No product code changes.
+  - Checks completed:
+    - The 8 tests pass on pytest 9.2.0 and on the pinned 9.0.3, and the
+      three files pass in full on both.
+    - Mutation: inverting the S_ISCHR check in `emit_serial_marker` and
+      removing the uid check in `default_log_dir` made all 8 fail on both
+      versions. The sources were restored.
+    - ruff (full and S-rules) is clean.
+  - Not run: the full suite on this branch (scope is these 3 files), and
+    hosted CI.
+  - Remaining acceptance: push, PR and the hosted gate (Jack).
