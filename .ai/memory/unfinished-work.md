@@ -9390,3 +9390,29 @@ another very thorough and comprehensive pass of this." Repo
   `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`), after 754d438e.
   It is local and NOT PUSHED. Whether to push, and whether to open a PR, is
   parked for Jack.
+
+## BW-HOST-TEST-BASELINE-20261125 — 37 host-only test failures explained (DONE: FINDINGS RECORDED; 3 FOLLOW-UPS NOT STARTED, 1 NEEDS OWNER OK)
+
+- Date/author: 2026-11-25 / Claude (Opus 5.5), Linux host (Ubuntu 26.04.1,
+  Python 3.14.4). Design record:
+  `docs/decisions/local-test-baseline-ubuntu-26-04.md` on
+  `docs/records-20261124` (local, NOT PUSHED).
+- Scope: the 31 failed + 6 errored results that were identical on main
+  9ae7f8cf and on 4e07d7ef in the 2026-11-25 full local suite.
+- Finding: none is a product defect, and none comes from 4e07d7ef.
+  - 24 come from how the run was set up (`--basetemp` on /home trips the
+    safety rule that keeps logs and recovery on /tmp; a `PYTHONPATH`
+    override defeats a missing-GTK simulation).
+  - 10 come from tooling that differs from CI's (pytest 9.2.0 vs the 9.0.3
+    pin; system `python3` without qrcode/pytest).
+  - 1 needs the screen-reader stack (x11-utils, Orca).
+  - 1 is Python 3.14 decoding deep JSON without RecursionError.
+  - 1 is nested-test output; the outer test passed.
+- Checks: each cause was isolated by a focused rerun that changes only that
+  factor (record §3). Logs are in
+  `/home/beamo/.cache/beamo-wipe-fullsuite-20261125/` (host-local).
+- Follow-ups, not started:
+  - BW-HOST-PYTEST-FSTAT, BW-HOST-JSON-DEPTH and BW-HOST-RUNBOOK: agent,
+    not Jack-gated.
+  - BW-HOST-A11Y-PKGS: needs the owner's OK to install packages.
+- Push/PR: parked for Jack, like the rest of this branch.
