@@ -9346,6 +9346,38 @@ another very thorough and comprehensive pass of this." Repo
          GTK and Tk.
        - Remaining acceptance: push, PR, review and the hosted gate. Not
          authorized; parked for Jack.
+     - UPDATE 2026-11-25 (Claude Opus 5.5): FULL LOCAL SUITE, NO REGRESSION.
+       - Branch 4e07d7ef and main 9ae7f8cf ran side by side on this host:
+         Ubuntu 26.04, Python 3.14, scratch venv plus system python3-gi and
+         python3-tk.
+         - Command: `dbus-run-session -- xvfb-run -s "-screen 0 1600x1000x24
+           -dpi 72" pytest -rA --continue-on-collection-errors`, with
+           `--basetemp` on /home.
+         - Logs: `/home/beamo/.cache/beamo-wipe-fullsuite-20261125/`
+           (`branch.txt`, `main.txt`, per-test `*-res.txt`,
+           `shared-failures.txt`).
+       - Per-test results:
+         - branch: 17019 passed, 31 failed, 6 errors.
+         - main: 17010 passed, 31 failed, 6 errors.
+         - The +9 passes are exactly the nine new GTK-hold tests, all PASSED.
+         - The failed and errored tests are identical on both trees. The
+           only textual difference is one nested-pytest fixture path that
+           contains the basetemp name.
+       - The 37 shared failures and errors are host baseline, not this
+         change. They fail on main too, in files including
+         test_cancel_observed_exit (10), test_audit_20260905_wizard (6),
+         test_serial_marker_drops (6 errors),
+         test_recovery_boot_alias_pass3 (3) and test_gtk_dependency_handling
+         (2). This host is not the Debian bookworm CI image. They are not
+         diagnosed here (separate item).
+       - An earlier attempt (2026-11-25 ~07:23-08:25 local) finished, but
+         its logs were cut off. The `/tmp` tmpfs per-user quota filled up
+         with this session's own pytest temp folders. Those folders
+         (pytest-10, -27, -28, all beamo-wipe tests and idle) were deleted,
+         and the run was repeated with temp on /home.
+       - BW-138-GTK-HOLD local acceptance is now complete. Remaining: push,
+         PR, review and the hosted gate (Jack). An Orca speech check needs
+         Orca installed (owner OK).
   2. BW-183-FAT-ALIAS: the FAT 8.3 alias case in the Ref 183 record.
      - Owner decision (Jack): no name-based skipping, or an entry-identity
        check.
