@@ -9240,7 +9240,8 @@ another very thorough and comprehensive pass of this." Repo
      access exists.
 - Repo/branch: this entry is on `docs/records-20261124` from main 9ae7f8cf
   (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`). The
-  commit is local and NOT PUSHED.
+  commit was local when written. It was pushed 2026-11-25 and merged to
+  main via PR #146 (merge 5474da80); see BW-RECORDS-PR146-20261125.
 
 ## BW-NON-NOTION-MERGES-20261124 — merges #126, #127, #132, #134 and #138 reconciled from git and GitHub (5 MERGED AND GREEN; 3 LEAVE FOLLOW-UPS OPEN)
 
@@ -9388,15 +9389,17 @@ another very thorough and comprehensive pass of this." Repo
        established; it needs the log.
 - Repo/branch: this entry is on `docs/records-20261124` (worktree
   `/home/beamo/dev/BeamoTech/beamo-wipe-records-20261124`), after 754d438e.
-  It is local and NOT PUSHED. Whether to push, and whether to open a PR, is
-  parked for Jack.
+  It was local when written. Jack approved the push on 2026-11-25; it was
+  merged to main via PR #146 (merge 5474da80). See
+  BW-RECORDS-PR146-20261125.
 
 ## BW-HOST-TEST-BASELINE-20261125 — 37 host-only test failures explained (DONE: FINDINGS RECORDED; 3 FOLLOW-UPS NOT STARTED, 1 NEEDS OWNER OK)
 
 - Date/author: 2026-11-25 / Claude (Opus 5.5), Linux host (Ubuntu 26.04.1,
   Python 3.14.4). Design record:
   `docs/decisions/local-test-baseline-ubuntu-26-04.md` on
-  `docs/records-20261124` (local, NOT PUSHED).
+  `docs/records-20261124` (local when written; on main since PR #146,
+  merge 5474da80).
 - Scope: the 31 failed + 6 errored results that were identical on main
   9ae7f8cf and on 4e07d7ef in the 2026-11-25 full local suite.
 - Finding: none is a product defect, and none comes from 4e07d7ef.
@@ -9415,7 +9418,8 @@ another very thorough and comprehensive pass of this." Repo
   - BW-HOST-PYTEST-FSTAT, BW-HOST-JSON-DEPTH and BW-HOST-RUNBOOK: agent,
     not Jack-gated.
   - BW-HOST-A11Y-PKGS: needs the owner's OK to install packages.
-- Push/PR: parked for Jack, like the rest of this branch.
+- Push/PR: this record was merged to main via PR #146 (merge 5474da80) on
+  Jack's approval. The code follow-up branches below are a separate matter.
 - UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-PYTEST-FSTAT DONE LOCALLY.
   - Commit e7f80384 on `test/host-pytest-fstat-20261125` from main 9ae7f8cf
     (worktree `/home/beamo/dev/BeamoTech/beamo-wipe-pytest-fstat-20261125`).
@@ -9464,7 +9468,8 @@ another very thorough and comprehensive pass of this." Repo
     gate's 3.11 run is the real-interpreter check.
 - UPDATE 2026-11-25 (Claude Opus 5.5): BW-HOST-RUNBOOK DONE LOCALLY.
   - New `docs/local-test-runbook-ubuntu.md` on `docs/records-20261124`
-    (local, NOT PUSHED), linked from `docs/development.md` Troubleshooting.
+    (local when written; on main since PR #146, merge 5474da80), linked
+    from `docs/development.md` Troubleshooting.
   - It covers:
     - `/tmp` tmpfs per-user quota (about 2.1 GB per full suite; shared
       parent folder; clean only your own idle pytest-N); keep logs off
@@ -9490,3 +9495,37 @@ another very thorough and comprehensive pass of this." Repo
       examined.
   - Next action: run the GTK-inclusive route once installs are allowed,
     then replace the derived table in §5 with observed results.
+
+## BW-RECORDS-PR146-20261125 — records branch pushed and merged (PR #146, merge 5474da80); "local only" wording corrected
+
+- Date/author: 2026-11-25 / Claude (Opus 5.5), Linux checkout. Jack's
+  decision (relayed): "Merge everything. I fully approve it all."
+- Push: `docs/records-20261124` pushed at d30abe02 (9 commits, records and
+  docs only: 4 files, +555 lines).
+- PR #146: https://github.com/BeamoTech/beamo-wipe/pull/146.
+  - Checks on head d30abe02, all green: `ci.yml` 45679464349 (Linux image
+    gate 1h21m26s, Windows launcher tests, CI gate) and CodeQL 45679455417
+    (4 Analyze jobs). Proof skipped.
+  - Greptile: one review of d30abe02, confidence 5/5, no inline comments,
+    no findings. No human reviews.
+  - Merged 2026-11-25 20:33:55Z by jallieson with
+    `gh pr merge 146 --merge --match-head-commit d30abe02…`; merge commit
+    5474da804aeac5e506337dff398b7976fbe7dd98.
+- Post-merge main on 5474da80 (as of 21:34Z):
+  - CodeQL "Push on main" 45696177229: SUCCESS (4 Analyze jobs).
+  - `ci.yml` 45696176943: Windows launcher tests SUCCESS; Linux image gate
+    IN PROGRESS ("Build and inspect ISO"). Not yet green.
+- Correction (this entry's branch `docs/records-pushed-correction-20261125`
+  from main 5474da80): the entries above that said `docs/records-20261124`
+  was "local, NOT PUSHED" now say it was merged via PR #146. Only wording
+  about the records branch changed; history is kept ("local when written").
+- Still local only, not pushed, no PR (unchanged by this entry):
+  - `safety/gtk-help-review-hold-20261124` 4e07d7ef (BW-138-GTK-HOLD);
+  - `test/host-pytest-fstat-20261125` e7f80384 (BW-HOST-PYTEST-FSTAT);
+  - `test/host-json-depth-20261125` b17b77c6 (BW-HOST-JSON-DEPTH).
+  - Next action: each needs push, PR, hosted gate and merge on green under
+    Jack's "merge everything" decision, one item at a time.
+- Still parked for Jack: the D-decisions packet (Refs 184-208), BW-182 and
+  BW-183-FAT-ALIAS. Blocked: Ref 197/205 (Notion access).
+- Next action for main 5474da80: confirm `ci.yml` 45696176943 finishes
+  green; if it fails, read the failed step's log before any rerun.
