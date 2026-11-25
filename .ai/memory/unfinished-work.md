@@ -9297,6 +9297,37 @@ another very thorough and comprehensive pass of this." Repo
      - Next action: implement on a `safety:` branch; local pytest under
        Xvfb at 72 DPI.
      - Blocker: none known for the source change. Not started.
+     - UPDATE 2026-11-25 (Claude Opus 5.5): IMPLEMENTED LOCALLY, NOT PUSHED,
+       RUNTIME CHECK BLOCKED.
+       - Before the change, `accessible_wizard.py` on main 9ae7f8cf had no
+         review hold, and no branch, stash or worktree held this work.
+       - Work: commit 4e07d7ef on `safety/gtk-help-review-hold-20261124` from
+         main 9ae7f8cf (worktree
+         `/home/beamo/dev/BeamoTech/beamo-wipe-gtk-hold-20261124`).
+       - Change: the popover's "show" takes `begin_review_overlay`; "hide"
+         or "closed" from the same popover releases it. render() and
+         close() also release it. The commit also adds one line to the
+         `docs/screens.md` #175 row.
+       - Checks passed locally (Ubuntu 26.04, Python 3.14, scratch venv):
+         - The six new no-GTK tests pass, and fail with the source change
+           reverted.
+         - `ruff` and `mypy` pass with the gate's own options.
+         - 91 test files that reference `accessible_wizard`, `help_menu`,
+           `review_overlay` or `screens.md` show no difference from main,
+           apart from the new tests. Three plain-console flush timing cases
+           failed once under host load; they passed 3/3 on both trees in
+           isolation.
+       - Not run here: the three GTK runtime tests, and Tk and Orca. This
+         host has no GTK 3 typelib, Xvfb or tkinter, so 52 test modules
+         cannot collect. The full suite did not finish within 55 min, on
+         this branch or on main.
+       - Remaining acceptance: the three runtime tests pass under
+         `dbus-run-session -- xvfb-run` (72 DPI) with GTK 3. Then push, PR,
+         review and the hosted gate.
+       - Blocker: a GTK 3 + Xvfb runtime. Either install `python3-gi
+         gir1.2-gtk-3.0 xvfb python3-tk` here (system packages; needs
+         owner OK) or use the hosted gate (final candidate only).
+       - Push/PR: not authorized yet (parked for Jack).
   2. BW-183-FAT-ALIAS: the FAT 8.3 alias case in the Ref 183 record.
      - Owner decision (Jack): no name-based skipping, or an entry-identity
        check.
