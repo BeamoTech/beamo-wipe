@@ -9328,6 +9328,24 @@ another very thorough and comprehensive pass of this." Repo
          gir1.2-gtk-3.0 xvfb python3-tk` here (system packages; needs
          owner OK) or use the hosted gate (final candidate only).
        - Push/PR: not authorized yet (parked for Jack).
+     - UPDATE 2026-11-25 (Claude Opus 5.5): GTK RUNTIME CHECK PASS (local).
+       - Jack approved installing system packages on this host. Installed
+         python3-gi 3.56.2-1, gir1.2-gtk-3.0 3.24.52-0ubuntu1, xvfb
+         2:21.1.22-1ubuntu1.3 and python3-tk 3.14.3-0ubuntu2 (plus apt's
+         automatic dependencies). Nothing was restarted.
+       - On 4e07d7ef, under
+         `dbus-run-session -- xvfb-run -a -s "-screen 0 1600x1000x24 -dpi 72"`
+         with the scratch venv plus /usr/lib/python3/dist-packages:
+         - The three new GTK runtime tests (F10/Esc fresh delay; text size
+           keeps the hold; leaving the review releases it) PASSED.
+         - The existing test_gtk_runtime_menu PASSED: 4 passed in 1.20 s.
+       - Control: with main 9ae7f8cf's `accessible_wizard.py` in place, the
+         three new runtime tests FAILED. The file was restored afterwards,
+         and the worktree was clean at 4e07d7ef.
+       - Still not run: an Orca speech check, and the full suite with
+         GTK and Tk.
+       - Remaining acceptance: push, PR, review and the hosted gate. Not
+         authorized; parked for Jack.
   2. BW-183-FAT-ALIAS: the FAT 8.3 alias case in the Ref 183 record.
      - Owner decision (Jack): no name-based skipping, or an entry-identity
        check.
