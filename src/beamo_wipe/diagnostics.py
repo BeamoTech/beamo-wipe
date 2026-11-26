@@ -30,6 +30,13 @@ SERIAL_DROP_MARKERS = {
 }
 _serial_drop_lock = threading.Lock()
 _serial_drops = {"eagain": 0, "other": 0}
+# The kernel takes a per-tty write lock with a trylock for O_NONBLOCK
+# writers. Two threads writing markers at once (a worker's export or findmnt
+# marker while the UI thread reports a key release) therefore fail one of them
+# with EAGAIN even though the port has room. Take turns inside the process.
+# Only the non-blocking write is held under it, never the open or the close,
+# which can wait for the port to drain.
+_serial_write_lock = threading.Lock()
 
 
 def _take_serial_drops() -> dict[str, int]:
@@ -122,16 +129,17 @@ def emit_serial_marker(marker: str) -> bool:
             fd = owned["serial"]
             if not stat.S_ISCHR(os.fstat(fd).st_mode):
                 return False
-            pending = _take_serial_drops()
-            lines = [SERIAL_DROP_MARKERS[kind] for kind in ("eagain", "other") if pending[kind]]
-            lines.append(marker)
-            try:
-                _write_all(fd, "".join(line + "\n" for line in lines).encode("ascii"))
-            except OSError as exc:
-                blocked = exc.errno in (errno.EAGAIN, errno.EWOULDBLOCK)
-                pending["eagain" if blocked else "other"] += 1
-                _restore_serial_drops(pending)
-                raise
+            with _serial_write_lock:
+                pending = _take_serial_drops()
+                lines = [SERIAL_DROP_MARKERS[kind] for kind in ("eagain", "other") if pending[kind]]
+                lines.append(marker)
+                try:
+                    _write_all(fd, "".join(line + "\n" for line in lines).encode("ascii"))
+                except OSError as exc:
+                    blocked = exc.errno in (errno.EAGAIN, errno.EWOULDBLOCK)
+                    pending["eagain" if blocked else "other"] += 1
+                    _restore_serial_drops(pending)
+                    raise
         except BaseException as exc:
             primary = exc
             raise
