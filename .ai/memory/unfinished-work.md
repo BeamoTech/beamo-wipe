@@ -9146,6 +9146,7 @@ another very thorough and comprehensive pass of this." Repo
     - Tests: `tests/test_serial_marker_write_lock.py` (3 tests; fake tty that fails a second concurrent writer with EAGAIN like the kernel). With the lock removed, the two concurrency tests fail (3 of 3 runs). Its stand-ins only replace calls for the fake fd, so they are pytest-9.2-safe. Existing `tests/test_serial_marker_drops.py` unchanged and passing.
     - Local gate (this host, CI pins: pytest 9.0.3 in a `--system-site-packages` venv first on PATH, Xvfb 72 DPI, default `/tmp` temp): 17568 tests, 17047 passed, 519 skipped, 2 failed. Both are the known host-only failures in `docs/decisions/local-test-baseline-ubuntu-26-04.md` (D: `test_accessible_runtime::test_orca_announces_every_result`, no Orca stack; E: `test_doctor_decode_depth_pass12_20261021[deep-object-desktop]`, Python 3.14). The full run was throttled by the shared agents' cgroup `memory.high` (9.55 GB) at test 17442 and hit its 90-minute timeout, so those last 127 tests ran separately (126 passed in 5.6 s, plus the known E failure). `git diff --check` clean.
     - Remaining acceptance: the PR's hosted gate passes, then zero drop lines across several hosted runs (baseline 26 in 12). Cross-process writers (the kiosk shell's printf to ttyS0, only before the UI starts or after a graphical failure) are not covered by the lock; if drops recur, read them first.
+  - UPDATE 2026-11-26 20:05Z (Claude Opus 5.5): part (c) DONE. PR #151 merged as b877b08a (2026-11-26 17:45:17Z). Acceptance met: the hosted gate passed on the PR and on main, and five hosted runs containing the fix had 0 `SERIAL_MARKER_DROPPED` lines in 16 serial logs each (PR #151 45762052234, main b877b08a 45870390855, PR #152 45870600199, PR #153 45877438095, main 411d0565 45877268142), versus 26 drop lines in 12 baseline runs (11 of 12 with drops). Evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-*` (SHA256SUMS in each). If a drop line reappears, read it first for a cross-process writer (kiosk shell printf) and reopen. Part (a) stays OPEN (needs a hosted recurrence).
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9832,3 +9833,32 @@ another very thorough and comprehensive pass of this." Repo
   - Still running: main 411d0565 (`ci.yml` 45877268142), PR #153 on
     c2a0171d (`ci.yml` 45877438095). NEXT: merge #153 when green and
     Greptile clean, then rebase and push this records branch.
+- UPDATE 2026-11-26 20:05Z (Claude Opus 5.5): PR #153 merged; main green
+  on 411d0565; part (c) DONE.
+  - PR #153 (BW-138-GTK-HOLD, head c2a0171d): all checks green (Linux image
+    gate 45877438095 18:38:15-19:44:43Z, Windows launcher tests, CI gate,
+    CodeQL + 4 Analyze; Proof skipped). Greptile reviewed cb42ca13 (5/5, no
+    findings) and did not re-run after the strict-rule rebase; the rebase was
+    patch-identical (`git range-diff` all `=`, diffs byte-identical) and the
+    new base (PR #152) touched none of its files. That evidence is on the PR
+    (issuecomment-7201929664), with a correction to Greptile's claim that
+    jallieson acknowledged the fade gap. Merged 2026-11-26 19:45:37Z, pinned
+    to c2a0171d; merge commit 9ec44f9395910196c761a6ac0a75614ae948e826.
+    BW-138-GTK-HOLD: DONE (merged). Still open, owner's call: the ~0.37 s
+    fade gap (release on `hide` only would close it).
+  - 411d0565 (PR #152 merge): `ci.yml` 45877268142 COMPLETED SUCCESS (Linux
+    image gate 18:50:43-19:59:33Z, Windows launcher tests 18:50:55-18:52:17Z,
+    CI gate 19:59:38-19:59:43Z); CodeQL 45877267774 SUCCESS. 0 drop lines in
+    16 serial logs; evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-411d0565-45877268142/`.
+  - BW-HOST-PYTEST-COMPAT (pytest 9.2 fstat stand-ins, Python 3.14 depth
+    test): DONE, merged in PR #152. The local branches
+    `test/host-pytest-fstat-20261125` and `test/host-json-depth-20261125`
+    are superseded by it.
+  - BW-QEMU-FLAKES part (c): DONE (see its entry). Part (a): OPEN.
+  - Main 9ec44f93 (PR #153 merge): `ci.yml` 45886026711 running when this
+    was written; recorded with the next substantive PR.
+  - This records PR is pushed on 9ec44f93. Remaining Jack-gated items are
+    unchanged (D-decisions packet, BW-182, BW-183-FAT-ALIAS,
+    BW-HOST-A11Y-PKGS, runbook full run, Notion mark-off, the GTK fade-gap
+    choice, native review, hardware and physical rows).
