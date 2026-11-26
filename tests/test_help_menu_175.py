@@ -787,3 +787,243 @@ def test_tk_leaving_the_review_with_the_menu_open_releases_the_hold(tk_at):
     app.root.update()
     assert not app._help_open
     assert wiz.screen == Screen.METHOD and wiz._review_overlay_depth == 0
+
+
+# --- GTK: the help popover over the final review holds its countdown ----------
+
+
+def _gtk_source() -> str:
+    return (ROOT / "src/beamo_wipe/ui/accessible_wizard.py").read_text(encoding="utf-8")
+
+
+def test_gtk_popover_show_holds_and_every_hide_path_releases():
+    src = _gtk_source()
+    block = src[src.index("    def _help_menu_button(self)"):src.index("    def _help_shortcut_lines")]
+    assert 'popover.connect("show", self._hold_review_for_help)' in block
+    assert 'popover.connect("hide", self._release_review_for_help_popover)' in block
+    assert 'popover.connect("closed", self._release_review_for_help_popover)' in block
+    render = src[src.index("    def render(self):"):src.index("    def _help_menu_button(self)")]
+    # A rebuild drops the old popover's hold before the old widgets go.
+    assert (render.index("self._release_review_for_help(refresh=False)")
+            < render.index("old = self.window.get_child()"))
+    close = src[src.index("    def close(self):"):src.index("    def _close_preserving_error")]
+    assert (close.index("self._release_review_for_help(refresh=False)")
+            < close.index("self.window.destroy"))
+
+
+def _fake_gtk_module(monkeypatch):
+    """Load accessible_wizard with stand-in gi modules (no GTK needed)."""
+    import importlib.util
+    import sys
+    import types
+
+    gi = types.ModuleType("gi")
+    gi.require_version = lambda *_args: None
+    repository = types.ModuleType("gi.repository")
+    for name in ("Atk", "Gdk", "GLib", "Gtk", "Pango"):
+        setattr(repository, name, SimpleNamespace())
+    monkeypatch.setitem(sys.modules, "gi", gi)
+    monkeypatch.setitem(sys.modules, "gi.repository", repository)
+    source = ROOT / "src/beamo_wipe/ui/accessible_wizard.py"
+    spec = importlib.util.spec_from_file_location("beamo_wipe.ui.gtk_hold_fixture", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _gtk_hold_app(monkeypatch, at="last"):
+    module = _fake_gtk_module(monkeypatch)
+    clock = {"t": 1000.0}
+    wiz = _wizard_at(at)
+    wiz._clock = lambda: clock["t"]
+    wiz.restart_review_countdown()
+    app = module.AccessibleWizard.__new__(module.AccessibleWizard)
+    app.w = wiz
+    app.closed = False
+    refreshes = []
+    app.update_status = lambda: refreshes.append(wiz.erase_enabled)
+    return wiz, app, clock, refreshes
+
+
+def test_gtk_popover_over_a_ready_review_disables_erase_until_a_fresh_delay(monkeypatch):
+    wiz, app, clock, refreshes = _gtk_hold_app(monkeypatch)
+    clock["t"] += COUNTDOWN_S + 1
+    assert wiz.erase_enabled
+    popover = object()
+    app._hold_review_for_help(popover)
+    # Erase now is greyed at once, and time behind the menu does not help.
+    assert refreshes == [False] and not wiz.erase_enabled
+    clock["t"] += 60
+    assert not wiz.erase_enabled
+    app._hold_review_for_help(popover)  # a second "show" takes no second hold
+    assert wiz._review_overlay_depth == 1
+    app._release_review_for_help_popover(popover)
+    assert wiz._review_overlay_depth == 0 and refreshes[-1] is False
+    assert wiz.countdown_left == pytest.approx(COUNTDOWN_S)
+    clock["t"] += COUNTDOWN_S - 0.5
+    assert not wiz.erase_enabled
+    clock["t"] += 1.0
+    assert wiz.erase_enabled
+    # "hide" and "closed" both fire; the second one is a no-op.
+    app._release_review_for_help_popover(popover)
+    assert wiz._review_overlay_depth == 0 and wiz.erase_enabled
+
+
+def test_gtk_stale_popover_never_releases_a_newer_menus_hold(monkeypatch):
+    wiz, app, clock, _refreshes = _gtk_hold_app(monkeypatch)
+    old, new = object(), object()
+    app._hold_review_for_help(old)
+    # A rebuild (Sounds or High contrast on Last chance) drops the old
+    # hold and reopens the menu with a new one.
+    app._release_review_for_help(refresh=False)
+    app._hold_review_for_help(new)
+    clock["t"] += 60
+    app._release_review_for_help_popover(old)  # old popover's late signals
+    assert wiz._review_overlay_depth == 1 and not wiz.erase_enabled
+    app._release_review_for_help_popover(new)
+    assert wiz._review_overlay_depth == 0 and wiz.countdown_left == pytest.approx(COUNTDOWN_S)
+
+
+def test_gtk_popover_elsewhere_takes_no_hold(monkeypatch):
+    wiz, app, _clock, refreshes = _gtk_hold_app(monkeypatch, at="method")
+    popover = object()
+    app._hold_review_for_help(popover)
+    assert wiz._review_overlay_depth == 0 and refreshes == []
+    app._release_review_for_help_popover(popover)
+    assert wiz._review_overlay_depth == 0 and refreshes == []
+
+
+def test_gtk_leaving_the_review_with_the_menu_open_keeps_no_hold(monkeypatch):
+    wiz, app, _clock, _refreshes = _gtk_hold_app(monkeypatch)
+    popover = object()
+    app._hold_review_for_help(popover)
+    wiz.back()
+    app._release_review_for_help(refresh=False)  # the rebuild for the new screen
+    app._release_review_for_help_popover(popover)
+    assert wiz.screen == Screen.METHOD and wiz._review_overlay_depth == 0
+
+
+def test_gtk_close_releases_the_hold_without_touching_widgets(monkeypatch):
+    wiz, app, _clock, refreshes = _gtk_hold_app(monkeypatch)
+    popover = object()
+    app._hold_review_for_help(popover)
+    app.closed = True
+    app._release_review_for_help(refresh=False)
+    app._hold_review_for_help(object())  # a closed view takes no new hold
+    assert wiz._review_overlay_depth == 0 and refreshes == [False]
+
+
+def _gtk_runtime_or_skip():
+    gi = pytest.importorskip("gi")
+    try:
+        gi.require_version("Gtk", "3.0")
+        from gi.repository import Gtk  # noqa: F401
+    except (ImportError, ValueError) as error:
+        pytest.skip(f"GTK 3 runtime not available: {error}")
+
+
+def _gtk_ready_review():
+    _gtk_runtime_or_skip()
+    from test_accessible_runtime import drain
+
+    from beamo_wipe.ui.accessible_wizard import AccessibleWizard
+
+    wiz = _wizard_at("last")
+    starts = []
+    wiz.begin_erase = lambda: starts.append(wiz.screen)  # type: ignore[method-assign]
+    app = AccessibleWizard(wiz)
+    drain()
+    wiz._erase_until = 0
+    app.update_status()
+    assert wiz.erase_enabled and app.primary.get_sensitive()
+    return wiz, app, starts, drain
+
+
+def test_gtk_runtime_f10_over_a_ready_review_holds_until_a_fresh_delay():
+    wiz, app, starts, drain = _gtk_ready_review()
+    from beamo_wipe.ui.accessible_wizard import Gdk
+
+    try:
+        app._key_press(app.window, SimpleNamespace(keyval=Gdk.KEY_F10, time=100))
+        drain()
+        assert app.help_popover.get_visible()
+        assert not wiz.erase_enabled and not app.primary.get_sensitive()
+        wiz._erase_until = 0  # time passing behind the menu does not help
+        assert not wiz.erase_enabled
+        app._key_press(app.window, SimpleNamespace(keyval=Gdk.KEY_Escape, time=200))
+        drain()
+        assert not app.help_popover.get_visible()
+        assert wiz._review_overlay_depth == 0 and wiz.screen == Screen.LAST_CHANCE
+        assert not wiz.erase_enabled and not app.primary.get_sensitive()
+        assert COUNTDOWN_S - 1.0 < wiz.countdown_left <= COUNTDOWN_S
+        assert starts == []
+    finally:
+        app.close()
+        drain()
+
+
+def test_gtk_runtime_locked_text_size_in_the_menu_keeps_the_hold():
+    wiz, app, _starts, drain = _gtk_ready_review()
+    try:
+        app._show_help_menu(M.TEXT_SIZE)
+        drain()
+        app._help_activate(M.TEXT_SIZE, app.generation)
+        drain()
+        # Text size is locked on the final check, so nothing is rebuilt: the
+        # review stays suspended while the menu is open and restarts after.
+        assert app.help_popover.get_visible()
+        assert wiz._review_overlay_depth == 1 and not wiz.erase_enabled
+        app.help_popover.popdown()
+        drain()
+        assert wiz._review_overlay_depth == 0 and wiz.countdown_left > 0
+    finally:
+        app.close()
+        drain()
+
+
+@pytest.mark.parametrize("item", [M.SOUNDS, M.HIGH_CONTRAST])
+def test_gtk_runtime_a_rebuilding_item_reopens_the_menu_with_a_new_hold(item):
+    wiz, app, _starts, drain = _gtk_ready_review()
+    try:
+        app._show_help_menu(item)
+        drain()
+        before = app.help_popover
+        app._help_activate(item, app.generation)
+        drain()
+        # On Last chance these items rebuild the screen and reopen the menu:
+        # the old popover's hold ends and the reopened one takes its own.
+        assert app.help_popover is not before and app.help_popover.get_visible()
+        assert wiz._review_overlay_depth == 1 and not wiz.erase_enabled
+        assert not app.primary.get_sensitive()
+        app.help_popover.popdown()
+        drain()
+        assert wiz._review_overlay_depth == 0 and wiz.screen == Screen.LAST_CHANCE
+        assert COUNTDOWN_S - 1.0 < wiz.countdown_left <= COUNTDOWN_S
+    finally:
+        app.close()
+        drain()
+
+
+def test_gtk_runtime_closing_the_window_with_the_menu_open_releases_the_hold():
+    wiz, app, _starts, drain = _gtk_ready_review()
+    app._show_help_menu()
+    drain()
+    assert wiz._review_overlay_depth == 1
+    app.close()
+    drain()
+    assert wiz._review_overlay_depth == 0
+
+
+def test_gtk_runtime_leaving_the_review_with_the_menu_open_releases_the_hold():
+    wiz, app, _starts, drain = _gtk_ready_review()
+    try:
+        app._show_help_menu()
+        drain()
+        assert wiz._review_overlay_depth == 1
+        wiz.back()
+        app.tick()
+        drain()
+        assert wiz.screen == Screen.METHOD and wiz._review_overlay_depth == 0
+    finally:
+        app.close()
+        drain()

@@ -614,6 +614,11 @@ class AccessibleWizard:
         self.shown = self.w.screen
         self.report_revision = self.w.report_view.revision
         self.sound_revision = getattr(self.w, "sound_revision", 0)
+        # The old Help & settings popover goes with this rebuild, so its
+        # review hold ends here, whatever its signals do later. A menu
+        # reopened below takes a new hold, and leaving Last chance with
+        # the menu open keeps no hold.
+        self._release_review_for_help(refresh=False)
         old = self.window.get_child()
         if old:
             self.window.remove(old)
@@ -1469,10 +1474,42 @@ class AccessibleWizard:
         popover.add(box)
         button.set_popover(popover)
         popover.connect("closed", lambda _p: self._help_closed(generation))
+        # The modal popover covers part of the final review: while it is
+        # shown, by F10, a click or a reopen, the review countdown (and
+        # Erase now) is suspended. Hiding it by any path restarts a fresh
+        # countdown, as the Tk menu and the console F10 menu do.
+        popover.connect("show", self._hold_review_for_help)
+        popover.connect("hide", self._release_review_for_help_popover)
+        popover.connect("closed", self._release_review_for_help_popover)
         self.utilities.attach(button, 0, 0, 1, 1)
         self._utility_count += 1
         self.help_button = button
         self.help_popover = popover
+
+    def _hold_review_for_help(self, popover) -> None:
+        """The shown menu covers part of the final review: suspend its
+        countdown (and Erase now) until this popover hides."""
+        if getattr(self, "closed", False) or getattr(self, "_help_hold_popover", None) is not None:
+            return
+        if not self.w.begin_review_overlay():
+            return  # not on Last chance: nothing to hold
+        self._help_hold_popover = popover
+        self.update_status()
+
+    def _release_review_for_help_popover(self, popover) -> None:
+        # Only the popover that took the hold ends it; a stale popover
+        # from an earlier render must not release a newer menu's hold.
+        if popover is getattr(self, "_help_hold_popover", None):
+            self._release_review_for_help()
+
+    def _release_review_for_help(self, *, refresh: bool = True) -> None:
+        """Closing the menu restarts a fresh, fully visible countdown."""
+        if getattr(self, "_help_hold_popover", None) is None:
+            return
+        self._help_hold_popover = None
+        self.w.end_review_overlay()
+        if refresh and not getattr(self, "closed", False):
+            self.update_status()
 
     def _help_shortcut_lines(self) -> list[str]:
         lines = [C.MENU_SHORTCUTS_COMMON]
@@ -2110,6 +2147,7 @@ class AccessibleWizard:
         if self.timer:
             timer, self.timer = self.timer, 0
             cleanup(lambda: GLib.source_remove(timer))
+        cleanup(lambda: self._release_review_for_help(refresh=False))
         if self.window is not None:
             cleanup(self.window.destroy)
 
