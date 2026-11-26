@@ -715,11 +715,14 @@ def test_serial_marker_is_bounded_and_written_to_character_device(monkeypatch):
 
     written = bytearray()
     closed = []
+    real_fstat = diagnostics.os.fstat
     monkeypatch.setattr(diagnostics.os, "open", lambda *_args, **_kwargs: 41)
+    # Only the fake port's fd is faked: diagnostics.os is the process-wide os
+    # module, and pytest 9.2's output capture reads st_size from os.fstat.
     monkeypatch.setattr(
         diagnostics.os,
         "fstat",
-        lambda _fd: SimpleNamespace(st_mode=stat.S_IFCHR),
+        lambda fd: SimpleNamespace(st_mode=stat.S_IFCHR) if fd == 41 else real_fstat(fd),
     )
     monkeypatch.setattr(
         diagnostics.os,
