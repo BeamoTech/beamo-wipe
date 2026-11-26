@@ -9139,6 +9139,13 @@ another very thorough and comprehensive pass of this." Repo
     - Hypotheses (unproven): the UART transmit buffer fills when marker traffic meets a short guest stall; the default port speed may throttle draining (unverified for QEMU's 16550 model with a file backend).
     - Fix options (not chosen): bounded wait on EAGAIN (UI thread; small, tested bound); ordered background writer; aggregate per-autorepeat diagnostics while keeping the host's printed counts; set a QEMU-only port speed. Not proposed: accepting SCREEN_WORKING alone.
     - Success measure for the fix: zero drop lines across several hosted runs, against 26 in this 12-run baseline.
+  - UPDATE 2026-11-26 (Claude Opus 5.5): part (c) cause found and FIX IN PR (branch `fix/serial-marker-write-lock-20261126`, worktree `../beamo-wipe-serial-lock-20261126`, on main 9a0ae76e). Status: FIXED IN PR, acceptance PENDING hosted runs.
+    - Cause (supersedes the full-buffer and port-speed hypotheses above): concurrent writers in the same process. Linux takes the per-tty write lock with a trylock when the file is O_NONBLOCK (`tty_write_lock`), so a marker written while another thread's marker write is in progress fails with EAGAIN although the port has room.
+    - Evidence: (1) none of the 27 drops (26 green-run + the failure) left a partial line; a full buffer would sometimes write part of a line. (2) Every drop sits next to a worker-thread marker. All 26 green-run drops have EXPORT_* markers within 4 lines before or 2 after; the export runs on the `beamo-report-export` thread (`wizard.begin_report_export`) while the UI thread reports Space releases. The failure has `BOOT_FINDMNT_MULTIROW` (twice) just before it, from the final recheck on the `beamo-erase-transition` thread (`wizard._launch_operation`), while the UI thread emitted the lost SCREEN_CHECKING/RETURN_RESULT_CHECKING. (3) Local pty reproduction (this host, kernel 7.0): 2 threads x 20000 non-blocking per-marker writes gave ~5000 EAGAIN with 0 partial writes; with an in-process lock, 0 EAGAIN (repeated runs). One writer gave 0 EAGAIN in one run and 170 in another (the reader lagged and the pty buffer filled; 1 partial write).
+    - Fix (lower risk than options A-D, which were not used): `diagnostics._serial_write_lock` serializes only the non-blocking write and its drop accounting inside the process. Open and close stay outside it (close can wait for the port to drain). No wait or retry on EAGAIN, no new thread, no marker, host-check, qemu-verify or port-setting change. Drop counting stays, so any remaining cause still shows up.
+    - Tests: `tests/test_serial_marker_write_lock.py` (3 tests; fake tty that fails a second concurrent writer with EAGAIN like the kernel). With the lock removed, the two concurrency tests fail (3 of 3 runs). Its stand-ins only replace calls for the fake fd, so they are pytest-9.2-safe. Existing `tests/test_serial_marker_drops.py` unchanged and passing.
+    - Local gate (this host, CI pins: pytest 9.0.3 in a `--system-site-packages` venv first on PATH, Xvfb 72 DPI, default `/tmp` temp): 17568 tests, 17047 passed, 519 skipped, 2 failed. Both are the known host-only failures in `docs/decisions/local-test-baseline-ubuntu-26-04.md` (D: `test_accessible_runtime::test_orca_announces_every_result`, no Orca stack; E: `test_doctor_decode_depth_pass12_20261021[deep-object-desktop]`, Python 3.14). The full run was throttled by the shared agents' cgroup `memory.high` (9.55 GB) at test 17442 and hit its 90-minute timeout, so those last 127 tests ran separately (126 passed in 5.6 s, plus the known E failure). `git diff --check` clean.
+    - Remaining acceptance: the PR's hosted gate passes, then zero drop lines across several hosted runs (baseline 26 in 12). Cross-process writers (the kiosk shell's printf to ttyS0, only before the UI starts or after a graphical failure) are not covered by the lock; if drops recur, read them first.
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9632,3 +9639,15 @@ another very thorough and comprehensive pass of this." Repo
     45736259438 SUCCESS (4 Analyze jobs).
   - The main run for this records PR's own merge is recorded with the next
     substantive PR (BW-QEMU-FLAKES part c), not by another records-only PR.
+- UPDATE 2026-11-26 (Claude Opus 5.5): PR #150 merged and main green on it.
+  - PR #150 (head 1260d43c): all checks green (Linux image gate, CI gate,
+    Windows launcher tests, CodeQL and its 4 Analyze jobs; Proof skipped);
+    Greptile one review, 5/5, no findings. Merged 2026-11-26 03:46:03Z,
+    pinned to 1260d43c; merge commit
+    9a0ae76eacf8b72b3aa2aeed638c2480b3ce4ad1.
+  - 9a0ae76e (PR #150 merge): `ci.yml` 45751002551 COMPLETED SUCCESS
+    (Linux image gate 03:46:12-04:54:01Z, Windows launcher tests
+    03:46:28-03:47:53Z, CI gate 04:54:08-04:54:13Z); CodeQL 45751002440
+    SUCCESS.
+  - Recorded in the BW-QEMU-FLAKES part (c) fix PR
+    (`fix/serial-marker-write-lock-20261126`).
