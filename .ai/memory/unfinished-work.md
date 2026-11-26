@@ -9713,10 +9713,14 @@ another very thorough and comprehensive pass of this." Repo
   (`docs/evidence/bug-audit-20261025-pass4/`) came via PR #93 (1f826129),
   so it is in v0.2.15; G1's test came via PR #93. BW-FINISH's one off-main
   SHA (bf2b490) is a pre-rebase PR #93 head.
-- Their "qualification/historical acceptance BLOCKED" notes were about those
-  local passes. The code has since shipped in qualified releases 0.2.14 and
-  0.2.15 (BW-RELEASE-0.2.15-PREP: published and verified 2026-11-18). Not
+- Their code-qualification "BLOCKED" notes were about those local passes.
+  The code has since shipped in qualified releases 0.2.14 and 0.2.15
+  (BW-RELEASE-0.2.15-PREP: published and verified 2026-11-18). Not
   re-audited pass by pass here.
+- NOT closed by shipping (corrected 2026-11-26 after Greptile on PR #154):
+  their historical-incident attribution checks stay OPEN, because their own
+  acceptance says later passing tests do not explain those events. See the
+  list in D.
 
 ### C. November process entries: SUPERSEDED OR DONE
 
@@ -9769,6 +9773,21 @@ another very thorough and comprehensive pass of this." Repo
   5/5; merge is Jack's. Its first hosted run had 0 drop lines in 16 serial
   logs (evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-pr151-45762052234/`).
 - BW-QEMU-FLAKES part (a): needs a hosted recurrence.
+- Historical incident attribution from the October audit passes (OPEN,
+  BLOCKED on records only Jack/the platform can supply; not closed by the
+  0.2.14/0.2.15 releases or by later passing tests):
+  - pass8: attributable platform execution/signal evidence for the
+    06:29 UTC SIGTERM / exit 143 (PASS16 entry, BW-PASS16-INCIDENT-REVIEW);
+  - pass9: the unavailable original failed timing trace (PASS16 entry);
+  - pass16: the loop incident review is written (BW-PASS16-INCIDENT-REVIEW);
+    its acceptance still needs the pass8 and pass9 records above;
+  - pass18: the original 74.93 ms first GTK click latency (BW-P21-HISTORICAL);
+  - pass19: two uncanceled native aborts, creator and cause unattributed
+    (BW-P20-HISTORICAL, BW-P21-HISTORICAL).
+  - Acceptance (unchanged): evidenced incident reconciliation from the
+    original retained traces and platform incident records. Next action:
+    Jack supplies or locates those platform records, or explicitly cancels
+    these checks; until then they stay open.
 - Jack-gated: the D-decisions packet (Refs 184-208), BW-182, BW-183-FAT-ALIAS,
   BW-HOST-A11Y-PKGS (installing Orca here), the runbook full run, Notion
   mark-off (no Notion connector), and the section A human/hardware items.
