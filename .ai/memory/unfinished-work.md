@@ -9820,3 +9820,15 @@ another very thorough and comprehensive pass of this." Repo
     "jallieson explicitly acknowledged" the fade gap, but no such comment
     exists (it read the PR body, posted from the jallieson account). The
     fade gap stays an open owner's call.
+- UPDATE 2026-11-26 18:53Z (Claude Opus 5.5): main green on b877b08a (PR
+  #151 merge, the part c fix).
+  - `ci.yml` 45870390855 COMPLETED SUCCESS (Linux image gate
+    17:45:27-18:50:25Z, Windows launcher tests 17:45:43-17:47:12Z, CI gate
+    18:50:32-18:50:37Z); CodeQL 45870390677 SUCCESS.
+  - Part (c) sample: 0 drop lines in 16 serial logs (1978 lines). Evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-b877b08a-45870390855/`
+    (SHA256SUMS, 132 files). Tally with the fix: 3 runs (PR #151, PR #152,
+    main b877b08a), 0 drops; baseline 26 in 12.
+  - Still running: main 411d0565 (`ci.yml` 45877268142), PR #153 on
+    c2a0171d (`ci.yml` 45877438095). NEXT: merge #153 when green and
+    Greptile clean, then rebase and push this records branch.
