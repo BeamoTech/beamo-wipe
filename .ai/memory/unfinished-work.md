@@ -9886,3 +9886,12 @@ another very thorough and comprehensive pass of this." Repo
     unchanged (D-decisions packet, BW-182, BW-183-FAT-ALIAS,
     BW-HOST-A11Y-PKGS, runbook full run, Notion mark-off, the GTK fade-gap
     choice, native review, hardware and physical rows).
+- UPDATE 2026-11-26 21:06Z (Claude Opus 5.5): main green on 9ec44f93 (PR
+  #153 merge).
+  - `ci.yml` 45886026711 COMPLETED SUCCESS (Linux image gate
+    19:59:49-21:04:48Z, Windows launcher tests 20:00:04-20:01:29Z, CI gate
+    21:04:55-21:05:00Z); CodeQL 45886026777 SUCCESS.
+  - 0 drop lines in 16 serial logs (1976 lines); evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-9ec44f93-45886026711/`
+    (SHA256SUMS, 132 files). Runs with the part (c) fix: 6, all 0 drops, no
+    part (a) lost-release failure.
