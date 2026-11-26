@@ -9592,3 +9592,19 @@ another very thorough and comprehensive pass of this." Repo
     SUCCESS, Linux image gate IN PROGRESS. Next action: record its final
     result in the next records update; if it fails, read the failed step's
     log before any rerun.
+  - UPDATE 2026-11-26 (Claude Opus 5.5): main `ci.yml` 45716305330 on
+    fab7e325 COMPLETED SUCCESS: Windows launcher tests 22:48:51-22:50:53Z,
+    Linux image gate 22:48:25-23:55:28Z, CI gate 23:55:35-23:55:40Z. With
+    CodeQL 45716305389 also green, main is green again after the 5474da80
+    tracker outage; that run's content is covered by this green run.
+- UPDATE 2026-11-26 (Claude Opus 5.5): PR #148 (BW-MAIN-CI-0813339F
+  classification and the 5474da80 correction, head ecc37732) merged.
+  - Checks on ecc37732, all green: Linux image gate 1h16m1s, CI gate,
+    Windows launcher tests, CodeQL and its 4 Analyze jobs; Proof skipped.
+  - Greptile: one review of ecc37732, 5/5, "No actionable issues found",
+    no inline comments.
+  - Merged 2026-11-26 00:23:59Z by jallieson, pinned to ecc37732; merge
+    commit 0e14bd1517431776045d1ced31e36c944df7e5de. Its main runs are
+    recorded by the next records update.
+  - Open from it: BW-QEMU-FLAKES part (c) (serial marker loss on EAGAIN),
+    a separate diag/harness PR, not started.
