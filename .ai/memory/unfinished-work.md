@@ -9912,3 +9912,13 @@ another very thorough and comprehensive pass of this." Repo
   - Agent-doable work on the Wipe backlog is exhausted for now; every
     remaining open item needs Jack, the owner, hardware or a hosted
     recurrence (see BW-RECORDS-RECONCILE-20261126 section D).
+- UPDATE 2026-11-26 22:55Z (Claude Opus 5.5): main green on a394d9de (PR
+  #154 merge).
+  - `ci.yml` 45897333070 COMPLETED SUCCESS (Linux image gate
+    21:19:35-22:28:30Z, Windows launcher tests 21:19:51-21:21:16Z, CI gate
+    22:28:37-22:28:42Z); CodeQL 45897332812 SUCCESS (4 Analyze jobs,
+    21:19:33-21:23:00Z).
+  - Serial logs of this run not downloaded or counted (single-item status
+    check); the part (c) tally stays at 6 runs, 0 drops.
+  - This branch stays LOCAL (not pushed, no PR), per the 2026-11-26
+    instruction.
