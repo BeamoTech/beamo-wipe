@@ -873,7 +873,8 @@ def test_gtk_stale_popover_never_releases_a_newer_menus_hold(monkeypatch):
     wiz, app, clock, _refreshes = _gtk_hold_app(monkeypatch)
     old, new = object(), object()
     app._hold_review_for_help(old)
-    # A rebuild (text size, report update) drops the old hold and reopens.
+    # A rebuild (Sounds or High contrast on Last chance) drops the old
+    # hold and reopens the menu with a new one.
     app._release_review_for_help(refresh=False)
     app._hold_review_for_help(new)
     clock["t"] += 60
@@ -961,15 +962,15 @@ def test_gtk_runtime_f10_over_a_ready_review_holds_until_a_fresh_delay():
         drain()
 
 
-def test_gtk_runtime_text_size_in_the_menu_keeps_the_hold():
+def test_gtk_runtime_locked_text_size_in_the_menu_keeps_the_hold():
     wiz, app, _starts, drain = _gtk_ready_review()
     try:
         app._show_help_menu(M.TEXT_SIZE)
         drain()
         app._help_activate(M.TEXT_SIZE, app.generation)
         drain()
-        # Text size may be locked on the final check; either way the review
-        # stays suspended while the menu is open and restarts after it.
+        # Text size is locked on the final check, so nothing is rebuilt: the
+        # review stays suspended while the menu is open and restarts after.
         assert app.help_popover.get_visible()
         assert wiz._review_overlay_depth == 1 and not wiz.erase_enabled
         app.help_popover.popdown()
@@ -978,6 +979,39 @@ def test_gtk_runtime_text_size_in_the_menu_keeps_the_hold():
     finally:
         app.close()
         drain()
+
+
+@pytest.mark.parametrize("item", [M.SOUNDS, M.HIGH_CONTRAST])
+def test_gtk_runtime_a_rebuilding_item_reopens_the_menu_with_a_new_hold(item):
+    wiz, app, _starts, drain = _gtk_ready_review()
+    try:
+        app._show_help_menu(item)
+        drain()
+        before = app.help_popover
+        app._help_activate(item, app.generation)
+        drain()
+        # On Last chance these items rebuild the screen and reopen the menu:
+        # the old popover's hold ends and the reopened one takes its own.
+        assert app.help_popover is not before and app.help_popover.get_visible()
+        assert wiz._review_overlay_depth == 1 and not wiz.erase_enabled
+        assert not app.primary.get_sensitive()
+        app.help_popover.popdown()
+        drain()
+        assert wiz._review_overlay_depth == 0 and wiz.screen == Screen.LAST_CHANCE
+        assert COUNTDOWN_S - 1.0 < wiz.countdown_left <= COUNTDOWN_S
+    finally:
+        app.close()
+        drain()
+
+
+def test_gtk_runtime_closing_the_window_with_the_menu_open_releases_the_hold():
+    wiz, app, _starts, drain = _gtk_ready_review()
+    app._show_help_menu()
+    drain()
+    assert wiz._review_overlay_depth == 1
+    app.close()
+    drain()
+    assert wiz._review_overlay_depth == 0
 
 
 def test_gtk_runtime_leaving_the_review_with_the_menu_open_releases_the_hold():
