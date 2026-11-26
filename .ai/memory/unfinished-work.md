@@ -9123,6 +9123,14 @@ another very thorough and comprehensive pass of this." Repo
   - Host: the QEMU marker summary lists every new marker. On a lost release, start_erase_with_return waits up to 60 s for Done, sending no key, so those markers are captured; the journey still fails.
   - Main CI on 85a880cd (44435632796) was in progress when this was written.
   - Next action: on the next recurrence, read the APP_FOCUS_* and XINPUT_* counts in the failed case's summary, then fix the named layer without weakening one press, mandatory release or no repress. Blocker: needs a recurrence on hosted KVM runs; no local QEMU (WSL parked by Jack).
+- UPDATE 2026-11-25 (Claude Opus 5.5): first recurrence with the #132 serial-drop diagnostics (part c), on main 0813339f, `ci.yml` 44773974948 (classified under BW-MAIN-CI-0813339F).
+  - Case `bios-extra-repeat`: the Erase now press was accepted and the erase reached Done, but SERIAL_MARKER_DROPPED_EAGAIN sits exactly where SCREEN_CHECKING and RETURN_RESULT_CHECKING should be. The host missed the acceptance marker and failed the journey.
+  - Named layer: the guest's non-blocking write to the QEMU serial port (`emit_serial_marker`, O_NONBLOCK, EAGAIN) during the Last chance -> Checking transition. Not Tk, X input or focus (no APP_FOCUS_*/XINPUT_* warnings).
+  - New sub-item BW-QEMU-FLAKES part (c), OPEN: serial marker loss on EAGAIN.
+    - Acceptance: a marker the guest emits during a QEMU journey reaches the host, or its loss can no longer fail an accepted press, without weakening one press, mandatory release or no repress, and the hosted gate passes.
+    - Candidate fixes (not chosen): retry the write briefly on EAGAIN before counting a drop; or carry the drop count in the marker. Accepting SCREEN_WORKING alone as acceptance evidence is NOT proposed, because it would hide a lost press result.
+    - Next action: a separate diag/harness PR with tests. It touches the diagnostics used by the safety journeys, so it needs its own review. Not started.
+  - Part (a) (lost key release, no drop) stays OPEN, unchanged.
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9232,6 +9240,33 @@ another very thorough and comprehensive pass of this." Repo
   - Next action: with an authenticated `gh`, read the failed step's log and
     the ci-evidence artifact. Classify the failure and record it here. Do not
     rerun it blindly.
+  - UPDATE 2026-11-25 (Claude Opus 5.5): CLASSIFIED. Harness flake: a guest
+    serial marker was dropped on EAGAIN, not a product defect. Not rerun.
+    - Evidence: job 136437418786 log, and artifact
+      `ci-evidence-0813339f…-44773974948-1` (read 2026-11-25, expires
+      2026-11-27; host-local copy only).
+    - Failing case `bios-extra-repeat` (step 9, 18:16:35-18:23:43Z):
+      "never emitted a new exact marker BEAMO_WIPE_RETURN_RESULT_CHECKING or
+      BEAMO_WIPE_RETURN_RESULT_WORKING", `qemu-verify.sh` line 1669 (the
+      Erase now press in `start_erase_with_return`).
+    - Guest serial log `bios-extra-repeat-serial.txt`, in order:
+      SCREEN_LAST_CHANCE, RETURN_RESULT_LAST_CHANCE, KEY_RETURN_RELEASED,
+      BOOT_FINDMNT_MULTIROW x2, **SERIAL_MARKER_DROPPED_EAGAIN**,
+      SCREEN_WORKING x2, SCREEN_DONE, XINPUT_LOG_SCANNED, report markers.
+    - The passing `bios-extra` boot of the same run has, at that point:
+      BOOT_FINDMNT_MULTIROW, SCREEN_CHECKING, RETURN_RESULT_CHECKING,
+      BOOT_FINDMNT_MULTIROW, KEY_RETURN_RELEASED, SCREEN_WORKING.
+    - Reading: the guest accepted the press, went through Checking to
+      Working and reached Done. The non-blocking write to the serial port
+      (`diagnostics.emit_serial_marker`, O_NONBLOCK) failed with EAGAIN, so
+      SCREEN_CHECKING and RETURN_RESULT_CHECKING (and probably that
+      KEY_RETURN_RELEASED) never reached the host. The drop marker is
+      written once per batch, without a count, so "count=1" means at least
+      one lost write, not exactly one marker.
+    - No APP_FOCUS_* or XINPUT_* warning markers were emitted; this is not
+      the lost-key-release case (BW-QEMU-FLAKES part a).
+    - Result: the #132 diagnostics did their job on this recurrence; see the
+      BW-QEMU-FLAKES-20261117 UPDATE of 2026-11-25 for the follow-up.
 - Next actions:
   1. Jack: the D-decisions packet (Ref 184 §4/§6 and each record's D-items).
      The agent takes no action.
@@ -9515,6 +9550,20 @@ another very thorough and comprehensive pass of this." Repo
   - CodeQL "Push on main" 45696177229: SUCCESS (4 Analyze jobs).
   - `ci.yml` 45696176943: Windows launcher tests SUCCESS; Linux image gate
     IN PROGRESS ("Build and inspect ISO"). Not yet green.
+  - UPDATE 2026-11-25 (Claude Opus 5.5): `ci.yml` 45696176943 FAILED.
+    - Linux image gate failed at step 9 "Verify image, vulnerabilities and
+      BIOS/UEFI with KVM" (21:35:35-21:36:04Z). The ISO had built and its
+      checksums verified. The vulnerability check then failed:
+      "error: while downloading
+      https://security-tracker.debian.org/tracker/debsecan/release/1/bookworm:
+      HTTP Error 503: Backend is unhealthy", then "ABORT: qemu verification
+      failed at line 627 (exit 1)". The CI gate failed because it requires
+      the Linux image gate.
+    - Cause: an outage of Debian's security tracker, external to this repo.
+      PR #147's Linux image gate passed the same step about an hour later on
+      essentially the same tree.
+    - Not rerun, by instruction. The next main run (fab7e325, PR #147) is
+      the re-check.
 - Correction (this entry's branch `docs/records-pushed-correction-20261125`
   from main 5474da80): the entries above that said `docs/records-20261124`
   was "local, NOT PUSHED" now say it was merged via PR #146. Only wording
@@ -9529,3 +9578,17 @@ another very thorough and comprehensive pass of this." Repo
   BW-183-FAT-ALIAS. Blocked: Ref 197/205 (Notion access).
 - Next action for main 5474da80: confirm `ci.yml` 45696176943 finishes
   green; if it fails, read the failed step's log before any rerun.
+  - UPDATE 2026-11-25: done; it failed on the Debian tracker 503 (above).
+- UPDATE 2026-11-25 (Claude Opus 5.5): PR #147 (this correction, head
+  d14deef8) merged.
+  - Checks on d14deef8, all green: Linux image gate 1h11m20s, CI gate,
+    Windows launcher tests, CodeQL and its 4 Analyze jobs; Proof skipped.
+  - Greptile: one review of d14deef8, 5/5, "No actionable issues found",
+    no inline comments.
+  - Merged 22:48:16Z by jallieson, pinned to d14deef8; merge commit
+    fab7e325b505a65247019638cf236720a56b3f83.
+  - Main on fab7e325 (as of 22:53Z): CodeQL "Push on main" 45716305389
+    SUCCESS (4 Analyze jobs); `ci.yml` 45716305330 Windows launcher tests
+    SUCCESS, Linux image gate IN PROGRESS. Next action: record its final
+    result in the next records update; if it fails, read the failed step's
+    log before any rerun.
