@@ -9771,3 +9771,30 @@ another very thorough and comprehensive pass of this." Repo
 - Jack-gated: the D-decisions packet (Refs 184-208), BW-182, BW-183-FAT-ALIAS,
   BW-HOST-A11Y-PKGS (installing Orca here), the runbook full run, Notion
   mark-off (no Notion connector), and the section A human/hardware items.
+- UPDATE 2026-11-26 17:50Z (Claude Opus 5.5): Jack's merge decision, PR #151
+  merged, and the local branches pushed.
+  - Authority: the user relayed Jack's decision 2026-11-26 ("I give full
+    merge and continuation permission for everything so merge everything
+    ..."). The D-decisions packet and the BW-182 certificate purchase stay
+    Jack's and are not touched.
+  - PR #151 (BW-QEMU-FLAKES part c, head 5361c993): all checks green (Linux
+    image gate, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped); Greptile one review, 5/5, no inline comments. Merged
+    2026-11-26 17:45:17Z, pinned to 5361c993; merge commit
+    b877b08a08c7124ecf3731776be73f25d177179b. Main runs on it: `ci.yml`
+    45870390855, CodeQL 45870390677 (results in the next update).
+  - The two host-compat test branches (`test/host-pytest-fstat-20261125`
+    e7f80384, `test/host-json-depth-20261125` b17b77c6) were cherry-picked
+    onto b877b08a as `test/host-pytest-compat-20261126` (beb70c17,
+    1d99b38b; worktree `../beamo-wipe-pytest-compat-20261126`) and opened as
+    PR #152. Local: 96 passed on pytest 9.0.3 and 9.2.0. The two old
+    branches are superseded by it.
+  - `safety/gtk-help-review-hold-20261124` rebased onto b877b08a (32bcfc41,
+    cb42ca13) and opened as PR #153. Local: tests/test_help_menu_175.py 89
+    passed (GTK 3, Xvfb 72 DPI). Open owner's call recorded on the PR: the
+    ~0.37 s fade gap (release on `hide` only would close it).
+  - This records branch was rebased onto b877b08a (9b400934); it is pushed
+    after the b877b08a main run so that run is recorded here.
+  - NEXT: merge #152 and #153 when all checks are green and Greptile is
+    clean; count drop lines in the b877b08a main run and the #152/#153 runs
+    (all contain the fix) toward part (c) acceptance.
