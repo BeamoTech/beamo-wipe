@@ -9146,6 +9146,7 @@ another very thorough and comprehensive pass of this." Repo
     - Tests: `tests/test_serial_marker_write_lock.py` (3 tests; fake tty that fails a second concurrent writer with EAGAIN like the kernel). With the lock removed, the two concurrency tests fail (3 of 3 runs). Its stand-ins only replace calls for the fake fd, so they are pytest-9.2-safe. Existing `tests/test_serial_marker_drops.py` unchanged and passing.
     - Local gate (this host, CI pins: pytest 9.0.3 in a `--system-site-packages` venv first on PATH, Xvfb 72 DPI, default `/tmp` temp): 17568 tests, 17047 passed, 519 skipped, 2 failed. Both are the known host-only failures in `docs/decisions/local-test-baseline-ubuntu-26-04.md` (D: `test_accessible_runtime::test_orca_announces_every_result`, no Orca stack; E: `test_doctor_decode_depth_pass12_20261021[deep-object-desktop]`, Python 3.14). The full run was throttled by the shared agents' cgroup `memory.high` (9.55 GB) at test 17442 and hit its 90-minute timeout, so those last 127 tests ran separately (126 passed in 5.6 s, plus the known E failure). `git diff --check` clean.
     - Remaining acceptance: the PR's hosted gate passes, then zero drop lines across several hosted runs (baseline 26 in 12). Cross-process writers (the kiosk shell's printf to ttyS0, only before the UI starts or after a graphical failure) are not covered by the lock; if drops recur, read them first.
+  - UPDATE 2026-11-26 20:05Z (Claude Opus 5.5): part (c) DONE. PR #151 merged as b877b08a (2026-11-26 17:45:17Z). Acceptance met: the hosted gate passed on the PR and on main, and five hosted runs containing the fix had 0 `SERIAL_MARKER_DROPPED` lines in 16 serial logs each (PR #151 45762052234, main b877b08a 45870390855, PR #152 45870600199, PR #153 45877438095, main 411d0565 45877268142), versus 26 drop lines in 12 baseline runs (11 of 12 with drops). Evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-*` (SHA256SUMS in each). If a drop line reappears, read it first for a cross-process writer (kiosk shell printf) and reopen. Part (a) stays OPEN (needs a hosted recurrence).
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9651,3 +9652,232 @@ another very thorough and comprehensive pass of this." Repo
     SUCCESS.
   - Recorded in the BW-QEMU-FLAKES part (c) fix PR
     (`fix/serial-marker-write-lock-20261126`).
+
+## BW-RECORDS-RECONCILE-20261126 — stale section headers reconciled against git (RECONCILED; NO HEADER EDITED; OPEN ITEMS LISTED BELOW)
+
+- Date/author: 2026-11-26 / Claude (Opus 5.5), Linux checkout. Branch
+  `docs/records-reconcile-20261126` from main 9a0ae76e (worktree
+  `../beamo-wipe-records-reconcile-20261126`). Local when written.
+- Why: 109 `##` headers in this file still say PENDING / LOCALLY / NOT
+  PUSHED / IN PROGRESS / OPEN / QUEUED / BLOCKED. Most describe work that
+  later landed. Headers are kept as history; this entry gives the current
+  state, so read it before acting on an old header.
+- Method (repeatable): for every such section, (1) each `tests/...py` it
+  names: present on origin/main, and the first-parent main merge that added
+  it; (2) each commit SHA it cites: ancestor of origin/main, v0.2.14
+  (aecf8456, 2026-11-12) or v0.2.15 (9ba5f0b8, 2026-11-18). Plus spot reads
+  of every section with no test or SHA evidence.
+
+### A. UI review items BW-127 to BW-187: ON MAIN AND RELEASED
+
+- Covers BW-127..BW-187, BW-139..147-STACK, BW-155B, BW-158 and
+  BW-158-LIMITSLINE-B (option b: the Storage limits button shows only with
+  Show more open; tests/test_limits_line_158.py), BW-172..BW-180, BW-174B,
+  BW-175B, BW-177G, BW-180F, BW-181, BW-183, BW-184, BW-185, BW-186 and the
+  BW-INT-20261107 entries.
+- Every named test file is on main. All but two were added by PR #94 (merge
+  d1c85087, 2026-11-10; PR head f00e55c, hosted `ci.yml` 42602052511 green
+  including Orca). BW-182's signing test and the BW-116 packet test came with
+  PR #96 (66082da4). The BW-174B (a7b0188) and BW-175B (9454c9b) fixes and
+  BW-158's 87ef77d8 are in PR #94. Both releases contain #94 and #96.
+- So "MERGE PENDING", "HOSTED GATE", "GTK/ORCA RUNTIME" and "LINUX 72 DPI"
+  in these headers are met: every main merge runs the suite, GTK and the
+  Orca test under Xvfb at 72 DPI (`scripts/ci-hosted.sh` lines 36, 145-151),
+  most recently main 9a0ae76e (`ci.yml` 45751002551, green). A local full
+  run on this host at 72 DPI on 2026-11-26 (main 9a0ae76e plus PR #151)
+  passed except the two known host-only failures; BW-177G's and BW-158's
+  test files: 119 passed, 0 skipped. "COMPARISON" steps were pre-merge
+  checks; not re-run, superseded by the hosted gate on the merged tree.
+- Still open from these headers (human, hardware or owner; NOT agent-doable):
+  - FR/DE/ES/IT native-speaker review of the new strings (PR #106 was a
+    Claude review, not a native speaker).
+  - Hands-on checks: BW-127 phone QR scans; BW-131/132 listening to Orca
+    speech (the automated Orca test passes); BW-133 real audio; BW-140 real
+    X/console keymaps; BW-144 and BW-185 real hardware; BW-165 a real
+    terminal; BW-183 Windows 10/11 VM acceptance.
+  - The owner questions listed in the BW-INT-20261107 entry of 2026-11-09
+    (#184 HP/ASUS keys, #185 wording and VMD/no-NVMe case, #186 section 12
+    decisions and the others there). BW-182 signing: deferred by the owner.
+  - Physical acceptance: every PHY row (BW-116-PACKET) is NOT TESTED.
+
+### B. October audit and release passes: SHIPPED
+
+- BW-SECURITY-PR93-G1, BW-SECURITY-MAIN-HANDOFF-20261027,
+  BW-COMPREHENSIVE-REPASS R3/R4/R5, BW-INTEGRATED-AUDIT-20261025,
+  BW-AUDIT-20261024, BW-RELEASE-20261017-ALL, BW-BUG-AUDIT PASS8..PASS21,
+  BW-READINESS-WORK-20261026, BW-COMPAT-UX-20261027, BW-FINISH-20261028,
+  BW-PASS2-20261028 and BW-PASS3-20261028.
+- Every cited commit that resolves is on main and in v0.2.14, except: PASS16
+  also cites commits first released in v0.2.15; PASS21's 35107a8d came via
+  PR #90 (29bd8059); R4 cites no commit, and its evidence
+  (`docs/evidence/bug-audit-20261025-pass4/`) came via PR #93 (1f826129),
+  so it is in v0.2.15; G1's test came via PR #93. BW-FINISH's one off-main
+  SHA (bf2b490) is a pre-rebase PR #93 head.
+- Their code-qualification "BLOCKED" notes were about those local passes.
+  The code has since shipped in qualified releases 0.2.14 and 0.2.15
+  (BW-RELEASE-0.2.15-PREP: published and verified 2026-11-18). Not
+  re-audited pass by pass here.
+- NOT closed by shipping (corrected 2026-11-26 after Greptile on PR #154):
+  their historical-incident attribution checks stay OPEN, because their own
+  acceptance says later passing tests do not explain those events. See the
+  list in D.
+
+### C. November process entries: SUPERSEDED OR DONE
+
+- BW-PR93-PREP-20261115: PR #93 merged as 1f826129; its off-main SHAs
+  (7f2f2a48, bf2b4909) are pre-rebase heads.
+- BW-PASS16-INCIDENT-REVIEW, BW-Q12-PR94-BW168, BW-SCRUB-MAIN,
+  BW-DOCS-PRS-108-109: their own headers carry MERGED updates.
+- BW-168-PROBE-IMPL: merged via #120; probe PASS (BW-168-SCREEN-AWAKE-PROBE).
+- BW-CLEANUP-PHASE-QUEUED: done; batches #116 and #117 merged, no further
+  batch queued (2026-11-18 update in BW-QEMU-FLAKES).
+- BW-END-STATE-20261116 and BW-DEEP-REVIEW-9b9102e6 (runtime half blocked
+  on WSL): snapshots of 9b9102e6; superseded by later main, now verified on
+  every merge by the hosted gate. Not re-run.
+
+### D. Genuinely open now (current list)
+
+- Agent-doable, local work done, waiting for push/PR approval:
+  - `test/host-pytest-fstat-20261125` e7f80384 (BW-HOST-PYTEST-FSTAT);
+  - `test/host-json-depth-20261125` b17b77c6 (BW-HOST-JSON-DEPTH);
+  - `safety/gtk-help-review-hold-20261124` 4e07d7ef (BW-138-GTK-HOLD).
+  - Re-verified 2026-11-26: main has not touched any of their files since
+    their base 9ae7f8cf. Cherry-picked together with PR #151 onto main
+    9a0ae76e in a scratch worktree, all apply cleanly. Their test files plus
+    test_serial_marker_write_lock, test_help_menu_175 and
+    test_accessible_runtime at 72 DPI: pytest 9.0.3 with system GTK, 379
+    passed, 1 skipped, 1 failed (the known Orca host failure; the JSON-depth
+    test now passes on Python 3.14); pytest 9.2.0 venv without GTK, 178
+    passed, 5 skipped.
+- BW-138-GTK-HOLD independent review (2026-11-26, a separate Claude
+  subagent given only the code, not my conclusions): APPROVE WITH NITS, no
+  safety or correctness defect.
+  - Checked: erase cannot start early (the gate is `wizard.erase_enabled`,
+    overlay depth 0); every close path releases the hold (Esc, screen
+    change, rebuild, `close()`, nested overlay); no re-entrancy; parity
+    with Tk `_hold_review_for_help`. The commit's 3 GTK runtime tests ran
+    and passed here (they were not run where it was written). 12 mutation
+    checks; only "no status refresh on release" survives (harmless).
+  - Low, NOT CHANGED (owner's call): the fresh 5 s countdown starts on the
+    popover's `closed` signal, when its fade-out begins; on Xvfb the fading
+    popover stays mapped ~0.37 s and takes no input. Tk removes its menu
+    at once. Releasing on `hide` only would close the gap.
+  - Nits FIXED in local follow-up 830c9d9e (tests only): text size is locked
+    on Last chance, so the runtime test named for it never rebuilt; it is
+    renamed, and new runtime tests cover Sounds/High contrast (the items
+    that really rebuild and reopen) and `close()` with the menu open.
+    tests/test_help_menu_175.py: 89 passed. Removing the `close()` release
+    now fails a behaviour test (before: source-text check only).
+  - Branch is now 4e07d7ef + 830c9d9e, local, not pushed.
+- PR #151 (BW-QEMU-FLAKES part c): all checks green on 5361c993, Greptile
+  5/5; merge is Jack's. Its first hosted run had 0 drop lines in 16 serial
+  logs (evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-pr151-45762052234/`).
+- BW-QEMU-FLAKES part (a): needs a hosted recurrence.
+- Historical incident attribution from the October audit passes (OPEN,
+  BLOCKED on records only Jack/the platform can supply; not closed by the
+  0.2.14/0.2.15 releases or by later passing tests):
+  - pass8: attributable platform execution/signal evidence for the
+    06:29 UTC SIGTERM / exit 143 (PASS16 entry, BW-PASS16-INCIDENT-REVIEW);
+  - pass9: the unavailable original failed timing trace (PASS16 entry);
+  - pass16: the loop incident review is written (BW-PASS16-INCIDENT-REVIEW);
+    its acceptance still needs the pass8 and pass9 records above;
+  - pass18: the original 74.93 ms first GTK click latency (BW-P21-HISTORICAL);
+  - pass19: two uncanceled native aborts, creator and cause unattributed
+    (BW-P20-HISTORICAL, BW-P21-HISTORICAL).
+  - Acceptance (unchanged): evidenced incident reconciliation from the
+    original retained traces and platform incident records. Next action:
+    Jack supplies or locates those platform records, or explicitly cancels
+    these checks; until then they stay open.
+- Jack-gated: the D-decisions packet (Refs 184-208), BW-182, BW-183-FAT-ALIAS,
+  BW-HOST-A11Y-PKGS (installing Orca here), the runbook full run, Notion
+  mark-off (no Notion connector), and the section A human/hardware items.
+- UPDATE 2026-11-26 17:50Z (Claude Opus 5.5): Jack's merge decision, PR #151
+  merged, and the local branches pushed.
+  - Authority: the user relayed Jack's decision 2026-11-26 ("I give full
+    merge and continuation permission for everything so merge everything
+    ..."). The D-decisions packet and the BW-182 certificate purchase stay
+    Jack's and are not touched.
+  - PR #151 (BW-QEMU-FLAKES part c, head 5361c993): all checks green (Linux
+    image gate, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped); Greptile one review, 5/5, no inline comments. Merged
+    2026-11-26 17:45:17Z, pinned to 5361c993; merge commit
+    b877b08a08c7124ecf3731776be73f25d177179b. Main runs on it: `ci.yml`
+    45870390855, CodeQL 45870390677 (results in the next update).
+  - The two host-compat test branches (`test/host-pytest-fstat-20261125`
+    e7f80384, `test/host-json-depth-20261125` b17b77c6) were cherry-picked
+    onto b877b08a as `test/host-pytest-compat-20261126` (beb70c17,
+    1d99b38b; worktree `../beamo-wipe-pytest-compat-20261126`) and opened as
+    PR #152. Local: 96 passed on pytest 9.0.3 and 9.2.0. The two old
+    branches are superseded by it.
+  - `safety/gtk-help-review-hold-20261124` rebased onto b877b08a (32bcfc41,
+    cb42ca13) and opened as PR #153. Local: tests/test_help_menu_175.py 89
+    passed (GTK 3, Xvfb 72 DPI). Open owner's call recorded on the PR: the
+    ~0.37 s fade gap (release on `hide` only would close it).
+  - This records branch was rebased onto b877b08a (9b400934); it is pushed
+    after the b877b08a main run so that run is recorded here.
+  - NEXT: merge #152 and #153 when all checks are green and Greptile is
+    clean; count drop lines in the b877b08a main run and the #152/#153 runs
+    (all contain the fix) toward part (c) acceptance.
+- UPDATE 2026-11-26 18:40Z (Claude Opus 5.5): PR #152 merged; PR #153
+  rebased.
+  - PR #152 (head 1d99b38b): all checks green (Linux image gate run
+    45870600199, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped); Greptile one review, 5/5, no findings, no inline comments.
+    Merged 2026-11-26 ~18:36Z, pinned to 1d99b38b; merge commit
+    411d05651f8304afd071a2b4332c5ed032ad2e18. Main runs on it: `ci.yml`
+    45877268142, CodeQL 45877267774.
+  - Part (c) acceptance sample: PR #152's run 45870600199 (contains the
+    #151 fix) had 0 `SERIAL_MARKER_DROPPED` lines in 16 serial logs (1993
+    lines). Evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-pr152-45870600199/`
+    (SHA256SUMS, 134 files). Running tally with the fix: 2 runs, 0 drops
+    (PR #151 run 45762052234, PR #152 run 45870600199); baseline 26 drop
+    lines in 12 runs.
+  - Main requires up-to-date branches (`CI gate`, strict), so PR #153 was
+    rebased onto 411d0565 (793efbb2, c2a0171d) and force-pushed with lease;
+    its run on cb42ca13 was cancelled by the workflow's PR concurrency.
+    Local after rebase: test_help_menu_175 + test_external_boundaries 114
+    passed. Greptile on cb42ca13: 5/5, no findings; its summary says
+    "jallieson explicitly acknowledged" the fade gap, but no such comment
+    exists (it read the PR body, posted from the jallieson account). The
+    fade gap stays an open owner's call.
+- UPDATE 2026-11-26 18:53Z (Claude Opus 5.5): main green on b877b08a (PR
+  #151 merge, the part c fix).
+  - `ci.yml` 45870390855 COMPLETED SUCCESS (Linux image gate
+    17:45:27-18:50:25Z, Windows launcher tests 17:45:43-17:47:12Z, CI gate
+    18:50:32-18:50:37Z); CodeQL 45870390677 SUCCESS.
+  - Part (c) sample: 0 drop lines in 16 serial logs (1978 lines). Evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-b877b08a-45870390855/`
+    (SHA256SUMS, 132 files). Tally with the fix: 3 runs (PR #151, PR #152,
+    main b877b08a), 0 drops; baseline 26 in 12.
+  - Still running: main 411d0565 (`ci.yml` 45877268142), PR #153 on
+    c2a0171d (`ci.yml` 45877438095). NEXT: merge #153 when green and
+    Greptile clean, then rebase and push this records branch.
+- UPDATE 2026-11-26 20:05Z (Claude Opus 5.5): PR #153 merged; main green
+  on 411d0565; part (c) DONE.
+  - PR #153 (BW-138-GTK-HOLD, head c2a0171d): all checks green (Linux image
+    gate 45877438095 18:38:15-19:44:43Z, Windows launcher tests, CI gate,
+    CodeQL + 4 Analyze; Proof skipped). Greptile reviewed cb42ca13 (5/5, no
+    findings) and did not re-run after the strict-rule rebase; the rebase was
+    patch-identical (`git range-diff` all `=`, diffs byte-identical) and the
+    new base (PR #152) touched none of its files. That evidence is on the PR
+    (issuecomment-7201929664), with a correction to Greptile's claim that
+    jallieson acknowledged the fade gap. Merged 2026-11-26 19:45:37Z, pinned
+    to c2a0171d; merge commit 9ec44f9395910196c761a6ac0a75614ae948e826.
+    BW-138-GTK-HOLD: DONE (merged). Still open, owner's call: the ~0.37 s
+    fade gap (release on `hide` only would close it).
+  - 411d0565 (PR #152 merge): `ci.yml` 45877268142 COMPLETED SUCCESS (Linux
+    image gate 18:50:43-19:59:33Z, Windows launcher tests 18:50:55-18:52:17Z,
+    CI gate 19:59:38-19:59:43Z); CodeQL 45877267774 SUCCESS. 0 drop lines in
+    16 serial logs; evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-411d0565-45877268142/`.
+  - BW-HOST-PYTEST-COMPAT (pytest 9.2 fstat stand-ins, Python 3.14 depth
+    test): DONE, merged in PR #152. The local branches
+    `test/host-pytest-fstat-20261125` and `test/host-json-depth-20261125`
+    are superseded by it.
+  - BW-QEMU-FLAKES part (c): DONE (see its entry). Part (a): OPEN.
+  - Main 9ec44f93 (PR #153 merge): `ci.yml` 45886026711 running when this
+    was written; recorded with the next substantive PR.
+  - This records PR is pushed on 9ec44f93. Remaining Jack-gated items are
+    unchanged (D-decisions packet, BW-182, BW-183-FAT-ALIAS,
+    BW-HOST-A11Y-PKGS, runbook full run, Notion mark-off, the GTK fade-gap
+    choice, native review, hardware and physical rows).
