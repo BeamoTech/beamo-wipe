@@ -9895,3 +9895,20 @@ another very thorough and comprehensive pass of this." Repo
     `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-9ec44f93-45886026711/`
     (SHA256SUMS, 132 files). Runs with the part (c) fix: 6, all 0 drops, no
     part (a) lost-release failure.
+- UPDATE 2026-11-26 21:20Z (Claude Opus 5.5): PR #154 merged.
+  - PR #154 (records reconciliation, head c00dac20): Greptile review 1 on
+    b524df17 was 4/5 with one P2 ("Open incident checks disappear"), valid;
+    fixed in c00dac20 (historical incident checks kept OPEN in section D)
+    and answered on the PR (discussion_r4712927724). Greptile review 2 on
+    c00dac20: 5/5, no findings. All checks green (Linux image gate
+    45888304462, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped). Merged 2026-11-26 21:19:26Z, pinned to c00dac20; merge commit
+    a394d9def1e82f989f577b574415f28ff0df999d. Its main run is recorded with
+    the next substantive PR.
+  - This branch (`docs/records-parta-20261126`, worktree
+    `../beamo-wipe-records-parta-20261126`) is LOCAL, held to ride with the
+    next substantive PR instead of a records-only hosted run. Push it alone
+    only if Jack wants the part (a) proposal on main sooner.
+  - Agent-doable work on the Wipe backlog is exhausted for now; every
+    remaining open item needs Jack, the owner, hardware or a hosted
+    recurrence (see BW-RECORDS-RECONCILE-20261126 section D).
