@@ -9798,3 +9798,25 @@ another very thorough and comprehensive pass of this." Repo
   - NEXT: merge #152 and #153 when all checks are green and Greptile is
     clean; count drop lines in the b877b08a main run and the #152/#153 runs
     (all contain the fix) toward part (c) acceptance.
+- UPDATE 2026-11-26 18:40Z (Claude Opus 5.5): PR #152 merged; PR #153
+  rebased.
+  - PR #152 (head 1d99b38b): all checks green (Linux image gate run
+    45870600199, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped); Greptile one review, 5/5, no findings, no inline comments.
+    Merged 2026-11-26 ~18:36Z, pinned to 1d99b38b; merge commit
+    411d05651f8304afd071a2b4332c5ed032ad2e18. Main runs on it: `ci.yml`
+    45877268142, CodeQL 45877267774.
+  - Part (c) acceptance sample: PR #152's run 45870600199 (contains the
+    #151 fix) had 0 `SERIAL_MARKER_DROPPED` lines in 16 serial logs (1993
+    lines). Evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-pr152-45870600199/`
+    (SHA256SUMS, 134 files). Running tally with the fix: 2 runs, 0 drops
+    (PR #151 run 45762052234, PR #152 run 45870600199); baseline 26 drop
+    lines in 12 runs.
+  - Main requires up-to-date branches (`CI gate`, strict), so PR #153 was
+    rebased onto 411d0565 (793efbb2, c2a0171d) and force-pushed with lease;
+    its run on cb42ca13 was cancelled by the workflow's PR concurrency.
+    Local after rebase: test_help_menu_175 + test_external_boundaries 114
+    passed. Greptile on cb42ca13: 5/5, no findings; its summary says
+    "jallieson explicitly acknowledged" the fade gap, but no such comment
+    exists (it read the PR body, posted from the jallieson account). The
+    fade gap stays an open owner's call.
