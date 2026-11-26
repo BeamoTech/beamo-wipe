@@ -9131,6 +9131,14 @@ another very thorough and comprehensive pass of this." Repo
     - Candidate fixes (not chosen): retry the write briefly on EAGAIN before counting a drop; or carry the drop count in the marker. Accepting SCREEN_WORKING alone as acceptance evidence is NOT proposed, because it would hide a lost press result.
     - Next action: a separate diag/harness PR with tests. It touches the diagnostics used by the safety journeys, so it needs its own review. Not started.
   - Part (a) (lost key release, no drop) stays OPEN, unchanged.
+  - UPDATE 2026-11-26 (Claude Opus 5.5): part (c) triage prep (no source change).
+    - Evidence kept on the Linux host under `~/.cache/beamo-wipe-evidence/`: the failing 0813339f run's full qemu-evidence plus job log (SHA256SUMS, 55 files; artifact expires 2026-11-27), and ci-evidence from 12 green `ci.yml` runs (2026-11-20 to 2026-11-26). Triage note: `qemu-flakes-c-TRIAGE.md` there (host-local, not committed).
+    - Drops are routine: 11 of the 12 green runs contain drop markers (26 drop lines). All 26 are in the report-export step (report USB hot-plugged, Space held); those boots passed because no awaited marker was lost. The 0813339f failure is the only drop seen at Last chance -> Checking.
+    - Key-release diagnostics (KEY_RETURN_RELEASE_RECEIVED/_SUPERSEDED, KEY_SPACE_RELEASE_RECEIVED; #119/#124) are 62% of all marker lines (14404 of 23346), one per X autorepeat release while a key is held.
+    - ttyS0 speed is never set (no `console=ttyS0,<baud>`, no stty; serial-getty masked). `emit_serial_marker` opens ttyS0 O_NONBLOCK per marker on the Tk UI thread and counts EAGAIN as a drop. diagnostics.py, qemu-verify.sh, ui/ and the kiosk script are unchanged from 0813339f to 51ab7a72, so the defect is live.
+    - Hypotheses (unproven): the UART transmit buffer fills when marker traffic meets a short guest stall; the default port speed may throttle draining (unverified for QEMU's 16550 model with a file backend).
+    - Fix options (not chosen): bounded wait on EAGAIN (UI thread; small, tested bound); ordered background writer; aggregate per-autorepeat diagnostics while keeping the host's printed counts; set a QEMU-only port speed. Not proposed: accepting SCREEN_WORKING alone.
+    - Success measure for the fix: zero drop lines across several hosted runs, against 26 in this 12-run baseline.
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9608,3 +9616,19 @@ another very thorough and comprehensive pass of this." Repo
     recorded by the next records update.
   - Open from it: BW-QEMU-FLAKES part (c) (serial marker loss on EAGAIN),
     a separate diag/harness PR, not started.
+- UPDATE 2026-11-26 (Claude Opus 5.5): main green on the PR #148 and #149
+  merges.
+  - 0e14bd15 (PR #148 merge): `ci.yml` 45728454199 COMPLETED SUCCESS
+    (Linux image gate 00:24:07-01:28:43Z, Windows launcher tests, CI gate);
+    CodeQL "Push on main" 45728453556 SUCCESS.
+  - PR #149 (head f4646d4b): all checks green (Linux image gate 1h3m37s,
+    CI gate, Windows launcher tests, CodeQL and its 4 Analyze jobs; Proof
+    skipped); Greptile one review, 5/5, no findings. Merged 2026-11-26
+    01:30:46Z by jallieson, pinned to f4646d4b; merge commit
+    51ab7a724f8a3f0f4835ea6fb7b5d42b6daa77dc.
+  - 51ab7a72 (PR #149 merge): `ci.yml` 45736260523 COMPLETED SUCCESS
+    (Linux image gate 01:30:56-02:35:49Z, Windows launcher tests
+    01:31:05-01:32:36Z, CI gate 02:35:55-02:35:59Z); CodeQL "Push on main"
+    45736259438 SUCCESS (4 Analyze jobs).
+  - The main run for this records PR's own merge is recorded with the next
+    substantive PR (BW-QEMU-FLAKES part c), not by another records-only PR.
