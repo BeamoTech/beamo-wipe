@@ -9922,3 +9922,38 @@ another very thorough and comprehensive pass of this." Repo
     check); the part (c) tally stays at 6 runs, 0 drops.
   - This branch stays LOCAL (not pushed, no PR), per the 2026-11-26
     instruction.
+
+## BW-RELEASE-0.2.16-20261127 — release prep for 0.2.16 (IN PR; TAG, release.yml AND PUBLICATION PENDING)
+
+- Date/author: 2026-11-27 / Claude (Opus 5.5), Linux checkout. Branch
+  `release/prep-0.2.16-20261127` (worktree `../beamo-wipe-release-0.2.16`),
+  on `docs/records-parta-20261126` (c14a462e) over main a394d9de, so the
+  held part (a) / 9ec44f93 / #154 records ride in the same PR.
+- Authority: Jack's directive relayed 2026-11-27 ("Merge absolutely
+  everything and get it all deployed to production fully and completely and
+  then let me know everything that's left to do"). Spend, purchases
+  (including BW-182) and the D-decisions packet stay excluded.
+- Content (mirrors PR #123 for 0.2.15): 0.2.15 -> 0.2.16 in pyproject.toml,
+  `__init__.py`, release.yml's default, README, cloudbuild.yaml, script
+  defaults, helper pages, qemu-verify/vm-test docs, result-summary goldens
+  (share.txt checksum regenerated), the desktop developer_tests versions,
+  the tag test, compatibility matrix v1.18 (new changelog row) and runbook
+  1.16; new `docs/release-0.2.16.md` covering #124-#154.
+  - Kept as fixtures/history: the matrix 1.17 changelog row,
+    `scripts/check-beamo-stick.py`'s "for example" message, and the
+    arbitrary versions in test_corresponding_source, test_release_publisher
+    and test_stick_check (none compares against `__version__`).
+- Local checks: version-bound and release tests (desktop developer_tests,
+  matrix, runbook, tag, corresponding source, publisher, stick check,
+  release promotion, result-summary goldens and every test naming
+  `__version__` or release notes): 1761 passed, 86 skipped. Full local
+  suite: see the UPDATE below.
+- Remaining acceptance and next actions, in order: PR CI gate green and
+  Greptile clean on the final head; merge pinned; main `ci.yml` green on
+  the merge commit; annotated tag v0.2.16 on that commit; dispatch
+  release.yml with version 0.2.16 on main; verify the published release as
+  for 0.2.15 (asset digests, SHA256SUMS, keys.json, manifest and
+  release-downloads signatures against pinned key 93caaf7ca93eff4d,
+  manifest version/commit/tag/nwipe/prior_stable 0.2.11).
+- Not changed: the v0.2.11 rollback target. Physical and real-PC acceptance
+  rows stay NOT TESTED (Jack).

@@ -90,7 +90,7 @@ The gate fails unless all of these pass:
    platform link for it in its private mount namespace only.
 
 ```sh
-BEAMO_WIPE_VERSION=0.2.15 ./scripts/qemu-verify.sh
+BEAMO_WIPE_VERSION=0.2.16 ./scripts/qemu-verify.sh
 evidence_dir=$(cat qemu-evidence/PATH)
 find "$evidence_dir" -maxdepth 1 -type f -print
 ```
