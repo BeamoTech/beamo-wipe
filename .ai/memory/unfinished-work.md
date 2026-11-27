@@ -9957,3 +9957,19 @@ another very thorough and comprehensive pass of this." Repo
   manifest version/commit/tag/nwipe/prior_stable 0.2.11).
 - Not changed: the v0.2.11 rollback target. Physical and real-PC acceptance
   rows stay NOT TESTED (Jack).
+- UPDATE 2026-11-27 05:10Z (Claude Opus 5.5): full local gate on 73559a80.
+  - Run: pytest 9.0.3 venv with system GTK, Xvfb 72 DPI, Python 3.14,
+    `--basetemp` on disk (`~/.cache/beamo-wipe-pytest-tmp/`) to avoid the
+    tmpfs memory throttling of 2026-11-26: 17042 passed, 519 skipped, 23
+    failed in 1:08:59.
+  - 22 of the 23 are an artifact of that on-disk basetemp (tests that need
+    pytest's temp under /tmp or on tmpfs: test_session_tmpfs_pass17_ui,
+    test_cancel_observed_exit x10, test_audit_20260905_wizard x6,
+    test_recovery_boot_alias_pass3 x3, test_discover, test_evidence). Rerun
+    with the default /tmp basetemp: all 22 passed.
+  - The remaining failure is the known host-only D baseline
+    (`test_accessible_runtime::test_orca_announces_every_result`, no Orca
+    stack; docs/decisions/local-test-baseline-ubuntu-26-04.md). The E
+    JSON-depth baseline no longer fails (fixed by #152).
+  - Net: 17064 passed, 519 skipped, 1 known host failure. Lesson: do not
+    move basetemp off /tmp for this suite.
