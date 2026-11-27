@@ -32,7 +32,7 @@ def test_native_manifest_keeps_canonical_line_endings(builder, tmp_path, monkeyp
     output = _setup(builder, tmp_path, monkeypatch, "nt", False)
     builder.build(output)
     assert b"\r\n" not in (output / "desktop-build.json").read_bytes()
-    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
+    builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.16", False)
 
 
 @pytest.mark.parametrize("api", ["path", "handle"])

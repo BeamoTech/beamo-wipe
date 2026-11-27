@@ -40,7 +40,7 @@ def _setup(builder, tmp_path, monkeypatch, host, prior):
         (output / "desktop-build.json").write_text(
             json.dumps(
                 {
-                    "version": "0.2.15",
+                    "version": "0.2.16",
                     "source_commit": "a" * 40,
                     "source_sha256": "b" * 64,
                     "source_dirty": False,

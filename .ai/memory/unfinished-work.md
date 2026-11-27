@@ -9147,6 +9147,11 @@ another very thorough and comprehensive pass of this." Repo
     - Local gate (this host, CI pins: pytest 9.0.3 in a `--system-site-packages` venv first on PATH, Xvfb 72 DPI, default `/tmp` temp): 17568 tests, 17047 passed, 519 skipped, 2 failed. Both are the known host-only failures in `docs/decisions/local-test-baseline-ubuntu-26-04.md` (D: `test_accessible_runtime::test_orca_announces_every_result`, no Orca stack; E: `test_doctor_decode_depth_pass12_20261021[deep-object-desktop]`, Python 3.14). The full run was throttled by the shared agents' cgroup `memory.high` (9.55 GB) at test 17442 and hit its 90-minute timeout, so those last 127 tests ran separately (126 passed in 5.6 s, plus the known E failure). `git diff --check` clean.
     - Remaining acceptance: the PR's hosted gate passes, then zero drop lines across several hosted runs (baseline 26 in 12). Cross-process writers (the kiosk shell's printf to ttyS0, only before the UI starts or after a graphical failure) are not covered by the lock; if drops recur, read them first.
   - UPDATE 2026-11-26 20:05Z (Claude Opus 5.5): part (c) DONE. PR #151 merged as b877b08a (2026-11-26 17:45:17Z). Acceptance met: the hosted gate passed on the PR and on main, and five hosted runs containing the fix had 0 `SERIAL_MARKER_DROPPED` lines in 16 serial logs each (PR #151 45762052234, main b877b08a 45870390855, PR #152 45870600199, PR #153 45877438095, main 411d0565 45877268142), versus 26 drop lines in 12 baseline runs (11 of 12 with drops). Evidence `~/.cache/beamo-wipe-evidence/qemu-flakes-c-*` (SHA256SUMS in each). If a drop line reappears, read it first for a cross-process writer (kiosk shell printf) and reopen. Part (a) stays OPEN (needs a hosted recurrence).
+  - UPDATE 2026-11-26 20:40Z (Claude Opus 5.5): part (a) re-read in the light of part (c). Status: OPEN, LIKELY THE SAME CAUSE AS (c), NOT PROVEN.
+    - Both part (a) recurrences predate the #132 drop counters, so a serial drop could not show. Job logs (artifacts expired) kept at `~/.cache/beamo-wipe-evidence/qemu-flakes-a-joblogs/` (SHA256SUMS): main 44120735113 attempt 1 (fc87299b, bios-quick_zero) and main 44331845385 (b0fe7c59, bios-extra).
+    - Both failed at the Last chance -> Checking transition, the same window as the part (c) failure on 0813339f. In both, the erase-transition recheck had emitted BOOT_FINDMNT_MULTIROW (count 3: one at boot, two at the transition) from a worker thread. In 44331845385 RECEIVED 49 = SUPERSEDED 44 + RELEASED 5: the final press lost both its RELEASE_RECEIVED and RELEASED markers, which a dropped serial write explains as well as an X-level loss. Green runs (24 survey journeys + 10 post-fix) all have RELEASED >= 6 and show the final RECEIVED/RELEASED interleaved with the worker's FINDMNT and SCREEN_WORKING markers (for example survey 45728454199 bios-extra lines 137-144), so the collision window is real.
+    - Since b877b08a the lock removes that loss; any remaining loss now shows as a DROPPED line or, if no drop line, as a genuine part (a) with APP_FOCUS_*/XINPUT_* counts. No part (a) recurrence in the 5 runs with the fix.
+    - Acceptance unchanged (guest evidence names the layer). Proposed for Jack: close part (a) as explained by (c) if no lost-release failure occurs in the main runs over the next two weeks (to 2026-12-10); a recurrence with no DROPPED line reopens it as an X/input issue. Not closed by this note.
 
 ## BW-168-SCREEN-AWAKE-PROBE-20261118 — QEMU probe PASS, fully green re-run 44379454698; physical rows NOT TESTED
 
@@ -9881,3 +9886,90 @@ another very thorough and comprehensive pass of this." Repo
     unchanged (D-decisions packet, BW-182, BW-183-FAT-ALIAS,
     BW-HOST-A11Y-PKGS, runbook full run, Notion mark-off, the GTK fade-gap
     choice, native review, hardware and physical rows).
+- UPDATE 2026-11-26 21:06Z (Claude Opus 5.5): main green on 9ec44f93 (PR
+  #153 merge).
+  - `ci.yml` 45886026711 COMPLETED SUCCESS (Linux image gate
+    19:59:49-21:04:48Z, Windows launcher tests 20:00:04-20:01:29Z, CI gate
+    21:04:55-21:05:00Z); CodeQL 45886026777 SUCCESS.
+  - 0 drop lines in 16 serial logs (1976 lines); evidence
+    `~/.cache/beamo-wipe-evidence/qemu-flakes-c-main-9ec44f93-45886026711/`
+    (SHA256SUMS, 132 files). Runs with the part (c) fix: 6, all 0 drops, no
+    part (a) lost-release failure.
+- UPDATE 2026-11-26 21:20Z (Claude Opus 5.5): PR #154 merged.
+  - PR #154 (records reconciliation, head c00dac20): Greptile review 1 on
+    b524df17 was 4/5 with one P2 ("Open incident checks disappear"), valid;
+    fixed in c00dac20 (historical incident checks kept OPEN in section D)
+    and answered on the PR (discussion_r4712927724). Greptile review 2 on
+    c00dac20: 5/5, no findings. All checks green (Linux image gate
+    45888304462, Windows launcher tests, CI gate, CodeQL + 4 Analyze; Proof
+    skipped). Merged 2026-11-26 21:19:26Z, pinned to c00dac20; merge commit
+    a394d9def1e82f989f577b574415f28ff0df999d. Its main run is recorded with
+    the next substantive PR.
+  - This branch (`docs/records-parta-20261126`, worktree
+    `../beamo-wipe-records-parta-20261126`) is LOCAL, held to ride with the
+    next substantive PR instead of a records-only hosted run. Push it alone
+    only if Jack wants the part (a) proposal on main sooner.
+  - Agent-doable work on the Wipe backlog is exhausted for now; every
+    remaining open item needs Jack, the owner, hardware or a hosted
+    recurrence (see BW-RECORDS-RECONCILE-20261126 section D).
+- UPDATE 2026-11-26 22:55Z (Claude Opus 5.5): main green on a394d9de (PR
+  #154 merge).
+  - `ci.yml` 45897333070 COMPLETED SUCCESS (Linux image gate
+    21:19:35-22:28:30Z, Windows launcher tests 21:19:51-21:21:16Z, CI gate
+    22:28:37-22:28:42Z); CodeQL 45897332812 SUCCESS (4 Analyze jobs,
+    21:19:33-21:23:00Z).
+  - Serial logs of this run not downloaded or counted (single-item status
+    check); the part (c) tally stays at 6 runs, 0 drops.
+  - This branch stays LOCAL (not pushed, no PR), per the 2026-11-26
+    instruction.
+
+## BW-RELEASE-0.2.16-20261127 — release prep for 0.2.16 (IN PR; TAG, release.yml AND PUBLICATION PENDING)
+
+- Date/author: 2026-11-27 / Claude (Opus 5.5), Linux checkout. Branch
+  `release/prep-0.2.16-20261127` (worktree `../beamo-wipe-release-0.2.16`),
+  on `docs/records-parta-20261126` (c14a462e) over main a394d9de, so the
+  held part (a) / 9ec44f93 / #154 records ride in the same PR.
+- Authority: Jack's directive relayed 2026-11-27 ("Merge absolutely
+  everything and get it all deployed to production fully and completely and
+  then let me know everything that's left to do"). Spend, purchases
+  (including BW-182) and the D-decisions packet stay excluded.
+- Content (mirrors PR #123 for 0.2.15): 0.2.15 -> 0.2.16 in pyproject.toml,
+  `__init__.py`, release.yml's default, README, cloudbuild.yaml, script
+  defaults, helper pages, qemu-verify/vm-test docs, result-summary goldens
+  (share.txt checksum regenerated), the desktop developer_tests versions,
+  the tag test, compatibility matrix v1.18 (new changelog row) and runbook
+  1.16; new `docs/release-0.2.16.md` covering #124-#154.
+  - Kept as fixtures/history: the matrix 1.17 changelog row,
+    `scripts/check-beamo-stick.py`'s "for example" message, and the
+    arbitrary versions in test_corresponding_source, test_release_publisher
+    and test_stick_check (none compares against `__version__`).
+- Local checks: version-bound and release tests (desktop developer_tests,
+  matrix, runbook, tag, corresponding source, publisher, stick check,
+  release promotion, result-summary goldens and every test naming
+  `__version__` or release notes): 1761 passed, 86 skipped. Full local
+  suite: see the UPDATE below.
+- Remaining acceptance and next actions, in order: PR CI gate green and
+  Greptile clean on the final head; merge pinned; main `ci.yml` green on
+  the merge commit; annotated tag v0.2.16 on that commit; dispatch
+  release.yml with version 0.2.16 on main; verify the published release as
+  for 0.2.15 (asset digests, SHA256SUMS, keys.json, manifest and
+  release-downloads signatures against pinned key 93caaf7ca93eff4d,
+  manifest version/commit/tag/nwipe/prior_stable 0.2.11).
+- Not changed: the v0.2.11 rollback target. Physical and real-PC acceptance
+  rows stay NOT TESTED (Jack).
+- UPDATE 2026-11-27 05:10Z (Claude Opus 5.5): full local gate on 73559a80.
+  - Run: pytest 9.0.3 venv with system GTK, Xvfb 72 DPI, Python 3.14,
+    `--basetemp` on disk (`~/.cache/beamo-wipe-pytest-tmp/`) to avoid the
+    tmpfs memory throttling of 2026-11-26: 17042 passed, 519 skipped, 23
+    failed in 1:08:59.
+  - 22 of the 23 are an artifact of that on-disk basetemp (tests that need
+    pytest's temp under /tmp or on tmpfs: test_session_tmpfs_pass17_ui,
+    test_cancel_observed_exit x10, test_audit_20260905_wizard x6,
+    test_recovery_boot_alias_pass3 x3, test_discover, test_evidence). Rerun
+    with the default /tmp basetemp: all 22 passed.
+  - The remaining failure is the known host-only D baseline
+    (`test_accessible_runtime::test_orca_announces_every_result`, no Orca
+    stack; docs/decisions/local-test-baseline-ubuntu-26-04.md). The E
+    JSON-depth baseline no longer fails (fixed by #152).
+  - Net: 17064 passed, 519 skipped, 1 known host failure. Lesson: do not
+    move basetemp off /tmp for this suite.

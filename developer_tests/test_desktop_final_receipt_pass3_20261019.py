@@ -98,7 +98,7 @@ def test_final_source_check_cannot_hide_changed_launcher(
     monkeypatch.setattr(builder, "desktop_source_digest", final_digest)
     if target_index is None:
         builder.build(output)
-        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
+        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.16", False)
         builder.build(output)
     else:
         with pytest.raises(RuntimeError, match="launcher bytes changed"):
@@ -285,7 +285,7 @@ def test_receipt_edit_during_read_is_not_accepted_or_removed(
             builder.build(output)
     else:
         builder.build(output)
-        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.15", False)
+        builder.verify_desktop_bundle(tmp_path, output, "a" * 40, "0.2.16", False)
     if change_during_read:
         assert changed
         assert manifest.read_bytes() == foreign
